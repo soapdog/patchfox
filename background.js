@@ -21,7 +21,7 @@ port.onMessage.addListener(response => {
   switch (response.type) {
     case 'server':
       browser.tabs.create({
-        url: browser.extension.getURL('build/index.html')
+        url: response.server //browser.extension.getURL('build/index.html')
       })
       break
   }
@@ -30,10 +30,9 @@ port.onMessage.addListener(response => {
 console.log('Sending start server')
 port.postMessage({ cmd: 'start-server' })
 
-setTimeout(() => {
-  console.log("trying to quit process...")
-  port.postMessage({ cmd: "stop-server" })
-}, 12000)
-
+// setTimeout(() => {
+//   console.log("trying to quit process...")
+//   port.postMessage({ cmd: "stop-server" })
+// }, 12000)
 
 // ssb:%Qrof3M7aLz75LMiCkvgEtF9J7TVBKDojG6ITq5mGNCQ=.sha256

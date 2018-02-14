@@ -1,10 +1,10 @@
-const http = require('http')
-const serve = require('ecstatic')
+
 const nativeMessage = require('chrome-native-messaging')
-const party = require('ssb-meta-party')
+const { spawn } = require('child_process')
 const path = require('path')
 
 // todo: switch this to use childprocess and serve.js, somehow ssb-party is quiting the process.
+// todo: implemented childprocess, but it is strange...
 
 const input = new nativeMessage.Input()
 const transform = new nativeMessage.Transform((msg, push, done) => {
@@ -17,19 +17,23 @@ const output = new nativeMessage.Output()
 
 const startServer = (cb) => {
   output.write({ type: "debug", msg: `starting scuttlebutt` })
-  party((err, sbot) => {
-    if (err) {
-      output.write({ type: "error", err })
-      return
-    }
 
-    // http.createServer(
-    //   serve({ root: path.join(__dirname, '/build/') })
-    // ).listen(3013)
-    output.write({ type: "debug", msg: `no errors starting scuttlebutt` })
+  var scriptPath = path.join(__dirname, 'server.js')
+  var child = spawn(process.execPath, [scriptPath])
 
-    cb({ type: 'server', server: 'http://localhost:3013' })
+  child.stdout.on('data', (data) => {
+    output.write({ type: 'debug', msg: `stdout: ${data}` })
   })
+
+  child.stderr.on('data', (data) => {
+    output.write({ type: 'debug', msg: `stderr: ${data}` })
+  })
+
+  child.on('close', (code) => {
+    output.write({ type: 'debug', msg: `child process exited with code ${code}` })
+  })
+
+  output.write({ type: 'server', server: 'http://localhost:3013' })
 }
 
 const getReplyFor = (msg, cb) => {
