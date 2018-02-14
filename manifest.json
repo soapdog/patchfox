@@ -39,7 +39,17 @@
     "default_title": "Patchfox",
     "default_panel": "components/mini-help/index.html"
   },
+
+  "protocol_handlers": [
+    {
+      "protocol": "ssb",
+      "name": "Secure Scuttlebutt Protocol",
+      "uriTemplate": "components/protocol-handler/redirect.html#%s"
+    }
+  ],
+
   "permissions": [
+    "notifications",
     "nativeMessaging",
     "tabs",
     "activeTab"

@@ -33,7 +33,7 @@ const startServer = (cb) => {
     output.write({ type: 'debug', msg: `child process exited with code ${code}` })
   })
 
-  output.write({ type: 'server', server: 'http://localhost:3013' })
+  output.write({ type: 'server', server: 'http://localhost:3013/#public' })
 }
 
 const getReplyFor = (msg, cb) => {

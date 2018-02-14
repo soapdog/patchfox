@@ -1,11 +1,5 @@
 const triggerComposeWindow = () => {
-  browser.sidebarAction.setPanel(
-    {
-      panel: browser.extension.getURL('components/compose-window/index.html')
-    }
-  )
-  browser.sidebarAction.setTitle({title: 'Patchfox - Compose'})
-  browser.sidebarAction.open()
+  browser.runtime.sendMessage({type: "open-compose"})
 }
 
 document.getElementById('trigger-compose-window').addEventListener('click', triggerComposeWindow)

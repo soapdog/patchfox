@@ -5,7 +5,7 @@ var port = browser.runtime.connectNative('patchfox')
 console.log('port', port)
 
 /*
-Listen for messages from the app.
+Listen for messages from the host app.
 */
 
 port.onDisconnect.addListener(data => {
@@ -16,7 +16,6 @@ port.onMessage.addListener(response => {
   if (response.type && response.type === "ping") {
     return
   }
-  console.log('Received: ', response)
 
   switch (response.type) {
     case 'server':
@@ -24,11 +23,33 @@ port.onMessage.addListener(response => {
         url: response.server //browser.extension.getURL('build/index.html')
       })
       break
+    case 'debug':
+      break
+    default:
+      console.log('Received: ', response)
+
   }
 })
 
 console.log('Sending start server')
 port.postMessage({ cmd: 'start-server' })
+
+const ipcHandler = (data) => {
+  switch (data.type) {
+    case "open-compose":
+      browser.sidebarAction.setPanel(
+        {
+          panel: browser.extension.getURL('components/compose-window/index.html')
+        }
+      )
+      browser.sidebarAction.setTitle({ title: 'Patchfox - Compose' })
+      browser.sidebarAction.open()
+      break
+  }
+}
+
+browser.runtime.onMessage.addListener(ipcHandler)
+
 
 // setTimeout(() => {
 //   console.log("trying to quit process...")
