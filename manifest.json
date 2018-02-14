@@ -1,0 +1,47 @@
+{
+  "description": "Patchfox is a scuttlebutt client",
+  "manifest_version": 2,
+  "name": "patchfox",
+  "version": "1.0",
+  "icons": {
+    "96": "icons/icon.png"
+  },
+  "applications": {
+    "gecko": {
+      "id": "patchfox@andregarzia.com",
+      "strict_min_version": "50.0"
+    }
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "icons/icon.png",
+    "theme_icons": [
+      {
+        "light": "icons/icon.png",
+        "dark": "icons/icon.png",
+        "size": 32
+      }
+    ],
+    "default_title": "Patchfox",
+    "default_popup": "components/browser-action/popup.html"
+  },
+  "sidebar_action": {
+    "default_icon": {
+      "16": "icons/icon.png",
+      "32": "icons/icon.png"
+    },
+    "default_title": "Patchfox",
+    "default_panel": "components/mini-help/index.html"
+  },
+  "permissions": [
+    "nativeMessaging",
+    "tabs",
+    "activeTab"
+  ]
+}

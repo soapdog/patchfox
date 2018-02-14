@@ -1,0 +1,12 @@
+{
+    "name": "patchfox",
+    "description": "Native app companion to sbot webextensions",
+    "path": "C:\\Users\\soapdog\\prog\\ssbc\\patchfox\\app.bat",
+    "type": "stdio",
+    "allowed_extensions": [
+        "share_on_scuttlebutt@andregarzia.com",
+        "ssb_protocol_handler@andregarzia.com",
+        "sbot_test@andregarzia.com",
+        "patchfox@andregarzia.com"
+    ]
+}

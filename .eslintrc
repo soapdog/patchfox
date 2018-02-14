@@ -1,0 +1,11 @@
+{
+  "extends": "standard",
+  "rules": {
+    "quotes": [0, "double", "single", "backtick"],
+    "no-undef": [0],
+    "comma-dangle": [0],
+    "indent": ["error", 2],
+    "standard/no-callback-literal": [0],
+    "no-trailing-spaces": [0]
+  }
+}
