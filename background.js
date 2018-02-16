@@ -57,3 +57,4 @@ browser.runtime.onMessage.addListener(ipcHandler)
 // }, 12000)
 
 // ssb:%Qrof3M7aLz75LMiCkvgEtF9J7TVBKDojG6ITq5mGNCQ=.sha256
+// ssb:%2CNEJmRxDX/LtPPEuYTb6NIqAm7iE+KVenkqJERIqvw=.sha256
