@@ -1,0 +1,40 @@
+{
+  "name": "patchfox",
+  "description": "scuttlebutt webextension for firefox",
+  "version": "3.7.0",
+  "homepage": "https://github.com/soapdog/patchfox",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/soapdog/patchfox.git"
+  },
+  "dependencies": {
+    "chrome-native-messaging": "^0.2.0",
+    "ecstatic": "^3.1.0",
+    "minimist": "^1.2.0",
+    "scuttlebot": "10.4.10",
+    "ssb-blobs": "^1.1.4",
+    "ssb-config": "^2.2.0",
+    "ssb-ebt": "^2.0.0",
+    "ssb-friends": "^2.4.0",
+    "ssb-keys": "^7.0.13",
+    "ssb-names": "^3.1.0",
+    "ssb-ooo": "^1.0.7",
+    "ssb-ws": "^2.0.0"
+  },
+  "scripts": {
+    "start": "node host-app.js",
+    "check-win": "node check-configuration-win.js",
+    "setup-win": "node setup-win.js",
+    "check": "node check-configuration.js",
+    "setup": "node setup.js"
+  },
+  "optionalDependencies": {
+    "mkdirp": "^0.5.1",
+    "regedit": "^2.2.7"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^11.0.0-beta.0"
+  },
+  "peerDependencies": {},
+  "license": "MIT"
+}
