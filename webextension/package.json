@@ -1,0 +1,51 @@
+{
+  "name": "patchfox_webextension",
+  "description": "scuttlebutt webextension for firefox",
+  "version": "3.7.0",
+  "private": true,
+  "homepage": "https://github.com/soapdog/patchfox",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/soapdog/patchfox.git"
+  },
+  "dependencies": {
+    "brfs": "^1.4.4",
+    "depject": "^4.1.1",
+    "human-time": "0.0.1",
+    "hyperscript": "^2.0.2",
+    "patchapp-key": "^1.0.1",
+    "patchapp-threads": "^2.2.0",
+    "patchapp-vote": "^1.0.3",
+    "patchavatar-names": "^1.0.0",
+    "patchavatar-raw": "^1.0.0",
+    "patchcompose": "^1.2.1",
+    "patchcompose-drafts": "^1.0.0",
+    "patchcompose-file": "^1.0.0",
+    "patchcompose-legacy-mentions": "^1.0.0",
+    "patchcompose-recipients": "^1.0.0",
+    "patchconfirm-lightbox": "^1.0.0",
+    "patchidentity": "^1.2.1",
+    "patchless": "^1.7.0",
+    "patchnav-less": "^2.0.0",
+    "patchsuggest": "^1.0.0",
+    "ssb-markdown": "^3.3.0",
+    "ssb-ref": "^2.8.0"
+  },
+  "scripts": {
+    "build": "node components/main-interface/style.js && browserify components/main-interface/index.js > build/app.js",
+    "start": "web-ext run --verbose --firefox=nightly --source-dir ./"
+  },
+  "optionalDependencies": {},
+  "devDependencies": {
+    "browserify": "^14.5.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^6.0.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "standard": "^10.0.3",
+    "web-ext": "^2.4.0"
+  },
+  "peerDependencies": {},
+  "license": "MIT"
+}

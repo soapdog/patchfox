@@ -1,0 +1,33 @@
+{
+    
+      "description": "Share on Scuttlebut",
+      "manifest_version": 2,
+      "name": "Share on Scuttlebutt",
+      "version": "1.0",
+      "icons": {
+        "48": "icons/message.svg"
+      },
+    
+      "applications": {
+        "gecko": {
+          "id": "share_on_scuttlebutt@andregarzia.com",
+          "strict_min_version": "50.0"
+        }
+      },
+    
+
+      "sidebar_action": {
+          "default_icon": {
+            "512": "icons/message.svg"
+          },
+          "default_title" : "Share on Scuttlebutt",
+          "default_panel": "index.html"
+      },
+      
+      "permissions": [
+        "nativeMessaging",
+        "tabs"
+      ]
+    
+    }
+    

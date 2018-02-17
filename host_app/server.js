@@ -58,7 +58,7 @@ var createSbot = require('scuttlebot')
   .use(require('ssb-names'))
 
 http.createServer(
-  serve({ root: path.resolve('../extension/build/') })
+  serve({ root: path.resolve('../webextension/build/') })
 ).listen(3013)
 
 // add third-party plugins
