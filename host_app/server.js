@@ -6,6 +6,20 @@ var fs = require('fs')
 var path = require('path')
 var ssbKeys = require('ssb-keys')
 var minimist = require('minimist')
+var serverDiscovery = require('ssb-server-discovery')
+var eventEmitter = serverDiscovery.eventEmitter
+const notifier = require('node-notifier')
+
+eventEmitter.on('server-discovery-request', (origin) => {
+  console.log("######### DISCOVERY REQUEST #############", origin)
+  notifier.notify({
+    title: 'Secure Scuttlebutt',
+    message: `Application ${origin} wants to access sbot`, // String. Required if remove is not defined
+    icon: path.join(__dirname, "icon.png"), // String. Absolute path to Icon
+    wait: true, // Bool. Wait for User Action against Notification or times out
+    id: 0, // Number. ID to use for closing notification.
+  })
+})
 
 var argv = process.argv.slice(2)
 var i = argv.indexOf('--')
@@ -41,25 +55,12 @@ var createSbot = require('scuttlebot')
   .use(require('ssb-ooo'))
   .use(require('ssb-ebt'))
   .use(require('ssb-ws'))
-  .use({
-    name: 'share-ws',
-    version: '1.0.0',
-    init: function (sbot) {
-      sbot.ws.use(function (req, res, next) {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        if (req.url === '/get-address') {
-          res.end(sbot.ws.getAddress())
-        } else {
-          next()
-        }
-      })
-    }
-  })
+  .use(serverDiscovery)
   .use(require('ssb-names'))
 
-http.createServer(
-  serve({ root: path.resolve('../webextension/build/') })
-).listen(3013)
+// http.createServer(
+//   serve({ root: path.resolve('../webextension/build/') })
+// ).listen(3013)
 
 // add third-party plugins
 // require('./plugins/plugins').loadUserPlugins(createSbot, config)
