@@ -21,7 +21,8 @@
     "ssb-names": "^3.1.0",
     "ssb-ooo": "^1.0.7",
     "ssb-server-discovery": "github:soapdog/ssb-server-discovery",
-    "ssb-ws": "^2.0.0"
+    "ssb-ws": "^2.0.0",
+    "systray": "^1.0.3"
   },
   "scripts": {
     "start": "node host-app.js",
