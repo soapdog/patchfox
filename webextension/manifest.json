@@ -4,7 +4,7 @@
   "name": "patchfox",
   "version": "1.0",
   "icons": {
-    "96": "icons/icon.png"
+    "96": "assets/icons/icon.png"
   },
   "applications": {
     "gecko": {
@@ -13,45 +13,27 @@
     }
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
-  "background": {
-    "scripts": [
-      "components/background/background.js"
-    ]
-  },
+
   "browser_action": {
     "browser_style": true,
-    "default_icon": "icons/icon.png",
+    "default_icon": "assets/icons/icon.png",
     "theme_icons": [
       {
-        "light": "icons/icon.png",
-        "dark": "icons/icon.png",
+        "light": "assets/icons/icon.png",
+        "dark": "assets/icons/icon.png",
         "size": 32
       }
     ],
     "default_title": "Patchfox",
-    "default_popup": "components/browser-action/popup.html"
-  },
-  "sidebar_action": {
-    "default_icon": {
-      "16": "icons/icon.png",
-      "32": "icons/icon.png"
-    },
-    "default_title": "Patchfox",
-    "default_panel": "components/mini-help/index.html"
+    "default_popup": "build/browser_action/browser_action.html"
   },
 
-  "protocol_handlers": [
-    {
-      "protocol": "ssb",
-      "name": "Secure Scuttlebutt Protocol",
-      "uriTemplate": "components/protocol-handler/redirect.html#%s"
-    }
-  ],
 
   "permissions": [
     "notifications",
     "nativeMessaging",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "storage"
   ]
 }

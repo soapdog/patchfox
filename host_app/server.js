@@ -76,6 +76,64 @@ const createSbot = require('scuttlebot')
   .use(require('ssb-ws'))
   .use(serverDiscovery)
   .use(require('ssb-names'))
+  .use({
+    name: 'rpc-ws',
+    version: '1.0.0',
+    init: function (sbot) {
+      sbot.ws.use(function (req, res, next) {
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        res.end(JSON.stringify(req))
+        switch(req.url) {
+          case "/api/whoami":
+            sbot.whoami((err, feed) => {
+                res.end(JSON.stringify(feed))
+            })
+            break
+           case "/api/publish":
+            sbot.publish(msg.data, (err, data) => {
+                if (err) {
+                    res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
+                } else {
+                    res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
+                }
+            })
+            break;
+            case "/api/get":
+              sbot.get(msg.id, (err, data) => {
+                  if (err) {
+                      res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
+                  } else {
+                      if (data.content.type == 'post') {
+                          data.content.markdown = md.block(data.content.text, data.content.mentions)
+                      }
+                      res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
+                  }
+              })
+              break;
+            case "/api/get-related-messages":
+              sbot.relatedMessages(msg.data, (err, data) => {
+                  if (err) {
+                      res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
+                  } else {
+                      res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
+                  }
+              })
+              break;
+            case "/api/blobs/get":
+              sbot.blobs.get(msg.id, (err, data) => {
+                  if (err) {
+                      res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
+                  } else {
+                      res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
+                  }
+              })
+              break;
+          default:
+            next()
+        }
+      })
+    }
+  })
 
 // http.createServer(
 //   serve({ root: path.resolve('../webextension/build/') })
