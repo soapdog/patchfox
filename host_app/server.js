@@ -10,35 +10,8 @@ const serverDiscovery = require('ssb-server-discovery')
 const eventEmitter = serverDiscovery.eventEmitter
 const notifier = require('node-notifier')
 const SysTray = require('systray').default
-let shouldGrantPerms = false
+const editor = require('editor')
 
-eventEmitter.on('server-discovery-request', (origin) => {
-  console.log("######### DISCOVERY REQUEST #############", origin)
-  let msg
-  let action
-
-  if (shouldGrantPerms) {
-    action = "granted"
-  } else {
-    action = "denied"
-  }
-
-  if (origin.startsWith("moz-extension://")) {
-    msg = `Firefox Add-on ${origin} ${action} access to sbot.`
-  } else {
-    msg = `Web Application ${origin} ${action} access to sbot.`
-  }
-
-  eventEmitter.emit('server-discovery-response', origin, shouldGrantPerms)
-
-  notifier.notify({
-    title: 'Secure Scuttlebutt',
-    message: msg,
-    icon: path.join(__dirname, "icon.png"),
-    wait: true,
-    id: 0,
-  })
-})
 
 let argv = process.argv.slice(2)
 let i = argv.indexOf('--')
@@ -54,6 +27,43 @@ if (keys.curve === 'k256') {
 }
 
 const manifestFile = path.join(config.path, 'manifest.json')
+
+
+eventEmitter.on('server-discovery-request', (origin) => {
+  console.log("######### DISCOVERY REQUEST #############", origin)
+  let msg
+  let typeOfApp
+  let allowed = serverDiscovery.isAppAllowed(origin)
+
+  if (origin.startsWith("moz-extension://")) {
+    typeOfApp = "Firefox Add-on"
+  } else {
+    typeOfApp = "Web Application"
+  }
+
+  switch (allowed) {
+    case "granted":
+      msg = `${typeOfApp} ${origin} granted access to sbot.`
+      break
+    case "denied":
+      msg = `${typeOfApp} ${origin} denied access to sbot.`
+      break
+    case "retry":
+      msg = `${typeOfApp} ${origin} wants access to sbot.`
+      break
+  }
+
+  eventEmitter.emit('server-discovery-response', origin, allowed)
+
+  notifier.notify({
+    title: 'Secure Scuttlebutt',
+    message: msg,
+    icon: path.join(__dirname, "icon.png"),
+    wait: true,
+    id: 0,
+  })
+})
+
 
 // special server command:
 // import sbot and start the server
@@ -82,52 +92,52 @@ const createSbot = require('scuttlebot')
     init: function (sbot) {
       sbot.ws.use(function (req, res, next) {
         res.setHeader('Access-Control-Allow-Origin', '*')
-        res.end(JSON.stringify(req))
-        switch(req.url) {
+
+        switch (req.url) {
           case "/api/whoami":
             sbot.whoami((err, feed) => {
-                res.end(JSON.stringify(feed))
+              res.end(JSON.stringify(feed))
             })
             break
-           case "/api/publish":
+          case "/api/publish":
             sbot.publish(msg.data, (err, data) => {
-                if (err) {
-                    res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
-                } else {
-                    res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
-                }
+              if (err) {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
+              } else {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
+              }
             })
             break;
-            case "/api/get":
-              sbot.get(msg.id, (err, data) => {
-                  if (err) {
-                      res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
-                  } else {
-                      if (data.content.type == 'post') {
-                          data.content.markdown = md.block(data.content.text, data.content.mentions)
-                      }
-                      res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
-                  }
-              })
-              break;
-            case "/api/get-related-messages":
-              sbot.relatedMessages(msg.data, (err, data) => {
-                  if (err) {
-                      res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
-                  } else {
-                      res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
-                  }
-              })
-              break;
-            case "/api/blobs/get":
-              sbot.blobs.get(msg.id, (err, data) => {
-                  if (err) {
-                      res.end(JSON.stringify({cmd: msg.cmd, error: err, data: false}))
-                  } else {
-                      res.end(JSON.stringify({cmd: msg.cmd, error: false, data: data}))
-                  }
-              })
-              break;
+          case "/api/get":
+            sbot.get(msg.id, (err, data) => {
+              if (err) {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
+              } else {
+                if (data.content.type == 'post') {
+                  data.content.markdown = md.block(data.content.text, data.content.mentions)
+                }
+                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
+              }
+            })
+            break;
+          case "/api/get-related-messages":
+            sbot.relatedMessages(msg.data, (err, data) => {
+              if (err) {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
+              } else {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
+              }
+            })
+            break;
+          case "/api/blobs/get":
+            sbot.blobs.get(msg.id, (err, data) => {
+              if (err) {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
+              } else {
+                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
+              }
+            })
+            break;
           default:
             next()
         }
@@ -158,9 +168,8 @@ const tray = new SysTray({
     tooltip: 'Secure Scuttlebutt tray app',
     items: [
       {
-        title: 'Grant connections',
-        tooltip: 'If enabled grant connection for applications',
-        checked: shouldGrantPerms,
+        title: 'Open configuration file',
+        tooltip: 'Opens the configuration json',
         enabled: true
       },
       {
@@ -178,24 +187,8 @@ const tray = new SysTray({
 tray.onClick(action => {
   switch (action.seq_id) {
     case 0:
-      shouldGrantPerms = !shouldGrantPerms
-      tray.sendAction({
-        type: 'update-item',
-        item: {
-          ...action.item,
-          checked: shouldGrantPerms,
-        },
-        seq_id: action.seq_id,
-      })
-
-      let permMsg = shouldGrantPerms ? "grant" : "deny"
-
-      notifier.notify({
-        title: 'Secure Scuttlebutt',
-        message: `Secure Scuttlebutt will ${permMsg} connections to sbot`,
-        icon: path.join(__dirname, "icon.png"),
-        wait: true,
-        id: 0,
+      editor(serverDiscovery.configFile, function (code, sig) {
+        console.log('finished editing with code ' + code);
       })
 
       break
