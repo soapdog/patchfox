@@ -10,6 +10,7 @@
   "dependencies": {
     "chrome-native-messaging": "^0.2.0",
     "ecstatic": "^3.1.0",
+    "editor": "^1.0.0",
     "minimist": "^1.2.0",
     "node-notifier": "^5.2.1",
     "scuttlebot": "10.4.10",
@@ -17,6 +18,7 @@
     "ssb-config": "^2.2.0",
     "ssb-ebt": "^2.0.0",
     "ssb-friends": "^2.4.0",
+    "ssb-graphql": "github:stanleyjones/ssb-graphql",
     "ssb-keys": "^7.0.13",
     "ssb-names": "^3.1.0",
     "ssb-ooo": "^1.0.7",
