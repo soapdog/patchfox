@@ -93,6 +93,17 @@ const createSbot = require('scuttlebot')
       sbot.ws.use(function (req, res, next) {
         res.setHeader('Access-Control-Allow-Origin', '*')
 
+        if (!req.headers.origin) {
+          res.end(JSON.stringify({status: "denied", msg: "only accepts requests of authorized apps"}))
+          return
+        }
+
+        let perms = serverDiscovery.isAppAllowed(req.headers.origin)
+        if (perms !== "granted") {
+          res.end(JSON.stringify({status: "denied", msg: "only accepts requests of authorized apps"}))
+          return
+        }
+
         switch (req.url) {
           case "/api/whoami":
             sbot.whoami((err, feed) => {
