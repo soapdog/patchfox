@@ -6,8 +6,8 @@ const fs = require('fs')
 const path = require('path')
 const ssbKeys = require('ssb-keys')
 const minimist = require('minimist')
-const serverDiscovery = require('ssb-server-discovery')
-const eventEmitter = serverDiscovery.eventEmitter
+const rpc = require('ssb-rpc-api')
+const eventEmitter = rpc.eventEmitter
 const notifier = require('node-notifier')
 const SysTray = require('systray').default
 const editor = require('editor')
@@ -33,35 +33,29 @@ eventEmitter.on('server-discovery-request', (origin) => {
   console.log("######### DISCOVERY REQUEST #############", origin)
   let msg
   let typeOfApp
-  let allowed = serverDiscovery.isAppAllowed(origin)
+  let allowed = rpc.isAppAllowed(origin)
 
-  if (origin.startsWith("moz-extension://")) {
-    typeOfApp = "Firefox Add-on"
-  } else {
-    typeOfApp = "Web Application"
+  if (allowed == "unknown") {
+    // notifications only happen once and we instantly tell it to retry.
+
+    if (origin.startsWith("moz-extension://")) {
+      typeOfApp = "Firefox Add-on"
+    } else {
+      typeOfApp = "Web Application"
+    }
+
+    msg = `${typeOfApp} ${origin} wants access to sbot.`
+
+    eventEmitter.emit('server-discovery-response', origin, "retry")
+
+    notifier.notify({
+      title: 'Secure Scuttlebutt',
+      message: msg,
+      icon: path.join(__dirname, "icon.png"),
+      wait: true,
+      id: 0,
+    })
   }
-
-  switch (allowed) {
-    case "granted":
-      msg = `${typeOfApp} ${origin} granted access to sbot.`
-      break
-    case "denied":
-      msg = `${typeOfApp} ${origin} denied access to sbot.`
-      break
-    case "retry":
-      msg = `${typeOfApp} ${origin} wants access to sbot.`
-      break
-  }
-
-  eventEmitter.emit('server-discovery-response', origin, allowed)
-
-  notifier.notify({
-    title: 'Secure Scuttlebutt',
-    message: msg,
-    icon: path.join(__dirname, "icon.png"),
-    wait: true,
-    id: 0,
-  })
 })
 
 
@@ -84,77 +78,8 @@ const createSbot = require('scuttlebot')
   .use(require('ssb-ooo'))
   .use(require('ssb-ebt'))
   .use(require('ssb-ws'))
-  .use(serverDiscovery)
+  .use(rpc)
   .use(require('ssb-names'))
-  .use({
-    name: 'rpc-ws',
-    version: '1.0.0',
-    init: function (sbot) {
-      sbot.ws.use(function (req, res, next) {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-
-        if (!req.headers.origin) {
-          res.end(JSON.stringify({status: "denied", msg: "only accepts requests of authorized apps"}))
-          return
-        }
-
-        let perms = serverDiscovery.isAppAllowed(req.headers.origin)
-        if (perms !== "granted") {
-          res.end(JSON.stringify({status: "denied", msg: "only accepts requests of authorized apps"}))
-          return
-        }
-
-        switch (req.url) {
-          case "/api/whoami":
-            sbot.whoami((err, feed) => {
-              res.end(JSON.stringify(feed))
-            })
-            break
-          case "/api/publish":
-            sbot.publish(msg.data, (err, data) => {
-              if (err) {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
-              } else {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
-              }
-            })
-            break;
-          case "/api/get":
-            sbot.get(msg.id, (err, data) => {
-              if (err) {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
-              } else {
-                if (data.content.type == 'post') {
-                  data.content.markdown = md.block(data.content.text, data.content.mentions)
-                }
-                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
-              }
-            })
-            break;
-          case "/api/get-related-messages":
-            sbot.relatedMessages(msg.data, (err, data) => {
-              if (err) {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
-              } else {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
-              }
-            })
-            break;
-          case "/api/blobs/get":
-            sbot.blobs.get(msg.id, (err, data) => {
-              if (err) {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: err, data: false }))
-              } else {
-                res.end(JSON.stringify({ cmd: msg.cmd, error: false, data: data }))
-              }
-            })
-            break;
-          default:
-            next()
-        }
-      })
-    }
-  })
 
 // http.createServer(
 //   serve({ root: path.resolve('../webextension/build/') })
@@ -198,7 +123,7 @@ const tray = new SysTray({
 tray.onClick(action => {
   switch (action.seq_id) {
     case 0:
-      editor(serverDiscovery.configFile, function (code, sig) {
+      editor(rpc.configFile, function (code, sig) {
         console.log('finished editing with code ' + code);
       })
 
