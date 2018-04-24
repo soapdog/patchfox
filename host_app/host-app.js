@@ -26,14 +26,14 @@ const startServer = (cb) => {
   })
 
   child.stderr.on('data', (data) => {
-    output.write({ type: 'debug', msg: `stderr: ${data}` })
+    output.write({ type: 'error', msg: `stderr: ${data}` })
   })
 
   child.on('close', (code) => {
     output.write({ type: 'debug', msg: `child process exited with code ${code}` })
   })
 
-  output.write({ type: 'server', server: 'http://localhost:3013/#public' })
+  output.write({ type: 'up', msg: 'server up, try again', retry: 3500 })
 }
 
 const getReplyFor = (msg, cb) => {
@@ -42,12 +42,9 @@ const getReplyFor = (msg, cb) => {
     case 'start-server':
       startServer(cb)
       break
-    case 'meleca':
-      cb('bah!' + new Date())
-      break
     case 'stop-server': {
       clearInterval(timer)
-      cb({ type: 'msg', msg: 'stopping server' })
+      cb({ type: 'shutdown', msg: 'stopping server' })
       process.exit(1)
     }
   }
@@ -55,7 +52,7 @@ const getReplyFor = (msg, cb) => {
 
 var timer = setInterval(function () {
   output.write({ type: "ping", time: new Date().toISOString() })
-}, 1000)
+}, 120000)
 
 input.on('end', function () {
   clearInterval(timer)
