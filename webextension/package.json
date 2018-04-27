@@ -1,0 +1,31 @@
+{
+  "name": "patchfox",
+  "version": "1.0.0",
+  "description": "An add-on for secure scuttlebutt",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/soapdog/patchfox.git"
+  },
+  "keywords": [
+    "ssb",
+    "dex",
+    "p2p",
+    "firefox"
+  ],
+  "author": "Andre Alves Garzia <andre@andregarzia.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soapdog/patchfox/issues"
+  },
+  "homepage": "https://github.com/soapdog/patchfox#readme",
+  "dependencies": {
+    "ssb-party": "^0.5.1"
+  }
+}

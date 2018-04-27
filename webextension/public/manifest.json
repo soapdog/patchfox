@@ -4,7 +4,7 @@
   "name": "patchfox",
   "version": "2.0",
   "icons": {
-    "96": "build/icon.png"
+    "96": "icon.png"
   },
   "applications": {
     "gecko": {
@@ -15,19 +15,29 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "background": {
     "scripts": [
-      "build/background.js"
+      "background.js"
     ]
   },
-
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  },
+  "browser_action": {
+    "default_icon": {
+      "96": "icon.png"
+    },
+    "browser_style": true
+  },
   "protocol_handlers": [
     {
       "protocol": "ssb",
       "name": "Secure Scuttlebutt Protocol",
-      "uriTemplate": "build/index.html#/url/%s"
+      "uriTemplate": "http://localhost:3000?#/url/%s"
     }
   ],
-
   "permissions": [
+    "http://localhost:8989/get-address",
+    "<all_urls>",
     "notifications",
     "nativeMessaging",
     "tabs",

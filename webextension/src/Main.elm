@@ -10,17 +10,6 @@ import Scuttlebutt.Commands.GetRelatedMessages exposing (..)
 import Scuttlebutt.Types exposing (..)
 
 
-type alias Model =
-    { currentPage : Route.Page
-    }
-
-
-initialModel : Model
-initialModel =
-    { currentPage = Route.BlankPage
-    }
-
-
 type Msg
     = UrlChange Navigation.Location
     | RelatedMessages ApiResponse
@@ -49,13 +38,13 @@ update msg model =
                         ( model, Cmd.none )
                     else
                         case validRoute of
-                            Route.Blank ->
-                                ( { model | currentPage = Route.BlankPage }
+                            Blank ->
+                                ( { model | currentPage = BlankPage }
                                 , Cmd.none
                                 )
 
-                            Route.Thread id ->
-                                ( { model | currentPage = Route.ThreadPage (MessageId id) }
+                            Thread id ->
+                                ( { model | currentPage = ThreadPage (MessageId id) }
                                 , Cmd.none
                                 )
 
@@ -74,22 +63,31 @@ update msg model =
 view : Model -> Html Msg
 view model =
     case model.currentPage of
-        Route.BlankPage ->
-            Page.Blank.view
+        BlankPage ->
+            Page.Blank.view model.config
 
-        Route.ThreadPage msgid ->
+        ThreadPage msgid ->
             Page.Thread.view
+
+
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
+    ( { currentPage = BlankPage
+      , config = flags
+      }
+    , Cmd.none
+    )
 
 
 
 -- MAIN --
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { view = view
         , update = update
-        , init = \_ -> ( initialModel, Cmd.none )
+        , init = init
         , subscriptions = \_ -> Sub.none
         }

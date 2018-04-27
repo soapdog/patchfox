@@ -5,26 +5,6 @@ import Scuttlebutt.Types exposing (..)
 import UrlParser as P exposing ((</>))
 
 
-{- Page to use in model
-   This variant stores data too!
--}
-
-
-type Page
-    = BlankPage
-    | ThreadPage MessageId
-
-
-
-{- typesafe variant of valid urls -}
-
-
-type Route
-    = Blank
-    | Thread String
-
-
-
 -- Helpers to turn Location into a Maybe Route
 
 
