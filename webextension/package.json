@@ -1,0 +1,76 @@
+{
+  "name": "patchfox",
+  "version": "1.0.0",
+  "description": "An add-on for secure scuttlebutt",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "start": "node scripts/start.js",
+    "package": "elm-package",
+    "make": "elm-make",
+    "repl": "elm-repl",
+    "reactor": "elm-reactor",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/soapdog/patchfox.git"
+  },
+  "keywords": [
+    "ssb",
+    "dex",
+    "p2p",
+    "firefox"
+  ],
+  "author": "Andre Alves Garzia <andre@andregarzia.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soapdog/patchfox/issues"
+  },
+  "homepage": "https://github.com/soapdog/patchfox#readme",
+  "dependencies": {
+    "highlight.js": "^9.12.0",
+    "ssb-avatar": "^0.2.0",
+    "ssb-client": "^4.5.7",
+    "ssb-config": "^2.2.0",
+    "ssb-keys": "^7.0.14",
+    "ssb-party": "^0.5.1",
+    "ssb-ref": "^2.11.1"
+  },
+  "devDependencies": {
+    "assets-webpack-plugin": "^3.5.1",
+    "autoprefixer": "^8.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-runtime": "^6.26.0",
+    "chalk": "^2.3.1",
+    "clean-webpack-plugin": "^0.1.18",
+    "connect-history-api-fallback": "^1.5.0",
+    "css-loader": "^0.28.9",
+    "dotenv": "^5.0.0",
+    "elm": "^0.18.0",
+    "elm-hot-loader": "0.5.4",
+    "elm-test": "^0.18.12",
+    "elm-webpack-loader": "^4.4.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.6",
+    "html-webpack-plugin": "^2.30.1",
+    "http-proxy-middleware": "^0.17.4",
+    "minimist": "1.2.0",
+    "postcss-loader": "2.1.0",
+    "react-dev-utils": "^5.0.0",
+    "react-error-overlay": "^4.0.0",
+    "string-replace-loader": "^1.3.0",
+    "style-loader": "^0.20.2",
+    "sw-precache-webpack-plugin": "^0.11.4",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.1"
+  }
+}
