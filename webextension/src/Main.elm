@@ -1,18 +1,20 @@
 module Main exposing (main)
 
-import Html exposing (..)
+import Css exposing (..)
+import Html.Styled exposing (..)
 import Http
 import Navigation exposing (Location)
 import Page.Blank
 import Page.Thread
 import Route exposing (..)
-import Scuttlebutt.Commands.GetRelatedMessages exposing (..)
-import Scuttlebutt.Types exposing (..)
+import Scuttlebutt.Client exposing (..)
+import Types exposing (..)
 
 
 type Msg
     = UrlChange Navigation.Location
-    | RelatedMessages ApiResponse
+    | Outside InfoForElm
+    | LogErr String
 
 
 
@@ -22,6 +24,18 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        LogErr msg ->
+            let
+                d =
+                    Debug.log "Error" msg
+            in
+            ( model, Cmd.none )
+
+        Outside infoForElm ->
+            case infoForElm of
+                ThreadReceived thread ->
+                    ( { model | currentPage = ThreadPage thread }, Cmd.none )
+
         UrlChange newLocation ->
             case Route.parse newLocation of
                 Nothing ->
@@ -44,16 +58,9 @@ update msg model =
                                 )
 
                             Thread id ->
-                                ( { model | currentPage = ThreadPage (MessageId id) }
-                                , Cmd.none
+                                ( { model | currentPage = BlankPage }
+                                , relatedMessages <| Maybe.withDefault "" <| Http.decodeUri id
                                 )
-
-        RelatedMessages response ->
-            let
-                a =
-                    Debug.log "r" response
-            in
-            ( model, Cmd.none )
 
 
 
@@ -66,8 +73,13 @@ view model =
         BlankPage ->
             Page.Blank.view model.config
 
-        ThreadPage msgid ->
-            Page.Thread.view
+        ThreadPage t ->
+            Page.Thread.view t
+
+
+loadInitialRoute : Location -> Cmd Msg
+loadInitialRoute location =
+    Navigation.modifyUrl location.hash
 
 
 init : Flags -> Location -> ( Model, Cmd Msg )
@@ -75,8 +87,17 @@ init flags location =
     ( { currentPage = BlankPage
       , config = flags
       }
-    , Cmd.none
+    , loadInitialRoute location
     )
+
+
+
+-- SUBSCRIPTIONS --
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    getInfoFromOutside Outside LogErr
 
 
 
@@ -86,8 +107,8 @@ init flags location =
 main : Program Flags Model Msg
 main =
     Navigation.programWithFlags UrlChange
-        { view = view
+        { view = view >> toUnstyled
         , update = update
         , init = init
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }

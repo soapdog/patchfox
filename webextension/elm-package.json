@@ -11,10 +11,12 @@
         "NoRedInk/elm-decode-pipeline": "3.0.0 <= v < 4.0.0",
         "andrewMacmurray/elm-delay": "2.0.3 <= v < 3.0.0",
         "elm-community/json-extra": "2.7.0 <= v < 3.0.0",
+        "elm-community/string-extra": "1.4.0 <= v < 2.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
         "elm-lang/navigation": "2.1.0 <= v < 3.0.0",
+        "evancz/elm-markdown": "3.0.2 <= v < 4.0.0",
         "evancz/url-parser": "2.0.1 <= v < 3.0.0",
         "rtfeldman/elm-css": "13.1.1 <= v < 14.0.0"
     },

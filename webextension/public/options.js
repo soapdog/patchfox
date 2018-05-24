@@ -1,15 +1,19 @@
 function saveOptions(e) {
   browser.storage.local.set({
-    remote: document.querySelector("#sbot_url").value
+    remote: document.querySelector("#remote").value,
+    secret: document.querySelector("#secret").value
+
   });
   e.preventDefault();
 }
 
 function restoreOptions() {
-  var gettingItem = browser.storage.local.get('remote');
-  gettingItem.then((res) => {
-    document.querySelector("#sbot_url").value = res.remote || '';
+  var getConfig = browser.storage.local.get();
+  getConfig.then((res) => {
+    document.querySelector("#remote").value = res.remote || '';
+    document.querySelector("#secret").value = res.secret || '';
   });
+
 }
 
 document.addEventListener('DOMContentLoaded', restoreOptions);

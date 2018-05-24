@@ -1,7 +1,9 @@
 module Route exposing (..)
 
+import Http
 import Navigation exposing (Location)
-import Scuttlebutt.Types exposing (..)
+import Scuttlebutt.Client as SSBClient
+import Types exposing (..)
 import UrlParser as P exposing ((</>))
 
 
@@ -34,7 +36,7 @@ toUrl route =
                     "/"
 
                 Thread id ->
-                    "/thread/" ++ id
+                    "/thread/" ++ Http.encodeUri id
     in
     "#" ++ hashPage
 
@@ -49,8 +51,8 @@ toRoute page =
         BlankPage ->
             Blank
 
-        ThreadPage (MessageId id) ->
-            Thread id
+        ThreadPage (SSBClient.Message m) ->
+            Thread m.key
 
 
 

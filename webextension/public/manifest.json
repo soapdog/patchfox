@@ -31,12 +31,12 @@
   "protocol_handlers": [
     {
       "protocol": "ssb",
-      "name": "Secure Scuttlebutt Protocol",
-      "uriTemplate": "http://localhost:3000?#/url/%s"
+      "name": "Secure Scuttlebutt",
+      "uriTemplate": "/index.html#/thread/%s"
     }
   ],
   "permissions": [
-    "http://localhost:8989/get-address",
+    "http://localhost:8989/",
     "<all_urls>",
     "notifications",
     "nativeMessaging",
