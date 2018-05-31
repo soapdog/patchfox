@@ -2,16 +2,18 @@ module Page.Thread exposing (..)
 
 import Css exposing (..)
 import Date
+import Dict exposing (Dict)
+import Html.Attributes as HA
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (class, css, src)
 import Json.Decode as Decode
 import Markdown
 import Scuttlebutt.Client as SSBClient
 import String.Extra exposing (..)
 
 
-messageView : SSBClient.Message -> Html msg
-messageView (SSBClient.Message m) =
+messageView : Dict String SSBClient.User -> SSBClient.Message -> Html msg
+messageView users (SSBClient.Message m) =
     let
         likeDecoder =
             Decode.at [ "vote", "expression" ] Decode.string
@@ -63,42 +65,57 @@ messageView (SSBClient.Message m) =
                     div [] []
 
                 Just l ->
-                    restOfThreadView l
+                    restOfThreadView l users
 
         replaceImages s =
             replace """(&""" """(http://localhost:8989/blobs/get/&""" s
 
         replaceMsgLinks s =
-            replace """(%""" """(ssb:%""" s
+            replace """(%""" """(#/thread/%""" s
 
         date =
-            Date.fromTime (toFloat <| m.timestamp)
+            SSBClient.timeAgo m.timestamp
+
+        author =
+            SSBClient.avatar m.author users
+
+        avatar =
+            div
+                [ class "media" ]
+                [ div [ class "media-left" ]
+                    [ figure [ class "image is-48x48" ]
+                        [ img
+                            [ src author.image ]
+                            []
+                        ]
+                    ]
+                , div [ class "media-content" ]
+                    [ p [ class "title is-4" ] [ text author.name ]
+                    , p [ class "subtitle is-6" ] [ time [] [ text date ] ]
+                    ]
+                ]
     in
     div
-        []
-        [ h3 [] [ text m.author ]
-        , strong [] [ text (toString date) ]
-        , fromUnstyled (Markdown.toHtml [] content)
-        , hr [] []
+        [ class "card" ]
+        [ div [ class "card-content" ]
+            [ avatar
+            , fromUnstyled (Markdown.toHtml [ HA.class "content has-text-justified" ] content)
+            ]
         , related
         ]
 
 
-restOfThreadView : List SSBClient.Message -> Html msg
-restOfThreadView l =
+restOfThreadView : List SSBClient.Message -> Dict String SSBClient.User -> Html msg
+restOfThreadView l users =
     div []
-        (List.map messageView l)
+        (List.map (messageView users) l)
 
 
-view : SSBClient.Message -> Html msg
-view m =
-    div
-        [ css
-            [ textAlign left
-            , width (pct 70)
-            , paddingLeft (px 60)
-            , paddingRight (px 60)
-            ]
+view : SSBClient.Message -> Dict String SSBClient.User -> Html msg
+view m users =
+    section
+        [ class "section"
         ]
-        [ messageView m
+        [ div [ class "container" ]
+            [ messageView users m ]
         ]

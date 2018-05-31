@@ -1,5 +1,6 @@
 module Types exposing (..)
 
+import Dict exposing (Dict)
 import Scuttlebutt.Client as SSBClient
 
 
@@ -11,6 +12,7 @@ type alias Flags =
 type alias Model =
     { currentPage : Page
     , config : Flags
+    , users : Dict String SSBClient.User
     }
 
 
@@ -23,6 +25,7 @@ type alias Model =
 type Page
     = BlankPage
     | ThreadPage SSBClient.Thread
+    | LoadingPage
 
 
 

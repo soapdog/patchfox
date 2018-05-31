@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Css exposing (..)
+import Dict
 import Html.Styled exposing (..)
 import Http
 import Navigation exposing (Location)
@@ -34,7 +35,14 @@ update msg model =
         Outside infoForElm ->
             case infoForElm of
                 ThreadReceived thread ->
-                    ( { model | currentPage = ThreadPage thread }, Cmd.none )
+                    ( { model | currentPage = ThreadPage thread }, getAvatars thread )
+
+                AvatarReceived user ->
+                    let
+                        newUsers =
+                            Dict.insert user.id user model.users
+                    in
+                    ( { model | users = newUsers }, Cmd.none )
 
         UrlChange newLocation ->
             case Route.parse newLocation of
@@ -58,7 +66,7 @@ update msg model =
                                 )
 
                             Thread id ->
-                                ( { model | currentPage = BlankPage }
+                                ( { model | currentPage = LoadingPage }
                                 , relatedMessages <| Maybe.withDefault "" <| Http.decodeUri id
                                 )
 
@@ -74,7 +82,11 @@ view model =
             Page.Blank.view model.config
 
         ThreadPage t ->
-            Page.Thread.view t
+            Page.Thread.view t model.users
+
+        LoadingPage ->
+            div []
+                [ h3 [] [ text "Loading..." ] ]
 
 
 loadInitialRoute : Location -> Cmd Msg
@@ -86,6 +98,7 @@ init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
     ( { currentPage = BlankPage
       , config = flags
+      , users = Dict.empty
       }
     , loadInitialRoute location
     )
