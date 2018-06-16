@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Css exposing (..)
 import Dict
+import Fragments exposing (appHeader)
 import Html.Styled exposing (..)
 import Http
 import Navigation exposing (Location)
@@ -35,7 +36,7 @@ update msg model =
         Outside infoForElm ->
             case infoForElm of
                 ThreadReceived thread ->
-                    ( { model | currentPage = ThreadPage thread }, getAvatars thread )
+                    ( { model | currentPage = ThreadPage thread }, getAvatars model.users thread )
 
                 AvatarReceived user ->
                     let
@@ -77,16 +78,23 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    case model.currentPage of
-        BlankPage ->
-            Page.Blank.view model.config
+    let
+        currentView =
+            case model.currentPage of
+                BlankPage ->
+                    Page.Blank.view model.config
 
-        ThreadPage t ->
-            Page.Thread.view t model.users
+                ThreadPage thread ->
+                    Page.Thread.view model.users thread
 
-        LoadingPage ->
-            div []
-                [ h3 [] [ text "Loading..." ] ]
+                LoadingPage ->
+                    div []
+                        [ h3 [] [ text "Loading..." ] ]
+    in
+    div []
+        [ appHeader model.config.user
+        , currentView
+        ]
 
 
 loadInitialRoute : Location -> Cmd Msg

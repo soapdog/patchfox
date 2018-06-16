@@ -82,8 +82,8 @@ avatar id users =
             User id id "/icon.png"
 
 
-getAvatars : Message -> Cmd msg
-getAvatars (Message m) =
+getAvatars : Dict String User -> Message -> Cmd msg
+getAvatars users (Message m) =
     let
         related =
             case m.related of
@@ -97,21 +97,29 @@ getAvatars (Message m) =
             if List.isEmpty related then
                 Cmd.none
             else
-                Cmd.batch <| List.map (\i -> getAvatars i) related
+                Cmd.batch <| List.map (\i -> getAvatars users i) related
     in
     Cmd.batch
-        [ getAvatar m.author
+        [ getAvatar users m.author
         , rest
         ]
 
 
-getAvatar : String -> Cmd msg
-getAvatar id =
+getAvatar : Dict String User -> String -> Cmd msg
+getAvatar users id =
     let
+        user =
+            Dict.get id users
+
         d =
             Debug.log "avatar from elm" id
     in
-    sendInfoOutside (Avatar id)
+    case user of
+        Nothing ->
+            sendInfoOutside (Avatar id)
+
+        Just u ->
+            Debug.log ("Avatar Cached for" ++ id) Cmd.none
 
 
 sendInfoOutside : InfoForOutside -> Cmd msg

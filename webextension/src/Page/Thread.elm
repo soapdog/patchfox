@@ -111,11 +111,12 @@ restOfThreadView l users =
         (List.map (messageView users) l)
 
 
-view : SSBClient.Message -> Dict String SSBClient.User -> Html msg
-view m users =
+view : Dict String SSBClient.User -> SSBClient.Message -> Html msg
+view users message =
     section
         [ class "section"
         ]
-        [ div [ class "container" ]
-            [ messageView users m ]
+        [ div
+            [ class "container" ]
+            [ messageView users message ]
         ]

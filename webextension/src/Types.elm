@@ -6,6 +6,7 @@ import Scuttlebutt.Client as SSBClient
 
 type alias Flags =
     { error : Maybe String
+    , user : SSBClient.User
     }
 
 

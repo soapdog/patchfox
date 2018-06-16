@@ -52,60 +52,81 @@ const handleError = (error) => {
   boot(error, null)
 }
 
+const instantiateApp = () => {
+
+}
+
 const boot = (err, sbot) => {
   if (err) {
     console.error("error", err)
     flog("Can't start SBOT from saved configuration, trying to start native app.")
     startNativeApp()
   } else {
-    app = Main.embed(document.getElementById('root'), {
-      error: err
-    })
+    avatar(sbot, sbot.id, sbot.id, (err, data) => {
+      let obj = null
+      if (data) {
+        flog("avatar for current user", data)
+        obj = {
+          id: data.id,
+          name: data.name,
+          image: "http://localhost:8989/blobs/get/" + data.image
+        }
+        userCache.set(data.id, obj)
+      } else {
+        flog("ERROR", err)
 
-    app.ports.infoForOutside.subscribe(msg => {
-      flog("infoForOutside", msg)
-      switch (msg.tag) {
-        case "RelatedMessages":
-          sbot.relatedMessages(
-            { id: msg.data },
-            (err, msgs) => {
-              if (msgs) {
-                // let arr = []
-                // arr.push(msgs.value)
-                // arr[0].key = msgs.key
-                // arr = arr.concat(msgs.related)
-                flog("ThreadReceived", msgs)
-                app.ports.infoForElm.send({ tag: "ThreadReceived", data: msgs })
-              } else {
-                flog("ERROR", err)
-              }
-            }
-          )
-          break
-        case "Avatar":
-          flog("received avatar request", msg)
-          if (userCache.has(msg.data)) {
-            app.ports.infoForElm.send({ tag: "AvatarReceived", data: userCache.get(msg.data) })
-          } else {
-            avatar(sbot, sbot.id, msg.data, (err, data) => {
-              if (data) {
-                flog("avatar from js", data)
-                let obj = {
-                  id: data.id,
-                  name: data.name,
-                  image: "http://localhost:8989/blobs/get/" + data.image
-                }
-
-                userCache.set(data.id, obj)
-
-                app.ports.infoForElm.send({ tag: "AvatarReceived", data: obj })
-              } else {
-                flog("ERROR", err)
-              }
-            })
-          }
-          break
       }
+
+      app = Main.embed(document.getElementById('root'), {
+        error: err ? err : null,
+        user: data ? obj : null,
+      })
+
+      app.ports.infoForOutside.subscribe(msg => {
+        flog("infoForOutside", msg)
+        switch (msg.tag) {
+          case "RelatedMessages":
+            sbot.relatedMessages(
+              { id: msg.data },
+              (err, msgs) => {
+                if (msgs) {
+                  // let arr = []
+                  // arr.push(msgs.value)
+                  // arr[0].key = msgs.key
+                  // arr = arr.concat(msgs.related)
+                  flog("ThreadReceived", msgs)
+                  app.ports.infoForElm.send({ tag: "ThreadReceived", data: msgs })
+                } else {
+                  flog("ERROR", err)
+                }
+              }
+            )
+            break
+          case "Avatar":
+            flog("received avatar request", msg)
+            if (userCache.has(msg.data)) {
+              app.ports.infoForElm.send({ tag: "AvatarReceived", data: userCache.get(msg.data) })
+            } else {
+              avatar(sbot, sbot.id, msg.data, (err, data) => {
+                if (data) {
+                  flog("avatar from js", data)
+                  let obj = {
+                    id: data.id,
+                    name: data.name,
+                    image: "http://localhost:8989/blobs/get/" + data.image
+                  }
+
+                  userCache.set(data.id, obj)
+
+                  app.ports.infoForElm.send({ tag: "AvatarReceived", data: obj })
+                } else {
+                  flog("ERROR", err)
+                }
+              })
+            }
+            break
+        }
+      })
     })
   }
 }
