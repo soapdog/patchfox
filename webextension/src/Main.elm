@@ -57,19 +57,20 @@ update msg model =
                     )
 
                 Just validRoute ->
-                    if Route.isEqual validRoute model.currentPage then
-                        ( model, Cmd.none )
-                    else
-                        case validRoute of
-                            Blank ->
-                                ( { model | currentPage = BlankPage }
-                                , Cmd.none
-                                )
+                    case validRoute of
+                        Blank ->
+                            ( { model | currentPage = BlankPage }
+                            , Cmd.none
+                            )
 
-                            Thread id ->
-                                ( { model | currentPage = LoadingPage }
-                                , relatedMessages <| Maybe.withDefault "" <| Http.decodeUri id
-                                )
+                        Thread id ->
+                            let
+                                d =
+                                    Debug.log "thread" id
+                            in
+                            ( { model | currentPage = LoadingPage }
+                            , relatedMessages <| Maybe.withDefault "" <| Http.decodeUri id
+                            )
 
 
 

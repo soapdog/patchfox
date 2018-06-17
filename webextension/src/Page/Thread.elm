@@ -1,20 +1,26 @@
 module Page.Thread exposing (..)
 
-import Css exposing (..)
-import Date
 import Dict exposing (Dict)
+import Html as H
 import Html.Attributes as HA
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css, src)
+import Http
 import Json.Decode as Decode
+import Json.Encode exposing (encode)
 import Markdown
+import Regex
 import Scuttlebutt.Client as SSBClient
 import String.Extra exposing (..)
+import Yarimoji as Ymoji
 
 
-messageView : Dict String SSBClient.User -> SSBClient.Message -> Html msg
-messageView users (SSBClient.Message m) =
+messageView : Int -> Dict String SSBClient.User -> SSBClient.Message -> Html msg
+messageView level users (SSBClient.Message m) =
     let
+        d =
+            Debug.log "level" level
+
         likeDecoder =
             Decode.at [ "vote", "expression" ] Decode.string
 
@@ -31,7 +37,10 @@ messageView users (SSBClient.Message m) =
                     ""
 
                 Ok s ->
-                    replaceMsgLinks <| replaceImages s
+                    replaceImages s
+                        |> replaceMsgLinks
+                        |> replaceMsgInlineLinks
+                        |> replaceProfileLinks
 
         contentIsLike =
             let
@@ -43,9 +52,9 @@ messageView users (SSBClient.Message m) =
                     ""
 
                 Ok s ->
-                    m.author ++ " " ++ s
+                    author.name ++ " " ++ s
 
-        content =
+        markdownContent =
             case m.kind of
                 Just "post" ->
                     contentIsPost
@@ -54,24 +63,74 @@ messageView users (SSBClient.Message m) =
                     contentIsLike
 
                 Just a ->
-                    "Unknown content: " ++ a
+                    "Unknown content: ```" ++ encode 2 m.content ++ "```"
 
                 Nothing ->
-                    "No type: " ++ m.key
+                    "No type: ```" ++ encode 2 m.content ++ "```"
+
+        contentWithEmojis =
+            markdownContent
+                |> Ymoji.yariMojiTranslateAll
+
+        content =
+            Markdown.toHtml Nothing contentWithEmojis
+                |> H.div [ HA.class "content has-text-left" ]
 
         related =
-            case m.related of
-                Nothing ->
-                    div [] []
+            if (level + 1) <= 1 then
+                case m.related of
+                    Nothing ->
+                        div [] []
 
-                Just l ->
-                    restOfThreadView l users
+                    Just l ->
+                        restOfThreadView (level + 1) l users
+            else
+                div [] []
 
         replaceImages s =
             replace """(&""" """(http://localhost:8989/blobs/get/&""" s
 
         replaceMsgLinks s =
-            replace """(%""" """(#/thread/%""" s
+            let
+                urlEncoder match =
+                    match
+                        |> String.slice 1 (String.length match)
+                        |> Http.encodeUri
+                        |> (++) "(#/thread/"
+                        |> Debug.log "url"
+            in
+            Regex.replace Regex.All
+                (Regex.regex "\\(\\%([^\\)]+)")
+                (\{ match } -> urlEncoder match)
+                s
+
+        replaceMsgInlineLinks s =
+            let
+                urlEncoder match =
+                    match
+                        |> String.slice 0 (String.length match)
+                        |> Http.encodeUri
+                        |> (++) ("[" ++ match ++ "](#/thread/")
+                        |> Debug.log "inline url"
+            in
+            Regex.replace Regex.All
+                (Regex.regex "\\%(.*)=.sha256")
+                (\{ match } -> urlEncoder match ++ ")")
+                s
+
+        replaceProfileLinks s =
+            let
+                urlEncoder match =
+                    match
+                        |> String.slice 1 (String.length match)
+                        |> Http.encodeUri
+                        |> (++) "(#/profile/"
+                        |> Debug.log "url"
+            in
+            Regex.replace Regex.All
+                (Regex.regex "\\(\\@([^\\)]+)")
+                (\{ match } -> urlEncoder match)
+                s
 
         date =
             SSBClient.timeAgo m.timestamp
@@ -99,16 +158,16 @@ messageView users (SSBClient.Message m) =
         [ class "card" ]
         [ div [ class "card-content" ]
             [ avatar
-            , fromUnstyled (Markdown.toHtml [ HA.class "content has-text-justified" ] content)
+            , fromUnstyled content
             ]
         , related
         ]
 
 
-restOfThreadView : List SSBClient.Message -> Dict String SSBClient.User -> Html msg
-restOfThreadView l users =
+restOfThreadView : Int -> List SSBClient.Message -> Dict String SSBClient.User -> Html msg
+restOfThreadView level l users =
     div []
-        (List.map (messageView users) l)
+        (List.map (messageView level users) l)
 
 
 view : Dict String SSBClient.User -> SSBClient.Message -> Html msg
@@ -118,5 +177,5 @@ view users message =
         ]
         [ div
             [ class "container" ]
-            [ messageView users message ]
+            [ messageView 0 users message ]
         ]

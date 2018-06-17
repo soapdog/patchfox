@@ -105,11 +105,12 @@ const boot = (err, sbot) => {
           case "Avatar":
             flog("received avatar request", msg)
             if (userCache.has(msg.data)) {
+              flog("Avatar cached for " + msg.data)
               app.ports.infoForElm.send({ tag: "AvatarReceived", data: userCache.get(msg.data) })
             } else {
               avatar(sbot, sbot.id, msg.data, (err, data) => {
                 if (data) {
-                  flog("avatar from js", data)
+                  // flog("avatar from js", data)
                   let obj = {
                     id: data.id,
                     name: data.name,
