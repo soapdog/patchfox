@@ -1,3 +1,48 @@
+This WebExtension is build using [Elm](https://www.elm-lang.org) but you don't need Elm installed because the language is listed as a dependency in the `package.json`, for building purposes, you can treat it as a [NodeJS](https://nodejs.org) based project. 
+
+Below this readme, I've pasted the original readme from [Create Elm App](https://github.com/halfzebra/create-elm-app) which is the bootstrapping tool I've used to built this extension, it has very comprehensive information on everything related to build this source.
+
+Be aware that I've done the `elm-app eject` procedure outlined in that [elm-app eject](#elm-app-eject) which removes the dependencies on the `create-elm-app` tool. You don't need to have that tool installed for building this WebExtension even though I originaly used it to bootstrap it.
+
+This link from [MDN WebDocs - WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions) is the main entry point for WebExtension related documentation. Keep it close to your heart 💖.
+
+# Building
+Like many other [NodeJS](https://nodejs.org) based tools:
+
+```
+$ npm install
+```
+
+```
+$ npm run build
+```
+
+The built version will be at [build/](https://github.com/soapdog/patchfox/blob/master/webextension/build).
+
+
+# How to install the add-on
+
+On [Firefox Nightly (or Firefox Dev Edition)](https://www.mozilla.org/firefox/channel/desktop/) go to [_about:debugging_](about:debugging) and use the _load temporary add-on_ button to browse your files. Select the _manifest.json_ file included with this repository in the `webextension/build` folder. 
+
+To learn more about WebExtension development and debugging, go to [MDN Web Docs - WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/).
+
+
+# Folder structure
+The `public/` folder listing the static assets used by the extension. Important files in the `public/`:
+
+- [public/background.js](https://github.com/soapdog/patchfox/blob/master/webextension/public/background.js): is the [background script](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/background) which is responsible for proxying the communication with the native host companion app.
+- [public/manifest.json](https://github.com/soapdog/patchfox/blob/master/webextension/public/background.js) is the [WebExtension manifest](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json) and lists the necessary metadata for Firefox to be happy with us.
+- [public/options.*](https://github.com/soapdog/patchfox/blob/master/webextension/public/) is the preferences page for the Add-on.
+
+All the WebExtension source code is at [`src/`](https://github.com/soapdog/patchfox/blob/master/webextension/src/). An important non-Elm file is [`index.js`](https://github.com/soapdog/patchfox/blob/master/webextension/src/index.js), it has the following responsabilities:
+
+* Instantiate the Elm app.
+* Setup the [Elm ports system](https://guide.elm-lang.org/interop/javascript.html) which handles interop with the WebExtension Background.
+
+
+
+----
+# Readme from **Create Elm App**
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
 Below you will find some information on how to perform basic tasks.
