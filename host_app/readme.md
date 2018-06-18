@@ -2,7 +2,7 @@
 ## Native companion app
 This repository also contains a native companion app that is able to supply features for Firefox WebExtensions posting to the [scuttlebutt](https://www.scuttlebutt.nz/) platform.
 
-This is needed because there are no WebExtension APIs for TCP and UDP so we can't implement the correct protocols for scuttlebutt. Instead we have a way to use the [Native Messaging API](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging) to establish communication between a native application (this app) and an authorized WebExtension. Through this communication channel, an add-on can call on features provided by this native app. We can think of it much like we do with back-end and front-end web programming, this app is the back-end providing features and all the authorized add-ons are front-end interfacing with Firefox users.
+This is useful because there are no WebExtension APIs for TCP and UDP so we can't implement the correct protocols for scuttlebutt. Instead we have a way to use the [Native Messaging API](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging) to establish communication between a native application (this app) and an authorized WebExtension. We can think of it much like we do with back-end and front-end web programming, this app is the back-end providing features and all the authorized add-ons are front-end interfacing with Firefox users.
 
 **Be aware that the companion app is not a requirement, Patchfox can use WebSockets to communicate with a running _sbot_.** So you can run Patchfox in parallel with other clients that start their own _sbot_ or even start it from the command-line with `sbot serve`. Still, this companion app makes it effortless to use Patchfox.
 
