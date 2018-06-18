@@ -2,8 +2,8 @@
 
 This is an **ALPHA** quality WebExtension.
 
-* Check out the [ReadMe for the WebExtension](webextension/readme.md), it contains important information on how to setup your credentials.
-* Check out the [ReadMe for the Native Companion App](host_app/readme.md), it contains important information on how to setup the helper app.
+* Check out the [ReadMe for the WebExtension](webextension/README.md), it contains important information on how to setup your credentials.
+* Check out the [ReadMe for the Native Companion App](host_app/README.md), it contains important information on how to setup the helper app.
 
 
 # Contributing
