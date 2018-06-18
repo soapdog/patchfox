@@ -16,8 +16,10 @@
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
         "elm-lang/navigation": "2.1.0 <= v < 3.0.0",
-        "evancz/elm-markdown": "3.0.2 <= v < 4.0.0",
         "evancz/url-parser": "2.0.1 <= v < 3.0.0",
+        "pablohirafuji/elm-markdown": "2.0.4 <= v < 3.0.0",
+        "realyarilabs/yarimoji": "1.2.0 <= v < 2.0.0",
+        "rluiten/elm-date-extra": "9.3.1 <= v < 10.0.0",
         "rtfeldman/elm-css": "13.1.1 <= v < 14.0.0"
     },
     "elm-version": "0.18.0 <= v < 0.19.0"

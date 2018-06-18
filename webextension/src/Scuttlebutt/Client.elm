@@ -1,5 +1,9 @@
 port module Scuttlebutt.Client exposing (..)
 
+import Date
+import Date.Extra.Config.Config_en_au exposing (config)
+import Date.Extra.Format as Format exposing (format, formatUtc, isoMsecOffsetFormat)
+import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder, float, int, string)
 import Json.Encode as Encode exposing (Value)
 
@@ -28,6 +32,7 @@ type InfoForOutside
 
 type InfoForElm
     = ThreadReceived Thread
+    | AvatarReceived User
 
 
 type Message
@@ -47,6 +52,13 @@ type alias Thread =
     Message
 
 
+type alias User =
+    { id : String
+    , name : String
+    , image : String
+    }
+
+
 relatedMessages : String -> Cmd msg
 relatedMessages id =
     let
@@ -56,13 +68,58 @@ relatedMessages id =
     sendInfoOutside (RelatedMessages id)
 
 
-avatar : String -> Cmd msg
-avatar id =
+avatar : String -> Dict String User -> User
+avatar id users =
     let
+        user =
+            Dict.get id users
+    in
+    case user of
+        Just u ->
+            u
+
+        Nothing ->
+            User id id "/icon.png"
+
+
+getAvatars : Dict String User -> Message -> Cmd msg
+getAvatars users (Message m) =
+    let
+        related =
+            case m.related of
+                Just l ->
+                    l
+
+                Nothing ->
+                    []
+
+        rest =
+            if List.isEmpty related then
+                Cmd.none
+            else
+                Cmd.batch <| List.map (\i -> getAvatars users i) related
+    in
+    Cmd.batch
+        [ getAvatar users m.author
+        , rest
+        ]
+
+
+getAvatar : Dict String User -> String -> Cmd msg
+getAvatar users id =
+    let
+        user =
+            Dict.get id users
+
         d =
             Debug.log "avatar from elm" id
     in
-    sendInfoOutside (Avatar id)
+    case user of
+        Nothing ->
+            sendInfoOutside (Avatar id)
+
+        Just u ->
+            Debug.log ("Avatar Cached for" ++ id) Cmd.none
 
 
 sendInfoOutside : InfoForOutside -> Cmd msg
@@ -84,6 +141,14 @@ getInfoFromOutside tagger onError =
                     case Decode.decodeValue messageDecoder outsideInfo.data of
                         Ok entry ->
                             tagger <| ThreadReceived entry
+
+                        Err e ->
+                            onError e
+
+                "AvatarReceived" ->
+                    case Decode.decodeValue avatarDecoder outsideInfo.data of
+                        Ok entry ->
+                            tagger <| AvatarReceived entry
 
                         Err e ->
                             onError e
@@ -123,6 +188,14 @@ messageDecoder =
         (Decode.maybe (Decode.at [ "related" ] (Decode.list (Decode.lazy (\_ -> messageDecoder)))))
 
 
+avatarDecoder : Decoder User
+avatarDecoder =
+    Decode.map3 User
+        (Decode.at [ "id" ] Decode.string)
+        (Decode.at [ "name" ] Decode.string)
+        (Decode.at [ "image" ] Decode.string)
+
+
 
 {- AUXILIARY FUNCTIONS -}
 
@@ -134,3 +207,9 @@ ssblog label value =
             "[ELM - SSB Client] " ++ label
     in
     Debug.log newLabel value
+
+
+timeAgo : Int -> String
+timeAgo timestamp =
+    format config config.format.dateTime <|
+        (Date.fromTime <| toFloat timestamp)

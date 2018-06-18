@@ -60,6 +60,10 @@ const patchfox = {
       case "get-config":
         sendResponse({ type: "config", config: patchfox.sbotConfig })
         break
+      case "start-native-app":
+        patchfox.info("received IPC request to start native app")
+        patchfox.startBundledServer()
+        sendResponse({ type: "native-app", msg: "starting" })
     }
     return true
 
@@ -76,6 +80,7 @@ const boot = () => {
   var getConfig = browser.storage.local.get();
   getConfig.then((config) => {
     if (!config.hasOwnProperty("secret") || !config.hasOwnProperty("remote")) {
+      patchfox.info("Configuration was not found, trying to launch native app")
       patchfox.startBundledServer()
     } else {
       patchfox.info("Configuration has been saved before, no need to launch local app")

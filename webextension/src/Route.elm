@@ -54,6 +54,9 @@ toRoute page =
         ThreadPage (SSBClient.Message m) ->
             Thread m.key
 
+        LoadingPage ->
+            Blank
+
 
 
 -- helper to match Route to Page
