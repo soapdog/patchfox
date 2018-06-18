@@ -8,7 +8,6 @@ const ssbKeys = require('ssb-keys')
 const minimist = require('minimist')
 const notifier = require('node-notifier')
 const SysTray = require('systray').default
-const discoveryPlugin = require('./discovery')
 
 let argv = process.argv.slice(2)
 let i = argv.indexOf('--')
@@ -45,7 +44,6 @@ const createSbot = require('scuttlebot')
   .use(require('ssb-ebt'))
   .use(require('ssb-ws'))
   .use(require('ssb-names'))
-  .use(discoveryPlugin)
 
 // http.createServer(
 //   serve({ root: path.resolve('../webextension/build/') })
