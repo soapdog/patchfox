@@ -6,8 +6,8 @@ if (process.platform !== "win32") {
 var path = require('path')
 var regedit = require('regedit')
 var fs = require("fs")
-var appPath = path.resolve(".\\app.bat")
-var appManifestFile = path.resolve(".\\patchfox.json")
+var appPath = path.resolve("..\\app.bat")
+var appManifestFile = path.resolve("..\\patchfox.json")
 
 if (!fs.existsSync(appPath)) {
   console.log("[ERROR] Application not found at: ", appPath)

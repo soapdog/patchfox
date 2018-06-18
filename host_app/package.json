@@ -18,7 +18,6 @@
     "ssb-config": "^2.2.0",
     "ssb-ebt": "^2.0.0",
     "ssb-friends": "^2.4.0",
-    "ssb-graphql": "github:stanleyjones/ssb-graphql",
     "ssb-keys": "^7.0.13",
     "ssb-names": "^3.1.0",
     "ssb-ooo": "^1.0.7",
@@ -28,10 +27,10 @@
   },
   "scripts": {
     "start": "node host-app.js",
-    "check-win": "node check-configuration-win.js",
-    "setup-win": "node setup-win.js",
-    "check": "node check-configuration.js",
-    "setup": "node setup.js"
+    "check-win": "node tools/check-configuration-win.js",
+    "setup-win": "node tools/setup-win.js",
+    "check": "node tools/check-configuration.js",
+    "setup": "node tools/setup.js"
   },
   "optionalDependencies": {
     "mkdirp": "^0.5.1",

@@ -9,8 +9,8 @@ var macPath = homedir + "/Library/Application Support/Mozilla/NativeMessagingHos
 var linuxPath = homedir + "/.mozilla/native-messaging-hosts/patchfox.json"
 var manifestPath = process.platform === "darwin" ? macPath : linuxPath
 var manifestFolderPath = manifestPath.replace("patchfox.json", "")
-var appPath = path.resolve("./host-app.js")
-var localManifestFile = path.resolve("./patchfox.json")
+var appPath = path.resolve("../host-app.js")
+var localManifestFile = path.resolve("../patchfox.json")
 var fs = require("fs")
 var mkdirp = require("mkdirp")
 
