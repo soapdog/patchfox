@@ -10,57 +10,67 @@ import "highlight.js"
 
 let app
 let userCache = new Map()
+let errorCount = 0
 
 const flog = (content, data) => {
   console.log(`[ELM - JS Part] ${content}`, "undefined" !== typeof data ? data : "")
 }
 
-const handleResponse = (data) => {
+const handleIPCResponse = (data) => {
   flog(`background script sent a response`, data)
-  if (data.config.hasOwnProperty('secret')) {
+  switch (data.type) {
+    case "config":
+      if (data.config.hasOwnProperty('secret')) {
+        flog("Received new config", data.config)
+        const keys = data.config.keys
+        const remote = data.config.remote
 
-    flog("Received new config", data.config)
-    const keys = data.config.keys
-    const remote = data.config.remote
+        client(
+          keys,
+          {
+            remote: remote,
+            caps: config.caps,
+            manifest: manifest
+          },
+          (err, sbot) => {
+            window.sbot = sbot
 
-    client(
-      keys,
-      {
-        remote: remote,
-        caps: config.caps,
-        manifest: manifest
-      },
-      (err, sbot) => {
-        window.sbot = sbot
-
-        if (err) {
-          handleError(err)
-        } else {
-          boot(null, sbot)
-        }
+            if (err) {
+              handleIPCError(err)
+              instantiateApp(err, null)
+            } else {
+              instantiateApp(null, sbot)
+            }
+          }
+        )
+      } else {
+        flog("Error, we don't have a config yet, ask again...")
+        setTimeout(getConfig, 3500)
+        errorCount++
       }
-    )
-  } else {
-    flog("Error, we don't have a config yet, ask again...")
-    setTimeout(getConfig, 3500)
-    // todo: need an exit condition...
+      break
+    case "native-app":
+      flog("Native app starting, ask configuration in 3.5 seconds")
+      setTimeout(getConfig, 3500)
+      break
   }
 }
 
-const handleError = (error) => {
+const handleIPCError = (error) => {
+  errorCount++
   flog(`Error: ${error}`)
-  boot(error, null)
 }
 
-const instantiateApp = () => {
-
-}
-
-const boot = (err, sbot) => {
+const instantiateApp = (err, sbot) => {
   if (err) {
     console.error("error", err)
-    flog("Can't start SBOT from saved configuration, trying to start native app.")
-    startNativeApp()
+    errorCount++
+    if (errorCount < 15) {
+      flog("Can't start SBOT from saved configuration, trying to start native app.")
+      sendIPCCommand("start-native-app")
+    } else {
+      sendIPCCommand("problem-no-sbot")
+    }
   } else {
     avatar(sbot, sbot.id, sbot.id, (err, data) => {
       let obj = null
@@ -73,8 +83,7 @@ const boot = (err, sbot) => {
         }
         userCache.set(data.id, obj)
       } else {
-        flog("ERROR", err)
-
+        flog("ERROR on avatar", err)
       }
 
       app = Main.embed(document.getElementById('root'), {
@@ -97,7 +106,7 @@ const boot = (err, sbot) => {
                   flog("ThreadReceived", msgs)
                   app.ports.infoForElm.send({ tag: "ThreadReceived", data: msgs })
                 } else {
-                  flog("ERROR", err)
+                  flog("ERROR on related messages", err)
                 }
               }
             )
@@ -121,7 +130,7 @@ const boot = (err, sbot) => {
 
                   app.ports.infoForElm.send({ tag: "AvatarReceived", data: obj })
                 } else {
-                  flog("ERROR", err)
+                  flog("ERROR on avatar", err)
                 }
               })
             }
@@ -132,36 +141,35 @@ const boot = (err, sbot) => {
   }
 }
 
+const sendIPCCommand = (cmd, data) => {
+  let sending = browser.runtime.sendMessage({ cmd, data })
+  sending.then(handleIPCResponse, handleIPCError)
+}
+
 const getConfig = () => {
-  flog("[FRONT-END] patchfox client trying to acquire configuration")
-  let sending = browser.runtime.sendMessage({ cmd: "get-config" })
-  sending.then(handleResponse, handleError)
+  if (errorCount < 15) {
+    flog("[FRONT-END] patchfox client trying to acquire configuration")
+    sendIPCCommand("get-config")
+  } else {
+    flog(`[FRONT-END] too many errors trying to acquire config: ${errorCount}`)
+    sendIPCCommand("problem-no-config")
+  }
 }
 
 
-const startNativeApp = () => {
-  flog("[FRONT-END] patchfox client trying to start the native app")
-  let sending = browser.runtime.sendMessage({ cmd: "start-native-app" })
-  sending.then(handleResponse, handleError)
-}
-
-
+// The code below is to handle custom protocol (ssb:)
 if (location.hash.indexOf("#/thread/") !== -1) {
   // fix problem with IDs containing slashes
-  flog("fixing thread id")
   let id = location.hash
   if (id.indexOf("ssb%3A") !== -1) {
     id = id.replace("ssb%3A", "")
   }
   id = encodeURIComponent(decodeURIComponent(id.slice(9)))
 
-
   location.hash = `#/thread/${id}`
-  console.log("making hash", location.hash)
-
 }
 
-flog("[FRONT-END] calling boot.")
+flog("[FRONT-END] calling getConfig.")
 getConfig()
 
 

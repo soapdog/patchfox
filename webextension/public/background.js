@@ -12,9 +12,10 @@ const patchfox = {
       console.log(`[${prefix}] ${content}`, data)
     }
   },
+  errorCount: 0,
   debug: (content, data) => patchfox.log("[BACKGROUND - DEBUG]", content, data ? data : ""),
   info: (content, data) => patchfox.log("[BACKGROUND - INFO]", content, data ? data : ""),
-  err: (content, data) => patchfox.log("[BACKGROUND - ERROR]", content, data ? data : ""),
+  err: (content, data) => patchfox.log(`[BACKGROUND - ERROR] ${patchfox.errorCount}:`, content, data ? data : ""),
   fromNative: (content, data) => patchfox.log("[NATIVE - DEBUG]", content, data ? data : ""),
   // Routines for starting and managing the host app
   startBundledServer: () => {
@@ -45,9 +46,16 @@ const patchfox = {
 
     patchfox.nativePort.onDisconnect.addListener((p) => {
       if (p.error) {
+        patchfox.errorCount++
         patchfox.err(`Disconnected due to an error`, p.error.message)
         patchfox.nativePort = false
-        setTimeout(patchfox.startBundledServer, 3000) // sbot tray app needs some seconds to clean up when it dies.
+        if (patchfox.errorCount < 2) {
+          setTimeout(patchfox.startBundledServer, 2000) // sbot tray app needs some seconds to clean up when it dies.
+        } else {
+          // can't really start the native app
+          patchfox.errorCount = 0
+          openTroubleshootingPage()
+        }
       }
     })
 
@@ -55,15 +63,24 @@ const patchfox = {
   },
   // IPC Handlers
   IPCHandler: (request, sender, sendResponse) => {
-    patchfox.debug("received call from content script", request)
+    patchfox.debug("received IPC call from content script", request)
     switch (request.cmd) {
       case "get-config":
-        sendResponse({ type: "config", config: patchfox.sbotConfig })
+        if (patchfox.sbotConfig.hasOwnProperty("remote")) {
+          sendResponse({ type: "config", config: patchfox.sbotConfig })
+        } else {
+          getConfig()
+          sendResponse({ type: "config", config: {} }) // signals no config yet
+        }
         break
       case "start-native-app":
-        patchfox.info("received IPC request to start native app")
         patchfox.startBundledServer()
         sendResponse({ type: "native-app", msg: "starting" })
+        break
+      case "problem-no-config":
+      case "problem-no-sbot":
+        openTroubleshootingPage()
+        break
     }
     return true
 
@@ -76,26 +93,35 @@ const patchfox = {
   }
 }
 
-const boot = () => {
+const getConfig = () => {
   var getConfig = browser.storage.local.get();
   getConfig.then((config) => {
     if (!config.hasOwnProperty("secret") || !config.hasOwnProperty("remote")) {
       patchfox.info("Configuration was not found, trying to launch native app")
       patchfox.startBundledServer()
     } else {
-      patchfox.info("Configuration has been saved before, no need to launch local app")
+      patchfox.info("Configuration has been saved before, no need to launch local app", config)
       patchfox.sbotConfig = config
-      var creating = browser.tabs.create({
-        url: browser.extension.getURL("index.html")
-      })
     }
   });
 
+}
+
+function openTroubleshootingPage() {
+  openPage('problems.html')
+}
+
+function openPage(page) {
+  patchfox.errorCount = 0
+  return browser.tabs.create({
+    url: browser.extension.getURL(page)
+  });
 }
 
 // Bind Handlers between content scripts and the background script
 browser.runtime.onMessage.addListener(patchfox.IPCHandler)
 browser.browserAction.onClicked.addListener(patchfox.browserActionHandler)
 
-patchfox.info("starting")
-boot()
+patchfox.info("background loaded")
+
+
