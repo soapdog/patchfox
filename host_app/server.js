@@ -44,6 +44,7 @@ const createSbot = require('scuttlebot')
   .use(require('ssb-ebt'))
   .use(require('ssb-ws'))
   .use(require('ssb-names'))
+  .use(require('ssb-backlinks'))
 
 // http.createServer(
 //   serve({ root: path.resolve('../webextension/build/') })

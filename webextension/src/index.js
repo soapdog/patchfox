@@ -6,6 +6,9 @@ import ssbKeys from 'ssb-keys'
 import avatar from 'ssb-avatar'
 import manifest from './manifest'
 import "highlight.js"
+import webresolve from 'ssb-web-resolver'
+import toPull from 'stream-to-pull-stream'
+import pull from 'pull-stream'
 
 
 let app
@@ -94,6 +97,29 @@ const instantiateApp = (err, sbot) => {
       app.ports.infoForOutside.subscribe(msg => {
         flog("infoForOutside", msg)
         switch (msg.tag) {
+          case "CheckTypeAndRedirect":
+            let id = encodeURIComponent(msg.data)
+            sbot.get(msg.data,
+              (err, data) => {
+                if (data) {
+                  flog("msg", data)
+                  switch (data.content.type) {
+                    case "post":
+                      location.hash = `#/thread/${id}`
+                      break
+                    case "web-init":
+                      location.hash = `#/thread/${id}`
+                      break
+                    case "web-root":
+                      location.hash = `#/thread/${id}`
+                      break
+                  }
+                } else {
+                  flog("err", err)
+                }
+              }
+            )
+            break
           case "RelatedMessages":
             sbot.relatedMessages(
               { id: msg.data },
@@ -119,7 +145,6 @@ const instantiateApp = (err, sbot) => {
             } else {
               avatar(sbot, sbot.id, msg.data, (err, data) => {
                 if (data) {
-                  // flog("avatar from js", data)
                   let obj = {
                     id: data.id,
                     name: data.name,
@@ -134,6 +159,25 @@ const instantiateApp = (err, sbot) => {
                 }
               })
             }
+            break
+          case "WebResolve":
+            let components = [
+              msg.data,
+              "index.html"
+            ]
+            webresolve(sbot, components, function (err, data) {
+              if (err) {
+                flog('ERROR: ' + err)
+              } else {
+                flog('web', data)
+              }
+              // return pull(
+              //   pull.once(data),
+              //   toPull(res, function (err) {
+              //     if (err) console.error('[viewer]', err)
+              //   })
+              // )
+            })
             break
         }
       })
@@ -158,15 +202,15 @@ const getConfig = () => {
 
 
 // The code below is to handle custom protocol (ssb:)
-if (location.hash.indexOf("#/thread/") !== -1) {
+if (location.hash.indexOf("#/view/") !== -1) {
   // fix problem with IDs containing slashes
   let id = location.hash
   if (id.indexOf("ssb%3A") !== -1) {
     id = id.replace("ssb%3A", "")
   }
-  id = encodeURIComponent(decodeURIComponent(id.slice(9)))
+  id = encodeURIComponent(decodeURIComponent(id.slice(7)))
 
-  location.hash = `#/thread/${id}`
+  location.hash = `#/view/${id}`
 }
 
 flog("[FRONT-END] calling getConfig.")

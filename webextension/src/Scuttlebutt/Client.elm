@@ -28,6 +28,8 @@ type alias GenericOutsideData =
 type InfoForOutside
     = RelatedMessages String
     | Avatar String
+    | CheckTypeAndRedirect String
+    | WebResolve String
 
 
 type InfoForElm
@@ -66,6 +68,24 @@ relatedMessages id =
             Debug.log "relatedMessages" id
     in
     sendInfoOutside (RelatedMessages id)
+
+
+checkTypeAndRedirect : String -> Cmd msg
+checkTypeAndRedirect id =
+    let
+        d =
+            Debug.log "checkTypeAndRedirect" id
+    in
+    sendInfoOutside (CheckTypeAndRedirect id)
+
+
+ssbWebGo : String -> Cmd msg
+ssbWebGo id =
+    let
+        d =
+            Debug.log "ssbWebGo" id
+    in
+    sendInfoOutside (WebResolve id)
 
 
 avatar : String -> Dict String User -> User
@@ -128,8 +148,14 @@ sendInfoOutside info =
         RelatedMessages id ->
             infoForOutside { tag = "RelatedMessages", data = Encode.string id }
 
+        CheckTypeAndRedirect id ->
+            infoForOutside { tag = "CheckTypeAndRedirect", data = Encode.string id }
+
         Avatar id ->
             infoForOutside { tag = "Avatar", data = Encode.string id }
+
+        WebResolve id ->
+            infoForOutside { tag = "WebResolve", data = Encode.string id }
 
 
 getInfoFromOutside : (InfoForElm -> msg) -> (String -> msg) -> Sub msg

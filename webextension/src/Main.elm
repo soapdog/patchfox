@@ -7,6 +7,7 @@ import Html.Styled exposing (..)
 import Http
 import Navigation exposing (Location)
 import Page.Blank
+import Page.Raw
 import Page.Thread
 import Route exposing (..)
 import Scuttlebutt.Client exposing (..)
@@ -58,6 +59,18 @@ update msg model =
 
                 Just validRoute ->
                     case validRoute of
+                        FirstResponder id ->
+                            let
+                                d =
+                                    Debug.log "First Responder" id
+
+                                v =
+                                    Http.decodeUri d
+                            in
+                            ( { model | currentPage = LoadingPage }
+                            , checkTypeAndRedirect <| Maybe.withDefault id <| Debug.log "after decode" v
+                            )
+
                         Blank ->
                             ( { model | currentPage = BlankPage }
                             , Cmd.none
@@ -69,7 +82,21 @@ update msg model =
                                     Debug.log "thread" id
                             in
                             ( { model | currentPage = LoadingPage }
-                            , relatedMessages <| Maybe.withDefault "" <| Http.decodeUri id
+                            , relatedMessages <| Maybe.withDefault id <| Http.decodeUri id
+                            )
+
+                        Raw id ->
+                            let
+                                d =
+                                    Debug.log "thread" id
+                            in
+                            ( { model | currentPage = LoadingPage }
+                            , relatedMessages <| Maybe.withDefault id <| Http.decodeUri id
+                            )
+
+                        Web id ->
+                            ( { model | currentPage = BlankPage }
+                            , ssbWebGo <| Maybe.withDefault id <| Http.decodeUri id
                             )
 
 
@@ -91,6 +118,9 @@ view model =
                 LoadingPage ->
                     div []
                         [ h3 [] [ text "Loading..." ] ]
+
+                RawPage thread ->
+                    Page.Raw.view model.users thread
     in
     div []
         [ appHeader model.config.user

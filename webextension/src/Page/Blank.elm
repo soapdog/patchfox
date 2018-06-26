@@ -24,6 +24,9 @@ This is very alpha software. These links might interest you:
 * [Patchfox Github Repository](https://github.com/soapdog/patchfox)
 * [Patchfox Issue Tracker](https://github.com/soapdog/patchfox/issues)
 * [More about Secure Scuttlebutt](http://scuttlebutt.nz)
+
+### Test links
+* [Noffle ssb-web sample](#/view/%25Lz8xaG8t9e4Cn0m7Cwge0SRdb9F2OhczPq2MwD3N26U%3D.sha256)
             """
 
         content =

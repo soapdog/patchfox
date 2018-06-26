@@ -13,6 +13,7 @@
     "minimist": "^1.2.0",
     "node-notifier": "^5.2.1",
     "scuttlebot": "10.4.10",
+    "ssb-backlinks": "^0.7.1",
     "ssb-blobs": "^1.1.4",
     "ssb-config": "^2.2.0",
     "ssb-ebt": "^2.0.0",
@@ -20,6 +21,7 @@
     "ssb-keys": "^7.0.13",
     "ssb-names": "^3.1.0",
     "ssb-ooo": "^1.0.7",
+    "ssb-web-resolver": "^1.1.2",
     "ssb-ws": "^2.0.0",
     "systray": "^1.0.3"
   },

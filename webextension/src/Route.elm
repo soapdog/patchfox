@@ -15,6 +15,9 @@ routeParser =
     P.oneOf
         [ P.map Blank P.top
         , P.map Thread (P.s "thread" </> P.string)
+        , P.map FirstResponder (P.s "view" </> P.string)
+        , P.map Web (P.s "web" </> P.string)
+        , P.map Raw (P.s "raw" </> P.string)
         ]
 
 
@@ -37,6 +40,15 @@ toUrl route =
 
                 Thread id ->
                     "/thread/" ++ Http.encodeUri id
+
+                Web id ->
+                    "/web/" ++ Http.encodeUri id
+
+                FirstResponder id ->
+                    "/view/" ++ Http.encodeUri id
+
+                Raw id ->
+                    "/raw/" ++ Http.encodeUri id
     in
     "#" ++ hashPage
 
@@ -56,6 +68,9 @@ toRoute page =
 
         LoadingPage ->
             Blank
+
+        RawPage (SSBClient.Message m) ->
+            Raw m.key
 
 
 

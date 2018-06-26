@@ -4,7 +4,7 @@ import Dict exposing (Dict)
 import Html as H
 import Html.Attributes as HA
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (class, css, src)
+import Html.Styled.Attributes exposing (class, css, href, src)
 import Http
 import Json.Decode as Decode
 import Json.Encode exposing (encode)
@@ -96,7 +96,7 @@ messageView level users (SSBClient.Message m) =
                     match
                         |> String.slice 1 (String.length match)
                         |> Http.encodeUri
-                        |> (++) "(#/thread/"
+                        |> (++) "(#/view/"
                         |> Debug.log "url"
             in
             Regex.replace Regex.All
@@ -110,7 +110,7 @@ messageView level users (SSBClient.Message m) =
                     match
                         |> String.slice 0 (String.length match)
                         |> Http.encodeUri
-                        |> (++) ("[" ++ match ++ "](#/thread/")
+                        |> (++) ("[" ++ match ++ "](#/view/")
                         |> Debug.log "inline url"
             in
             Regex.replace Regex.All
@@ -152,6 +152,8 @@ messageView level users (SSBClient.Message m) =
                     [ p [ class "title is-4" ] [ text author.name ]
                     , p [ class "subtitle is-6" ] [ time [] [ text date ] ]
                     ]
+                , div [ class "media-right"]
+                    [ a [ href ("ssb:" ++ m.key) ] [ img [ src "/link.svg" ] [] ]]
                 ]
     in
     div
@@ -172,10 +174,15 @@ restOfThreadView level l users =
 
 view : Dict String SSBClient.User -> SSBClient.Message -> Html msg
 view users message =
+    let
+        (SSBClient.Message m) =
+            message
+    in
     section
         [ class "section"
         ]
         [ div
             [ class "container" ]
-            [ messageView 0 users message ]
+            [ messageView 0 users message
+            ]
         ]

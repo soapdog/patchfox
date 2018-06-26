@@ -27,6 +27,7 @@ type Page
     = BlankPage
     | ThreadPage SSBClient.Thread
     | LoadingPage
+    | RawPage SSBClient.Thread
 
 
 
@@ -36,3 +37,6 @@ type Page
 type Route
     = Blank
     | Thread String
+    | Web String
+    | FirstResponder String
+    | Raw String
