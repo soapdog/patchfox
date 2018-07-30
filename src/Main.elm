@@ -1,141 +1,183 @@
-module Main exposing (main)
+module Main exposing (..)
 
+import Cleo.Styles exposing (..)
 import Dict
-import Fragments exposing (..)
-import Html.Styled exposing (..)
-import Http
+import Element exposing (..)
+import Element.Attributes exposing (..)
+import Element.Events exposing (..)
+import Html
 import Navigation exposing (Location)
-import Page.Blank
-import Page.Profile
-import Page.Thread
-import Route exposing (..)
+import Pages.Settings as Settings
 import Scuttlebutt.Client exposing (..)
 import Types exposing (..)
 
 
--- UPDATE --
+---- MODEL ----
+
+
+type Page
+    = SettingsPage Settings.Model
+
+
+type alias Flags =
+    { remote : String
+    , keys : String
+    , manifest : String
+    }
+
+
+type alias Model =
+    { appState : AppState
+    , currentPage : Page
+    }
+
+
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags url =
+    let
+        config =
+            Configuration flags.remote flags.keys flags.manifest
+    in
+    ( { appState =
+            { user = Nothing
+            , remote = config.remote
+            , keys = config.keys
+            , manifest = config.manifest
+            , users = Dict.empty
+            }
+      , currentPage = SettingsPage (Settings.init config)
+      }
+    , Cmd.none
+    )
+
+
+
+---- UPDATE ----
+
+
+type Msg
+    = ToggleMenu
+    | SettingsMsg Settings.Msg
+    | UrlChange Navigation.Location
+    | Outside InfoForElm
+    | LogErr String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        ActionOpenOptionsPage ->
-            ( model, openOptionsPage )
+    case ( msg, model.currentPage ) of
+        ( SettingsMsg curSettingsMsg, SettingsPage curSettingsModel ) ->
+            let
+                ( newSettingsModel, newSettingsCmd ) =
+                    Settings.update curSettingsMsg model.appState curSettingsModel
+            in
+            ( { model | currentPage = SettingsPage newSettingsModel }
+            , Cmd.map SettingsMsg newSettingsCmd
+            )
 
-        LogErr msg ->
+        ( LogErr s, _ ) ->
             let
                 d =
-                    Debug.log "Error" msg
+                    Debug.log "Error" s
             in
             ( model, Cmd.none )
 
-        Outside infoForElm ->
+        ( Outside infoForElm, _ ) ->
             case infoForElm of
-                ThreadReceived thread ->
-                    ( { model | currentPage = ThreadPage thread }, getAvatars model.users thread )
-
-                AvatarReceived user ->
+                CurrentUser user ->
                     let
                         newUsers =
-                            Dict.insert user.id user model.users
-                    in
-                    ( { model | users = newUsers }, Cmd.none )
+                            Dict.insert user.id user model.appState.users
 
-        UrlChange newLocation ->
-            case Route.parse newLocation of
-                Nothing ->
+                        appState =
+                            model.appState
+
+                        newAppstate =
+                            { appState | users = newUsers, user = Just user }
+                    in
+                    ( { model | appState = newAppstate }, Cmd.none )
+
+                CantConnectToSBOT err ->
                     let
-                        message =
-                            Debug.log "invalid URL: " newLocation.hash
+                        cc =
+                            Configuration model.appState.remote model.appState.keys model.appState.manifest
+
+                        basicSettingsModel =
+                            Settings.init cc
+
+                        newSettingsModel =
+                            { basicSettingsModel | errors = [ "Can't connect with SBOT with this data", err ] }
                     in
-                    ( model
-                    , Route.modifyUrl model.currentPage
-                    )
+                    ( { model | currentPage = SettingsPage newSettingsModel }, Cmd.none )
 
-                Just validRoute ->
-                    case validRoute of
-                        FirstResponder id ->
-                            let
-                                d =
-                                    Debug.log "First Responder" id
+                _ ->
+                    ( model, Cmd.none )
 
-                                v =
-                                    Http.decodeUri d
-                            in
-                            ( { model | currentPage = LoadingPage }
-                            , checkTypeAndRedirect <| Maybe.withDefault id <| Debug.log "after decode" v
-                            )
-
-                        Blank ->
-                            ( { model | currentPage = BlankPage }
-                            , Cmd.none
-                            )
-
-                        Thread id ->
-                            let
-                                d =
-                                    Debug.log "thread" id
-                            in
-                            ( { model | currentPage = LoadingPage }
-                            , relatedMessages <| Maybe.withDefault id <| Http.decodeUri id
-                            )
-
-                        Profile id ->
-                            let
-                                d =
-                                    Debug.log "profile" id
-                            in
-                            ( { model | currentPage = LoadingPage }
-                            , relatedMessages <| Maybe.withDefault id <| Http.decodeUri id
-                            )
-
-                        Web id ->
-                            ( { model | currentPage = BlankPage }
-                            , ssbWebGo <| Maybe.withDefault id <| Http.decodeUri id
-                            )
+        _ ->
+            ( model, Cmd.none )
 
 
 
--- VIEW --
+---- VIEW ----
 
 
-view : Model -> Html Msg
-view model =
+navItems : Element Styles v Msg
+navItems =
+    navigation None
+        [ spread, spacing 15, verticalCenter ]
+        { name = "Main Navigation"
+        , options =
+            [ link "#/public" (el Link [] (text "Public"))
+            , link "#/mentions" (el Link [] (text "Mentions"))
+            , link "#/settings" (el Link [] (text "Settings"))
+            ]
+        }
+
+
+navBar : AppState -> Element Styles v Msg
+navBar appState =
     let
-        currentView =
-            case model.currentPage of
-                BlankPage ->
-                    Page.Blank.view model.config
+        brandOrUser =
+            case appState.user of
+                Nothing ->
+                    row Base
+                        [ verticalCenter, spacing 10 ]
+                        [ image None
+                            [ height (px 32) ]
+                            { src = "images/icon.png", caption = "Hermie logo" }
+                        , el None [] <| text "Patchfox"
+                        ]
 
-                ThreadPage thread ->
-                    Page.Thread.view model.users thread
-
-                ProfilePage m ->
-                    Page.Profile.view model.users m
-
-                LoadingPage ->
-                    div []
-                        [ h3 [] [ text "Loading..." ] ]
+                Just u ->
+                    row Base
+                        [ verticalCenter, spacing 10 ]
+                        [ image None
+                            [ height (px 32) ]
+                            { src = u.image, caption = u.name }
+                        , el None [] <| text u.name
+                        ]
     in
-    div []
-        [ appHeader model.config.user
-        , currentView
+    row NavBar
+        [ spread, paddingXY 60 10, width (percent 100), verticalCenter ]
+        [ brandOrUser
+        , navItems
         ]
 
 
-loadInitialRoute : Location -> Cmd Msg
-loadInitialRoute location =
-    Navigation.modifyUrl location.hash
-
-
-init : Flags -> Location -> ( Model, Cmd Msg )
-init flags location =
-    ( { currentPage = BlankPage
-      , config = flags
-      , users = Dict.empty
-      }
-    , loadInitialRoute location
-    )
+view model =
+    let
+        content =
+            case model.currentPage of
+                SettingsPage m ->
+                    Settings.page m
+                        |> Element.map SettingsMsg
+    in
+    viewport styles <|
+        column Base
+            [ center, width (percent 100) ]
+            [ navBar model.appState
+            , content
+            ]
 
 
 
@@ -154,7 +196,7 @@ subscriptions model =
 main : Program Flags Model Msg
 main =
     Navigation.programWithFlags UrlChange
-        { view = view >> toUnstyled
+        { view = view
         , update = update
         , init = init
         , subscriptions = subscriptions

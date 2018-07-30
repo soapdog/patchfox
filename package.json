@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "An add-on for secure scuttlebutt",
   "main": "src/index.js",
   "directories": {
@@ -24,7 +24,8 @@
     "ssb",
     "dex",
     "p2p",
-    "firefox"
+    "firefox",
+    "dapps"
   ],
   "author": "Andre Alves Garzia <andre@andregarzia.com>",
   "license": "MIT",

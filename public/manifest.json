@@ -2,7 +2,7 @@
   "description": "Patchfox is a scuttlebutt client",
   "manifest_version": 2,
   "name": "patchfox",
-  "version": "2.0",
+  "version": "3.0",
   "icons": {
     "96": "icon.png"
   },
@@ -19,12 +19,12 @@
     ]
   },
   "options_ui": {
-    "page": "options.html",
-    "browser_style": true
+    "page": "/index.html#/options",
+    "open_in_tab": true
   },
   "browser_action": {
     "default_icon": {
-      "96": "icon.png"
+      "96": "images/icon.png"
     },
     "browser_style": true
   },
@@ -42,6 +42,7 @@
     "nativeMessaging",
     "tabs",
     "activeTab",
-    "storage"
+    "storage",
+    "unlimitedStorage"
   ]
 }

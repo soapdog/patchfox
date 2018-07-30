@@ -25,17 +25,27 @@ type alias GenericOutsideData =
     { tag : String, data : Value }
 
 
+type alias Configuration =
+    { remote : String
+    , keys : String
+    , manifest : String
+    }
+
+
 type InfoForOutside
     = RelatedMessages String
     | Avatar String
     | CheckTypeAndRedirect String
     | WebResolve String
     | OpenOptionsPage
+    | SaveConfiguration Configuration
 
 
 type InfoForElm
     = ThreadReceived Message
     | AvatarReceived User
+    | CurrentUser User
+    | CantConnectToSBOT String
 
 
 type Message
@@ -88,6 +98,15 @@ ssbWebGo id =
 openOptionsPage : Cmd msg
 openOptionsPage =
     sendInfoOutside OpenOptionsPage
+
+
+saveConfiguration : { c | remote : String, keys : String, manifest : String } -> Cmd msg
+saveConfiguration c =
+    let
+        cc =
+            Configuration c.remote c.keys c.manifest
+    in
+    sendInfoOutside (SaveConfiguration cc)
 
 
 avatar : Dict String User -> String -> User
@@ -162,6 +181,17 @@ sendInfoOutside info =
         OpenOptionsPage ->
             infoForOutside { tag = "OpenOptionsPage", data = Encode.null }
 
+        SaveConfiguration c ->
+            let
+                configurationEncoded =
+                    Encode.object
+                        [ ( "remote", Encode.string c.remote )
+                        , ( "keys", Encode.string c.keys )
+                        , ( "manifest", Encode.string c.manifest )
+                        ]
+            in
+            infoForOutside { tag = "SaveConfiguration", data = configurationEncoded }
+
 
 getInfoFromOutside : (InfoForElm -> msg) -> (String -> msg) -> Sub msg
 getInfoFromOutside tagger onError =
@@ -180,6 +210,22 @@ getInfoFromOutside tagger onError =
                     case Decode.decodeValue avatarDecoder outsideInfo.data of
                         Ok entry ->
                             tagger <| AvatarReceived entry
+
+                        Err e ->
+                            onError e
+
+                "CurrentUser" ->
+                    case Decode.decodeValue avatarDecoder outsideInfo.data of
+                        Ok entry ->
+                            tagger <| CurrentUser entry
+
+                        Err e ->
+                            onError e
+
+                "CantConnectToSBOT" ->
+                    case Decode.decodeValue Decode.string outsideInfo.data of
+                        Ok entry ->
+                            tagger <| CantConnectToSBOT entry
 
                         Err e ->
                             onError e
