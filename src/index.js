@@ -93,7 +93,7 @@ function initializePortSubscriptions() {
         break;
       case "PublicFeed":
         pull(
-          sbot.createLogStream({ reverse: true, limit: 500 }),
+          sbot.createFeedStream({ reverse: true, limit: 500 }),
           pull.collect(function (err, msgs) {
             console.log("err", err);
             console.log("msgs", msgs);
@@ -102,14 +102,21 @@ function initializePortSubscriptions() {
         );
         break;
       case "RelatedMessages":
-        sbot.relatedMessages({ id: msg.data }, (err, msgs) => {
-          if (msgs) {
-            app.ports.infoForElm.send({ tag: "ThreadReceived", data: msgs });
-          }
-          else {
-            console.error("ERROR on related messages", err);
-          }
-        });
+        console.log("Calling related messages")
+        pull(
+          sbot.links({ dest: msg.data, values: true, rel: 'root' }),
+          pull.unique('key'),
+          pull.collect(function (err, msgs) {
+            console.log("msgs", msgs)
+            if (msgs) {
+              let ms = msgs.sort((a, b) => a.value.timestamp > b.value.timestamp);
+              app.ports.infoForElm.send({ tag: "ThreadReceived", data: ms });
+            }
+            else {
+              console.error("ERROR on related messages", err);
+            }
+          })
+        );
         break;
       case "Avatar":
         if (userCache.has(msg.data)) {

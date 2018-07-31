@@ -49,10 +49,10 @@ init flags url =
             , manifest = config.manifest
             , users = Dict.empty
             }
-      , currentPage = PublicPage (Public.init [])
+      , currentPage = ThreadPage (Thread.init [])
       }
-    , publicFeed
-      --relatedMessages "%Au8+JQKgxCkbK1Lex76e4Q1so2z+gXKq1+BB+g8nyBs=.sha256"
+      -- , publicFeed
+    , relatedMessages "%Au8+JQKgxCkbK1Lex76e4Q1so2z+gXKq1+BB+g8nyBs=.sha256"
     )
 
 
@@ -104,6 +104,22 @@ update msg model =
                     List.map .author pm
             in
             ( { model | currentPage = PublicPage newModel }, getAvatars model.appState.users idList )
+
+        ( Outside (ThreadReceived lm), ThreadPage m ) ->
+            let
+                pm =
+                    Thread.msgsToModel lm
+
+                newMsgs =
+                    List.concat [ pm ]
+
+                newModel =
+                    { m | messages = newMsgs }
+
+                idList =
+                    List.map .author pm
+            in
+            ( { model | currentPage = ThreadPage newModel }, getAvatars model.appState.users idList )
 
         ( Outside infoForElm, _ ) ->
             case infoForElm of

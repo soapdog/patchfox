@@ -6,6 +6,7 @@ import Element.Attributes exposing (..)
 import Element.Events exposing (..)
 import Element.Input as Input
 import Html
+import Html.Attributes as HA
 import Markdown
 import Scuttlebutt.Client as SSBClient
 import Scuttlebutt.Messages as SSBMessages
@@ -100,7 +101,7 @@ displayMsg a m =
                 []
             <|
                 [ html <|
-                    Html.div [] <|
+                    Html.div [ HA.class "post-content" ] <|
                         Markdown.toHtml Nothing <|
                             SSBClient.fixMarkdown m.content
                 ]

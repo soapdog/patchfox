@@ -47,7 +47,7 @@ type InfoForOutside
 
 
 type InfoForElm
-    = ThreadReceived Message
+    = ThreadReceived Messages
     | FeedReceived Messages
     | AvatarReceived User
     | CurrentUser User
@@ -178,7 +178,7 @@ getInfoFromOutside tagger onError =
         (\outsideInfo ->
             case outsideInfo.tag of
                 "ThreadReceived" ->
-                    case Decode.decodeValue decodeMessage outsideInfo.data of
+                    case Decode.decodeValue decodeMessages outsideInfo.data of
                         Ok entry ->
                             tagger <| ThreadReceived entry
 
