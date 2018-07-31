@@ -38,27 +38,35 @@ function launchApp() {
     manifest: ""
   }
   el.innerHTML = ""
-  app = Main.embed(el, config);
 
   if (config.remote !== "") {
     const remote = config.remote
     const keys = JSON.parse(config.keys)
     const manifest = JSON.parse(config.manifest)
 
-    startSSBClient(keys, remote, manifest);
+    startSSBClient(keys, remote, manifest, () => {
+      app = Main.embed(el, config);
+      initializePortSubscriptions();
+
+    });
+
+  } else {
+    app = Main.embed(el, config);
+    initializePortSubscriptions();
+
   }
 
+}
+
+function initializePortSubscriptions() {
   app.ports.infoForOutside.subscribe(msg => {
     switch (msg.tag) {
       case "SaveConfiguration":
         console.log("trying to save configuration", msg.data);
-
         localStorage.setItem("config", JSON.stringify(msg.data));
-
-        const remote = msg.data.remote
-        const keys = JSON.parse(msg.data.keys)
-        const manifest = JSON.parse(msg.data.manifest)
-
+        const remote = msg.data.remote;
+        const keys = JSON.parse(msg.data.keys);
+        const manifest = JSON.parse(msg.data.manifest);
         startSSBClient(keys, remote, manifest);
         break;
       case "CheckTypeAndRedirect":
@@ -82,6 +90,16 @@ function launchApp() {
             console.error("err", err);
           }
         });
+        break;
+      case "PublicFeed":
+        pull(
+          sbot.createLogStream({ reverse: true, limit: 500 }),
+          pull.collect(function (err, msgs) {
+            console.log("err", err);
+            console.log("msgs", msgs);
+            app.ports.infoForElm.send({ tag: "FeedReceived", data: msgs });
+          })
+        );
         break;
       case "RelatedMessages":
         sbot.relatedMessages({ id: msg.data }, (err, msgs) => {
@@ -135,32 +153,36 @@ function launchApp() {
   });
 }
 
-function startSSBClient(keys, remote, manifest) {
+function startSSBClient(keys, remote, manifest, cb) {
   client(keys, {
     remote: remote,
     caps: config.caps,
     manifest: manifest
   }, (err, s) => {
     sbot = s;
-    if (err) {
-      console.log(err.message);
-      app.ports.infoForElm.send({ tag: "CantConnectToSBOT", data: err.message || "Failed to connect to SBOT" });
-    } else {
 
-      avatar(sbot, sbot.id, sbot.id, (err, data) => {
-        if (data) {
-          let obj = {
-            id: data.id,
-            name: data.name,
-            image: "http://localhost:8989/blobs/get/" + data.image
-          };
-          userCache.set(data.id, obj);
-          app.ports.infoForElm.send({ tag: "CurrentUser", data: obj });
-        }
-        else {
-          console.error("ERROR on avatar", err);
-        }
-      });
+    if (cb) {
+      cb()
+      if (err) {
+        console.log(err.message);
+        app.ports.infoForElm.send({ tag: "CantConnectToSBOT", data: err.message || "Failed to connect to SBOT" });
+      } else {
+
+        avatar(sbot, sbot.id, sbot.id, (err, data) => {
+          if (data) {
+            let obj = {
+              id: data.id,
+              name: data.name,
+              image: "http://localhost:8989/blobs/get/" + data.image
+            };
+            userCache.set(data.id, obj);
+            app.ports.infoForElm.send({ tag: "CurrentUser", data: obj });
+          }
+          else {
+            console.error("ERROR on avatar", err);
+          }
+        });
+      }
     }
   });
 }

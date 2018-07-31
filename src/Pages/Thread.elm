@@ -1,4 +1,4 @@
-module Pages.Public exposing (..)
+module Pages.Thread exposing (..)
 
 import Cleo.Styles exposing (..)
 import Element exposing (..)

@@ -4,8 +4,12 @@ import Date
 import Date.Extra.Config.Config_en_au exposing (config)
 import Date.Extra.Format as Format exposing (format, formatUtc, isoMsecOffsetFormat)
 import Dict exposing (Dict)
+import Http
 import Json.Decode as Decode exposing (Decoder, float, int, string)
 import Json.Encode as Encode exposing (Value)
+import Regex
+import Scuttlebutt.Messages exposing (..)
+import String.Extra exposing (..)
 
 
 {- PORTS -}
@@ -39,26 +43,15 @@ type InfoForOutside
     | WebResolve String
     | OpenOptionsPage
     | SaveConfiguration Configuration
+    | PublicFeed
 
 
 type InfoForElm
     = ThreadReceived Message
+    | FeedReceived Messages
     | AvatarReceived User
     | CurrentUser User
     | CantConnectToSBOT String
-
-
-type Message
-    = Message
-        { key : String
-        , previous : Maybe String
-        , author : String
-        , sequence : Int
-        , timestamp : Int
-        , content : Value
-        , kind : Maybe String
-        , related : Maybe Messages
-        }
 
 
 type alias User =
@@ -68,16 +61,17 @@ type alias User =
     }
 
 
-type alias Messages =
-    List Message
-
-
 type alias Users =
     Dict String User
 
 
 type alias MessageContent =
     Value
+
+
+publicFeed : Cmd msg
+publicFeed =
+    sendInfoOutside PublicFeed
 
 
 relatedMessages : String -> Cmd msg
@@ -120,30 +114,12 @@ avatar users id =
             u
 
         Nothing ->
-            User id id "/icon.png"
+            User id id "images/icon.png"
 
 
-getAvatars : Dict String User -> Message -> Cmd msg
-getAvatars users (Message m) =
-    let
-        related =
-            case m.related of
-                Just l ->
-                    l
-
-                Nothing ->
-                    []
-
-        rest =
-            if List.isEmpty related then
-                Cmd.none
-            else
-                Cmd.batch <| List.map (\i -> getAvatars users i) related
-    in
-    Cmd.batch
-        [ getAvatar users m.author
-        , rest
-        ]
+getAvatars : Dict String User -> List String -> Cmd msg
+getAvatars users ms =
+    Cmd.batch <| List.map (getAvatar users) ms
 
 
 getAvatar : Dict String User -> String -> Cmd msg
@@ -166,6 +142,9 @@ getAvatar users id =
 sendInfoOutside : InfoForOutside -> Cmd msg
 sendInfoOutside info =
     case info of
+        PublicFeed ->
+            infoForOutside { tag = "PublicFeed", data = Encode.null }
+
         RelatedMessages id ->
             infoForOutside { tag = "RelatedMessages", data = Encode.string id }
 
@@ -199,9 +178,17 @@ getInfoFromOutside tagger onError =
         (\outsideInfo ->
             case outsideInfo.tag of
                 "ThreadReceived" ->
-                    case Decode.decodeValue messageDecoder outsideInfo.data of
+                    case Decode.decodeValue decodeMessage outsideInfo.data of
                         Ok entry ->
                             tagger <| ThreadReceived entry
+
+                        Err e ->
+                            onError e
+
+                "FeedReceived" ->
+                    case Decode.decodeValue decodeMessages outsideInfo.data of
+                        Ok entry ->
+                            tagger <| FeedReceived entry
 
                         Err e ->
                             onError e
@@ -235,36 +222,6 @@ getInfoFromOutside tagger onError =
         )
 
 
-
-{- ENCODERS & DECODERS -}
-
-
-messageDecoder : Decoder Message
-messageDecoder =
-    let
-        messageConstructor key previous author sequence timestamp content kind related =
-            Message
-                { key = key
-                , previous = previous
-                , author = author
-                , sequence = sequence
-                , timestamp = timestamp
-                , content = content
-                , kind = kind
-                , related = related
-                }
-    in
-    Decode.map8 messageConstructor
-        (Decode.at [ "key" ] Decode.string)
-        (Decode.at [ "value", "previous" ] <| Decode.nullable Decode.string)
-        (Decode.at [ "value", "author" ] Decode.string)
-        (Decode.at [ "value", "sequence" ] Decode.int)
-        (Decode.at [ "value", "timestamp" ] Decode.int)
-        (Decode.at [ "value", "content" ] Decode.value)
-        (Decode.at [ "value", "content", "type" ] <| Decode.nullable Decode.string)
-        (Decode.maybe (Decode.at [ "related" ] (Decode.list (Decode.lazy (\_ -> messageDecoder)))))
-
-
 avatarDecoder : Decoder User
 avatarDecoder =
     Decode.map3 User
@@ -273,30 +230,64 @@ avatarDecoder =
         (Decode.at [ "image" ] Decode.string)
 
 
-likeDecoder : Decoder String
-likeDecoder =
-    Decode.at [ "vote", "expression" ] Decode.string
-
-
-postDecoder : Decoder String
-postDecoder =
-    Decode.at [ "text" ] Decode.string
-
-
 
 {- AUXILIARY FUNCTIONS -}
-
-
-ssblog : String -> a -> a
-ssblog label value =
-    let
-        newLabel =
-            "[ELM - SSB Client] " ++ label
-    in
-    Debug.log newLabel value
 
 
 timeAgo : Int -> String
 timeAgo timestamp =
     format config config.format.dateTime <|
         (Date.fromTime <| toFloat timestamp)
+
+
+fixMarkdown m =
+    let
+        replaceImages s =
+            replace """(&""" """(http://localhost:8989/blobs/get/&""" s
+
+        replaceMsgLinks s =
+            let
+                urlEncoder match =
+                    match
+                        |> String.slice 1 (String.length match)
+                        |> Http.encodeUri
+                        |> (++) "(#/view/"
+                        |> Debug.log "url"
+            in
+            Regex.replace Regex.All
+                (Regex.regex "\\(\\%([^\\)]+)")
+                (\{ match } -> urlEncoder match)
+                s
+
+        replaceMsgInlineLinks s =
+            let
+                urlEncoder match =
+                    match
+                        |> String.slice 0 (String.length match)
+                        |> Http.encodeUri
+                        |> (++) ("[" ++ match ++ "](#/view/")
+                        |> Debug.log "inline url"
+            in
+            Regex.replace Regex.All
+                (Regex.regex "\\%(.*)=.sha256")
+                (\{ match } -> urlEncoder match ++ ")")
+                s
+
+        replaceProfileLinks s =
+            let
+                urlEncoder match =
+                    match
+                        |> String.slice 1 (String.length match)
+                        |> Http.encodeUri
+                        |> (++) "(#/profile/"
+                        |> Debug.log "url"
+            in
+            Regex.replace Regex.All
+                (Regex.regex "\\(\\@([^\\)]+)")
+                (\{ match } -> urlEncoder match)
+                s
+    in
+    replaceImages m
+        |> replaceMsgLinks
+        |> replaceMsgInlineLinks
+        |> replaceProfileLinks

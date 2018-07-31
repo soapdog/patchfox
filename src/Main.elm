@@ -7,7 +7,9 @@ import Element.Attributes exposing (..)
 import Element.Events exposing (..)
 import Html
 import Navigation exposing (Location)
+import Pages.Public as Public
 import Pages.Settings as Settings
+import Pages.Thread as Thread
 import Scuttlebutt.Client exposing (..)
 import Types exposing (..)
 
@@ -17,6 +19,8 @@ import Types exposing (..)
 
 type Page
     = SettingsPage Settings.Model
+    | ThreadPage Thread.Model
+    | PublicPage Public.Model
 
 
 type alias Flags =
@@ -45,9 +49,10 @@ init flags url =
             , manifest = config.manifest
             , users = Dict.empty
             }
-      , currentPage = SettingsPage (Settings.init config)
+      , currentPage = PublicPage (Public.init [])
       }
-    , Cmd.none
+    , publicFeed
+      --relatedMessages "%Au8+JQKgxCkbK1Lex76e4Q1so2z+gXKq1+BB+g8nyBs=.sha256"
     )
 
 
@@ -58,6 +63,8 @@ init flags url =
 type Msg
     = ToggleMenu
     | SettingsMsg Settings.Msg
+    | ThreadMsg Thread.Msg
+    | PublicMsg Public.Msg
     | UrlChange Navigation.Location
     | Outside InfoForElm
     | LogErr String
@@ -82,8 +89,34 @@ update msg model =
             in
             ( model, Cmd.none )
 
+        ( Outside (FeedReceived lm), PublicPage m ) ->
+            let
+                pm =
+                    Public.msgsToModel lm
+
+                newMsgs =
+                    List.concat [ pm ]
+
+                newModel =
+                    { m | messages = newMsgs }
+
+                idList =
+                    List.map .author pm
+            in
+            ( { model | currentPage = PublicPage newModel }, getAvatars model.appState.users idList )
+
         ( Outside infoForElm, _ ) ->
             case infoForElm of
+                AvatarReceived user ->
+                    let
+                        appState =
+                            model.appState
+
+                        newUsers =
+                            Dict.insert user.id user model.appState.users
+                    in
+                    ( { model | appState = { appState | users = newUsers } }, Cmd.none )
+
                 CurrentUser user ->
                     let
                         newUsers =
@@ -171,6 +204,14 @@ view model =
                 SettingsPage m ->
                     Settings.page m
                         |> Element.map SettingsMsg
+
+                ThreadPage m ->
+                    Thread.page model.appState m
+                        |> Element.map ThreadMsg
+
+                PublicPage m ->
+                    Public.page model.appState m
+                        |> Element.map PublicMsg
     in
     viewport styles <|
         column Base
