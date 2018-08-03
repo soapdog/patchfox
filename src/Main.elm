@@ -12,13 +12,15 @@ import Pages.Settings as Settings
 import Pages.Thread as Thread
 import Scuttlebutt.Client exposing (..)
 import Types exposing (..)
+import UrlParser as P exposing ((</>))
 
 
 ---- MODEL ----
 
 
 type Page
-    = SettingsPage Settings.Model
+    = Blank
+    | SettingsPage Settings.Model
     | ThreadPage Thread.Model
     | PublicPage Public.Model
 
@@ -41,19 +43,42 @@ init flags url =
     let
         config =
             Configuration flags.remote flags.keys flags.manifest
-    in
-    ( { appState =
+
+        d =
+            Debug.log "initial url" url
+
+        appState =
             { user = Nothing
             , remote = config.remote
             , keys = config.keys
             , manifest = config.manifest
             , users = Dict.empty
             }
-      , currentPage = ThreadPage (Thread.init [])
+    in
+    ( { appState = appState
+      , currentPage = Maybe.withDefault Blank <| parseURL url appState
+
+      --   , currentPage = SettingsPage (Settings.init config) --ThreadPage (Thread.init [])
       }
-      -- , publicFeed
-    , relatedMessages "%Au8+JQKgxCkbK1Lex76e4Q1so2z+gXKq1+BB+g8nyBs=.sha256"
+      --, publicFeed
+      --, relatedMessages "%Au8+JQKgxCkbK1Lex76e4Q1so2z+gXKq1+BB+g8nyBs=.sha256"
+    , Cmd.none
     )
+
+
+parseURL : Location -> AppState -> Maybe Page
+parseURL location appState =
+    let
+        config =
+            Configuration appState.remote appState.keys appState.manifest
+
+        routeParser =
+            P.oneOf
+                [ P.map Blank P.top
+                , P.map (SettingsPage <| Settings.init config) (P.s "settings")
+                ]
+    in
+    P.parseHash routeParser location
 
 
 
@@ -68,6 +93,7 @@ type Msg
     | UrlChange Navigation.Location
     | Outside InfoForElm
     | LogErr String
+    | Navigate Page
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -162,6 +188,21 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        ( UrlChange u, _ ) ->
+            let
+                d =
+                    Debug.log "changing url" u
+
+                newPage =
+                    case parseURL u model.appState of
+                        Just p ->
+                            p
+
+                        Nothing ->
+                            Blank
+            in
+            ( { model | currentPage = newPage }, Cmd.none )
+
         _ ->
             ( model, Cmd.none )
 
@@ -228,6 +269,9 @@ view model =
                 PublicPage m ->
                     Public.page model.appState m
                         |> Element.map PublicMsg
+
+                _ ->
+                    empty
     in
     viewport styles <|
         column Base
