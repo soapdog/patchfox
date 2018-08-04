@@ -32,7 +32,7 @@
     {
       "protocol": "ssb",
       "name": "Secure Scuttlebutt",
-      "uriTemplate": "/index.html#/view/%s"
+      "uriTemplate": "/index.html#/thread/%s"
     }
   ],
   "permissions": [

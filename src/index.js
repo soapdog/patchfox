@@ -63,7 +63,7 @@ const main = async () => {
   }
 
   async function launchApp() {
-    let el = document.getElementById('root')
+    let el = document.body
     let config = JSON.parse(localStorage.getItem("config")) || {
       remote: "",
       keys: "",
@@ -86,18 +86,11 @@ const main = async () => {
         await getCurrentUserAvatar()
       } catch (e) {
         console.error("can't connect to sbot", e)
-        sendBackgroundCommand("start-scuttle-shell")
+        await openScuttleShellOrSettings()
       }
     } else {
       console.log("no config")
-      if (typeof browser !== "undefined") {
-        sendBackgroundCommand("start-scuttle-shell")
-      } else {
-        window.location.hash = "#/settings"
-        app = Main.embed(el, config)
-        await initializePortSubscriptions()
-      }
-
+      await openScuttleShellOrSettings()
     }
   }
 
@@ -149,19 +142,25 @@ const main = async () => {
           )
           break
         case "RelatedMessages":
-          console.log("Calling related messages")
+          console.log("Calling related messages", msg)
+          let msgid = decodeURIComponent(msg.data)
+          console.log("trying to get", msgid)
           pull(
-            sbot.links({ dest: msg.data, values: true, rel: 'root' }),
+            sbot.links({ dest: msgid, values: true, rel: 'root' }),
             pull.unique('key'),
             pull.collect(function (err, msgs) {
-              console.log("msgs", msgs)
-              if (msgs) {
-                let ms = msgs.sort((a, b) => a.value.timestamp > b.value.timestamp)
-                app.ports.infoForElm.send({ tag: "ThreadReceived", data: ms })
-              }
-              else {
-                console.error("ERROR on related messages", err)
-              }
+              sbot.get(msgid, (err, msg) => {
+                console.log(msg)
+                msgs.unshift({ key: msgid, value: msg })
+                console.log("msgs", msgs)
+                if (msgs) {
+                  let ms = msgs.sort((a, b) => a.value.timestamp > b.value.timestamp)
+                  app.ports.infoForElm.send({ tag: "ThreadReceived", data: ms })
+                }
+                else {
+                  console.error("ERROR on related messages", err)
+                }
+              })
             })
           )
           break
@@ -205,6 +204,26 @@ const main = async () => {
           break
       }
     })
+  }
+
+  async function openScuttleShellOrSettings() {
+    let el = document.body
+    let config = JSON.parse(localStorage.getItem("config")) || {
+      remote: "",
+      keys: "",
+      manifest: ""
+    }
+    el.innerHTML = ""
+    config.keys = JSON.stringify(config.keys)
+    config.manifest = JSON.stringify(config.manifest)
+
+    if (typeof browser !== "undefined") {
+      sendBackgroundCommand("start-scuttle-shell")
+    } else {
+      window.location.hash = "#/settings"
+      app = Main.embed(el, config)
+      await initializePortSubscriptions()
+    }
   }
 
   async function getCurrentUserAvatar() {
@@ -273,15 +292,15 @@ const main = async () => {
 
 
   // The code below is to handle custom protocol (ssb:)
-  if (location.hash.indexOf("#/view/") !== -1) {
+  if (location.hash.indexOf("#/thread/") !== -1) {
     // fix problem with IDs containing slashes
     let id = location.hash
     if (id.indexOf("ssb%3A") !== -1) {
       id = id.replace("ssb%3A", "")
     }
-    id = encodeURIComponent(decodeURIComponent(id.slice(7)))
+    id = encodeURIComponent(decodeURIComponent(id.slice(9)))
 
-    location.hash = `#/view/${id}`
+    location.hash = `#/thread/${id}`
   }
 
   await launchApp()

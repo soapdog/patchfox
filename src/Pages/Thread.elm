@@ -14,7 +14,7 @@ import Types exposing (..)
 
 
 type Msg
-    = NoOp
+    = Load
 
 
 type alias Message =
@@ -28,20 +28,22 @@ type alias Message =
 
 type alias Model =
     { messages : List Message
+    , id : String
     }
 
 
-init : List Message -> Model
-init l =
+init : List Message -> String -> Model
+init l id =
     { messages = l
+    , id = id
     }
 
 
 update : Msg -> AppState -> Model -> ( Model, Cmd Msg )
 update msg appState model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
+        Load ->
+            ( model, SSBClient.relatedMessages model.id )
 
 
 msgsToModel : SSBMessages.Messages -> List Message

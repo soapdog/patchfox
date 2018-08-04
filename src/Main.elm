@@ -54,15 +54,14 @@ init flags url =
             , manifest = config.manifest
             , users = Dict.empty
             }
+
+        initialPage =
+            Maybe.withDefault Blank <| parseURL url appState
     in
     ( { appState = appState
-      , currentPage = Maybe.withDefault Blank <| parseURL url appState
-
-      --   , currentPage = SettingsPage (Settings.init config) --ThreadPage (Thread.init [])
+      , currentPage = initialPage
       }
-      --, publicFeed
-      --, relatedMessages "%Au8+JQKgxCkbK1Lex76e4Q1so2z+gXKq1+BB+g8nyBs=.sha256"
-    , Cmd.none
+    , cmdForURLChange initialPage
     )
 
 
@@ -76,9 +75,19 @@ parseURL location appState =
             P.oneOf
                 [ P.map Blank P.top
                 , P.map (SettingsPage <| Settings.init config) (P.s "settings")
+                , P.map (ThreadPage << Thread.init []) (P.s "thread" </> P.string)
                 ]
     in
     P.parseHash routeParser location
+
+
+cmdForURLChange p =
+    case p of
+        ThreadPage m ->
+            relatedMessages m.id
+
+        _ ->
+            Cmd.none
 
 
 
@@ -200,8 +209,11 @@ update msg model =
 
                         Nothing ->
                             Blank
+
+                cmd =
+                    cmdForURLChange newPage
             in
-            ( { model | currentPage = newPage }, Cmd.none )
+            ( { model | currentPage = newPage }, cmd )
 
         _ ->
             ( model, Cmd.none )
