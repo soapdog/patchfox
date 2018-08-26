@@ -251,7 +251,7 @@ fixMarkdown m =
                     match
                         |> String.slice 1 (String.length match)
                         |> Http.encodeUri
-                        |> (++) "(#/view/"
+                        |> (++) "(#/thread/"
                         |> Debug.log "url"
             in
             Regex.replace Regex.All
@@ -265,7 +265,7 @@ fixMarkdown m =
                     match
                         |> String.slice 0 (String.length match)
                         |> Http.encodeUri
-                        |> (++) ("[" ++ match ++ "](#/view/")
+                        |> (++) ("[" ++ match ++ "](#/thread/")
                         |> Debug.log "inline url"
             in
             Regex.replace Regex.All

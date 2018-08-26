@@ -11,3 +11,12 @@ type alias AppState =
     , manifest : String
     , users : Dict String SSBClient.User
     }
+
+
+type alias PostMessage =
+    { key : String
+    , date : Int
+    , author : String
+    , content : String
+    , votes : List String
+    }

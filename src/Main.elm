@@ -75,6 +75,7 @@ parseURL location appState =
             P.oneOf
                 [ P.map Blank P.top
                 , P.map (SettingsPage <| Settings.init config) (P.s "settings")
+                , P.map (PublicPage <| Public.init []) (P.s "public")
                 , P.map (ThreadPage << Thread.init []) (P.s "thread" </> P.string)
                 ]
     in
@@ -85,6 +86,9 @@ cmdForURLChange p =
     case p of
         ThreadPage m ->
             relatedMessages m.id
+
+        PublicPage _ ->
+            publicFeed
 
         _ ->
             Cmd.none

@@ -133,7 +133,7 @@ const main = async () => {
           break
         case "PublicFeed":
           pull(
-            sbot.createFeedStream({ reverse: true, limit: 500 }),
+            sbot.createFeedStream({ reverse: true, limit: 200 }),
             pull.collect(function (err, msgs) {
               console.log("err", err)
               console.log("msgs", msgs)
