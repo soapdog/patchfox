@@ -8,6 +8,7 @@ import Element.Events exposing (..)
 import Element.Input as Input
 import Html
 import Html.Attributes as HA
+import Http
 import Markdown
 import Scuttlebutt.Client as SSBClient
 import Scuttlebutt.Messages as SSBMessages
@@ -73,6 +74,6 @@ page appState model =
     column None
         [ paddingXY 0 20, spacingXY 10 10, width (percent 80) ]
     <|
-        [ el None [] <| text ("Thread: " ++ model.id)
+        [ el None [] <| text ("Thread: " ++ (Maybe.withDefault "" <| Http.decodeUri model.id))
         , column None [ spacing 10 ] <| List.map (postElement appState) model.messages
         ]

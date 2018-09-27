@@ -142,23 +142,38 @@ const main = async () => {
           )
           break
         case "RelatedMessages":
+          //fucking hack
           console.log("Calling related messages", msg)
           let msgid = decodeURIComponent(msg.data)
           console.log("trying to get", msgid)
+
+          let addMsg = (msg, msgs) => {
+            msg.forEach(m => {
+              msgs.unshift({ key: m.key, value: m })
+            })
+            if (msgs) {
+              let ms = msgs.sort((a, b) => a.value.timestamp > b.value.timestamp)
+              console.log(ms)
+              app.ports.infoForElm.send({ tag: "ThreadReceived", data: ms })
+            }
+            else {
+              console.error("ERROR on related messages", err)
+            }
+          }
           pull(
             sbot.links({ dest: msgid, values: true, rel: 'root' }),
             pull.unique('key'),
             pull.collect(function (err, msgs) {
               sbot.get(msgid, (err, msg) => {
-                console.log(msg)
-                msgs.unshift({ key: msgid, value: msg })
-                console.log("msgs", msgs)
-                if (msgs) {
-                  let ms = msgs.sort((a, b) => a.value.timestamp > b.value.timestamp)
-                  app.ports.infoForElm.send({ tag: "ThreadReceived", data: ms })
-                }
-                else {
-                  console.error("ERROR on related messages", err)
+                if (msg.content.hasOwnProperty("root")) {
+                  sbot.get(msg.content.root, (err, rootMsg) => {
+                    rootMsg.key = msg.content.root
+                    msg.key = msgid
+                    addMsg([rootMsg, msg], msgs)
+                  })
+                } else {
+                  msg.key = msgid
+                  addMsg([msg], msgs)
                 }
               })
             })

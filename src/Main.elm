@@ -6,6 +6,7 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (..)
 import Html
+import Http
 import Navigation exposing (Location)
 import Pages.Public as Public
 import Pages.Settings as Settings
@@ -255,13 +256,18 @@ navBar appState =
                         ]
 
                 Just u ->
-                    row Base
-                        [ verticalCenter, spacing 10 ]
-                        [ image None
-                            [ height (px 32) ]
-                            { src = u.image, caption = u.name }
-                        , el None [] <| text u.name
-                        ]
+                    let
+                        userProfile =
+                            "#/profile/" ++ Http.encodeUri u.id
+                    in
+                    link userProfile <|
+                        row Base
+                            [ verticalCenter, spacing 10 ]
+                            [ image None
+                                [ height (px 32) ]
+                                { src = u.image, caption = u.name }
+                            , el None [] <| text u.name
+                            ]
     in
     row NavBar
         [ spread, paddingXY 60 10, width (percent 100), verticalCenter ]
