@@ -1,0 +1,31 @@
+@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css);
+
+body {
+  margin: 0;
+  padding: 0;
+  font-feature-settings: "calt" 1;
+  font-family: "Fira Code"
+}
+
+nav.menu {
+  display: flex;
+  height: 2rem;
+  border-bottom: solid 2px rgb(109, 109, 221);
+  margin-bottom: 10px;
+  padding-top: 5px;
+  
+  a {
+    font-size: 1.2rem;
+    text-decoration: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: rgb(29, 28, 28);
+  }
+
+  span.spacer {
+    flex: 1 1 auto;
+  }
+}
+
+@import "../packages/setup/setup.scss" ;
+@import "../packages/feedViewer/style.scss" ;
