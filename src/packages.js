@@ -2,12 +2,14 @@ import m from "mithril";
 import AppShell from "./app-shell/shell"
 
 /* Need to add packages manually because there is no support Dynamic Imports */
+import Common from "./packages/common"
 import Setup from "./packages/setup"
 import ErrorHandler from "./packages/errorHelper"
 import FeedViewer from "./packages/feedViewer"
 import ScuttleShellHandler from "./packages/scuttleShellHandler"
 
 var packagesToLoad = [
+  Common,
   Setup,
   FeedViewer,
   ScuttleShellHandler,
@@ -45,11 +47,18 @@ var packages = {
   },
   loadedPackages: () => {
     return packagesToLoad.map(pkg => {
-      return {
-        name: pkg.name,
-        description: pkg.description,
-        routes: pkg.routes.map(r => r.route)
-      };
+      if (pkg.hasOwnProperty("routes")) {
+        return {
+          name: pkg.name,
+          description: pkg.description,
+          routes: pkg.routes.map(r => r.route)
+        };
+      } else {
+        return {
+          name: pkg.name,
+          description: pkg.description
+        };
+      }
     })
   }
 

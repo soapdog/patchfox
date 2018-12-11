@@ -6,10 +6,6 @@ const handleBackgroundResponse = async (data) => {
   switch (data.type) {
     case "config":
       if (data.config.hasOwnProperty('secret')) {
-        const keys = data.config.keys
-        const remote = data.config.remote
-        const manifest = data.config.manifest
-        localStorage.setItem("config", JSON.stringify(data.config))
 
         ScuttleShellHandler.status = ("Received response from Scuttle Shell, wait for configuration test...")
         m.redraw()
@@ -19,7 +15,7 @@ const handleBackgroundResponse = async (data) => {
           } catch (e) {
             console.error("problem launching app from background response", e)
           }
-        }, 5000)
+        }, 3000)
 
       }
       break
@@ -42,14 +38,6 @@ const sendBackgroundCommand = async (cmd, data) => {
 }
 
 const openScuttleShellOrSettings = async () => {
-  let config = JSON.parse(localStorage.getItem("config")) || {
-    remote: "",
-    keys: "",
-    manifest: ""
-  }
-  config.keys = JSON.stringify(config.keys)
-  config.manifest = JSON.stringify(config.manifest)
-
   if (typeof browser !== "undefined") {
     ScuttleShellHandler.status = "Wait while Scuttle Shell launches..."
     m.redraw()
@@ -62,9 +50,9 @@ const openScuttleShellOrSettings = async () => {
 var ScuttleShellHandler = {
   oninit: () => {
     ScuttleShellHandler.status = "Starting Scuttle Shell..."
+    setTimeout(openScuttleShellOrSettings, 2000)
   },
   view: function (vnode) {
-    setTimeout(openScuttleShellOrSettings, 2000)
     return m("h1", vnode.state.status)
   }
 }

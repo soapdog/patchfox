@@ -16,16 +16,16 @@ var silentTest = (keys, remote, manifest) => {
 
       if (err) {
         reject(`Connecting to sbot, <a href="#/setup">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).`)
-        return false
-      }
+      } else {
 
-      avatar(s, s.id, s.id, (err, data) => {
-        if (data) {
-          resolve(s)
-        } else {
-          reject(`can't query user: ${err}`)
-        }
-      })
+        avatar(s, s.id, s.id, (err, data) => {
+          if (data) {
+            resolve(s)
+          } else {
+            reject(`can't query user: ${err}`)
+          }
+        })
+      }
     })
   })
 }
@@ -47,6 +47,7 @@ var testClient = (keys, remote, manifest) => {
 
       if (data) {
         SetupTest.ok(`You are <b><a href="#/profile/${data.id}">${data.name}</a></b>`)
+        window.sbot = s
         SetupTest.status = true
       } else {
         SetupTest.error(`can't query user: ${err}`)
@@ -57,6 +58,11 @@ var testClient = (keys, remote, manifest) => {
 
 var SetupTest = {
   silentTest,
+  reload: (ev) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+    location.reload()
+  },
   ok: msg => {
     SetupTest.log.push({ status: "ok", msg })
     m.redraw()
@@ -109,8 +115,15 @@ var SetupTest = {
             m("a", {
               href: '/start-scuttle-shell',
               oncreate: m.route.link
-            }, "Click to Start Scuttle Shell")
+            }, "Click to Start Scuttle Shell"),
+            m("span", " or "),
+            m("a", {
+              href: '/setup-test',
+              oncreate: m.route.link,
+              onclick: SetupTest.reload
+            }, "Click to try again")
           ])
+
     ])
 
   }

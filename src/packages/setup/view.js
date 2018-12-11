@@ -16,7 +16,7 @@ var Setup = {
       console.log("secret", secret)
       Model.config.keys = secret
       Model.config.remote = `ws://localhost:8989~shs:${secret.id.slice(0, secret.id.indexOf("=") + 1)}`
-
+      m.redraw()
     };
     reader.readAsText(secretFile)
 
@@ -53,7 +53,7 @@ var Setup = {
         m("p", m("a", {
           href: '/setup-test',
           oncreate: m.route.link
-        }, "Test your setup"))
+        }, "Run configuration test on saved configuration"))
       ])
   }
 }
