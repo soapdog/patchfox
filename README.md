@@ -1,36 +1,21 @@
-# PATCHFOX - A Secure Scuttlebutt client for Firefox as a WebExtension
+# Patchfox
+This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
 
-This is an **ALPHA** quality WebExtension.
+## Requirements
 
-* Check out the [ReadMe for the WebExtension](webextension/README.md), it contains important information on how to setup your credentials.
-* Check out the [ReadMe for the Native Companion App](host_app/README.md), it contains important information on how to setup the helper app.
+* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/)
+* [Scuttle Shell](https://github.com/ssbc/scuttle-shell)
 
+## Building
 
-# Contributing
+`
+$ npm run dev
+`
 
-This is free software under the terms of the MIT license. I would love contributions to this WebExtension. I tried to make it as vanilla as possible to the point that it is quite naive. My objective is to make it approachable for new contributors with minimal knowledge of JS and Elm.
+This will launch [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) running the WebExtension, you need to click on the little _hermie_ button on the toolbar to launch it.
 
-The WebExtension is running on a different and isolated DOM than the page being displayed so we don't need to worry about many stuff that is common to Web Development.
+## Setup inside Patchfox
 
-If you want to contribute, these are some ideas:
+Once patchfox is running, it needs to learn your _remote_ and _secret_, you can just click the "browse" button on the setup screen and select your `.ssb/secret` file and then click save. 
 
-* Need to expose more API calls.
-* Need a shim to make WebExtension developer life easier so they don't keep programming in such low-level API like `ports`.
-* Need robust setup code and instructions.
-
-# Contact
-
-Don't hesitate to reach out to me at:
-
-* Scuttlebutt: @gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519
-* Mastodon: @soapdog@toot.cafe
-* Twitter: @soapdog
-
-# Sponsorship
-
-Do you want a decentralized internet too? Are you worried about the loss of net neutrality and realized that radical decentralization is the way to fight back? Have some cryptobucks to spare? If you want to make a financial contribution to help me fund development of this and other dex focused software, I would love to receive contributions in the following cryptocurrencies:
-
-* Ethereum: 0x0bd1bbb25cc9dd2ce8ea1fba4e333ff091f671a9
-* Bitcoin: 1Px1PeVBJ2Mz1iC6UF8UZVXW7zPoonMVKJ
-* DASH: Xh5b2TfS7CTUgSMUENWUQFmTqZyk3DUdQX
-
+Patchfox will then verify the configuration, if you're not running scuttle-shell, it will ask you if you want to run it.

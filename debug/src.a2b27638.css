@@ -1,0 +1,98 @@
+@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css);
+body {
+  margin: 0;
+  padding: 0;
+  font-feature-settings: "calt" 1;
+  font-family: "Fira Code";
+}
+
+nav.menu {
+  display: flex;
+  height: 2rem;
+  border-bottom: solid 2px #6d6ddd;
+  margin-bottom: 10px;
+  padding-top: 5px;
+}
+nav.menu a {
+  font-size: 1.2rem;
+  text-decoration: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #1d1c1c;
+}
+nav.menu span.spacer {
+  flex: 1 1 auto;
+}
+
+form#setup {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  align-content: center;
+  margin: 0 auto;
+}
+
+div#setup-test {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  align-content: center;
+  margin: 0 auto;
+}
+
+div.space {
+  flex: 1 1 auto;
+}
+
+div.feed {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  align-content: center;
+  margin: 0 auto;
+}
+div.feed div.thread {
+  border: solid 1px black;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+div.feed div.thread div.message {
+  display: flex;
+  flex-direction: column;
+  border-bottom: solid 1px black;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+div.feed div.thread div.message div.message-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: space-between;
+}
+div.feed div.thread div.message div.message-header div.avatar {
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
+div.feed div.thread div.message div.message-header div.avatar img.avatar {
+  width: 48px;
+  margin: 5px;
+}
+div.feed div.thread div.message div.message-body img {
+  max-width: 80%;
+  padding: 20px;
+  text-align: center;
+  margin: 1 1 auto;
+}
+div.feed div.thread div.message div.message-body blockquote {
+  border-left: 10px solid lightgrey;
+  padding-left: 10px;
+}
+div.feed div.thread div.full-thread-banner {
+  text-align: center;
+}
+div.feed div.thread div.message:last-of-type {
+  border: none;
+}
