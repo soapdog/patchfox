@@ -1,12 +1,10 @@
-import m from "mithril"
-import Model from "./model"
-import client from 'ssb-client'
-import config from 'ssb-config'
-import ssbKeys from 'ssb-keys'
-import avatar from 'ssb-avatar'
-import Setup from "./view";
+import m from "mithril";
+import Model from "./model";
+import client from "ssb-client";
+import config from "ssb-config";
+import avatar from "ssb-avatar";
 
-var silentTest = (keys, remote, manifest) => {
+const silentTest = (keys, remote, manifest) => {
   return new Promise((resolve, reject) => {
     client(keys, {
       remote: remote,
@@ -20,9 +18,9 @@ var silentTest = (keys, remote, manifest) => {
 
         avatar(s, s.id, s.id, (err, data) => {
           if (data) {
-            resolve(s)
+            resolve(s);
           } else {
-            reject(`can't query user: ${err}`)
+            reject(`can't query user: ${err}`);
           }
         })
       }
@@ -30,7 +28,7 @@ var silentTest = (keys, remote, manifest) => {
   })
 }
 
-var testClient = (keys, remote, manifest) => {
+const testClient = (keys, remote, manifest) => {
   client(keys, {
     remote: remote,
     caps: config.caps,
@@ -38,57 +36,57 @@ var testClient = (keys, remote, manifest) => {
   }, (err, s) => {
 
     if (err) {
-      console.dir(err)
-      SetupTest.error(`Connecting to sbot, <a href="#/setup">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).`)
-      return false
+      console.dir(err);
+      SetupTest.error(`Connecting to sbot, <a href="#/setup">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).`);
+      return false;
     }
 
     avatar(s, s.id, s.id, (err, data) => {
 
       if (data) {
-        SetupTest.ok(`You are <b><a href="#/profile/${data.id}">${data.name}</a></b>`)
-        window.sbot = s
-        SetupTest.status = true
+        SetupTest.ok(`You are <b><a href="#/profile/${data.id}">${data.name}</a></b>`);
+        window.sbot = s;
+        SetupTest.status = true;
       } else {
-        SetupTest.error(`can't query user: ${err}`)
+        SetupTest.error(`can't query user: ${err}`);
       }
-    })
-  })
+    });
+  });
 }
 
 var SetupTest = {
   silentTest,
   reload: (ev) => {
-    ev.preventDefault()
-    ev.stopPropagation()
-    location.reload()
+    ev.preventDefault();
+    ev.stopPropagation();
+    location.reload();
   },
   ok: msg => {
-    SetupTest.log.push({ status: "ok", msg })
-    m.redraw()
+    SetupTest.log.push({ status: "ok", msg });
+    m.redraw();
   },
   error: msg => {
-    SetupTest.log.push({ status: "error", msg })
-    console.log(msg)
-    m.redraw()
+    SetupTest.log.push({ status: "error", msg });
+    console.log(msg);
+    m.redraw();
   },
   oninit: vnode => {
-    SetupTest.log = []
-    SetupTest.status = false
-    SetupTest.ok("Loading Configuration")
-    Model.load()
-    SetupTest.ok("Configuration loaded")
-    var configKeys = ["remote", "keys", "manifest"]
+    SetupTest.log = [];
+    SetupTest.status = false;
+    SetupTest.ok("Loading Configuration");
+    Model.load();
+    SetupTest.ok("Configuration loaded");
+    var configKeys = ["remote", "keys", "manifest"];
     configKeys.forEach(i => {
       if (Model.config.hasOwnProperty(i)) {
-        SetupTest.ok(`Found configuration for ${i}`)
+        SetupTest.ok(`Found configuration for ${i}`);
       } else {
-        SetupTest.error(`can't find configuration for ${i}`)
+        SetupTest.error(`can't find configuration for ${i}`);
       }
     })
-    SetupTest.ok("Attempting connection to sbot...")
-    m.redraw()
-    testClient(Model.config.keys, Model.config.remote, Model.config.manifest)
+    SetupTest.ok("Attempting connection to sbot...");
+    m.redraw();
+    testClient(Model.config.keys, Model.config.remote, Model.config.manifest);
   },
   view: (vnode) => {
     return m("div#setup-test", [
@@ -124,9 +122,9 @@ var SetupTest = {
             }, "Click to try again")
           ])
 
-    ])
+    ]);
 
   }
 }
 
-export default SetupTest 
+export default SetupTest;

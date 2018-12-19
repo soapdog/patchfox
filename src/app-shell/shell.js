@@ -1,9 +1,10 @@
 import m from "mithril";
 
-var AppShell = {
+const AppShell = {
   view: function (vnode) {
     return m("main.layout", [
       m("nav.menu", [
+        m("h1.brand", "Patchfox"),
         m("a", {
           href: '/public',
           oncreate: m.route.link
@@ -23,4 +24,4 @@ var AppShell = {
   }
 }
 
-export default AppShell
+export default AppShell;

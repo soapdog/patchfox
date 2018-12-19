@@ -1,4 +1,4 @@
-import ssbKeys from 'ssb-keys'
+import ssbKeys from "ssb-keys";
 
 
 var Model = {
@@ -6,22 +6,25 @@ var Model = {
     Model.config = JSON.parse(localStorage.getItem("config")) || {
       remote: "",
       keys: "",
+      flagShellStart: false,
       manifest: require("../../../static/sbot-manifest.json")
     }
-    console.log("Setup loading with", Model.config)
+    console.log("Setup loading with", Model.config);
   },
   save: function () {
-    console.log("trying to save configuration", Model.config)
-    const remote = Model.config.remote
-    const keys = Model.config.keys
-    const manifest = Model.config.manifest
+    console.log("trying to save configuration", Model.config);
+    const remote = Model.config.remote;
+    const keys = Model.config.keys;
+    const manifest = Model.config.manifest;
+    const flagShellStart = Model.config.flagShellStart;
     localStorage.setItem("config", JSON.stringify({
       remote,
       keys,
+      flagShellStart,
       manifest
-    }))
-    console.log("saved!")
+    }));
+    console.log("saved!");
   }
 }
 
-export default Model
+export default Model;

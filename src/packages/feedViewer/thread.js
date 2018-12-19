@@ -7,7 +7,7 @@ import common from "../common";
 
 var thread = stream([]);
 
-const Public = {
+const Thread = {
   mdown: (text) => {
     return m.trust(md.block(text, {
       imageLink: (i) => `http://localhost:8989/blobs/get/${i}`,
@@ -37,30 +37,31 @@ const Public = {
       return m("div.avatar", id)
     }
   },
-  oninit: () => {
+  oninit: (vnode) => {
     thread([])
+    const msgID = m.route.param("msgID");
     if (sbot) {
-      pull(
-        sbot.threads.public({
-          limit: 10, // how many threads at most
-          reverse: true, // threads sorted from most recent to least recent
-          threadMaxSize: 3, // at most 3 messages in each thread
-          allowlist: ["post"]
-        }),
-        pull.drain(t => {
-          // thread is an object { messages, full } where `messages` is an
-          // array of SSB messages, and full is a boolean indicating whether
-          // `messages` array contains all of the possible messages in the
-          // thread
-          var ts = thread();
-          ts.push(t);
-          thread(ts);
-          m.redraw();
-        }),
-      );
+      console.log("Trying to load thread", msgID);
+      if (msgID) {
+        pull(
+          sbot.threads.thread({
+            root: msgID
+          }),
+          pull.drain(t => {
+            // thread is an object { messages, full } where `messages` is an
+            // array of SSB messages, and full is a boolean indicating whether
+            // `messages` array contains all of the possible messages in the
+            // thread
+            var ts = thread();
+            ts.push(t);
+            thread(ts);
+            m.redraw();
+          })
+        );
+      }
     }
   },
-  publicView: () => {
+  threadView: () => {
     console.log(thread());
     const timeagoInstance = timeago();
     const threads = thread();
@@ -70,11 +71,11 @@ const Public = {
           t.messages.map(message => {
             return m("div.message", [
               m("div.message-header", [
-                m("div.message-author", Public.avatar(message.value.author)),
+                m("div.message-author", Thread.avatar(message.value.author)),
                 m("div.space", ""),
                 m("div.message-date", timeagoInstance.format(message.value.timestamp))
               ]),
-              m("div.message-body", Public.mdown(message.value.content.text)),
+              m("div.message-body", Thread.mdown(message.value.content.text)),
               m("div.message-footer", [
                 m(`a[href=ssb:${message.key}]`, "Permalink")
               ])
@@ -92,11 +93,16 @@ const Public = {
     return m("p", "no sbot");
   },
   view: function (vnode) {
+    const msgID = m.route.param("msgID");
+    console.log("from view", msgID);
     return m("div.feed", [
-      m("h1", "Public"),
-      sbot !== false ? this.publicView(vnode) : this.missingSbot(vnode)
+      m("h1", [
+        m("span", "Thread:"),
+        m(`a[href=ssb:${msgID}`, msgID)
+      ]),
+      sbot !== false ? this.threadView(vnode) : this.missingSbot(vnode)
     ]);
   }
 }
 
-export default Public;
+export default Thread;
