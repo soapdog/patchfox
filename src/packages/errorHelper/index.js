@@ -1,4 +1,4 @@
-import Error404 from "./error404"
+import Error404 from "./error404";
 
 var pkg = {
   name: "Error Helper",

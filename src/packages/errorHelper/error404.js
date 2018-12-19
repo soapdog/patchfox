@@ -1,4 +1,4 @@
-import m from "mithril"
+import m from "mithril";
 
 var Error404 = {
   view: function (vnode) {
@@ -7,4 +7,4 @@ var Error404 = {
   }
 }
 
-export default Error404
+export default Error404;

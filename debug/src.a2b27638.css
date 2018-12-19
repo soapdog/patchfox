@@ -8,13 +8,21 @@ body {
 
 nav.menu {
   display: flex;
-  height: 2rem;
-  border-bottom: solid 2px #6d6ddd;
+  border-bottom: solid 1px #6d6ddd;
   margin-bottom: 10px;
   padding-top: 5px;
+  padding-bottom: 5px;
+}
+nav.menu h1.brand {
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0px;
+  margin: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 nav.menu a {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   text-decoration: none;
   padding-left: 10px;
   padding-right: 10px;

@@ -9,13 +9,21 @@ body {
 
 nav.menu {
   display: flex;
-  height: 2rem;
-  border-bottom: solid 2px rgb(109, 109, 221);
+  border-bottom: solid 1px rgb(109, 109, 221);
   margin-bottom: 10px;
   padding-top: 5px;
-  
+  padding-bottom: 5px;
+  h1.brand {
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 0px;
+    margin: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   a {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     text-decoration: none;
     padding-left: 10px;
     padding-right: 10px;
