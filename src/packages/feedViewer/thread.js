@@ -2,7 +2,7 @@ import m from "mithril";
 import stream from "mithril/stream";
 import pull from "pull-stream";
 import md from "ssb-markdown";
-import timeago from "timeago.js";
+import { format } from "timeago.js";
 import common from "../common";
 
 var thread = stream([]);
@@ -62,8 +62,6 @@ const Thread = {
     }
   },
   threadView: () => {
-    console.log(thread());
-    const timeagoInstance = timeago();
     const threads = thread();
     return threads.map(t => {
       if (t.hasOwnProperty("messages")) {
@@ -73,7 +71,7 @@ const Thread = {
               m("div.message-header", [
                 m("div.message-author", Thread.avatar(message.value.author)),
                 m("div.space", ""),
-                m("div.message-date", timeagoInstance.format(message.value.timestamp))
+                m("div.message-date", format(message.value.timestamp))
               ]),
               m("div.message-body", Thread.mdown(message.value.content.text)),
               m("div.message-footer", [
