@@ -8,7 +8,7 @@
   },
   "scripts": {
     "watch-parcel": "parcel watch index.html --out-dir debug --no-hmr",
-    "watch-firefox": "web-ext run --source-dir ./debug/ --firefox=firefoxdeveloperedition --browser-console",
+    "watch-firefox": "web-ext run --source-dir ./debug/ --firefox=firefox-devedition --browser-console",
     "watch-static": "watch \"npm run copy-files\" ./static",
     "copy-files": "copyfiles -a -u 1 \"./static/**/*\" ./debug",
     "build": "parcel build index.html",
@@ -31,7 +31,7 @@
   "bugs": {
     "url": "https://github.com/soapdog/patchfox/issues"
   },
-  "browserlist": [
+  "browserslist": [
     "Firefox ESR"
   ],
   "homepage": "https://github.com/soapdog/patchfox#readme",
@@ -60,6 +60,7 @@
     "copyfiles": "^2.1.0",
     "parcel-bundler": "^1.11.0",
     "sass": "^1.14.1",
-    "watch": "^1.0.2"
+    "watch": "^1.0.2",
+    "web-ext": "^2.9.3"
   }
 }
