@@ -30,6 +30,7 @@ var SetupForm = {
         m.route.set("/setup-test");
       }
     }, [
+        m("p", [m.trust("The easiest way to configure Patchfox is by selecting your <i>secret</i> file. Your remote and keys will be derived from it. Select secret file: "), m("input[type=file]", { onchange: this.selectedSecretFile }, "Browse secret")]),
         m("label[for=remote]", "Remote:"),
         m("input[type=text][placeholder=Your WS remote][name=remote]", {
           oninput: m.withAttr("value", function (value) { Model.config.remote = value }),
@@ -40,11 +41,10 @@ var SetupForm = {
           oninput: m.withAttr("value", function (value) { Model.config.keys = JSON.parse(value) }),
           value: JSON.stringify(Model.config.keys)
         }),
-        m("p", ["Select secret file: ", m("input[type=file]", { onchange: this.selectedSecretFile }, "Browse secret")]),
         m("p", [
           m("input[type=checkbox][name=shellflag]", {
-            oninput: m.withAttr("value", function (value) { Model.config.flagShellStart = value }),
-            value: Model.config.flagShellStart
+            oninput: m.withAttr("checked", function (value) { Model.config.flagShellStart = value }),
+            checked: Model.config.flagShellStart
           }),
           m("label[for=shellflag]", "Start Scuttle-Shell when Firefox launches")
         ]),

@@ -33,7 +33,11 @@ nav.menu {
   span.spacer {
     flex: 1 1 auto;
   }
+
+  section.content {
+    padding: 20px;
+  }
 }
 
-@import "../packages/setup/setup.scss" ;
-@import "../packages/feedViewer/style.scss" ;
+@import "../setup/setup.scss" ;
+@import "../feedViewer/style.scss" ;

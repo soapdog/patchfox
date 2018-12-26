@@ -7,7 +7,7 @@ var Model = {
       remote: "",
       keys: "",
       flagShellStart: false,
-      manifest: require("../../../static/sbot-manifest.json")
+      manifest: require("../../static/sbot-manifest.json")
     }
     console.log("Setup loading with", Model.config);
   },

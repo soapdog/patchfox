@@ -19,7 +19,7 @@ const AppShell = {
           oncreate: m.route.link
         }, "Setup")
       ]),
-      m("section.package-content", vnode.children)
+      m("section.content", vnode.children)
     ])
   }
 }

@@ -47,11 +47,14 @@
     "ssb-client": "^4.5.7",
     "ssb-config": "^2.2.0",
     "ssb-keys": "^7.0.14",
-    "ssb-markdown": "^4.0.0",
     "ssb-ref": "^2.11.1",
+    "ssb-msgs": "^5.2.0",
     "ssb-web-resolver": "^1.1.2",
     "stream-to-pull-stream": "^1.7.2",
-    "timeago.js": "^4.0.0-beta.1"
+    "timeago.js": "^4.0.0-beta.1",
+    "markdown-it": "^8.4.2",
+    "markdown-it-emoji": "^1.4.0",
+    "markdown-it-hashtag": "^0.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",

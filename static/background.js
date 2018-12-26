@@ -1,5 +1,3 @@
-// TODO: Reorganize flux, more than one copy starting...
-
 const patchfox = {
   config: {
     debug: true,
@@ -111,7 +109,7 @@ const getConfig = () => {
 }
 
 function openTroubleshootingPage() {
-  openPage('problems.html')
+  openPage('#/problem')
 }
 
 function openPage(page) {
@@ -122,9 +120,24 @@ function openPage(page) {
 }
 
 // Bind Handlers between content scripts and the background script
-browser.runtime.onMessage.addListener(patchfox.IPCHandler)
-browser.browserAction.onClicked.addListener(patchfox.browserActionHandler)
+browser.runtime.onMessage.addListener(patchfox.IPCHandler);
+browser.browserAction.onClicked.addListener(patchfox.browserActionHandler);
 
-patchfox.info("background loaded")
+patchfox.info("background loaded");
+
+let configJson = localStorage.getItem("config");
+
+if (configJson) {
+  let config = JSON.parse(configJson);
+
+  if (config.flashShellStart) {
+    patchfox.info("Launching scuttle shell");
+    patchfox.startBundledServer((config) => {
+      patchfox.info("Started scuttle shell with config", config);
+    })
+  }
+} else {
+  patchfox.info("no config saved.");
+}
 
 

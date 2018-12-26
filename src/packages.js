@@ -2,10 +2,10 @@ import m from "mithril";
 import AppShell from "./app-shell/shell";
 
 /* Need to add packages manually because there is no support Dynamic Imports */
-import Common from "./packages/common";
-import Setup from "./packages/setup";
-import ErrorHandler from "./packages/errorHelper";
-import FeedViewer from "./packages/feedViewer";
+import Common from "./common";
+import Setup from "./setup";
+import ErrorHandler from "./errorHelper";
+import FeedViewer from "./feedViewer";
 
 const packagesToLoad = [
   Common,

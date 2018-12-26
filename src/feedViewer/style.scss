@@ -7,6 +7,9 @@ div.feed {
   width: 80%;
   align-content: center;
   margin: 0 auto;
+  h1 {
+      font-size: 0.9rem;
+  }
   div.thread {
     border: solid 1px black;
     padding: 10px;
