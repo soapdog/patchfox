@@ -1,5 +1,6 @@
-const Public = require("./threads/public");
-const Thread = require("./threads/thread");
+const Public = require("./pages/public");
+const Thread = require("./pages/thread");
+const Test = require("./pages/test");
 const rlite = require("rlite-router");
 const h = require("mutant/html-element");
 
@@ -9,7 +10,9 @@ const NotFound = () => {
 
 let routes = rlite(NotFound, {
     "public": Public ,
-    "thread/:msgID": Thread
+    "thread/:msgID": Thread,
+    "test": Test
+
 });
 
 module.exports = routes;

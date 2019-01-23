@@ -38323,7 +38323,7 @@ exports.createContext = Script.createContext = function (context) {
 var h = require("mutant/html-element");
 var ref = require("ssb-ref");
 var routes = require("./routes");
-var injectConnection = require("./injectConnection");
+var inject = require("./inject");
 
 /**
  * Below is the configuration check and application launch routine.
@@ -38339,7 +38339,7 @@ var configurationPresent = async function (savedData) {
         configurationMissing();
     } else {
         try {
-            window.sbot = await injectConnection(savedData);
+            window.ssb = await inject(savedData);
             processHash();
         } catch (e) {
             console.error(e);
@@ -38365,7 +38365,7 @@ var processHash = function () {
 browser.storage.local.get().then(configurationPresent, configurationMissing);
 window.addEventListener('hashchange', processHash);
 
-},{"./injectConnection":351,"./routes":352,"mutant/html-element":148,"ssb-ref":339}],351:[function(require,module,exports){
+},{"./inject":351,"./routes":355,"mutant/html-element":148,"ssb-ref":339}],351:[function(require,module,exports){
 var client = require("ssb-client");
 var config = require("ssb-config");
 
@@ -38381,7 +38381,7 @@ var injectConnection = function (data) {
             if (err) {
                 reject("Connecting to sbot, <a href=\"#/setup\">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).");
             } else {
-                resolve(s);
+                resolve({ sbot: s });
             }
         });
     });
@@ -38390,23 +38390,6 @@ var injectConnection = function (data) {
 module.exports = injectConnection;
 
 },{"ssb-client":326,"ssb-config":329}],352:[function(require,module,exports){
-var Public = require("./threads/public");
-var Thread = require("./threads/thread");
-var rlite = require("rlite-router");
-var h = require("mutant/html-element");
-
-var NotFound = function () {
-    return h("h1", "404: Not Found");
-};
-
-var routes = rlite(NotFound, {
-    "public": Public,
-    "thread/:msgID": Thread
-});
-
-module.exports = routes;
-
-},{"./threads/public":353,"./threads/thread":354,"mutant/html-element":148,"rlite-router":303}],353:[function(require,module,exports){
 var h = require("mutant/html-element");
 
 var Public = function () {
@@ -38414,6 +38397,15 @@ var Public = function () {
 };
 
 module.exports = Public;
+
+},{"mutant/html-element":148}],353:[function(require,module,exports){
+var h = require("mutant/html-element");
+
+var Test = function () {
+    return h("div", [h("h1", "Minimal testing"), h("p", [h("strong", "Your Feed ID:"), h("span", window.ssb.sbot.id)])]);
+};
+
+module.exports = Test;
 
 },{"mutant/html-element":148}],354:[function(require,module,exports){
 var h = require("mutant/html-element");
@@ -38426,6 +38418,26 @@ var Thread = function (_ref) {
 
 module.exports = Thread;
 
-},{"mutant/html-element":148}]},{},[350])
+},{"mutant/html-element":148}],355:[function(require,module,exports){
+var Public = require("./pages/public");
+var Thread = require("./pages/thread");
+var Test = require("./pages/test");
+var rlite = require("rlite-router");
+var h = require("mutant/html-element");
+
+var NotFound = function () {
+    return h("h1", "404: Not Found");
+};
+
+var routes = rlite(NotFound, {
+    "public": Public,
+    "thread/:msgID": Thread,
+    "test": Test
+
+});
+
+module.exports = routes;
+
+},{"./pages/public":352,"./pages/test":353,"./pages/thread":354,"mutant/html-element":148,"rlite-router":303}]},{},[350])
 
 //# sourceMappingURL=debug/bundle.js.map
