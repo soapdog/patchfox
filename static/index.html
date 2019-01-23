@@ -6,28 +6,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <title>Patchfox (pre-alpha-will-break)</title>
+    <title>Patchfox (MVP)</title>
     <link rel="stylesheet" href="https://code.cdn.mozilla.net/fonts/fira.css">
-    <style>
-        blockquote {
-            background-color: lightgray;
-            padding: 10px;
-            border-left: solid 3px black;
-        }
-
-        .post-content img {
-            max-width: 90%;
-        }
-
-        pre code {
-            overflow-y: scroll;
-        }
-    </style>
+    <script defer src="bundle.js"></script>
 </head>
 
 <body>
@@ -36,9 +18,13 @@
     </noscript>
     <div id="root">
         <img src="images/icon.png" alt="hermie" style="width: 42px">
-        <h4 id="message">
+        <p id="message">
             Loading Patchfox...
-        </h4>
+        </p>
+        <p>
+            If this screen doesn't refreshes, then there is something wrong. Go to <a id="options-trigger" href="#">settings for Patchfox</a>.
+        </p>
+        <script src="help/help.js"></script>
     </div>
 </body>
 

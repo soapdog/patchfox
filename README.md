@@ -4,21 +4,25 @@ This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as
 ## Requirements
 
 * [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/)
-* [Scuttle Shell](https://github.com/ssbc/scuttle-shell)
+* [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running. 
 
 ## Setup
 
-* Follow the Scuttle-Shell setup described in [the projects README](https://github.com/ssbc/scuttle-shell/blob/master/README.md). Be aware that Patchfox will work without Scuttle-Shell provided there is a _sbot_ running with the plugins it needs (the only non-common plugin it uses is [ssb-threads](https://github.com/ssbc/ssb-threads)). It is easier to use Scuttle-Shell though because the add-on can start and stop it leading to a more pleasant experience.
-
-* Install dependencies with `$ npm install`
+* Install dependencies with `$ npm install`.
 
 ## Building
 
 `
-$ npm run dev
+$ gulp dev
 `
 
-This will launch [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) running the WebExtension, you need to click on the little _hermie_ button on the toolbar to launch it.
+This will launch Firefox running the WebExtension, you need to click on the little _hermie_ button on the toolbar to launch it.
+
+`
+$ gulp
+`
+
+Plain `gulp` call builds the WebExtension but doesn't run Firefox. You'll need to run Firefox on your own and then open the [about:debugging](about:debugging) page and select _load temporary add-on_. Once the file selection dialog open, you select the `debug/manifest.json` file.
 
 ## Setup inside Patchfox
 
@@ -31,6 +35,13 @@ After saving Patchfox will then verify the configuration, if you're not running 
 After installing and configuring patchfox, try browsing to:
 
 [ssb:%Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc=.sha256](ssb:%Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc=.sha256)
+
+# Source organization (aka chaos ahead)
+There are two main folders for the source. There is the `static` folder where we host static assets which in our case includes some JS which is meant to _arrive in the browser the way we wrote it_. There is also the `src` folder which hosts JS stuff which is both `browserified` and `babelified`, this is needed because lots of the SSB libraries were built with nodejs in mind.
+
+In the end of the build process, an amalgam of the `static` and `src` folder is created in the `debug` folder.
+
+_PS: I wish I could only ship static assets for this add-on but so far, I can't escape the nodejs based libraries..._
 
 # Commentary, getting help
 

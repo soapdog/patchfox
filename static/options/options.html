@@ -8,13 +8,19 @@
 <body>
 
 <section class="credentials">
-    <div class="title" >Remote and Secret</div>
-
-    <label>Remote: <input id="remote" type="text"/></label>
-    <label>Secret: <textarea id="password" type="text"></textarea></label>
-
+    <div class="title">Remote and Secret</div>
+    <p>Using the button below to select your <i>~/.ssb/secret</i> file will autofill the remote and secret fields.</p>
+    <input type="file" id="select-secret">
+    <label for="remote">Remote:</label>
+    <input id="remote" type="text"/>
+    <label for="secret">Secret:</label>
+    <textarea id="secret" type="text"></textarea>
+    <div>
+        <button id="save">Save</button>
+    </div>
 </section>
 
+<script src="sbot-manifest.js"></script>
 <script src="options.js"></script>
 </body>
 </html>
