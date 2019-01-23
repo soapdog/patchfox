@@ -1,30 +1,52 @@
-import m from "mithril";
-import Packages from "./packages";
-import "./sass/main.scss";
+const h = require("mutant/html-element");
+const ref = require("ssb-ref");
+const inject = require("./inject");
+let routes = false;
 
-// The code below is to handle custom protocol (ssb:)
-if (location.hash.indexOf("#/thread/") !== -1) {
-  // fix problem with IDs containing slashes
-  let id = location.hash
-  if (id.indexOf("ssb%3A") !== -1) {
-    id = id.replace("ssb%3A", "")
-  }
-  id = encodeURIComponent(decodeURIComponent(id.slice(9)))
+/**
+ * Below is the configuration check and application launch routine.
+ */
 
-  location.hash = `#/thread/${id}`
+
+const configurationIsOK = (savedData) => {
+    return (savedData.hasOwnProperty("keys")
+        || savedData.hasOwnProperty("keys")
+        || savedData.hasOwnProperty("keys"));
+};
+
+const configurationPresent = async (savedData) => {
+    console.log("configuration", savedData);
+    if (!configurationIsOK(savedData)) {
+        configurationMissing();
+    } else {
+        try {
+            window.ssb = await inject(savedData);
+            processHash();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
+const configurationMissing = () => {
+    window.location = "/help/no_configuration.html";
+};
+
+const processHash = () => {
+    if (!routes) {
+        routes = require("./routes");
+    }
+    
+    const hash = location.hash || '#';
+
+    console.log("hash changed", hash);
+
+    let root = document.getElementById("root");
+    while (root.hasChildNodes()) {
+        root.removeChild(root.firstChild);
+    }
+    root.appendChild(routes(hash.slice(1)));
 }
 
 
-const main = async () => {
-  console.log("Loading packages...");
-  const packages = await Packages.load();
-  const routes = Packages.routes();
-  Packages.loadedPackages().forEach(pkg => {
-    console.log(`Package: ${pkg.name}\n\t${pkg.description}\n\tRoutes:\n\t${pkg.routes}\n`);
-  });
-
-  m.route.prefix('#');
-  m.route(document.body, "/setup", routes);
-}
-
-main();
+browser.storage.local.get().then(configurationPresent, configurationMissing);
+window.addEventListener('hashchange', processHash);

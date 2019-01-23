@@ -2,15 +2,30 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Patchfox</title>
-  <script defer="" src="/src.a2b27638.js"></script>
-<link rel="stylesheet" href="/src.a2b27638.css"></head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <title>Patchfox (MVP)</title>
+    <link rel="stylesheet" href="https://code.cdn.mozilla.net/fonts/fira.css">
+    <script defer src="bundle.js"></script>
+</head>
 
 <body>
-
+    <noscript>
+        You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root">
+        <img src="images/icon.png" alt="hermie" style="width: 42px">
+        <p id="message">
+            Loading Patchfox...
+        </p>
+        <p>
+            If this screen doesn't refreshes, then there is something wrong. Go to <a id="options-trigger" href="#">settings for Patchfox</a>.
+        </p>
+        <script src="help/help.js"></script>
+    </div>
 </body>
 
 </html>
