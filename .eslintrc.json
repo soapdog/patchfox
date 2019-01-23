@@ -5,6 +5,9 @@
         "es6": true,
         "webextensions": true
     },
+    "globals": {
+        "ssb": true
+    },
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": 2018,

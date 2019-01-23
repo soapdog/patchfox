@@ -41,8 +41,8 @@ function build () {
         .pipe(sourcemaps.init({loadMaps: true}))
         // Add transformation tasks to the pipeline here.
         .on("error", log.error)
-        .pipe(sourcemaps.write("./debug"))
-        .pipe(dest("./debug"));
+        .pipe(sourcemaps.write("debug"))
+        .pipe(dest("debug"));
 }
 
 function copyStatic () {

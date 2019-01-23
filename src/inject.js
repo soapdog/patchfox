@@ -1,7 +1,7 @@
 const client = require("ssb-client");
 const config = require("ssb-config");
 
-const injectConnection = (data) => {
+const inject = (data) => {
     console.log("Saved Data", data);
     return new Promise((resolve, reject) => {
         client(data.keys, {
@@ -13,10 +13,10 @@ const injectConnection = (data) => {
             if (err) {
                 reject(`Connecting to sbot, <a href="#/setup">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).`)
             } else {
-                resolve({sbot: s});
+                resolve({sbot: s, remote: data.remote, keys: data.keys, manifest: data.manifest});
             }
         });
     })
 }
 
-module.exports = injectConnection;
+module.exports = inject;

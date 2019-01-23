@@ -1,8 +1,7 @@
 const h = require("mutant/html-element");
 const ref = require("ssb-ref");
-const routes = require("./routes");
 const inject = require("./inject");
-
+let routes = false;
 
 /**
  * Below is the configuration check and application launch routine.
@@ -33,6 +32,10 @@ const configurationMissing = () => {
 };
 
 const processHash = () => {
+    if (!routes) {
+        routes = require("./routes");
+    }
+    
     const hash = location.hash || '#';
 
     console.log("hash changed", hash);

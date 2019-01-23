@@ -31,7 +31,7 @@
     {
       "protocol": "ssb",
       "name": "Secure Scuttlebutt",
-      "uriTemplate": "/index.html#/intercept/%s"
+      "uriTemplate": "/index.html#intercept/%s"
     }
   ],
   "permissions": [
