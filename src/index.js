@@ -37,7 +37,8 @@ const processHash = () => {
     while (root.hasChildNodes()) {
         root.removeChild(root.firstChild);
     }
-    root.appendChild(routes(hash.slice(1)));
+    let newPage = routes(hash.slice(1));
+    root.appendChild(newPage);
 };
 
 

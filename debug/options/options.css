@@ -1,0 +1,29 @@
+
+section {
+    width: 80%;
+    font-family: "Open Sans Light", sans-serif;
+    font-size: 0.9em;
+    font-weight: 300;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.title {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+label {
+    flex: 1 1 auto;
+}
+
+input {
+    margin: 0.5em;
+    width: 500px;
+}
+
+textarea {
+    margin: 0.5em;
+    width: 500px;
+}

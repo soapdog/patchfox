@@ -64,40 +64,42 @@ exports.create = function (api) {
     }
 
     function loadCache() {
-        pull(
-            api.sbot.pull.stream(sbot => sbot.friends.stream({ live: true })),
-            pull.drain(item => {
-                if (!sync()) {
-                    // populate observable cache
-                    var reverse = {};
-                    for (var source in item) {
-                        if (ref.isFeed(source)) {
-                            update(source, item[source], cache);
+        try {
+            pull(
+                api.sbot.pull.stream(sbot => sbot.friends.stream({ live: true })),
+                pull.drain(item => {
+                    if (!sync()) {
+                        // populate observable cache
+                        var reverse = {};
+                        for (var source in item) {
+                            if (ref.isFeed(source)) {
+                                update(source, item[source], cache);
 
-                            // generate reverse lookup
-                            for (let dest in item[source]) {
-                                reverse[dest] = reverse[dest] || {};
-                                reverse[dest][source] = item[source][dest];
+                                // generate reverse lookup
+                                for (let dest in item[source]) {
+                                    reverse[dest] = reverse[dest] || {};
+                                    reverse[dest][source] = item[source][dest];
 
+                                }
                             }
                         }
-                    }
 
-                    // populate reverse observable cache
-                    for (let dest in reverse) {
-                        if (ref.isFeed(dest)) {
+                        // populate reverse observable cache
+                        for (let dest in reverse) {
                             update(dest, reverse[dest], reverseCache);
-                        }
-                    }
 
-                    sync.set(true);
-                } else if (item && ref.isFeed(item.from) && ref.isFeed(item.to)) {
-                    // handle realtime updates
-                    update(item.from, { [item.to]: item.value }, cache);
-                    update(item.to, { [item.from]: item.value }, reverseCache);
-                }
-            })
-        );
+                        }
+
+                        sync.set(true);
+                    } else if (item && ref.isFeed(item.from) && ref.isFeed(item.to)) {
+                        // handle realtime updates
+                        update(item.from, { [item.to]: item.value }, cache);
+                        update(item.to, { [item.from]: item.value }, reverseCache);
+                    }
+                }));
+        } catch (e) {
+            console.log("error on loadcache", e);
+        }
     }
 
     function update(sourceId, values, lookup) {
@@ -124,7 +126,7 @@ exports.create = function (api) {
     function get(id, lookup) {
         if (!ref.isFeed(id)) {
             console.error("Contact state requires an id!", id);
-            return Value({});
+            throw id;
         }
         if (!cacheLoading) {
             cacheLoading = true;

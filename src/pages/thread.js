@@ -14,6 +14,11 @@ exports.needs = nest({
 
 exports.create = (api) => {
     return nest("app.page.thread", ({ msgID }) => {
+        try {
+            msgID = decodeURIComponent(msgID);
+        } catch(e) {
+            console.log("id not encoded.");
+        }
         console.log("msgID", msgID);
         const { messages, isPrivate, rootId, lastId, channel, recps } = api.feed.obs.thread(msgID);
 

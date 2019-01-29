@@ -9,8 +9,8 @@ exports.gives = nest("message.html.link");
 exports.create = function (api) {
     return nest("message.html.link", function (id) {
         if (typeof id !== "string") { throw new Error("link must be to message id"); }
-
-        var link = h("a", { href: `ssb:${id}` }, id.substring(0, 10) + "...");
+        let encodedId = encodeURIComponent(id);
+        var link = h("a", { href: `#thread/${encodedId}` }, id.substring(0, 10) + "...");
 
         if (ref.isMsg(id)) {
             api.message.async.name(id, function (err, name) {

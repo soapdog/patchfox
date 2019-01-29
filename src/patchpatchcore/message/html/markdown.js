@@ -45,9 +45,6 @@ exports.create = function (api) {
                 LoadingBlobHook(api.blob.obs.has)
             ],
             innerHTML: html()
-                .replace("<a href=\"%", "<a href=\"ssb:%")
-                .replace("<a href=\"#", "<a href=\"ssb:#")
-                .replace("<a href=\"@", "<a href=\"ssb:@")
         });
 
         function html() {

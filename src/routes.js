@@ -37,7 +37,7 @@ const Intercept = ({ encodedId }) => {
 
 let routes = rlite(NotFound, {
     "public": api.app.page.public,
-    "thread/:msgID": api.app.page.thread,
+    "thread/*msgID": api.app.page.thread,
     "test": api.app.page.test,
     "intercept/*encodedId": Intercept
 });
