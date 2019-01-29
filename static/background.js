@@ -1,28 +1,19 @@
-/**
- * The background script knows if we have saved configuration or not
- * If it finds the configuration, it can start a connection to sbot on its own.
- */
-let configuration = false;
+browser.omnibox.setDefaultSuggestion({
+    description: "Open Patchfox"
+});
 
-const configurationPresent = (savedData) => {
-    configuration = savedData;
-    window.ssb = {
-        config: savedData
-    };
-};
-const configurationMissing = () => configuration => false;
-
-browser.storage.local.get().then(configurationPresent, configurationMissing);
-
-/**
- * The browser action is the toolbar item with the hermie
- * it is defines in static/manifest.json
- */
-const browserActionHandler = () => {
-    browser.tabs.create({
-        url: browser.extension.getURL("index.html")
-    });
-};
-
-
-browser.browserAction.onClicked.addListener(browserActionHandler);
+browser.omnibox.onInputEntered.addListener((text, disposition) => {
+    const url =  browser.extension.getURL("index.html") + "#public";
+    
+    switch (disposition) {
+    case "currentTab":
+        browser.tabs.update({ url });
+        break;
+    case "newForegroundTab":
+        browser.tabs.create({ url });
+        break;
+    case "newBackgroundTab":
+        browser.tabs.create({ url, active: false });
+        break;
+    }
+});

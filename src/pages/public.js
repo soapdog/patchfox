@@ -1,35 +1,19 @@
-const combine = require('depject')
-const apply = require('depject/apply')
-const h = require('mutant/h')
-const patchpatchcore = require("../patchpatchcore")
-const patchcore = require("patchcore");
-delete patchcore.patchcore.config;
-delete patchcore.patchcore.keys;
-delete patchcore.patchcore.sbot;
+const nest = require("depnest");
+const h = require("mutant/h");
 
-console.dir(patchcore)
+exports.gives = nest("app.page.public");
 
-const combined = combine([patchpatchcore, patchcore])
-console.dir(combined)
-var api = entry(combined)
+exports.needs = nest({
+    "feed.html.render": "first",
+    "feed.pull.public": "first"
+});
 
-const Public = () => {
 
-    return h('div.App', [
-        api.feed.html.render(api.feed.pull.public)
-    ])
-}
+exports.create = (api) => {
+    return nest("app.page.public", () => {
+        return h("div.App", [
+            api.feed.html.render(api.feed.pull.public)
+        ]);
+    });
+};
 
-function entry(sockets) {
-    return {
-        feed: {
-            html: {
-                render: apply.first(sockets.feed.html.render)
-            },
-            pull: {
-                public: apply.first(sockets.feed.pull.public)
-            }
-        }
-    }
-}
-module.exports = Public;

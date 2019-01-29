@@ -1,12 +1,5 @@
-const h = require("mutant/html-element");
-const ref = require("ssb-ref");
 const inject = require("./inject");
 let routes = false;
-
-/**
- * Below is the configuration check and application launch routine.
- */
-
 
 const configurationIsOK = (savedData) => {
     return (savedData.hasOwnProperty("keys")
@@ -36,7 +29,7 @@ const processHash = () => {
         routes = require("./routes");
     }
     
-    const hash = location.hash || '#';
+    const hash = location.hash || "#";
 
     console.log("hash changed", hash);
 
@@ -45,8 +38,8 @@ const processHash = () => {
         root.removeChild(root.firstChild);
     }
     root.appendChild(routes(hash.slice(1)));
-}
+};
 
 
 browser.storage.local.get().then(configurationPresent, configurationMissing);
-window.addEventListener('hashchange', processHash);
+window.addEventListener("hashchange", processHash);

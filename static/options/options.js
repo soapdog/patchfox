@@ -12,7 +12,7 @@ function saveConfigurationRequest(ev) {
     remote = remoteInput.value;
     storeSettings(keys, remote, manifest);
     browser.tabs.create({
-        url: browser.extension.getURL("/index.html#/test-configuration")
+        url: browser.extension.getURL("/index.html#test")
     });
 }
 
