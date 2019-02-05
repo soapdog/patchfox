@@ -88,4 +88,5 @@ exports.watch = series(clean, copyStatic, processSass,  build, watcher);
 exports.dev = series(clean, copyStatic, processSass, build, parallel(webExtensionRun, watcher, watcherExtension));
 exports.static = copyStatic;
 exports.style = processSass;
+exports.clean = clean;
 exports.default = series(clean, copyStatic, processSass, build);

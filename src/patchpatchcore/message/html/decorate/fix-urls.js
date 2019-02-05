@@ -4,7 +4,7 @@ exports.gives = nest("message.html.decorate");
 
 function replacerMsgID(match, id, offset, string) {
     // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-    return "<a href=\"/index.html#thread/%25" + encodeURIComponent(id);
+    return "<a href=\"ssb:%" + id;
 }
 
 exports.create = (api) => {

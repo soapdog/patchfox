@@ -9,13 +9,13 @@ const nest = require("depnest");
 delete patchcore.patchcore.config;
 delete patchcore.patchcore.keys;
 delete patchcore.patchcore.sbot;
-delete patchcore.patchcore.contact.obs;
 delete patchcore.patchcore.message.html;
 
 
 const  pages = {
     public: require("./pages/public"),
     thread: require("./pages/thread"),
+    feed: require("./pages/feed"),
     test: require("./pages/test")
 };
 
@@ -26,6 +26,7 @@ const sockets = combine.apply(null, args);
 const api = entry(sockets, nest({
     "app.page.public": "first",
     "app.page.thread": "first",
+    "app.page.feed": "first",
     "app.page.test": "first",
 }));
 // This `api` should contain references to all routed pages. 
