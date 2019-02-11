@@ -11,12 +11,12 @@ const inject = (data) => {
         }, (err, s) => {
 
             if (err) {
-                reject(`Connecting to sbot, <a href="#/setup">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).`)
+                reject("Connecting to sbot, <a href=\"#/setup\">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).");
             } else {
                 resolve({sbot: s, remote: data.remote, keys: data.keys, manifest: data.manifest});
             }
         });
-    })
-}
+    });
+};
 
 module.exports = inject;

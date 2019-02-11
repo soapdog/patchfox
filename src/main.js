@@ -3,6 +3,7 @@ const patchpatchcore = require("./patchpatchcore");
 const patchcore = require("patchcore");
 const entry = require("depject/entry");
 const nest = require("depnest");
+const bulk = require("bulk-require");
 
 // Delete patchcore modules that need to be replaced
 // with our own.
@@ -12,24 +13,18 @@ delete patchcore.patchcore.sbot;
 delete patchcore.patchcore.message.html;
 
 
-const  pages = {
-    public: require("./pages/public"),
-    thread: require("./pages/thread"),
-    feed: require("./pages/feed"),
-    test: require("./pages/test")
+const  patchfox = {
+    app: bulk(__dirname, [ "app/**/*.js" ]),
+    router: bulk(__dirname, [ "router/**/*.js" ]),
 };
 
-const args = [ pages, patchpatchcore, patchcore ];
+const args = [ patchfox, patchpatchcore, patchcore ];
 // plugings loaded first will over-ride core modules loaded later
 const sockets = combine.apply(null, args);
 
 const api = entry(sockets, nest({
-    "app.page.public": "first",
-    "app.page.thread": "first",
-    "app.page.feed": "first",
-    "app.page.test": "first",
+    "app.html.app": "first"
 }));
-// This `api` should contain references to all routed pages. 
-// it is used by routes.js to create the router.
+
 
 module.exports = api;
