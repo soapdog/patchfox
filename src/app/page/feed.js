@@ -2,6 +2,8 @@ const nest = require("depnest");
 const { h, Struct, computed, map, resolve, onceTrue } = require("mutant");
 const last = require("lodash/last");
 const get = require("lodash/get");
+const next = require('pull-next-query')
+
 
 exports.gives = nest("app.page.feed");
 
@@ -14,6 +16,7 @@ exports.needs = nest({
     "about.obs.description": "first",
     "keys.sync.id": "first",
     "message.html.markdown": "first",
+    "sbot.pull.stream": "first"
 });
 
 
@@ -26,6 +29,16 @@ exports.create = (api) => {
         }
         console.log("feedID", feedID);
 
+        const source = (opts) => api.sbot.pull.stream(s => next(s.query.read, opts, ["value", "timestamp"]));
+        const query = [{
+            $filter: {
+                value: {
+                    timestamp: { $gt: 0 },
+                    author: feedID
+                }
+            }
+        }];
+
         return h("div.App", [
             h("section.about", [
                 api.about.html.image(feedID),
@@ -33,7 +46,8 @@ exports.create = (api) => {
                     api.about.obs.name(feedID)
                 ]),
                 h("div.introduction", computed(api.about.obs.description(feedID), d => api.message.html.markdown(d || ""))),
-
+                h("hr"),
+                api.feed.html.render(source({query}))
             ])
         ]);
     });

@@ -24,8 +24,9 @@ exports.create = function (api) {
                 h("header", "backlinks:"),
                 h("ul", [
                     map(references, (backlink) => {
+                        let encodedBacklink = encodeURIComponent(backlink.id);
                         return h("li", [
-                            h("a -backlink", { href: `ssb:${backlink.id}`, title: backlink.id }, api.message.obs.name(backlink.id))
+                            h("a -backlink", { href: `#/thread/${encodedBacklink}`, title: backlink.id }, api.message.obs.name(backlink.id))
                         ]);
                     })
                 ])

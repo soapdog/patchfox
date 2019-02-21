@@ -11,8 +11,9 @@ exports.create = function (api) {
     return nest("message.html.timestamp", timestamp);
 
     function timestamp (msg) {
+        let encodedId = encodeURIComponent(msg.key);
         return h("a.Timestamp", {
-            href: `ssb:${msg.key}`,
+            href: `#/thread/${encodedId}`,
             title: new Date(api.message.sync.timestamp(msg))
         }, api.lib.obs.timeAgo(api.message.sync.timestamp(msg)));
     }
