@@ -19,9 +19,10 @@ const configurationPresent = async (savedData) => {
             while (root.hasChildNodes()) {
                 root.removeChild(root.firstChild);
             }
-            root.appendChild(main);
+            root.appendChild(main.app.html.app());
 
         } catch (e) {
+            console.log("Error trapped by main");
             console.error(e);
         }
     }

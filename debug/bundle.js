@@ -83588,111 +83588,44 @@ function extend() {
 }
 
 },{}],830:[function(require,module,exports){
-var combine = require("depject");
-var patchpatchcore = require("./patchpatchcore");
-var patchcore = require("patchcore");
-var entry = require("depject/entry");
 var nest = require("depnest");
 
-// Delete patchcore modules that need to be replaced
-// with our own.
-delete patchcore.patchcore.config;
-delete patchcore.patchcore.keys;
-delete patchcore.patchcore.sbot;
-delete patchcore.patchcore.message.html;
+var _require = require("mutant"),
+    h = _require.h,
+    watch = _require.watch,
+    resolve = _require.resolve;
 
-var pages = {
-    public: require("./pages/public"),
-    thread: require("./pages/thread"),
-    feed: require("./pages/feed"),
-    test: require("./pages/test")
-};
+exports.gives = nest("app.html.app");
 
-var args = [pages, patchpatchcore, patchcore];
-// plugings loaded first will over-ride core modules loaded later
-var sockets = combine.apply(null, args);
+exports.needs = nest({
+    "app.sync.goTo": "first",
+    "app.sync.initialise": "map",
+    "router.sync.routes": "first",
+    "router.obs.route": "first"
+});
 
-var api = entry(sockets, nest({
-    "app.page.public": "first",
-    "app.page.thread": "first",
-    "app.page.feed": "first",
-    "app.page.test": "first"
-}));
-// This `api` should contain references to all routed pages. 
-// it is used by routes.js to create the router.
+exports.create = function (api) {
+    return nest("app.html.app", app);
 
-module.exports = api;
+    function app() {
+        console.log("STARTING patchfox");
 
-},{"./pages/feed":833,"./pages/public":834,"./pages/test":835,"./pages/thread":836,"./patchpatchcore":839,"depject":91,"depject/entry":90,"depnest":93,"patchcore":581}],831:[function(require,module,exports){
-var inject = require("./inject");
-var routes = false;
+        // runs all the functions in app/sync/initialise
+        api.app.sync.initialise();
+        console.log("Current route:", resolve(api.router.obs.route()));
 
-var configurationIsOK = function (savedData) {
-    return savedData.hasOwnProperty("keys") || savedData.hasOwnProperty("keys") || savedData.hasOwnProperty("keys");
-};
+        var App = h("App", api.router.obs.route());
 
-var configurationPresent = async function (savedData) {
-    console.log("configuration", savedData);
-    if (!configurationIsOK(savedData)) {
-        configurationMissing();
-    } else {
-        try {
-            window.ssb = await inject(savedData);
-            processHash();
-        } catch (e) {
-            console.error(e);
-        }
-    }
-};
-var configurationMissing = function () {
-    window.location = "/help/no_configuration.html";
-};
-
-var processHash = function () {
-    if (!routes) {
-        routes = require("./routes");
-    }
-
-    var hash = location.hash || "#";
-
-    console.log("hash changed", hash);
-
-    var root = document.getElementById("root");
-    while (root.hasChildNodes()) {
-        root.removeChild(root.firstChild);
-    }
-    var newPage = routes(hash.slice(1));
-    root.appendChild(newPage);
-};
-
-browser.storage.local.get().then(configurationPresent, configurationMissing);
-window.addEventListener("hashchange", processHash);
-
-},{"./inject":832,"./routes":859}],832:[function(require,module,exports){
-var client = require("ssb-client");
-var config = require("ssb-config");
-
-var inject = function (data) {
-    console.log("Saved Data", data);
-    return new Promise(function (resolve, reject) {
-        client(data.keys, {
-            remote: data.remote,
-            caps: config.caps,
-            manifest: data.manifest
-        }, function (err, s) {
-
-            if (err) {
-                reject("Connecting to sbot, <a href=\"#/setup\">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).");
-            } else {
-                resolve({ sbot: s, remote: data.remote, keys: data.keys, manifest: data.manifest });
-            }
+        api.router.obs.route()(function (newPage) {
+            // NOTE: just some logging...
+            console.log("route changed", newPage);
         });
-    });
+
+        return App;
+    }
 };
 
-module.exports = inject;
-
-},{"ssb-client":789,"ssb-config":793}],833:[function(require,module,exports){
+},{"depnest":93,"mutant":499}],831:[function(require,module,exports){
 var nest = require("depnest");
 
 var _require = require("mutant"),
@@ -83736,7 +83669,7 @@ exports.create = function (api) {
     });
 };
 
-},{"depnest":93,"lodash/get":397,"lodash/last":403,"mutant":499}],834:[function(require,module,exports){
+},{"depnest":93,"lodash/get":397,"lodash/last":403,"mutant":499}],832:[function(require,module,exports){
 var nest = require("depnest");
 var h = require("mutant/h");
 
@@ -83749,11 +83682,11 @@ exports.needs = nest({
 
 exports.create = function (api) {
     return nest("app.page.public", function () {
-        return h("div.App", [api.feed.html.render(api.feed.pull.public)]);
+        return h("Public", [api.feed.html.render(api.feed.pull.public)]);
     });
 };
 
-},{"depnest":93,"mutant/h":496}],835:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],833:[function(require,module,exports){
 var nest = require("depnest");
 var h = require("mutant/h");
 
@@ -83770,7 +83703,7 @@ exports.create = function (api) {
     });
 };
 
-},{"depnest":93,"mutant/h":496}],836:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],834:[function(require,module,exports){
 var nest = require("depnest");
 
 var _require = require("mutant"),
@@ -83824,7 +83757,155 @@ function comparer(a, b) {
     return get(resolve(a), "key") === get(resolve(b), "key");
 }
 
-},{"depnest":93,"lodash/get":397,"lodash/last":403,"mutant":499}],837:[function(require,module,exports){
+},{"depnest":93,"lodash/get":397,"lodash/last":403,"mutant":499}],835:[function(require,module,exports){
+var nest = require("depnest");
+
+exports.gives = nest("app.sync.goTo");
+
+exports.create = function (api) {
+
+    return nest("app.sync.goTo", function (url) {
+
+        window.location.hash = "#{url}";
+        return true;
+    });
+};
+
+},{"depnest":93}],836:[function(require,module,exports){
+var nest = require("depnest");
+
+exports.gives = nest("app.sync.initialise");
+
+exports.create = function (api) {
+    return nest("app.sync.initialise", errorCatcher);
+
+    function errorCatcher() {
+        console.log("Initialise: adding error catcher");
+        window.addEventListener("error", function (ev) {
+            console.error("error caught by global error catcher", ev);
+        });
+        return true;
+    }
+};
+
+},{"depnest":93}],837:[function(require,module,exports){
+var nest = require("depnest");
+
+exports.gives = nest("app.sync.initialise");
+
+exports.needs = nest({
+    "router.sync.routes": "first",
+    "router.obs.route": "first"
+});
+
+exports.create = function (api) {
+
+    return nest("app.sync.initialise", function () {
+
+        console.log("initialise: binding events for router");
+
+        function processHash() {
+            var hash = location.hash || "#";
+
+            // Do something useful with the result of the route
+            var route = api.router.sync.routes()(hash.slice(1));
+            console.log("processHash", route);
+            api.router.obs.route().set(route);
+        }
+
+        window.addEventListener("hashchange", processHash);
+        processHash();
+    });
+};
+
+},{"depnest":93}],838:[function(require,module,exports){
+var inject = require("./inject");
+
+var configurationIsOK = function (savedData) {
+    return savedData.hasOwnProperty("keys") || savedData.hasOwnProperty("keys") || savedData.hasOwnProperty("keys");
+};
+
+var configurationPresent = async function (savedData) {
+    if (!configurationIsOK(savedData)) {
+        configurationMissing();
+    } else {
+        try {
+            window.ssb = await inject(savedData);
+
+            var main = require("./main");
+
+            var root = document.getElementById("root");
+            while (root.hasChildNodes()) {
+                root.removeChild(root.firstChild);
+            }
+            root.appendChild(main.app.html.app());
+        } catch (e) {
+            console.log("Error trapped by main");
+            console.error(e);
+        }
+    }
+};
+
+var configurationMissing = function () {
+    window.location = "/help/no_configuration.html";
+};
+
+browser.storage.local.get().then(configurationPresent, configurationMissing);
+
+},{"./inject":839,"./main":840}],839:[function(require,module,exports){
+var client = require("ssb-client");
+var config = require("ssb-config");
+
+var inject = function (data) {
+    console.log("Saved Data", data);
+    return new Promise(function (resolve, reject) {
+        client(data.keys, {
+            remote: data.remote,
+            caps: config.caps,
+            manifest: data.manifest
+        }, function (err, s) {
+
+            if (err) {
+                reject("Connecting to sbot, <a href=\"#/setup\">go back to setup</a> and check your settings. Also, make sure <i>sbot</i> is running (is scuttle-shell icon appearing on your machine?).");
+            } else {
+                resolve({ sbot: s, remote: data.remote, keys: data.keys, manifest: data.manifest });
+            }
+        });
+    });
+};
+
+module.exports = inject;
+
+},{"ssb-client":789,"ssb-config":793}],840:[function(require,module,exports){
+var combine = require("depject");
+var patchpatchcore = require("./patchpatchcore");
+var patchcore = require("patchcore");
+var entry = require("depject/entry");
+var nest = require("depnest");
+
+// Delete patchcore modules that need to be replaced
+// with our own.
+delete patchcore.patchcore.config;
+delete patchcore.patchcore.keys;
+delete patchcore.patchcore.sbot;
+delete patchcore.patchcore.message.html;
+
+var patchfox = {
+    app: { "app": { "html": { "app": require("./app\\html\\app.js") }, "page": { "feed": require("./app\\page\\feed.js"), "public": require("./app\\page\\public.js"), "test": require("./app\\page\\test.js"), "thread": require("./app\\page\\thread.js") }, "sync": { "goTo": require("./app\\sync\\goTo.js"), "initialise": { "errorCatcher": require("./app\\sync\\initialise\\errorCatcher.js"), "router": require("./app\\sync\\initialise\\router.js") } } } },
+    router: { "router": { "obs": { "route": require("./router\\obs\\route.js") }, "sync": { "routes": require("./router\\sync\\routes.js") } } }
+};
+
+var args = [patchfox, patchpatchcore, patchcore];
+// plugings loaded first will over-ride core modules loaded later
+var sockets = combine.apply(null, args);
+
+var api = entry(sockets, nest({
+    "app.html.app": "first"
+}));
+
+module.exports = api;
+
+},{"./app\\html\\app.js":830,"./app\\page\\feed.js":831,"./app\\page\\public.js":832,"./app\\page\\test.js":833,"./app\\page\\thread.js":834,"./app\\sync\\goTo.js":835,"./app\\sync\\initialise\\errorCatcher.js":836,"./app\\sync\\initialise\\router.js":837,"./patchpatchcore":843,"./router\\obs\\route.js":863,"./router\\sync\\routes.js":864,"depject":91,"depject/entry":90,"depnest":93,"patchcore":581}],841:[function(require,module,exports){
 var nest = require("depnest");
 
 exports.gives = nest("blob.sync.url");
@@ -83835,7 +83916,7 @@ exports.create = function () {
     });
 };
 
-},{"depnest":93}],838:[function(require,module,exports){
+},{"depnest":93}],842:[function(require,module,exports){
 var Config = require('ssb-config/inject');
 var nest = require('depnest');
 
@@ -83854,14 +83935,14 @@ exports.create = function (api) {
   });
 };
 
-},{"depnest":93,"ssb-config/inject":794}],839:[function(require,module,exports){
+},{"depnest":93,"ssb-config/inject":794}],843:[function(require,module,exports){
 
 
 module.exports = {
     patchcore: { "config": require("./config.js"), "keys": require("./keys.js"), "sbot": require("./sbot.js"), "blob": { "sync": require("./blob\\sync.js") }, "message": { "html": { "action": { "like": require("./message\\html\\action\\like.js"), "reply": require("./message\\html\\action\\reply.js") }, "author": require("./message\\html\\author.js"), "backlinks": require("./message\\html\\backlinks.js"), "decorate": { "data-id": require("./message\\html\\decorate\\data-id.js"), "fix-urls": require("./message\\html\\decorate\\fix-urls.js") }, "layout": { "default": require("./message\\html\\layout\\default.js"), "mini": require("./message\\html\\layout\\mini.js") }, "link": require("./message\\html\\link.js"), "markdown": require("./message\\html\\markdown.js"), "meta": { "channel": require("./message\\html\\meta\\channel.js") }, "render": { "channel": require("./message\\html\\render\\channel.js"), "issue": require("./message\\html\\render\\issue.js"), "post": require("./message\\html\\render\\post.js"), "vote": require("./message\\html\\render\\vote.js"), "zzz-fallback": require("./message\\html\\render\\zzz-fallback.js") }, "timestamp": require("./message\\html\\timestamp.js") } } }
 };
 
-},{"./blob\\sync.js":837,"./config.js":838,"./keys.js":840,"./message\\html\\action\\like.js":841,"./message\\html\\action\\reply.js":842,"./message\\html\\author.js":843,"./message\\html\\backlinks.js":844,"./message\\html\\decorate\\data-id.js":845,"./message\\html\\decorate\\fix-urls.js":846,"./message\\html\\layout\\default.js":847,"./message\\html\\layout\\mini.js":848,"./message\\html\\link.js":849,"./message\\html\\markdown.js":850,"./message\\html\\meta\\channel.js":851,"./message\\html\\render\\channel.js":852,"./message\\html\\render\\issue.js":853,"./message\\html\\render\\post.js":854,"./message\\html\\render\\vote.js":855,"./message\\html\\render\\zzz-fallback.js":856,"./message\\html\\timestamp.js":857,"./sbot.js":858}],840:[function(require,module,exports){
+},{"./blob\\sync.js":841,"./config.js":842,"./keys.js":844,"./message\\html\\action\\like.js":845,"./message\\html\\action\\reply.js":846,"./message\\html\\author.js":847,"./message\\html\\backlinks.js":848,"./message\\html\\decorate\\data-id.js":849,"./message\\html\\decorate\\fix-urls.js":850,"./message\\html\\layout\\default.js":851,"./message\\html\\layout\\mini.js":852,"./message\\html\\link.js":853,"./message\\html\\markdown.js":854,"./message\\html\\meta\\channel.js":855,"./message\\html\\render\\channel.js":856,"./message\\html\\render\\issue.js":857,"./message\\html\\render\\post.js":858,"./message\\html\\render\\vote.js":859,"./message\\html\\render\\zzz-fallback.js":860,"./message\\html\\timestamp.js":861,"./sbot.js":862}],844:[function(require,module,exports){
 var Path = require('path');
 var Keys = require('ssb-keys');
 var nest = require('depnest');
@@ -83891,7 +83972,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"path":620,"ssb-keys":801}],841:[function(require,module,exports){
+},{"depnest":93,"path":620,"ssb-keys":801}],845:[function(require,module,exports){
 var _require = require('mutant'),
     h = _require.h,
     computed = _require.computed,
@@ -83950,7 +84031,7 @@ function doesLike(likes, userId) {
   return likes.includes(userId);
 }
 
-},{"depnest":93,"mutant":499}],842:[function(require,module,exports){
+},{"depnest":93,"mutant":499}],846:[function(require,module,exports){
 var h = require('mutant/h');
 var nest = require('depnest');
 
@@ -83962,7 +84043,7 @@ exports.create = function (api) {
   });
 };
 
-},{"depnest":93,"mutant/h":496}],843:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],847:[function(require,module,exports){
 var h = require("mutant/h");
 var nest = require("depnest");
 
@@ -83978,7 +84059,7 @@ exports.create = function (api) {
     }
 };
 
-},{"depnest":93,"mutant/h":496}],844:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],848:[function(require,module,exports){
 var h = require("mutant/h");
 var map = require("mutant/map");
 var computed = require("mutant/computed");
@@ -84024,7 +84105,7 @@ function includeOrEqual(valueOrArray, item) {
     }
 }
 
-},{"depnest":93,"mutant/computed":490,"mutant/h":496,"mutant/map":512,"mutant/when":531,"ssb-ref":810}],845:[function(require,module,exports){
+},{"depnest":93,"mutant/computed":490,"mutant/h":496,"mutant/map":512,"mutant/when":531,"ssb-ref":810}],849:[function(require,module,exports){
 var nest = require('depnest');
 
 exports.gives = nest('message.html.decorate');
@@ -84038,7 +84119,7 @@ exports.create = function (api) {
   });
 };
 
-},{"depnest":93}],846:[function(require,module,exports){
+},{"depnest":93}],850:[function(require,module,exports){
 var nest = require("depnest");
 
 exports.gives = nest("message.html.decorate");
@@ -84058,7 +84139,7 @@ exports.create = function (api) {
     });
 };
 
-},{"depnest":93}],847:[function(require,module,exports){
+},{"depnest":93}],851:[function(require,module,exports){
 var h = require("mutant/h");
 var nest = require("depnest");
 
@@ -84083,7 +84164,7 @@ exports.create = function (api) {
     }
 };
 
-},{"depnest":93,"mutant/h":496}],848:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],852:[function(require,module,exports){
 var h = require('mutant/h');
 var nest = require('depnest');
 
@@ -84107,7 +84188,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"mutant/h":496}],849:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],853:[function(require,module,exports){
 var h = require("mutant/h");
 var ref = require("ssb-ref");
 var nest = require("depnest");
@@ -84134,7 +84215,7 @@ exports.create = function (api) {
     });
 };
 
-},{"depnest":93,"mutant/h":496,"ssb-ref":810}],850:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496,"ssb-ref":810}],854:[function(require,module,exports){
 var renderer = require("ssb-markdown");
 var h = require("mutant/h");
 var ref = require("ssb-ref");
@@ -84242,7 +84323,7 @@ function LoadingBlobHook(hasBlob) {
     };
 }
 
-},{"depnest":93,"html-escape":332,"mutant/h":496,"mutant/watch":530,"querystring":728,"ssb-markdown":806,"ssb-ref":810}],851:[function(require,module,exports){
+},{"depnest":93,"html-escape":332,"mutant/h":496,"mutant/watch":530,"querystring":728,"ssb-markdown":806,"ssb-ref":810}],855:[function(require,module,exports){
 var h = require("mutant/h");
 var nest = require("depnest");
 
@@ -84256,7 +84337,7 @@ exports.create = function (api) {
     });
 };
 
-},{"depnest":93,"mutant/h":496}],852:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],856:[function(require,module,exports){
 var h = require('mutant/h');
 var nest = require('depnest');
 var extend = require('xtend');
@@ -84307,7 +84388,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"mutant/h":496,"xtend":829}],853:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496,"xtend":829}],857:[function(require,module,exports){
 var h = require('mutant/h');
 var nest = require('depnest');
 var extend = require('xtend');
@@ -84354,7 +84435,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"mutant/h":496,"xtend":829}],854:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496,"xtend":829}],858:[function(require,module,exports){
 var h = require('mutant/h');
 var nest = require('depnest');
 var extend = require('xtend');
@@ -84407,7 +84488,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"mutant/h":496,"xtend":829}],855:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496,"xtend":829}],859:[function(require,module,exports){
 var nest = require('depnest');
 var extend = require('xtend');
 
@@ -84453,7 +84534,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"xtend":829}],856:[function(require,module,exports){
+},{"depnest":93,"xtend":829}],860:[function(require,module,exports){
 var h = require('mutant/h');
 var nest = require('depnest');
 var extend = require('xtend');
@@ -84488,7 +84569,7 @@ exports.create = function (api) {
   }
 };
 
-},{"depnest":93,"mutant/h":496,"xtend":829}],857:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496,"xtend":829}],861:[function(require,module,exports){
 var h = require("mutant/h");
 var nest = require("depnest");
 
@@ -84509,7 +84590,7 @@ exports.create = function (api) {
     }
 };
 
-},{"depnest":93,"mutant/h":496}],858:[function(require,module,exports){
+},{"depnest":93,"mutant/h":496}],862:[function(require,module,exports){
 var pull = require('pull-stream');
 var defer = require('pull-defer');
 
@@ -84772,64 +84853,108 @@ exports.create = function (api) {
     }
 };
 
-},{"depnest":93,"flat":126,"mutant":499,"pull-defer":639,"pull-reconnect":684,"pull-stream":685,"ssb-client":789,"ssb-feed":798,"ssb-keys":801,"ssb-ref":810}],859:[function(require,module,exports){
-var rlite = require("rlite-router");
-var h = require("mutant/html-element");
-var refs = require("ssb-ref");
-var api = require("./api");
+},{"depnest":93,"flat":126,"mutant":499,"pull-defer":639,"pull-reconnect":684,"pull-stream":685,"ssb-client":789,"ssb-feed":798,"ssb-keys":801,"ssb-ref":810}],863:[function(require,module,exports){
+var nest = require("depnest");
 
-var NotFound = function () {
-    return h("h1", "404: Not Found");
-};
+var _require = require("mutant"),
+    Value = _require.Value;
 
-var Intercept = function (_ref, state, url) {
-    var encodedId = _ref.encodedId;
+exports.gives = nest("router.obs.route");
 
-    var id = decodeURIComponent(encodedId).replace("ssb:", "");
-    switch (id[0]) {
-        case "#":
-            window.location.hash = "channel/" + id.slice(1);
-            break;
-        case "%":
-            if (!refs.isMsgId(id)) {
-                console.error("intercept url should been a msg but it is not: " + id);
-                return false;
-            }
-            window.location.hash = "thread/" + encodeURIComponent(id);
-            break;
-        case "@":
-            if (!refs.isFeedId(id)) {
-                console.error("intercept url should been a feed but it is not: " + id);
-                return false;
-            }
-            window.location.hash = "feed/" + encodeURIComponent(id);
-            break;
-        case "&":
-            if (!refs.isBlobId(id)) {
-                console.error("intercept url should been a blob but it is not: " + od);
-                return false;
-            }
-            window.location = "http://localhost:8989/blobs/get/" + id;
-            break;
-    }
-
-    if (id.indexOf("javascript:") === 0) {
-        return h("h1", "stop trying to inject JS here");
-    }
-
-    return h("p", "loading " + id + "...");
-};
-
-var routes = rlite(NotFound, {
-    "public": api.app.page.public,
-    "thread/*msgID": api.app.page.thread,
-    "feed/*feedID": api.app.page.feed,
-    "test": api.app.page.test,
-    "intercept/*encodedId": Intercept
+exports.needs = nest({
+    "router.sync.routes": "first"
 });
 
-module.exports = routes;
+exports.create = function (api) {
+    var _location = Value();
 
-},{"./api":830,"mutant/html-element":497,"rlite-router":750,"ssb-ref":810}]},{},[831])
+    return nest("router.obs.route", function () {
+
+        return _location;
+    });
+};
+
+},{"depnest":93,"mutant":499}],864:[function(require,module,exports){
+var _require = require("ssb-ref"),
+    isMsgId = _require.isMsgId,
+    isFeedId = _require.isFeedId,
+    isBlobId = _require.isBlobId;
+
+var nest = require("depnest");
+var rlite = require("rlite-router");
+
+var _require2 = require("mutant"),
+    h = _require2.h;
+
+exports.gives = nest("router.sync.routes");
+
+exports.needs = nest({
+    "app.page": {
+        "thread": "first",
+        "public": "first",
+        "feed": "first",
+        "test": "first"
+    },
+    "keys.sync.id": "first"
+});
+
+exports.create = function (api) {
+    return nest("router.sync.routes", function () {
+
+        var NotFound = function () {
+            return h("h1", "404: Not Found");
+        };
+
+        var Intercept = function (_ref, _state, _url) {
+            var encodedId = _ref.encodedId;
+
+            var id = decodeURIComponent(encodedId).replace("ssb:", "");
+            switch (id[0]) {
+                case "#":
+                    window.location.hash = "channel/" + id.slice(1);
+                    break;
+                case "%":
+                    if (!isMsgId(id)) {
+                        console.error("intercept url should been a msg but it is not: " + id);
+                        return false;
+                    }
+                    window.location.hash = "thread/" + encodeURIComponent(id);
+                    break;
+                case "@":
+                    if (!isFeedId(id)) {
+                        console.error("intercept url should been a feed but it is not: " + id);
+                        return false;
+                    }
+                    window.location.hash = "feed/" + encodeURIComponent(id);
+                    break;
+                case "&":
+                    if (!isBlobId(id)) {
+                        console.error("intercept url should been a blob but it is not: " + id);
+                        return false;
+                    }
+                    window.location = "http://localhost:8989/blobs/get/" + id;
+                    break;
+            }
+
+            if (id.indexOf("javascript:") === 0) {
+                return h("h1", "stop trying to inject JS here");
+            }
+
+            return h("p", "loading " + id + "...");
+        };
+
+        var routes = rlite(NotFound, {
+            "public": api.app.page.public,
+            "thread/*msgID": api.app.page.thread,
+            "feed/*feedID": api.app.page.feed,
+            "test": api.app.page.test,
+            "intercept/*encodedId": Intercept
+        });
+
+        return routes;
+    });
+};
+
+},{"depnest":93,"mutant":499,"rlite-router":750,"ssb-ref":810}]},{},[838])
 
 //# sourceMappingURL=debug/bundle.js.map

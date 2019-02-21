@@ -1,32 +1,33 @@
 const nest = require("depnest");
-const { h } = require("mutant");
+const { h, watch, resolve } = require("mutant");
 
 exports.gives = nest("app.html.app");
 
 exports.needs = nest({
-    "app.page.errors": "first",
     "app.sync.goTo": "first",
-    "app.sync.initialise": "first",
-    "history.obs.location": "first",
-    "history.sync.push": "first",
+    "app.sync.initialise": "map",
+    "router.sync.routes": "first",
+    "router.obs.route": "first",
 });
 
 exports.create = function (api) {
     return nest("app.html.app", app);
 
-    function app (initialTabs) {
+    function app () {
         console.log("STARTING patchfox");
 
-        const App = h("App", api.app.html.tabs({
-            initial: initialTabs || api.settings.sync.get("patchbay.defaultTabs")
-        }));
+        // runs all the functions in app/sync/initialise
+        api.app.sync.initialise();
+        console.log("Current route:", resolve(api.router.obs.route()));
 
-        api.app.sync.initialise(App);
-
-        api.history.obs.location()(loc => {
-            api.app.sync.goTo(loc || {});
+        const App = h("App", api.router.obs.route());
+      
+    
+        api.router.obs.route()(newPage => {
+            // NOTE: just some logging...
+            console.log("route changed", newPage);
         });
-
+      
         return App;
     }
 };

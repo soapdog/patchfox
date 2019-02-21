@@ -11,7 +11,7 @@ exports.needs = nest({
 
 exports.create = (api) => {
     return nest("app.page.public", () => {
-        return h("div.App", [
+        return h("Public", [
             api.feed.html.render(api.feed.pull.public)
         ]);
     });
