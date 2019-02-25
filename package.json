@@ -57,6 +57,7 @@
     "mutant": "^3.22.1",
     "patchcore": "^2.1.3",
     "pull-defer": "^0.2.3",
+    "pull-next-query": "^1.0.0",
     "pull-reconnect": "0.0.3",
     "pull-stream": "^3.6.9",
     "rlite-router": "^2.0.3",
