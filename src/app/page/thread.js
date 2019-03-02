@@ -22,7 +22,7 @@ exports.create = (api) => {
         console.log("msgID", msgID);
         const { messages, isPrivate, rootId, lastId, channel, recps } = api.feed.obs.thread(msgID);
 
-        const content = map(messages, m => {
+        let content = map(messages, m => {
             const message = api.message.html.render(resolve(m), { pageId: msgID });
             return message;
         }, { comparer });

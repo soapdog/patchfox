@@ -89622,7 +89622,7 @@ exports.create = function (api) {
 
         return h("div.App", [h("section.about", [api.about.html.image(feedID), h("h1", [api.about.obs.name(feedID)]), h("div.introduction", computed(api.about.obs.description(feedID), function (d) {
             return api.message.html.markdown(d || "");
-        })), h("hr"), api.feed.html.render(source({ query: query }))])]);
+        }))])]);
     });
 };
 
@@ -90001,22 +90001,28 @@ exports.create = function (api) {
 };
 
 },{"depnest":116,"mutant/h":518}],895:[function(require,module,exports){
-var h = require("mutant/h");
 var nest = require("depnest");
 
-exports.needs = nest("about.obs.name", "first");
+var _require = require("mutant"),
+    h = _require.h,
+    watch = _require.watch;
 
 exports.gives = nest("message.html.author");
+
+exports.needs = nest({
+    "about.html.link": "first",
+    "about.obs.name": "first"
+});
 
 exports.create = function (api) {
     return nest("message.html.author", messageAuthor);
 
     function messageAuthor(msg) {
-        return h("div", { title: msg.value.author }, ["@", api.about.obs.name(msg.value.author)]);
+        return h("div", { title: msg.value.author }, [api.about.obs.name(msg.value.author)]);
     }
 };
 
-},{"depnest":116,"mutant/h":518}],896:[function(require,module,exports){
+},{"depnest":116,"mutant":521}],896:[function(require,module,exports){
 var h = require("mutant/h");
 var map = require("mutant/map");
 var computed = require("mutant/computed");

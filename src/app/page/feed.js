@@ -46,8 +46,7 @@ exports.create = (api) => {
                     api.about.obs.name(feedID)
                 ]),
                 h("div.introduction", computed(api.about.obs.description(feedID), d => api.message.html.markdown(d || ""))),
-                h("hr"),
-                api.feed.html.render(source({query}))
+                
             ])
         ]);
     });
