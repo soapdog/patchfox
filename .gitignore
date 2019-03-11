@@ -14,3 +14,5 @@ node_modules
 .vscode
 *-old
 .cache
+
+old/
