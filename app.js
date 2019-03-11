@@ -1,4 +1,13 @@
-import {DriverHermiebox as Driver} from "./drivers/driver-hermiebox.js"
+/**
+ * APP.JS
+ * 
+ * OBJECTIVE:
+ * This is the main entrypoint of the WebExtension. It needs to check if the configuration is
+ * present, then load a suitable driver, then start the application router.
+ */
+
+import {getDriver} from "./drivers/driver.js"
+import {PublicView} from "./components/public-view.js"
 
 let main = async () => {
     
@@ -13,9 +22,16 @@ let main = async () => {
             configurationMissing();
         } else {
             try {
-                let driver = new Driver()
+                let driver = getDriver()
 
-                driver.connect(savedData.keys)
+                await driver.connect(savedData.keys)
+
+                m.route(document.body, "/", {
+                    "/": PublicView,
+                    "/page1": PublicView,
+                })
+
+                console.log("after route?")
 
             } catch (e) {
                 console.log("Error trapped by main, can't connect?");

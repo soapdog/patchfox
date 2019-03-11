@@ -24,6 +24,10 @@
  */
 
 export class DriverHermiebox {
+    constructor() {
+        this.name = "Driver for Hermiebox"
+    }
+
     log(pMsg, pVal = "") {
         console.log(`[Driver Hermiebox] - ${pMsg}`, pVal)
     }
@@ -31,6 +35,11 @@ export class DriverHermiebox {
     async connect(pKeys) {
         var server = await hermiebox.api.connect(pKeys)
         this.log("you are", server.id)
+    }
+
+    async public() {
+        var msgs = await hermiebox.api.pullPublic()
+        this.log("msgs", msgs)
     }
 }
 
