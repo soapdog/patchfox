@@ -12,7 +12,6 @@ delete patchcore.patchcore.keys;
 delete patchcore.patchcore.sbot;
 delete patchcore.patchcore.message.html;
 
-
 const  patchfox = {
     app: bulk(__dirname, [ "app/**/*.js" ]),
     router: bulk(__dirname, [ "router/**/*.js" ]),

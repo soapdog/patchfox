@@ -46,6 +46,25 @@ function build() {
         .pipe(dest("debug"));
 }
 
+function buildBackground() {
+    // set up the browserify instance on a task basis
+    var b = browserify({
+        entries: "./src/background.js",
+        debug: true
+    })
+        .transform("bulkify");
+
+    return b.bundle()
+        .pipe(source("background.js"))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        // Add transformation tasks to the pipeline here.
+        .on("error", log.error)
+        .pipe(sourcemaps.write("debug"))
+        .pipe(dest("debug"));
+}
+
+
 function copyStatic() {
     return src("static/**")
         .pipe(dest("debug/"));
@@ -83,10 +102,10 @@ function watcherExtension() {
     watch("debug/**", () => extensionRunner.reloadAllExtensions());
 }
 
-exports.build = build;
-exports.watch = series(clean, copyStatic, processSass,  build, watcher);
-exports.dev = series(clean, copyStatic, processSass, build, parallel(webExtensionRun, watcher, watcherExtension));
+exports.build = series(build, buildBackground);
+exports.watch = series(clean, copyStatic, processSass,  buildBackground, build, watcher);
+exports.dev = series(clean, copyStatic, processSass, buildBackground, build, parallel(webExtensionRun, watcher, watcherExtension));
 exports.static = copyStatic;
 exports.style = processSass;
 exports.clean = clean;
-exports.default = series(clean, copyStatic, processSass, build);
+exports.default = series(clean, copyStatic, processSass, buildBackground, build);

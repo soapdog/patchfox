@@ -44,4 +44,9 @@ document.getElementById("go-to-help").addEventListener("click", (ev) => {
 keymage("p", goPublic);
 keymage("s", goSettings);
 
+if (!browser) {
+    window.browser = window.chrome;
+}
+
+console.log("browser", browser);
 

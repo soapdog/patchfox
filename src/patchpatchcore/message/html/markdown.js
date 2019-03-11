@@ -69,6 +69,9 @@ exports.create = function (api) {
                     else if (link || id.startsWith("#") || id.startsWith("?")) {
                         return id;
                     }
+                    else if (link || id.startsWith("@")) {
+                        return "/index.html#/feed/" + id;
+                    }
                     else if (mentions[id]) {
                         // handle old-style patchwork v2 mentions (deprecated)
                         return mentions[id];

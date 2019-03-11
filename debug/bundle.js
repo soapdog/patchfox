@@ -89579,7 +89579,7 @@ var _require = require("mutant"),
 
 var last = require("lodash/last");
 var get = require("lodash/get");
-var next = require('pull-next-query');
+var next = require("pull-next-query");
 
 exports.gives = nest("app.page.feed");
 
@@ -89606,22 +89606,11 @@ exports.create = function (api) {
         }
         console.log("feedID", feedID);
 
-        var source = function (opts) {
-            return api.sbot.pull.stream(function (s) {
-                return next(s.query.read, opts, ["value", "timestamp"]);
-            });
-        };
-        var query = [{
-            $filter: {
-                value: {
-                    timestamp: { $gt: 0 },
-                    author: feedID
-                }
-            }
-        }];
-
         return h("div.App", [h("section.about", [api.about.html.image(feedID), h("h1", [api.about.obs.name(feedID)]), h("div.introduction", computed(api.about.obs.description(feedID), function (d) {
-            return api.message.html.markdown(d || "");
+            var content = api.message.html.markdown(d || "");
+            console.log("markdown", d);
+            console.log("content", content);
+            return content;
         }))])]);
     });
 };
@@ -90005,20 +89994,24 @@ var nest = require("depnest");
 
 var _require = require("mutant"),
     h = _require.h,
-    watch = _require.watch;
+    resolve = _require.resolve;
 
 exports.gives = nest("message.html.author");
 
 exports.needs = nest({
     "about.html.link": "first",
-    "about.obs.name": "first"
+    "about.obs.name": "first",
+    "about.html.image": "first"
 });
 
 exports.create = function (api) {
     return nest("message.html.author", messageAuthor);
 
     function messageAuthor(msg) {
-        return h("div", { title: msg.value.author }, [api.about.obs.name(msg.value.author)]);
+        var author = msg.value.author;
+        console.log("author", msg.value.author);
+
+        return h("div.author", { title: author }, [api.about.html.image(author), api.about.html.link(author)]);
     }
 };
 
@@ -90257,6 +90250,8 @@ exports.create = function (api) {
                         return url + "?" + querystring.stringify(query);
                     } else if (link || id.startsWith("#") || id.startsWith("?")) {
                         return id;
+                    } else if (link || id.startsWith("@")) {
+                        return "/index.html#/feed/" + id;
                     } else if (mentions[id]) {
                         // handle old-style patchwork v2 mentions (deprecated)
                         return mentions[id];
