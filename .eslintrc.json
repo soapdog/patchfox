@@ -6,7 +6,8 @@
         "webextensions": true
     },
     "globals": {
-        "ssb": true
+        "hermiebox": true,
+        "m": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -26,10 +27,7 @@
             "error",
             "double"
         ],
-        "semi": [
-            "error",
-            "always"
-        ],
+      
         "no-console": "off"
     }
 }
