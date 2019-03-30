@@ -77995,14 +77995,15 @@ const api = {
     },
 
     
-    pullPublic: function (opts) {
+    pullPublic: function (extraOpts) {
         return new Promise((resolve, reject) => {
+            let opts = {
+                reverse: true,
+                live: false
+            }
+
             pull(
-                hermiebox.sbot.createFeedStream({
-                  reverse: true,
-                  live: false,
-                  limit: 100,
-                }),
+                hermiebox.sbot.createFeedStream(Object.assign(opts, extraOpts)),
                 pull.filter(msg => msg && msg.value && msg.value.content),
                 // pull.asyncMap(addNameToMsg(this.ssb)),
                 pull.collect((err, msgs) => {

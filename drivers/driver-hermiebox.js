@@ -37,9 +37,9 @@ export class DriverHermiebox {
         this.log("you are", server.id)
     }
 
-    async public() {
-        var msgs = await hermiebox.api.pullPublic()
-        this.log("msgs", msgs)
+    async public(opts) {
+        var msgs = await hermiebox.api.pullPublic(opts)
+        return msgs
     }
 }
 

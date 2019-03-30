@@ -1,0 +1,9 @@
+@import "messages/messages.css";
+
+div.is-message-thread {
+    padding: 15px;
+}
+
+div.is-message-thread > div {
+    border-bottom: solid 1px #e3e3e3;
+}

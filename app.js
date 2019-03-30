@@ -30,9 +30,7 @@ let main = async () => {
                     "/": PublicView,
                     "/page1": PublicView,
                 })
-
-                console.log("after route?")
-
+                
             } catch (e) {
                 console.log("Error trapped by main, can't connect?");
                 console.error(e);
