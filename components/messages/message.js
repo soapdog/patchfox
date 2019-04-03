@@ -9,8 +9,6 @@
 
 import Author from "./parts/author.js"
 import Timestamp from "./parts/timestamp.js"
-import Meta from "./parts/meta.js"
-import Actions from "./actions.js"
 
 export default class Message {
     constructor() {
@@ -40,6 +38,7 @@ export default class Message {
         return m("div.is-message", [
             m("div.is-message-head", [
                 m(Author, {feed: msg.value.author}),
+                m("span.is-message-type", type),
                 m(Timestamp, {timestamp: new Intl.DateTimeFormat("en-US", dateFormatOptions).format(date)}),
                 m("div.is-veil-toggle[tooltip=View Raw Message]",{
                     onclick: () => {
@@ -47,11 +46,8 @@ export default class Message {
                     }
                 },"❚")
             ]),
-            !this.showRaw ? m("div.is-message-body",  type) : m("div.is-message-body.is-raw-message", contentRaw),
-            m("div.is-message-footer", [
-                m(Meta, {msg: msg.value}),
-                m(Actions, {msg: msg.value}) 
-            ])
+            !this.showRaw ? m("div.is-message-body",  "") : m("div.is-message-body.is-raw-message", contentRaw),
+           
         ])
     }
 }

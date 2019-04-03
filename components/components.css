@@ -7,3 +7,17 @@ div.is-message-thread {
 div.is-message-thread > div {
     border-bottom: solid 1px #e3e3e3;
 }
+
+div.is-pagination-controls a {
+    padding: 10px;
+    text-decoration: none;
+    color: #000;
+}
+
+div.is-pagination-controls a:visited {
+    padding: 10px;
+    text-decoration: none;
+    color: #000;
+}
+
+

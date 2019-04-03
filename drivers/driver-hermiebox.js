@@ -41,6 +41,27 @@ export class DriverHermiebox {
         var msgs = await hermiebox.api.pullPublic(opts)
         return msgs
     }
+
+    async setAvatarCache(feed, data) {
+        let s = {}
+        s[`avatar-${feed}`] = data
+        return browser.storage.local.set(s)
+    }
+
+    async getCachedAvatar(feed) {
+        return browser.storage.local.get(`avatar-${feed}`)
+    }
+
+    async avatar(feed) {
+        try {
+            let avatar = await hermiebox.api.avatar(feed)
+            await this.setAvatarCache(feed, avatar)
+            return avatar
+        } catch(n) {
+            throw n
+        }
+
+    }
 }
 
  
