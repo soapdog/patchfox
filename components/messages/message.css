@@ -13,6 +13,10 @@ div.is-message-head > span {
     padding: 10px;
 }
 
+span.is-message-type {
+    text-align: left;
+}
+
 span.is-timestamp {
     text-align: right;
 }

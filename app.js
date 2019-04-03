@@ -8,6 +8,7 @@
 
 import {getDriver} from "./drivers/driver.js"
 import {PublicView} from "./components/public-view.js"
+import {FeedView} from "./components/feed-view.js"
 
 let main = async () => {
     
@@ -26,9 +27,9 @@ let main = async () => {
 
                 await driver.connect(savedData.keys)
 
-                m.route(document.body, "/", {
-                    "/": PublicView,
-                    "/page1": PublicView,
+                m.route(document.body, "/public", {
+                    "/public": PublicView,
+                    "/profile/:feed": FeedView
                 })
                 
             } catch (e) {
