@@ -14,7 +14,7 @@ function goSettings() {
 }
 
 function goHelp() {
-    const url = browser.extension.getURL("help/help.html");
+    const url = browser.extension.getURL("docs/index.html");
     browser.tabs.create({
         url: url
     });

@@ -60,7 +60,7 @@ export default class Author {
                         href: `/profile/${vnode.attrs.feed}`,
                         oncreate: m.route.link,
                         onupdate: m.route.link
-                    }, this.feed)
+                    }, this.feed.slice(0, 5))
             ])
         } else {
             return m("div.is-author", [

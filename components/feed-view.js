@@ -8,7 +8,7 @@
  */
 
 import {getDriver} from "../drivers/driver.js"
-import Message from "./messages/message.js"
+import { getMessageComponent } from "./messages/message.js"
 
 export class FeedView {
     constructor() {
@@ -26,7 +26,10 @@ export class FeedView {
         return m("div", [
             m("h1", `Feed:${vnode.attrs.feed}`),
             m("div.is-message-thread", [
-                this.msgs.map(msg => (m(Message, {msg})))
+                this.msgs.map(msg => {
+                    let key = msg.key
+                    return m(getMessageComponent(msg), { key, msg })
+                })
             ])
         ])
     }

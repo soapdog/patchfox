@@ -7,47 +7,31 @@
  * This is a Mithril component.
  */
 
-import Author from "./parts/author.js"
-import Timestamp from "./parts/timestamp.js"
+import GenericMessage from "./types/generic-message.js" 
+import ChannelMessage from "./types/channel-message.js"
+import VoteMessage from "./types/vote-message.js"
+import ContactMessage from "./types/contact-message.js"
+import PostMessage from "./types/post-message.js"
 
-export default class Message {
-    constructor() {
-        this.showRaw = false
-    }
 
-    view(vnode) {
-        let msg = vnode.attrs.msg
-        let date = new Date(msg.value.timestamp)
-        let dateFormatOptions = { 
-            weekday: "long", 
-            year: "numeric", 
-            month: "long", 
-            day: "numeric",
-            hour: "numeric", 
-            minute: "numeric", 
-            second: "numeric",  
-        };
-
-        let contentRaw = m("code", m("pre",JSON.stringify(msg, null, 2)))
-        let type = msg.value.content.type || "type is missing"
-
-        if (typeof msg.value.content == "string") {
-            type = "PRIVATE"
-        }
-
-        return m("div.is-message", [
-            m("div.is-message-head", [
-                m(Author, {feed: msg.value.author}),
-                m("span.is-message-type", type),
-                m(Timestamp, {timestamp: new Intl.DateTimeFormat("en-US", dateFormatOptions).format(date)}),
-                m("div.is-veil-toggle[tooltip=View Raw Message]",{
-                    onclick: () => {
-                        this.showRaw = !this.showRaw
-                    }
-                },"❚")
-            ]),
-            !this.showRaw ? m("div.is-message-body",  "") : m("div.is-message-body.is-raw-message", contentRaw),
-           
-        ])
-    }
+let components = {
+    "channel": ChannelMessage,
+    "vote": VoteMessage,
+    "contact": ContactMessage,
+    "post": PostMessage
 }
+
+export function getMessageComponent(msg) {
+    let type = msg.value.content.type || false
+
+    if (typeof msg.value.content == "string") {
+        type = "private"
+    }
+    if (type && components.hasOwnProperty(type)) {
+        return components[type]
+    }
+
+    return GenericMessage
+}
+
+

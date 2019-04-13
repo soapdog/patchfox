@@ -9,6 +9,8 @@
 import {getDriver} from "./drivers/driver.js"
 import {PublicView} from "./components/public-view.js"
 import {FeedView} from "./components/feed-view.js"
+import {ThreadView} from "./components/thread-view.js"
+import {SsbSchemaHandler} from "./components/ssb-schema-handler.js"
 
 let main = async () => {
     
@@ -29,11 +31,13 @@ let main = async () => {
 
                 m.route(document.body, "/public", {
                     "/public": PublicView,
-                    "/profile/:feed": FeedView
+                    "/profile/:feed...": FeedView,
+                    "/thread/:msg...": ThreadView,
+                    "/intercept/:hash...": SsbSchemaHandler
                 })
                 
             } catch (e) {
-                console.log("Error trapped by main, can't connect?");
+                console.log("Error trapped by main, can't connect?")
                 console.error(e);
             }
         }

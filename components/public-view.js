@@ -8,7 +8,7 @@
  */
 
 import { getDriver } from "../drivers/driver.js"
-import Message from "./messages/message.js"
+import { getMessageComponent } from "./messages/message.js"
 
 export class PublicView {
     constructor() {
@@ -43,7 +43,10 @@ export class PublicView {
         return m("div", [
             m("h1", "Public"),
             m("div.is-message-thread", [
-                this.msgs.map(msg => (m(Message, { msg })))
+                this.msgs.map(msg => {
+                    let key = msg.key
+                    return m(getMessageComponent(msg), { key, msg })
+                })
             ]),
             m("div.is-pagination-controls", [
                 m("a[href=/public]", {
