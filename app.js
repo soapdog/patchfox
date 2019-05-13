@@ -6,11 +6,11 @@
  * present, then load a suitable driver, then start the application router.
  */
 
-import {getDriver} from "./drivers/driver.js"
 import {PublicView} from "./components/public-view.js"
 import {FeedView} from "./components/feed-view.js"
 import {ThreadView} from "./components/thread-view.js"
 import {SsbSchemaHandler} from "./components/ssb-schema-handler.js"
+import {DriverHermiebox} from "./drivers/driver-hermiebox.js"
 
 let main = async () => {
     
@@ -25,9 +25,9 @@ let main = async () => {
             configurationMissing();
         } else {
             try {
-                let driver = getDriver()
+                window.ssb = new DriverHermiebox()
 
-                await driver.connect(savedData.keys)
+                await ssb.connect(savedData.keys)
 
                 m.route(document.body, "/public", {
                     "/public": PublicView,

@@ -7,19 +7,17 @@
  * This is a Mithril.
  */
 
-import { getDriver } from "../drivers/driver.js"
 import { getMessageComponent } from "./messages/message.js"
 
 export class ThreadView {
     constructor() {
-        this.driver = getDriver()
         this.msgs = []
     }
 
     async oninit(vnode) {
         let id = "%" + vnode.attrs.msg
         console.log("msg", id)
-        this.msgs = await this.driver.thread(id)
+        this.msgs = await ssb.thread(id)
         console.log(this.msgs)
         m.redraw()
     }

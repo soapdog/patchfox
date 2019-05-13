@@ -7,27 +7,24 @@
  * This is a Mithril component.
  */
 
-import { getDriver } from "../../../drivers/driver.js"
 
 
 export default class Author {
 
     constructor(vnode) {
         this.feed = vnode.attrs.feed
-        this.driver = getDriver()
         this.getAvatarFromCache() // this is a promise
     }
 
     recycle(feed) {
         this.feed = feed
-        this.driver = getDriver()
         this.getAvatarFromCache()
     }
 
     async getAvatarFromCache() {
 
         try {
-            let data = await this.driver.getCachedAvatar(this.feed)
+            let data = await ssb.getCachedAvatar(this.feed)
             this.data = data
             if (!data.hasOwnProperty("name")) {
                 throw ("empty avatar object")
@@ -42,7 +39,7 @@ export default class Author {
 
     async getAvatarFromFeed() {
         try {
-            let data = await this.driver.avatar(this.feed)
+            let data = await ssb.avatar(this.feed)
             this.data = data
         } catch (n) {
             console.error(`error fetching avatar for feed: ${this.feed}`, n)

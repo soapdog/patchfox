@@ -7,25 +7,23 @@
  * This is a Mithril.
  */
 
-import { getDriver } from "../drivers/driver.js"
 import { getMessageComponent } from "./messages/message.js"
 
 export class PublicView {
     constructor() {
-        this.driver = getDriver()
         this.msgs = []
         this.limit = 10
     }
 
     async oninit() {
-        this.msgs = await this.driver.public({ limit: this.limit, reverse: true })
+        this.msgs = await ssb.public({ limit: this.limit, reverse: true })
         console.log(this.msgs)
         m.redraw()
     }
 
     async fetchNext() {
         let lastMsg = this.msgs[this.msgs.length - 1]
-        this.msgs = await this.driver.public({ limit: this.limit, reverse: true, lt: lastMsg.rts })
+        this.msgs = await ssb.public({ limit: this.limit, reverse: true, lt: lastMsg.rts })
         console.log("fetchmore", this.msgs)
         m.redraw()
         window.scrollTo(0, 0)
@@ -33,7 +31,7 @@ export class PublicView {
 
     async fetchPrevious() {
         let firstMsg = this.msgs[0]
-        this.msgs = await this.driver.public({ limit: this.limit, reverse: true, gt: firstMsg.rts })
+        this.msgs = await ssb.public({ limit: this.limit, reverse: true, gt: firstMsg.rts })
         console.log("fetchmore", this.msgs)
         m.redraw()
         window.scrollTo(0, 0)

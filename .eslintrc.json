@@ -8,7 +8,8 @@
     "globals": {
         "hermiebox": true,
         "m": true,
-        "hljs": true
+        "hljs": true,
+        "ssb": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {

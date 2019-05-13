@@ -18,7 +18,7 @@ export default class PostMessage extends GenericMessage {
 
     content(msg) {
         let text = msg.value.content.text
-        let html = this.driver.markdown(text)
+        let html = ssb.markdown(text)
 
         return html
     }

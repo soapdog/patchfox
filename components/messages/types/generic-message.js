@@ -9,14 +9,12 @@
 
 import Author from "../parts/author.js"
 import Timestamp from "../parts/timestamp.js"
-import { getDriver } from "../../../drivers/driver.js"
 
 
 export default class GenericMessage {
 
     constructor(vnode) {
         this.showRaw = false
-        this.driver = getDriver()
         let msg = vnode.attrs.msg
 
 
