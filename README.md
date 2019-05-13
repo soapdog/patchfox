@@ -3,7 +3,7 @@ This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as
 
 ## Requirements
 
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (for unsigned extension support, see https://wiki.mozilla.org/Add-ons/Extension_Signing#FAQ)
+* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (for unsigned extension support; see https://wiki.mozilla.org/Add-ons/Extension_Signing#FAQ)
 * [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running. 
 
 ## Running
