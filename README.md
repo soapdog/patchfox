@@ -24,13 +24,6 @@ After installing and configuring patchfox, try browsing to:
 
 [ssb:%Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc=.sha256](ssb:%Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc=.sha256)
 
-# Source organization (aka chaos ahead)
-There are two main folders for the source. There is the `static` folder where we host static assets which in our case includes some JS which is meant to _arrive in the browser the way we wrote it_. There is also the `src` folder which hosts JS stuff which is both `browserified` and `babelified`, this is needed because lots of the SSB libraries were built with nodejs in mind.
-
-In the end of the build process, an amalgam of the `static` and `src` folder is created in the `debug` folder.
-
-_PS: I wish I could only ship static assets for this add-on but so far, I can't escape the nodejs based libraries..._
-
 # Commentary, getting help
 
 I'f you're interested in learning more about the technologies behind this add-on, check out:
