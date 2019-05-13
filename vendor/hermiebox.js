@@ -78282,6 +78282,57 @@ const api = {
         })
     },
 
+    thread: function (msgid) {
+        return new Promise((resolve, reject) => {
+            var sort = hermiebox.modules.ssbSort
+            var pull = hermiebox.modules.pullStream
+
+            function getThread(sbot, id, cb) {
+                sbot.get(id, function (err, value) {
+                    if (err) return cb(err)
+                    var rootMsg = { key: id, value: value }
+                    pull(
+                        sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
+                            query: [
+                                {
+                                    $filter: {
+                                        dest: id,
+                                        value: {
+                                            content: {
+                                                type: 'post',
+                                                root: id
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }) : pull(
+                            sbot.links({ dest: id, values: true, rel: 'root' }),
+                            pull.filter(function (msg) {
+                                var c = msg && msg.value && msg.value.content
+                                return c && c.type === 'post' && c.root === id
+                            }),
+                            pull.unique('key')
+                        ),
+                        pull.collect(function (err, msgs) {
+                            if (err) return cb(err)
+                            cb(null, sort([rootMsg].concat(msgs)))
+                        })
+                    )
+                })
+            }
+
+            getThread(hermiebox.sbot, msgid, (err, data) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(data)
+                }
+            })
+
+        })
+    },
+
     get: function (id) {
         // ssb-ooo@1.0.1 (a50da3928500f3ac0fbead0a1b335a3dd5bbc096): raw=true
         // ssb-ooo@1.1.0 (f7302d12e56d566b84205bbc0c8b882ae6fd9b12): ooo=false

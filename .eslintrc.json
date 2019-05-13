@@ -7,7 +7,9 @@
     },
     "globals": {
         "hermiebox": true,
-        "m": true
+        "m": true,
+        "hljs": true,
+        "ssb": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -28,6 +30,8 @@
             "double"
         ],
       
-        "no-console": "off"
+        "no-console": "off",
+        "no-unused-vars": "off",
+        "semi": "off"
     }
 }

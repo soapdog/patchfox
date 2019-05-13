@@ -7,17 +7,15 @@
  * This is a Mithril.
  */
 
-import {getDriver} from "../drivers/driver.js"
-import Message from "./messages/message.js"
+import { getMessageComponent } from "./messages/message.js"
 
 export class FeedView {
     constructor() {
-        this.driver = getDriver()
         this.msgs = []
     }
 
     async oninit() {
-        this.msgs = await this.driver.public({limit: 10, reverse: true})
+        this.msgs = await ssb.public({limit: 10, reverse: true})
         console.log(this.msgs)
         m.redraw()
     }
@@ -26,7 +24,10 @@ export class FeedView {
         return m("div", [
             m("h1", `Feed:${vnode.attrs.feed}`),
             m("div.is-message-thread", [
-                this.msgs.map(msg => (m(Message, {msg})))
+                this.msgs.map(msg => {
+                    let key = msg.key
+                    return m(getMessageComponent(msg), { key, msg })
+                })
             ])
         ])
     }

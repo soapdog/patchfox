@@ -3,26 +3,14 @@ This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as
 
 ## Requirements
 
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/)
+* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/)
 * [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running. 
 
-## Setup
+## Running
 
-* Install dependencies with `$ npm install`.
+Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from this repository.
 
-## Building
-
-`
-$ gulp dev
-`
-
-This will launch Firefox running the WebExtension, you need to click on the little _hermie_ button on the toolbar to launch it.
-
-`
-$ gulp
-`
-
-Plain `gulp` call builds the WebExtension but doesn't run Firefox. You'll need to run Firefox on your own and then open the [about:debugging](about:debugging) page and select _load temporary add-on_. Once the file selection dialog open, you select the `debug/manifest.json` file.
+This will add Patchfox as a temporary add-on. It will be removed if you quit Firefox. There will be a new button on your toolbar showing a hermit crab. Thats your menu for all things Scuttlebutt.
 
 ## Setup inside Patchfox
 
