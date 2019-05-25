@@ -19,7 +19,7 @@ export default class ContactMessage extends GenericMessage {
 
     async oninit(vnode) {
         try {
-            let data = await this.driver.avatar(this.feed)
+            let data = await ssb.avatar(this.feed)
             this.data = data
             m.redraw()
         } catch (n) {

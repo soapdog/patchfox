@@ -15,18 +15,34 @@ export class PublicView {
         this.limit = 10
     }
 
-    async oninit() {
-        this.msgs = await ssb.public({ limit: this.limit, reverse: true })
-        console.log(this.msgs)
-        m.redraw()
+    oninit(vnode) {
+        let comp = vnode.attrs.comp || false 
+        let msg = vnode.attrs.key || false
+        let options = { limit: this.limit, reverse: true };
+
+
+        if (comp && msg) {
+            options[comp] = msg
+        }
+
+        ssb.public(options)
+            .then((data) => {
+                console.log("go msgs")
+                if (data !== this.msgs) {
+                    this.msgs = data
+                    m.redraw() 
+                }
+            })
+    }
+
+    oncreate(vnode) {
+        console.log("create!")
     }
 
     async fetchNext() {
         let lastMsg = this.msgs[this.msgs.length - 1]
-        this.msgs = await ssb.public({ limit: this.limit, reverse: true, lt: lastMsg.rts })
-        console.log("fetchmore", this.msgs)
-        m.redraw()
-        window.scrollTo(0, 0)
+        m.route.set("/public/:comp/:msg", {comp: "lt", msg: lastMsg.rts})
+        console.log("fetchnext")
     }
 
     async fetchPrevious() {
@@ -37,7 +53,15 @@ export class PublicView {
         window.scrollTo(0, 0)
     }
 
-    view() {
+    view(vnode) {
+        let lastMsg = false 
+        let firstMsg = false
+        if (this.msgs.length > 0) {
+            lastMsg = this.msgs[this.msgs.length - 1]
+            firstMsg = this.msgs[0]
+        }
+
+        console.log("view")
         return m("div", [
             m("h1", "Public"),
             m("div.is-message-thread", [
@@ -46,16 +70,16 @@ export class PublicView {
                     return m(getMessageComponent(msg), { key, msg })
                 })
             ]),
-            m("div.is-pagination-controls", [
-                m("a[href=/public]", {
-                    oncreate: m.route.link,
-                    onclick: () => this.fetchPrevious()
-                }, "Newer"),
-                m("a[href=/public]", {
-                    oncreate: m.route.link,
-                    onclick: () => this.fetchNext()
-                }, "Older")
-            ])
+            (lastMsg && firstMsg) ?
+                m("div.is-pagination-controls", [
+                    m("a[href=/public]", {
+                        oncreate: m.route.link
+                    }, "Newer"),
+                    m(`a[href=/public/lt/${lastMsg.rts}]`, {
+                        oncreate: m.route.link
+                    }, "Older")
+                ]) :
+                m("p", "loading...")
         ])
     }
 }

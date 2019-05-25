@@ -11,6 +11,16 @@ export default class Timestamp {
 
     view(vnode) {
         let timestamp = vnode.attrs.timestamp
-        return m("span.is-timestamp", timestamp)
+        let date = new Date(timestamp)
+        let dateFormatOptions = {
+            weekday: "short",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+        };
+        let dateFormatted = new Intl.DateTimeFormat("en-US", dateFormatOptions).format(date)
+        return m("span.is-timestamp", dateFormatted)
     }
 }

@@ -78299,7 +78299,7 @@ const api = {
                                         dest: id,
                                         value: {
                                             content: {
-                                                type: 'post',
+
                                                 root: id
                                             }
                                         }
@@ -78381,7 +78381,62 @@ const api = {
                 }
             })
         })
-    }
+    },
+
+    aboutMessages: function(sourceId, destId) {
+        return new Promise((resolve, reject) => {
+            var pull = hermiebox.modules.pullStream
+
+            let opts = {
+                source: sourceId,
+                dest: destId,
+                rel: "about",
+                values: true
+            }
+
+            pull(
+                hermiebox.sbot.links(opts),
+                pull.collect(function (err, data) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(data)
+                    }
+                })
+            )
+        })
+    },
+
+    profile: function (feedid) {
+        return new Promise(async (resolve, reject) => {
+
+            var pull = hermiebox.modules.pullStream
+
+            let opts = {
+                id: feedid,
+                reverse: true,
+                limit: 10
+            }
+
+            let user = {
+                msgs: [],
+                about: await this.aboutMessages(feedid, feedid)
+            }
+
+            pull(
+                hermiebox.sbot.createUserStream(opts),
+                pull.collect(function (err, data) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        user.msgs = data
+                        resolve(user)
+                    }
+                })
+            )
+
+        })
+    },
 
 }
 

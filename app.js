@@ -29,9 +29,10 @@ let main = async () => {
 
                 await ssb.connect(savedData.keys)
 
-                m.route(document.body, "/public", {
-                    "/public": PublicView,
-                    "/profile/:feed...": FeedView,
+                m.route(document.body, "/public/1", {
+                    "/public/:comp/:key": PublicView,
+                    "/public/:key": PublicView,
+                    "/profile/:key...": FeedView,
                     "/thread/:msg...": ThreadView,
                     "/intercept/:hash...": SsbSchemaHandler
                 })
