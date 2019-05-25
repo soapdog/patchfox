@@ -47,6 +47,17 @@ export class DriverHermiebox {
         return msgs
     }
 
+    async profile(feedid) {
+        var user = await hermiebox.api.profile(feedid)
+        console.log(user)
+        return user
+    }
+
+    async get(msgid) {
+        var msg = await hermiebox.api.get(msgid)
+        return msg
+    }
+
     async setAvatarCache(feed, data) {
         let s = {}
         s[`avatar-${feed}`] = data
@@ -68,6 +79,28 @@ export class DriverHermiebox {
 
     }
 
+    async blurbFromMsg(msgid, howManyChars) {
+        let retVal = msgid
+
+        try {
+            let data = await ssb.get(msgid)
+
+            if (data.content.type == "post") {
+                retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
+            }
+            return retVal
+        } catch (n) {
+            return retVal
+        }
+    }
+    plainTextFromMarkdown(text) {
+        // TODO: this doesn't belong here
+        let html = this.markdown(text)
+        let div = document.createElement("div")
+        div.innerHTML = html
+        return div.innerText
+    }
+
     markdown(text) {
 
         function replaceMsgID(match, id, offset, string) {
@@ -83,7 +116,7 @@ export class DriverHermiebox {
 
         function replaceFeedID(match, id, offset, string) {
             // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-            return "<a class=\"feed-link\" href=\"#!/feed/%40" + encodeURIComponent(id);
+            return "<a class=\"profile-link\" href=\"#!/profile/%40" + encodeURIComponent(id);
         }
 
 
@@ -100,7 +133,7 @@ export class DriverHermiebox {
 
         let html = hermiebox.modules.ssbMarkdown.block(text)
         html = html
-        // .replace(/<a href="#([^"]+?)/gi, replaceChannel)
+            // .replace(/<a href="#([^"]+?)/gi, replaceChannel)
             .replace(/<a href="@([^"]+?)/gi, replaceFeedID)
             //.replace(/target="_blank"/gi, "")
             .replace(/<a href="%([^"]+?)/gi, replaceMsgID)
