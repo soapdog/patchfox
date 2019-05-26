@@ -51,7 +51,7 @@ export default class Author {
             this.recycle(vnode.attrs.feed)
         }
         if (!this.data) {
-            return m("div.is-author", [
+            return m("span.chip", [
                 m("a",
                     {
                         href: `/profile/${vnode.attrs.feed}`,
@@ -60,8 +60,8 @@ export default class Author {
                     }, this.feed.slice(0, 5))
             ])
         } else {
-            return m("div.is-author", [
-                m("img", { src: `http://localhost:8989/blobs/get/${this.data.image}` }),
+            return m("div.chip", [
+                m("img.avatar.avatar-sm", { src: `http://localhost:8989/blobs/get/${this.data.image}` }),
                 m("a", {
                     href: `/profile/${vnode.attrs.feed}`,
                     oncreate: m.route.link,

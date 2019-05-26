@@ -46,30 +46,29 @@ export default class GenericMessage {
         let content = this.content(msg)
         let description = this.description(msg)
 
-        let contentRaw = m("pre", m("code", JSON.stringify(msg, null, 2)))
+        let contentRaw = m("div.column.col-9",
+            m("pre.code", 
+                m("code", JSON.stringify(msg, null, 2))
+            ))
 
-        return m("div.is-message", {key: msg.key},[
+        return m("div.container.is-message", {key: msg.key},[
             m("div.is-message-head", [
                 m(Author, { feed: msg.value.author }),
                 m("span.is-message-header", m.trust(this.header(msg))),
-                m(Timestamp, { timestamp: msg.value.timestamp }),
-                m("div.is-veil-toggle", {
+                m("i.icon.icon-more-vert.float-right", {
                     onclick: () => {
                         this.showRaw = !this.showRaw
-                        setTimeout(() => {
-                            document.querySelectorAll("pre code").forEach((block) => {
-                                hljs.highlightBlock(block)
-                            });
-                            console.log("fix")
-                        },10)
                     }
-                }, "❚")
+                },""),
+                m(Timestamp, { timestamp: msg.value.timestamp })
             ]),
-            !this.showRaw ? m("div.is-message-body",  m.trust(content)) : m("div.is-message-body.is-raw-message",
+            !this.showRaw ? m("div.is-message-body",  m.trust(content)) : m("div.columns",
                 [
                     contentRaw,
-                    m("div.is-description", m.trust(description))
+                    m("div.divider-vert"),
+                    m("div.column", m.trust(description))
                 ]),
+            m("div.divider")
 
         ])
     }

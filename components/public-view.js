@@ -71,13 +71,15 @@ export class PublicView {
                 })
             ]),
             (lastMsg && firstMsg) ?
-                m("div.is-pagination-controls", [
-                    m("a[href=/public]", {
-                        oncreate: m.route.link
-                    }, "Newer"),
-                    m(`a[href=/public/lt/${lastMsg.rts}]`, {
-                        oncreate: m.route.link
-                    }, "Older")
+                m("ul.pagination", [
+                    m("div.page-item.page-prev",
+                        m("a[href=/public]", {
+                            oncreate: m.route.link
+                        }, m("div.page-item-title.h5", "Newer"))),
+                    m("div.page-item.page-next",
+                        m(`a[href=/public/lt/${lastMsg.rts}]`, {
+                            oncreate: m.route.link
+                        }, m("div.page-item-title.h5", "Older")))
                 ]) :
                 m("p", "loading...")
         ])

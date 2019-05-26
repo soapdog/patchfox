@@ -21,6 +21,6 @@ export default class Timestamp {
             minute: "numeric",
         };
         let dateFormatted = new Intl.DateTimeFormat("en-US", dateFormatOptions).format(date)
-        return m("span.is-timestamp", dateFormatted)
+        return m("span.label.label-rounded.float-right", dateFormatted)
     }
 }
