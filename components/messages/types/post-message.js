@@ -1,5 +1,5 @@
 /**
- * COMPONENT "CHANNEL MESSAGE"
+ * COMPONENT "POST MESSAGE"
  * 
  * OBJECTIVE:
  * A component that renders a single message.
@@ -20,7 +20,15 @@ export default class PostMessage extends GenericMessage {
         let text = msg.value.content.text
         let html = ssb.markdown(text)
 
-        return html
+        return m("div", [
+            m("div",
+                [
+                    m("i.icon.icon-upward", ""),
+                    // m("span", msg.value.content.root)
+                ]
+            ),
+            html
+        ])
     }
 
     header(msg) {

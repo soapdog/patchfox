@@ -13,6 +13,7 @@ export default class Author {
 
     constructor(vnode) {
         this.feed = vnode.attrs.feed
+        this.data = false
         this.getAvatarFromCache() // this is a promise
     }
 
@@ -43,11 +44,13 @@ export default class Author {
             this.data = data
         } catch (n) {
             console.error(`error fetching avatar for feed: ${this.feed}`, n)
+            this.data = false
         }
     }
 
     view(vnode) {
         if (vnode.attrs.feed !== this.feed) {
+            console.log("recycling")
             this.recycle(vnode.attrs.feed)
         }
         if (!this.data) {
