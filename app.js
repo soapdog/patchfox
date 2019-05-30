@@ -45,7 +45,7 @@ let main = async () => {
     };
 
     const configurationMissing = () => {
-        window.location = "/help/no_configuration.html";
+        window.location = "/docs/index.html#/troubleshooting";
     };
 
     browser.storage.local.get().then(configurationPresent, configurationMissing);

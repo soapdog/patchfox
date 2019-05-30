@@ -1,4 +1,5 @@
 
-* [Home](/)
-* [Configuration](configuration.md)
+* [Intro](/#readme)
+* [Getting Started](getting_started.md)
+* [Troubleshooting](troubleshooting.md)
 * [Message Types](message_types/)

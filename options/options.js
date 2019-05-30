@@ -28,7 +28,6 @@ function storeSettings (keys, remote, manifest) {
 }
 
 function selectedFile(ev) {
-    console.log("Evento!");
     const secretFile = ev.target.files[0];
     const reader = new FileReader();
     reader.onload = function (evt) {

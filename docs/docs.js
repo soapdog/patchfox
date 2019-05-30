@@ -2,5 +2,6 @@ window.$docsify = {
     name: "Patchfox Help",
     repo: "soapdog/patchfox",
     basePath: "/docs/",
-    loadSidebar: true
+    loadSidebar: true,
+    coverpage: true
 }
