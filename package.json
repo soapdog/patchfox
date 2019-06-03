@@ -1,0 +1,22 @@
+{
+  "name": "patchfox",
+  "version": "8.0.0",
+  "devDependencies": {
+    "rollup": "^1.10.1",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-copy": "^2.0.1",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^4.0.4",
+    "svelte": "^3.0.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "dependencies": {
+    "crayon": "^2.0.6",
+    "timeago-simple": "^1.2.4"
+  }
+}

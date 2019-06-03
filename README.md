@@ -6,9 +6,30 @@ This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as
 * [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/)
 * [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running. 
 
+## Setup & Building
+
+Patchfox uses [Svelte](https://svelte.technology) and requires [NodeJS](https://nodejs.org) for development. After you have NodeJS installed, you can install the dependencies with:
+
+```
+$ npm install
+```
+
+And build the add-on with:
+
+```
+$ npm run build
+```
+
+If you want to develop with a watcher that rebuilds the add-on when file changes use:
+
+```
+$ npm run dev
+```
+
+
 ## Running
 
-Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from this repository.
+Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from the `dist/` folder from this repository.
 
 This will add Patchfox as a temporary add-on. It will be removed if you quit Firefox. There will be a new button on your toolbar showing a hermit crab. Thats your menu for all things Scuttlebutt.
 

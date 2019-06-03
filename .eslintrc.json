@@ -9,7 +9,8 @@
         "hermiebox": true,
         "m": true,
         "hljs": true,
-        "ssb": true
+        "ssb": true,
+        "process": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {

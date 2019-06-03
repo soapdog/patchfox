@@ -1,0 +1,11 @@
+img.is-image-from-blob {
+    max-width: 70%;
+    display:block;
+    margin:auto;
+    padding: 5px;
+}
+
+a.image-link {
+    display: block;
+    width: 100%;
+}
