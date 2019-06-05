@@ -3,6 +3,7 @@
 
   let expression = msg.value.content.vote.expression;
   let msgid = msg.value.content.vote.link;
+  let encodedid = encodeURIComponent(msgid);
   let label = msgid;
   let person = msg.value.author;
 
@@ -14,6 +15,6 @@
 </script>
 
 <div class="card-body">
-{person} {expression}
-<a href="#/thread/{msgid}">{label}</a>
+   {person} {expression}
+  <a href="/index.html?thread={encodedid}#/thread">{label}</a>
 </div>

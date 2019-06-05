@@ -12,6 +12,8 @@
 
   let type;
   let feed = msg.value.author;
+  let showRaw = false;
+  let rawContent = JSON.stringify(msg, null, 2);
 
   let messageTypes = {
     "*": GenericMsg,
@@ -47,6 +49,12 @@
   });
 </script>
 
+<style>
+  .raw-content {
+    width: 50%;
+  }
+</style>
+
 <div class="card m-2">
   <div class="card-header">
     <div class="float-left">
@@ -67,10 +75,38 @@
       </div>
     </div>
     <div class="float-right">
+
       <span class="text-gray">
         {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
       </span>
+      <span class="text-gray">
+        <i class="icon icon-more-vert" on:click={() => (showRaw = !showRaw)} />
+      </span>
     </div>
   </div>
-  <svelte:component this={selectedRenderer} {msg} />
+  {#if !showRaw}
+    <svelte:component this={selectedRenderer} {msg} />
+  {:else}
+    <div class="card-body">
+      <div class="columns">
+        <div class="column col-9">
+          <pre class="code">
+            <code>{rawContent}</code>
+          </pre>
+        </div>
+        <div class="column col-3">
+          <p>
+            This is a message of type
+            <em>{type}</em>
+            .
+          </p>
+          <p>
+            To learn more about it, go to
+            <a href="">the documentation about messages with type {type}</a>
+            .
+          </p>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>

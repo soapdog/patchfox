@@ -1,13 +1,11 @@
 <script>
-export let msg;
+  export let msg;
 
-let rawContent = JSON.stringify(msg.value.content,null,2)
+  let rawContent = JSON.stringify(msg, null, 2);
 </script>
 
 <div class="card-body">
-<pre class="code">
-<code>
-    {rawContent}
-</code>
-</pre>
+  <pre class="code">
+    <code> {rawContent} </code>
+  </pre>
 </div>

@@ -11,14 +11,14 @@
   if (msg.value.content.root) {
     ssb.blurbFromMsg(msg.value.content.root, 50).then(blurb => {
       rootLabel = blurb;
-      rootId = msg.value.content.root;
+      rootId = encodeURIComponent(msg.value.content.root);
     });
   }
 
   if (msg.value.content.branch) {
     ssb.blurbFromMsg(msg.value.content.branch, 50).then(blurb => {
       branchLabel = blurb;
-      branchId = msg.value.content.branch;
+      branchId = encodeURIComponent(msg.value.content.branch);
     });
   }
 </script>
@@ -43,12 +43,12 @@
       {#if rootId || branchId}
         {#if msg.value.content.root}
           <span>
-            <a href="#/thread/{rootId}">(root)</a>
+            <a href="?thread={rootId}#/thread">(root)</a>
           </span>
         {/if}
         {#if msg.value.content.branch}
           <span>
-            <a href="#/thread/{rootId}">(in reply to)</a>
+            <a href="?thread={branchId}#/thread">(in reply to)</a>
           </span>
         {/if}
       {/if}

@@ -3,7 +3,7 @@
 
 
   let person = msg.value.author;
-  let otherPersonFeed = msg.value.content.contact;
+  let otherPersonFeed = encodeURIComponent(msg.value.content.contact);
   let otherPersonName = otherPersonFeed;
   let verb = msg.value.content.following ? "followed" : "unfollowed"
 
@@ -13,5 +13,5 @@
 </script>
 
 <div class="card-body"> 
-{person} {verb} <a href="#/profile/{otherPersonFeed}">{otherPersonName}</a>
+{person} {verb} <a href="?feed={otherPersonFeed}#/profile">{otherPersonName}</a>
 </div>

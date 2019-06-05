@@ -3,6 +3,7 @@ import queryString from "query-string";
 import Public from "./views/Public.svelte";
 import Default from "./views/Default.svelte";
 import Compose from "./views/Compose.svelte";
+import Thread from "./views/Thread.svelte";
 
 
 export const parseLocation = () => {
@@ -27,7 +28,7 @@ export const navigate = (location, data) => {
 
 
 const routes = {
-    "/thread": "thread",
+    "/thread": Thread,
     "/public": Public,
     "/compose": Compose,
     "*": Default
