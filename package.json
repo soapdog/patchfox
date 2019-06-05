@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "crayon": "^2.0.6",
+    "query-string": "^6.5.0",
     "timeago-simple": "^1.2.4"
   }
 }

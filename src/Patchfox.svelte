@@ -1,11 +1,8 @@
 <script>
   import { DriverHermiebox } from "./driver-hermiebox.js";
   import { onMount } from "svelte";
-  import { connected, route, navigate } from "./stores.js";
+  import { connected, route, navigate, currentView } from "./utils.js";
   import Navigation from "./Navigation.svelte";
-  import Public from "./views/Public.svelte";
-  import Default from "./views/Default.svelte";
-  import Compose from "./views/Compose.svelte";
 
   const configurationIsOK = savedData => {
     return (
@@ -51,40 +48,17 @@
 
   window.ssb = false;
 
-  const routes = {
-    "/thread": "thread",
-    "/public": Public,
-    "/compose": Compose,
-    "*": Default
-  };
-
-  let currentView = "";
-
-  $: {
-    if ($connected) {
-      let currentLocation = $route.location;
-
-      if (routes.hasOwnProperty(currentLocation)) {
-        console.log("found!", currentLocation);
-        currentView = routes[currentLocation];
-      } else {
-        console.log("didn't find", currentLocation);
-        currentView = routes["*"];
-      }
-      console.log(currentLocation, currentView);
-    } else {
-      currentView = Default
+  const popState = event => {
+    if (event.state !== null) {
+      console.dir("pop", event.state);
+      let { location, data } = event.state;
+      route.set({ location, data });
     }
-  }
-
-  const changedRoute = event => {
-    console.log("hash", event);
-    navigate(location.hash.slice(1));
   };
 </script>
 
-<svelte:window on:hashchange={changedRoute} />
+<svelte:window on:popstate={popState} />
 <div class="container bg-gray">
   <Navigation />
-  <svelte:component this={currentView} />
+  <svelte:component this={$currentView} />
 </div>

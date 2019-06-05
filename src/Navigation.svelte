@@ -1,5 +1,5 @@
 <script>
-  import { connected, navigate } from "./stores.js";
+  import { connected, navigate } from "./utils.js";
 
   let avatar = "/images/icon.png";
 
@@ -11,13 +11,12 @@
 
   const goSettings = ev => {
     browser.runtime.openOptionsPage();
-    ev.preventDefault();
-    ev.stopPropagation();
   };
 
+  const goCompose = () => navigate("/compose")
+  const goPublic = () => navigate("/public")
+
   const openSidebar = async ev => {
-    ev.preventDefault();
-    ev.stopPropagation();
     let loc = window.location.href;
     browser.sidebarAction.setPanel({ panel: loc });
     browser.sidebarAction.open();
@@ -29,28 +28,22 @@
     let loc = await browser.sidebarAction.getPanel({});
     await browser.tabs.create({ url: loc });
     await browser.sidebarAction.close();
-    ev.preventDefault();
-    ev.stopPropagation();
   };
 
-  const doNothing = ev => {
-    ev.stopPropagation();
-    ev.preventDefault();
-  };
 </script>
 
 <style>
-.blocker {
-  height: 70px;
-  display: block;
-}
+  .blocker {
+    height: 70px;
+    display: block;
+  }
 
-.above { 
-  z-index: 99999;
-  width: 100;
-  padding: 5px;
-  position: fixed;
-}
+  .above {
+    z-index: 99999;
+    width: 100;
+    padding: 5px;
+    position: fixed;
+  }
 </style>
 
 <header class="navbar">
@@ -64,8 +57,18 @@
         <i class="avatar-presence {$connected ? 'online' : 'offline'}" />
       </figure>
     </a>
-    <a href="#/compose" class="btn btn-link">New</a>
-    <a href="#/public" class="btn btn-link">Public</a>
+    <a
+      href="#/compose"
+      class="btn btn-link"
+      on:click|stopPropagation|preventDefault={goCompose}>
+      New
+    </a>
+    <a
+      href="#/public"
+      class="btn btn-link"
+      on:click|stopPropagation|preventDefault={goPublic}>
+      Public
+    </a>
     <a href="#/settings" class="btn btn-link" on:click={goSettings}>Settings</a>
     <a href="/docs/index.html" class="btn btn-link">Help</a>
   </section>
@@ -81,7 +84,7 @@
         href="?"
         class="btn btn-link dropdown-toggle"
         tabindex="0"
-        on:click={doNothing}>
+        on:click|stopPropagation|preventDefault={() => ""}>
         Menu
         <i class="icon icon-caret" />
       </a>
@@ -109,5 +112,5 @@
       </ul>
     </div>
   </section>
-  <div class="blocker show-sm"></div>
+  <div class="blocker show-sm" />
 </header>
