@@ -4,6 +4,7 @@ import Public from "./views/Public.svelte";
 import Default from "./views/Default.svelte";
 import Compose from "./views/Compose.svelte";
 import Thread from "./views/Thread.svelte";
+import Profile from "./views/Profile.svelte";
 
 
 export const parseLocation = () => {
@@ -31,6 +32,7 @@ const routes = {
     "/thread": Thread,
     "/public": Public,
     "/compose": Compose,
+    "/profile": Profile,
     "*": Default
 };
 

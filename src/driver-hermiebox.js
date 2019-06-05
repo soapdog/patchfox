@@ -105,42 +105,42 @@ export class DriverHermiebox {
     markdown(text) {
 
         function replaceMsgID(match, id, offset, string) {
-            // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-            return "<a class=\"thread-link\" href=\"#!/thread/" + encodeURIComponent(id);
+            let eid = encodeURIComponent(`%${id}`);
+
+            return `<a class="thread-link" href="?thread=${eid}#/thread`;
         }
 
         function replaceChannel(match, id, offset, string) {
-            // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-            return "<a class=\"channel-link\" href=\"#!/channel/" + id;
+            let eid = encodeURIComponent(id);
+
+            return `<a class="channel-link" href="?channel=${eid}#/channel`;
         }
 
 
         function replaceFeedID(match, id, offset, string) {
-            // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-            return "<a class=\"profile-link\" href=\"#!/profile/%40" + encodeURIComponent(id);
-        }
+            let eid = encodeURIComponent(`@${id}`);
+            return "<a class=\"profile-link\" href=\"?feed="+eid+"#/profile";
+        } 
 
 
         function replaceImageLinks(match, id, offset, string) {
-            // p1 is nondigits, p2 digits, and p3 non-alphanumerics
             return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
         }
 
 
         function replaceImages(match, id, offset, string) {
-            // p1 is nondigits, p2 digits, and p3 non-alphanumerics
             return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
         }
 
         let html = hermiebox.modules.ssbMarkdown.block(text)
         html = html
-            // .replace(/<a href="#([^"]+?)/gi, replaceChannel)
-            .replace(/<a href="@([^"]+?)/gi, replaceFeedID)
-            //.replace(/target="_blank"/gi, "")
-            .replace(/<a href="%([^"]+?)/gi, replaceMsgID)
-            .replace(/<img src="&([^"]+?)/gi, replaceImages)
-            .replace(/<a href="&([^"]+?)/gi, replaceImageLinks)
-
+            .replace("<pre>", `<pre class="code">`)
+            .replace(/<a href="#([^"]*)/gi, replaceChannel)
+            .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+            .replace(/target="_blank"/gi, "")
+            .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+            .replace(/<img src="&([^"]*)/gi, replaceImages)
+            .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
 
         return html
     }

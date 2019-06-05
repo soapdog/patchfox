@@ -3,24 +3,8 @@
 
   let content = ssb.markdown(msg.value.content.text);
 
-  let rootLabel = false;
   let rootId = false;
-  let branchLabel = false;
   let branchId = false;
-
-  if (msg.value.content.root) {
-    ssb.blurbFromMsg(msg.value.content.root, 50).then(blurb => {
-      rootLabel = blurb;
-      rootId = encodeURIComponent(msg.value.content.root);
-    });
-  }
-
-  if (msg.value.content.branch) {
-    ssb.blurbFromMsg(msg.value.content.branch, 50).then(blurb => {
-      branchLabel = blurb;
-      branchId = encodeURIComponent(msg.value.content.branch);
-    });
-  }
 </script>
 
 <style>

@@ -7,6 +7,7 @@
   import ChannelMsg from "./ChannelMsg.svelte";
   import AvatarChip from "../parts/AvatarChip.svelte";
   import timestamp from "../parts/timestamp.js";
+  import { navigate } from "../utils.js";
 
   export let msg;
 
@@ -53,13 +54,23 @@
   .raw-content {
     width: 50%;
   }
+
+  .feed-display {
+    cursor: pointer;
+  }
+
+  .channel-display {
+    cursor: pointer;
+  }
 </style>
 
 <div class="card m-2">
   <div class="card-header">
     <div class="float-left">
       <div class="card-title">
-        <div class="tile tile-centered">
+        <div
+          class="tile tile-centered feed-display"
+          on:click={() => navigate('/profile', { feed })}>
           <div class="tile-icon">
             <div class="example-tile-icon">
               <img src={image} class="avatar avatar-lg" alt={feed} />
@@ -76,8 +87,10 @@
     </div>
     <div class="float-right">
 
-      <span class="text-gray">
-        {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
+      <span class="text-gray channel-display" on:click={() => navigate("/channel", {channel: msg.value.content.channel})}>
+        {#if msg.value.content.channel}
+        #{msg.value.content.channel}
+        {/if}
       </span>
       <span class="text-gray">
         <i class="icon icon-more-vert" on:click={() => (showRaw = !showRaw)} />

@@ -2,6 +2,14 @@ var app = (function () {
     'use strict';
 
     function noop() { }
+    function assign(tar, src) {
+        for (const k in src)
+            tar[k] = src[k];
+        return tar;
+    }
+    function is_promise(value) {
+        return value && typeof value.then === 'function';
+    }
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -168,6 +176,62 @@ var app = (function () {
     }
     function on_outro(callback) {
         outros.callbacks.push(callback);
+    }
+
+    function handle_promise(promise, info) {
+        const token = info.token = {};
+        function update(type, index, key, value) {
+            if (info.token !== token)
+                return;
+            info.resolved = key && { [key]: value };
+            const child_ctx = assign(assign({}, info.ctx), info.resolved);
+            const block = type && (info.current = type)(child_ctx);
+            if (info.block) {
+                if (info.blocks) {
+                    info.blocks.forEach((block, i) => {
+                        if (i !== index && block) {
+                            group_outros();
+                            on_outro(() => {
+                                block.d(1);
+                                info.blocks[i] = null;
+                            });
+                            block.o(1);
+                            check_outros();
+                        }
+                    });
+                }
+                else {
+                    info.block.d(1);
+                }
+                block.c();
+                if (block.i)
+                    block.i(1);
+                block.m(info.mount(), info.anchor);
+                flush();
+            }
+            info.block = block;
+            if (info.blocks)
+                info.blocks[index] = block;
+        }
+        if (is_promise(promise)) {
+            promise.then(value => {
+                update(info.then, 1, info.value, value);
+            }, error => {
+                update(info.catch, 2, info.error, error);
+            });
+            // if we previously had a then/catch block, destroy it
+            if (info.current !== info.pending) {
+                update(info.pending, 0);
+                return true;
+            }
+        }
+        else {
+            if (info.current !== info.then) {
+                update(info.then, 1, info.value, promise);
+                return true;
+            }
+            info.resolved = { [info.value]: promise };
+        }
     }
 
     function destroy_block(block, lookup) {
@@ -485,37 +549,42 @@ var app = (function () {
         markdown(text) {
 
             function replaceMsgID(match, id, offset, string) {
-                // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-                return "<a class=\"thread-link\" href=\"#!/thread/" + encodeURIComponent(id);
+                let eid = encodeURIComponent(`%${id}`);
+
+                return `<a class="thread-link" href="?thread=${eid}#/thread`;
+            }
+
+            function replaceChannel(match, id, offset, string) {
+                let eid = encodeURIComponent(id);
+
+                return `<a class="channel-link" href="?channel=${eid}#/channel`;
             }
 
 
             function replaceFeedID(match, id, offset, string) {
-                // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-                return "<a class=\"profile-link\" href=\"#!/profile/%40" + encodeURIComponent(id);
-            }
+                let eid = encodeURIComponent(`@${id}`);
+                return "<a class=\"profile-link\" href=\"?feed="+eid+"#/profile";
+            } 
 
 
             function replaceImageLinks(match, id, offset, string) {
-                // p1 is nondigits, p2 digits, and p3 non-alphanumerics
                 return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
             }
 
 
             function replaceImages(match, id, offset, string) {
-                // p1 is nondigits, p2 digits, and p3 non-alphanumerics
                 return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
             }
 
             let html = hermiebox.modules.ssbMarkdown.block(text);
             html = html
-                // .replace(/<a href="#([^"]+?)/gi, replaceChannel)
-                .replace(/<a href="@([^"]+?)/gi, replaceFeedID)
-                //.replace(/target="_blank"/gi, "")
-                .replace(/<a href="%([^"]+?)/gi, replaceMsgID)
-                .replace(/<img src="&([^"]+?)/gi, replaceImages)
-                .replace(/<a href="&([^"]+?)/gi, replaceImageLinks);
-
+                .replace("<pre>", `<pre class="code">`)
+                .replace(/<a href="#([^"]*)/gi, replaceChannel)
+                .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+                .replace(/target="_blank"/gi, "")
+                .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+                .replace(/<img src="&([^"]*)/gi, replaceImages)
+                .replace(/<a href="&([^"]*)/gi, replaceImageLinks);
 
             return html
         }
@@ -1028,7 +1097,7 @@ var app = (function () {
 
     const file = "src\\messageTypes\\PostMsg.svelte";
 
-    // (43:6) {#if rootId || branchId}
+    // (27:6) {#if rootId || branchId}
     function create_if_block(ctx) {
     	var t, if_block1_anchor;
 
@@ -1095,7 +1164,7 @@ var app = (function () {
     	};
     }
 
-    // (44:8) {#if msg.value.content.root}
+    // (28:8) {#if msg.value.content.root}
     function create_if_block_2(ctx) {
     	var span, a, t, a_href_value;
 
@@ -1104,9 +1173,9 @@ var app = (function () {
     			span = element("span");
     			a = element("a");
     			t = text("(root)");
-    			a.href = a_href_value = "?thread=" + ctx.rootId + "#/thread";
-    			add_location(a, file, 45, 12, 1039);
-    			add_location(span, file, 44, 10, 1020);
+    			a.href = a_href_value = "?thread=" + rootId + "#/thread";
+    			add_location(a, file, 29, 12, 589);
+    			add_location(span, file, 28, 10, 570);
     		},
 
     		m: function mount(target, anchor) {
@@ -1115,11 +1184,7 @@ var app = (function () {
     			append(a, t);
     		},
 
-    		p: function update(changed, ctx) {
-    			if ((changed.rootId) && a_href_value !== (a_href_value = "?thread=" + ctx.rootId + "#/thread")) {
-    				a.href = a_href_value;
-    			}
-    		},
+    		p: noop,
 
     		d: function destroy(detaching) {
     			if (detaching) {
@@ -1129,7 +1194,7 @@ var app = (function () {
     	};
     }
 
-    // (49:8) {#if msg.value.content.branch}
+    // (33:8) {#if msg.value.content.branch}
     function create_if_block_1(ctx) {
     	var span, a, t, a_href_value;
 
@@ -1138,9 +1203,9 @@ var app = (function () {
     			span = element("span");
     			a = element("a");
     			t = text("(in reply to)");
-    			a.href = a_href_value = "?thread=" + ctx.branchId + "#/thread";
-    			add_location(a, file, 50, 12, 1185);
-    			add_location(span, file, 49, 10, 1166);
+    			a.href = a_href_value = "?thread=" + branchId + "#/thread";
+    			add_location(a, file, 34, 12, 735);
+    			add_location(span, file, 33, 10, 716);
     		},
 
     		m: function mount(target, anchor) {
@@ -1149,11 +1214,7 @@ var app = (function () {
     			append(a, t);
     		},
 
-    		p: function update(changed, ctx) {
-    			if ((changed.branchId) && a_href_value !== (a_href_value = "?thread=" + ctx.branchId + "#/thread")) {
-    				a.href = a_href_value;
-    			}
-    		},
+    		p: noop,
 
     		d: function destroy(detaching) {
     			if (detaching) {
@@ -1166,7 +1227,7 @@ var app = (function () {
     function create_fragment(ctx) {
     	var div0, t0, div4, div3, div1, label, input, t1, i, t2, t3, t4, div2, button;
 
-    	var if_block = (ctx.rootId || ctx.branchId) && create_if_block(ctx);
+    	var if_block = (branchId) && create_if_block(ctx);
 
     	return {
     		c: function create() {
@@ -1187,23 +1248,23 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "Reply";
     			div0.className = "card-body";
-    			add_location(div0, file, 31, 0, 663);
+    			add_location(div0, file, 15, 0, 213);
     			attr(input, "type", "checkbox");
-    			add_location(input, file, 38, 8, 856);
+    			add_location(input, file, 22, 8, 406);
     			i.className = "form-icon";
-    			add_location(i, file, 39, 8, 890);
+    			add_location(i, file, 23, 8, 440);
     			label.className = "form-switch d-inline";
-    			add_location(label, file, 37, 6, 811);
+    			add_location(label, file, 21, 6, 361);
     			div1.className = "column col-6";
-    			add_location(div1, file, 36, 4, 778);
+    			add_location(div1, file, 20, 4, 328);
     			button.className = "btn";
-    			add_location(button, file, 56, 6, 1343);
+    			add_location(button, file, 40, 6, 893);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 55, 4, 1299);
+    			add_location(div2, file, 39, 4, 849);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file, 35, 2, 740);
+    			add_location(div3, file, 19, 2, 290);
     			div4.className = "card-footer";
-    			add_location(div4, file, 34, 0, 712);
+    			add_location(div4, file, 18, 0, 262);
     		},
 
     		l: function claim(nodes) {
@@ -1230,15 +1291,7 @@ var app = (function () {
     		},
 
     		p: function update(changed, ctx) {
-    			if (ctx.rootId || ctx.branchId) {
-    				if (if_block) {
-    					if_block.p(changed, ctx);
-    				} else {
-    					if_block = create_if_block(ctx);
-    					if_block.c();
-    					if_block.m(div1, null);
-    				}
-    			} else if (if_block) {
+    			if (if_block) {
     				if_block.d(1);
     				if_block = null;
     			}
@@ -1259,24 +1312,14 @@ var app = (function () {
     	};
     }
 
+    let rootId = false;
+
+    let branchId = false;
+
     function instance($$self, $$props, $$invalidate) {
     	let { msg } = $$props;
 
       let content = ssb.markdown(msg.value.content.text);
-      let rootId = false;
-      let branchId = false;
-
-      if (msg.value.content.root) {
-        ssb.blurbFromMsg(msg.value.content.root, 50).then(blurb => {
-          $$invalidate('rootId', rootId = encodeURIComponent(msg.value.content.root));
-        });
-      }
-
-      if (msg.value.content.branch) {
-        ssb.blurbFromMsg(msg.value.content.branch, 50).then(blurb => {
-          $$invalidate('branchId', branchId = encodeURIComponent(msg.value.content.branch));
-        });
-      }
 
     	const writable_props = ['msg'];
     	Object.keys($$props).forEach(key => {
@@ -1287,7 +1330,7 @@ var app = (function () {
     		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
     	};
 
-    	return { msg, content, rootId, branchId };
+    	return { msg, content };
     }
 
     class PostMsg extends SvelteComponentDev {
@@ -1324,11 +1367,11 @@ var app = (function () {
     			pre = element("pre");
     			code = element("code");
     			t = text(ctx.rawContent);
-    			add_location(code, file$1, 8, 4, 137);
-    			pre.className = "code";
-    			add_location(pre, file$1, 7, 2, 114);
+    			add_location(code, file$1, 13, 4, 189);
+    			pre.className = "code svelte-1c3kv1x";
+    			add_location(pre, file$1, 12, 2, 166);
     			div.className = "card-body";
-    			add_location(div, file$1, 6, 0, 88);
+    			add_location(div, file$1, 11, 0, 140);
     		},
 
     		l: function claim(nodes) {
@@ -1941,7 +1984,7 @@ var app = (function () {
 
     const file$6 = "src\\messageTypes\\MessageRenderer.svelte";
 
-    // (80:8) {#if msg.value.content.channel}
+    // (91:8) {#if msg.value.content.channel}
     function create_if_block_1$1(ctx) {
     	var t0, t1_value = ctx.msg.value.content.channel, t1;
 
@@ -1971,7 +2014,7 @@ var app = (function () {
     	};
     }
 
-    // (89:2) {:else}
+    // (102:2) {:else}
     function create_else_block(ctx) {
     	var div3, div2, div0, pre, code, t0, t1, div1, p0, t2, em, t3, t4, t5, p1, t6, a, t7, t8, t9;
 
@@ -1997,22 +2040,22 @@ var app = (function () {
     			t7 = text("the documentation about messages with type ");
     			t8 = text(ctx.type);
     			t9 = text("\n            .");
-    			add_location(code, file$6, 93, 12, 2364);
+    			add_location(code, file$6, 106, 12, 2688);
     			pre.className = "code";
-    			add_location(pre, file$6, 92, 10, 2333);
+    			add_location(pre, file$6, 105, 10, 2657);
     			div0.className = "column col-9";
-    			add_location(div0, file$6, 91, 8, 2296);
-    			add_location(em, file$6, 99, 12, 2521);
-    			add_location(p0, file$6, 97, 10, 2467);
+    			add_location(div0, file$6, 104, 8, 2620);
+    			add_location(em, file$6, 112, 12, 2845);
+    			add_location(p0, file$6, 110, 10, 2791);
     			a.href = "";
-    			add_location(a, file$6, 104, 12, 2634);
-    			add_location(p1, file$6, 102, 10, 2576);
+    			add_location(a, file$6, 117, 12, 2958);
+    			add_location(p1, file$6, 115, 10, 2900);
     			div1.className = "column col-3";
-    			add_location(div1, file$6, 96, 8, 2430);
+    			add_location(div1, file$6, 109, 8, 2754);
     			div2.className = "columns";
-    			add_location(div2, file$6, 90, 6, 2266);
+    			add_location(div2, file$6, 103, 6, 2590);
     			div3.className = "card-body";
-    			add_location(div3, file$6, 89, 4, 2236);
+    			add_location(div3, file$6, 102, 4, 2560);
     		},
 
     		m: function mount(target, anchor) {
@@ -2056,7 +2099,7 @@ var app = (function () {
     	};
     }
 
-    // (87:2) {#if !showRaw}
+    // (100:2) {#if !showRaw}
     function create_if_block$1(ctx) {
     	var switch_instance_anchor, current;
 
@@ -2190,36 +2233,41 @@ var app = (function () {
     			img.src = ctx.image;
     			img.className = "avatar avatar-lg";
     			img.alt = ctx.feed;
-    			add_location(img, file$6, 64, 14, 1501);
+    			add_location(img, file$6, 75, 14, 1715);
     			div0.className = "example-tile-icon";
-    			add_location(div0, file$6, 63, 12, 1455);
+    			add_location(div0, file$6, 74, 12, 1669);
     			div1.className = "tile-icon";
-    			add_location(div1, file$6, 62, 10, 1419);
+    			add_location(div1, file$6, 73, 10, 1633);
     			div2.className = "tile-title";
-    			add_location(div2, file$6, 68, 12, 1642);
+    			add_location(div2, file$6, 79, 12, 1856);
     			small.className = "tile-subtitle text-gray";
-    			add_location(small, file$6, 69, 12, 1691);
+    			add_location(small, file$6, 80, 12, 1905);
     			div3.className = "tile-content";
-    			add_location(div3, file$6, 67, 10, 1603);
-    			div4.className = "tile tile-centered";
-    			add_location(div4, file$6, 61, 8, 1376);
+    			add_location(div3, file$6, 78, 10, 1817);
+    			div4.className = "tile tile-centered feed-display svelte-1bmt2jj";
+    			add_location(div4, file$6, 70, 8, 1509);
     			div5.className = "card-title";
-    			add_location(div5, file$6, 60, 6, 1343);
+    			add_location(div5, file$6, 69, 6, 1476);
     			div6.className = "float-left";
-    			add_location(div6, file$6, 59, 4, 1312);
-    			span0.className = "text-gray";
-    			add_location(span0, file$6, 78, 6, 1893);
+    			add_location(div6, file$6, 68, 4, 1445);
+    			span0.className = "text-gray channel-display svelte-1bmt2jj";
+    			add_location(span0, file$6, 89, 6, 2107);
     			i.className = "icon icon-more-vert";
-    			add_location(i, file$6, 82, 8, 2044);
+    			add_location(i, file$6, 95, 8, 2368);
     			span1.className = "text-gray";
-    			add_location(span1, file$6, 81, 6, 2011);
+    			add_location(span1, file$6, 94, 6, 2335);
     			div7.className = "float-right";
-    			add_location(div7, file$6, 76, 4, 1860);
+    			add_location(div7, file$6, 87, 4, 2074);
     			div8.className = "card-header";
-    			add_location(div8, file$6, 58, 2, 1282);
+    			add_location(div8, file$6, 67, 2, 1415);
     			div9.className = "card m-2";
-    			add_location(div9, file$6, 57, 0, 1257);
-    			dispose = listen(i, "click", ctx.click_handler);
+    			add_location(div9, file$6, 66, 0, 1390);
+
+    			dispose = [
+    				listen(div4, "click", ctx.click_handler),
+    				listen(span0, "click", ctx.click_handler_1),
+    				listen(i, "click", ctx.click_handler_2)
+    			];
     		},
 
     		l: function claim(nodes) {
@@ -2321,7 +2369,7 @@ var app = (function () {
 
     			if (if_block0) if_block0.d();
     			if_blocks[current_block_type_index].d();
-    			dispose();
+    			run_all(dispose);
     		}
     	};
     }
@@ -2375,6 +2423,14 @@ var app = (function () {
     	});
 
     	function click_handler() {
+    		return navigate('/profile', { feed });
+    	}
+
+    	function click_handler_1() {
+    		return navigate("/channel", {channel: msg.value.content.channel});
+    	}
+
+    	function click_handler_2() {
     		const $$result = (showRaw = !showRaw);
     		$$invalidate('showRaw', showRaw);
     		return $$result;
@@ -2393,7 +2449,9 @@ var app = (function () {
     		selectedRenderer,
     		image,
     		name,
-    		click_handler
+    		click_handler,
+    		click_handler_1,
+    		click_handler_2
     	};
     }
 
@@ -3153,6 +3211,373 @@ var app = (function () {
     	}
     }
 
+    /* src\views\Profile.svelte generated by Svelte v3.4.4 */
+
+    const file$b = "src\\views\\Profile.svelte";
+
+    function get_each_context$2(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.msg = list[i];
+    	return child_ctx;
+    }
+
+    // (65:2) {:catch n}
+    function create_catch_block(ctx) {
+    	var p, t0, t1_value = ctx.n.message, t1;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			t0 = text("Error: ");
+    			t1 = text(t1_value);
+    			add_location(p, file$b, 65, 4, 1515);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, t0);
+    			append(p, t1);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (43:2) {:then}
+    function create_then_block(ctx) {
+    	var div2, div0, img, img_src_value, t0, div1, h1, t1, t2, p, raw_value = ctx.ssb.markdown(ctx.description), t3, div3, each_blocks = [], each_1_lookup = new Map(), current;
+
+    	var each_value = ctx.lastMsgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$2(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$2(key, child_ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			img = element("img");
+    			t0 = space();
+    			div1 = element("div");
+    			h1 = element("h1");
+    			t1 = text(ctx.name);
+    			t2 = space();
+    			p = element("p");
+    			t3 = space();
+    			div3 = element("div");
+
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+    			img.className = "img-responsive";
+    			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
+    			img.alt = ctx.feed;
+    			add_location(img, file$b, 46, 8, 1107);
+    			div0.className = "column col-6";
+    			add_location(div0, file$b, 45, 6, 1072);
+    			add_location(h1, file$b, 52, 8, 1279);
+    			add_location(p, file$b, 53, 8, 1303);
+    			div1.className = "column col-6";
+    			add_location(div1, file$b, 51, 6, 1244);
+    			div2.className = "columns";
+    			add_location(div2, file$b, 43, 4, 1043);
+    			add_location(div3, file$b, 59, 4, 1393);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div0);
+    			append(div0, img);
+    			append(div2, t0);
+    			append(div2, div1);
+    			append(div1, h1);
+    			append(h1, t1);
+    			append(div1, t2);
+    			append(div1, p);
+    			p.innerHTML = raw_value;
+    			insert(target, t3, anchor);
+    			insert(target, div3, anchor);
+
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(div3, null);
+
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((!current || changed.image) && img_src_value !== (img_src_value = "http://localhost:8989/blobs/get/" + ctx.image)) {
+    				img.src = img_src_value;
+    			}
+
+    			if (!current || changed.feed) {
+    				img.alt = ctx.feed;
+    			}
+
+    			if (!current || changed.name) {
+    				set_data(t1, ctx.name);
+    			}
+
+    			if ((!current || changed.description) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.description))) {
+    				p.innerHTML = raw_value;
+    			}
+
+    			const each_value = ctx.lastMsgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, div3, outro_and_destroy_block, create_each_block$2, null, get_each_context$2);
+    			check_outros();
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div2);
+    				detach(t3);
+    				detach(div3);
+    			}
+
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d();
+    		}
+    	};
+    }
+
+    // (61:6) {#each lastMsgs as msg (msg.key)}
+    function create_each_block$2(key_1, ctx) {
+    	var first, current;
+
+    	var messagerenderer = new MessageRenderer({
+    		props: { msg: ctx.msg },
+    		$$inline: true
+    	});
+
+    	return {
+    		key: key_1,
+
+    		first: null,
+
+    		c: function create() {
+    			first = empty();
+    			messagerenderer.$$.fragment.c();
+    			this.first = first;
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, first, anchor);
+    			mount_component(messagerenderer, target, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var messagerenderer_changes = {};
+    			if (changed.lastMsgs) messagerenderer_changes.msg = ctx.msg;
+    			messagerenderer.$set(messagerenderer_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			messagerenderer.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			messagerenderer.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(first);
+    			}
+
+    			messagerenderer.$destroy(detaching);
+    		}
+    	};
+    }
+
+    // (41:19)      <p>Loading...</p>   {:then}
+    function create_pending_block(ctx) {
+    	var p;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "Loading...";
+    			add_location(p, file$b, 41, 4, 1011);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    function create_fragment$b(ctx) {
+    	var div, promise, current;
+
+    	let info = {
+    		ctx,
+    		current: null,
+    		pending: create_pending_block,
+    		then: create_then_block,
+    		catch: create_catch_block,
+    		value: 'null',
+    		error: 'n',
+    		blocks: Array(3)
+    	};
+
+    	handle_promise(promise = ctx.p1 && ctx.p2, info);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+
+    			info.block.c();
+    			div.className = "container";
+    			add_location(div, file$b, 39, 0, 963);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+
+    			info.block.m(div, info.anchor = null);
+    			info.mount = () => div;
+    			info.anchor = null;
+
+    			current = true;
+    		},
+
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
+    			info.ctx = ctx;
+
+    			if (promise !== (promise = ctx.p1 && ctx.p2) && handle_promise(promise, info)) ; else {
+    				info.block.p(changed, assign(assign({}, ctx), info.resolved));
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			info.block.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (let i = 0; i < 3; i += 1) {
+    				const block = info.blocks[i];
+    				if (block) block.o();
+    			}
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			info.block.d();
+    			info = null;
+    		}
+    	};
+    }
+
+    function instance$9($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+
+      let description = false;
+      let name,
+        image,
+        feed,
+        lastMsgs = [],
+        lastAbout;
+
+      // todo: move back into using stores.
+      $$invalidate('feed', feed = $routeParams.feed);
+      console.log("fetching", feed);
+      let p1 = ssb.avatar(feed).then(data => {
+        $$invalidate('name', name = data.name);
+        $$invalidate('image', image = data.image);
+      });
+      let p2 = ssb.profile(feed).then(data => {
+        lastAbout = data.about.reverse().find(m => {
+          let a = m.value.content;
+          return a.hasOwnProperty("description");
+        });
+        if (data.hasOwnProperty("msgs")) {
+          $$invalidate('lastMsgs', lastMsgs = data.msgs);
+        }
+        try {
+          $$invalidate('description', description = lastAbout.value.content.description);
+          console.log("d", description);
+        } catch (n) {
+          console.log("err", n);
+          console.log("profile", data);
+          $$invalidate('description', description = "");
+        }
+        window.scrollTo(0, 0);
+      });
+
+    	return {
+    		description,
+    		name,
+    		image,
+    		feed,
+    		lastMsgs,
+    		p1,
+    		p2,
+    		ssb
+    	};
+    }
+
+    class Profile extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$9, create_fragment$b, safe_not_equal, []);
+    	}
+    }
+
     const parseLocation = () => {
         let data = queryString.parse(window.location.search);
         let loc = window.location.hash.slice(1).replace("?", "");
@@ -3178,6 +3603,7 @@ var app = (function () {
         "/thread": Thread,
         "/public": Public,
         "/compose": Compose,
+        "/profile": Profile,
         "*": Default
     };
 
@@ -3200,9 +3626,9 @@ var app = (function () {
 
     /* src\Navigation.svelte generated by Svelte v3.4.4 */
 
-    const file$b = "src\\Navigation.svelte";
+    const file$c = "src\\Navigation.svelte";
 
-    function create_fragment$b(ctx) {
+    function create_fragment$c(ctx) {
     	var header, section0, a0, i0, t0, a1, figure0, img0, t1, i1, i1_class_value, t2, a2, t4, a3, t6, a4, t8, a5, t10, section1, a6, figure1, img1, t11, i2, i2_class_value, t12, div0, a7, t13, i3, t14, ul, li0, a8, t16, li1, a9, t18, li2, a10, t20, li3, a11, t22, li4, a12, t24, div1, dispose;
 
     	return {
@@ -3265,85 +3691,85 @@ var app = (function () {
     			t24 = space();
     			div1 = element("div");
     			i0.className = "icon icon-minus text-black";
-    			add_location(i0, file$b, 51, 6, 1157);
+    			add_location(i0, file$c, 51, 6, 1157);
     			a0.href = "#/sidebar";
     			a0.className = "btn btn-link";
-    			add_location(a0, file$b, 50, 4, 1086);
+    			add_location(a0, file$c, 50, 4, 1086);
     			img0.src = ctx.avatar;
     			img0.alt = "L";
-    			add_location(img0, file$b, 55, 8, 1304);
+    			add_location(img0, file$c, 55, 8, 1304);
     			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-bx117p";
-    			add_location(i1, file$b, 56, 8, 1341);
+    			add_location(i1, file$c, 56, 8, 1341);
     			figure0.className = "avatar avatar-lg";
-    			add_location(figure0, file$b, 54, 6, 1262);
+    			add_location(figure0, file$c, 54, 6, 1262);
     			a1.href = "...";
     			a1.className = "navbar-brand mr-2 p-1";
-    			add_location(a1, file$b, 53, 4, 1211);
+    			add_location(a1, file$c, 53, 4, 1211);
     			a2.href = "#/compose";
     			a2.className = "btn btn-link";
-    			add_location(a2, file$b, 59, 4, 1436);
+    			add_location(a2, file$c, 59, 4, 1436);
     			a3.href = "#/public";
     			a3.className = "btn btn-link";
-    			add_location(a3, file$b, 65, 4, 1571);
+    			add_location(a3, file$c, 65, 4, 1571);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$b, 71, 4, 1707);
+    			add_location(a4, file$c, 71, 4, 1707);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$b, 72, 4, 1788);
+    			add_location(a5, file$c, 72, 4, 1788);
     			section0.className = "navbar-section hide-sm";
-    			add_location(section0, file$b, 49, 2, 1041);
+    			add_location(section0, file$c, 49, 2, 1041);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$b, 77, 8, 2002);
+    			add_location(img1, file$c, 77, 8, 2002);
     			i2.className = i2_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-bx117p";
-    			add_location(i2, file$b, 78, 8, 2039);
+    			add_location(i2, file$c, 78, 8, 2039);
     			figure1.className = "avatar";
-    			add_location(figure1, file$b, 76, 6, 1970);
+    			add_location(figure1, file$c, 76, 6, 1970);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$b, 75, 4, 1919);
+    			add_location(a6, file$c, 75, 4, 1919);
     			i3.className = "icon icon-caret";
-    			add_location(i3, file$b, 88, 8, 2342);
+    			add_location(i3, file$c, 88, 8, 2342);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$b, 82, 6, 2175);
+    			add_location(a7, file$c, 82, 6, 2175);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$b, 93, 10, 2478);
+    			add_location(a8, file$c, 93, 10, 2478);
     			li0.className = "menu-item";
-    			add_location(li0, file$b, 92, 8, 2445);
+    			add_location(li0, file$c, 92, 8, 2445);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$b, 96, 10, 2582);
+    			add_location(a9, file$c, 96, 10, 2582);
     			li1.className = "menu-item";
-    			add_location(li1, file$b, 95, 8, 2549);
+    			add_location(li1, file$c, 95, 8, 2549);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$b, 99, 10, 2688);
+    			add_location(a10, file$c, 99, 10, 2688);
     			li2.className = "menu-item";
-    			add_location(li2, file$b, 98, 8, 2655);
+    			add_location(li2, file$c, 98, 8, 2655);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$b, 104, 10, 2844);
+    			add_location(a11, file$c, 104, 10, 2844);
     			li3.className = "menu-item";
-    			add_location(li3, file$b, 103, 8, 2811);
+    			add_location(li3, file$c, 103, 8, 2811);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$b, 107, 10, 2956);
+    			add_location(a12, file$c, 107, 10, 2956);
     			li4.className = "menu-item";
-    			add_location(li4, file$b, 106, 8, 2923);
+    			add_location(li4, file$c, 106, 8, 2923);
     			ul.className = "menu";
-    			add_location(ul, file$b, 91, 6, 2419);
+    			add_location(ul, file$c, 91, 6, 2419);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$b, 81, 4, 2134);
+    			add_location(div0, file$c, 81, 4, 2134);
     			section1.className = "navbar-section show-sm bg-gray above svelte-bx117p";
-    			add_location(section1, file$b, 74, 2, 1860);
+    			add_location(section1, file$c, 74, 2, 1860);
     			div1.className = "blocker show-sm svelte-bx117p";
-    			add_location(div1, file$b, 114, 2, 3115);
+    			add_location(div1, file$c, 114, 2, 3115);
     			header.className = "navbar";
-    			add_location(header, file$b, 48, 0, 1015);
+    			add_location(header, file$c, 48, 0, 1015);
 
     			dispose = [
     				listen(a0, "click", ctx.openSidebar),
@@ -3446,7 +3872,7 @@ var app = (function () {
     	return "";
     }
 
-    function instance$9($$self, $$props, $$invalidate) {
+    function instance$a($$self, $$props, $$invalidate) {
     	let $connected;
 
     	validate_store(connected, 'connected');
@@ -3497,15 +3923,15 @@ var app = (function () {
     class Navigation extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$9, create_fragment$b, safe_not_equal, []);
+    		init(this, options, instance$a, create_fragment$c, safe_not_equal, []);
     	}
     }
 
     /* src\Patchfox.svelte generated by Svelte v3.4.4 */
 
-    const file$c = "src\\Patchfox.svelte";
+    const file$d = "src\\Patchfox.svelte";
 
-    function create_fragment$c(ctx) {
+    function create_fragment$d(ctx) {
     	var div, t, current, dispose;
 
     	var navigation = new Navigation({ $$inline: true });
@@ -3527,7 +3953,7 @@ var app = (function () {
     			t = space();
     			if (switch_instance) switch_instance.$$.fragment.c();
     			div.className = "container bg-gray";
-    			add_location(div, file$c, 60, 0, 1455);
+    			add_location(div, file$d, 60, 0, 1455);
     			dispose = listen(window, "popstate", ctx.popState);
     		},
 
@@ -3599,7 +4025,7 @@ var app = (function () {
     	};
     }
 
-    function instance$a($$self, $$props, $$invalidate) {
+    function instance$b($$self, $$props, $$invalidate) {
     	let $currentView;
 
     	validate_store(currentView, 'currentView');
@@ -3665,7 +4091,7 @@ var app = (function () {
     class Patchfox extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$a, create_fragment$c, safe_not_equal, []);
+    		init(this, options, instance$b, create_fragment$d, safe_not_equal, []);
     	}
     }
 
