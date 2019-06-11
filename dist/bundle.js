@@ -2,6 +2,7 @@ var app = (function () {
     'use strict';
 
     function noop() { }
+    const identity = x => x;
     function assign(tar, src) {
         for (const k in src)
             tar[k] = src[k];
@@ -41,6 +42,40 @@ var app = (function () {
             ? () => unsub.unsubscribe()
             : unsub);
     }
+    const is_client = typeof window !== 'undefined';
+    let now = is_client
+        ? () => window.performance.now()
+        : () => Date.now();
+    let raf = is_client ? requestAnimationFrame : noop;
+
+    const tasks = new Set();
+    let running = false;
+    function run_tasks() {
+        tasks.forEach(task => {
+            if (!task[0](now())) {
+                tasks.delete(task);
+                task[1]();
+            }
+        });
+        running = tasks.size > 0;
+        if (running)
+            raf(run_tasks);
+    }
+    function loop(fn) {
+        let task;
+        if (!running) {
+            running = true;
+            raf(run_tasks);
+        }
+        return {
+            promise: new Promise(fulfil => {
+                tasks.add(task = [fn, fulfil]);
+            }),
+            abort() {
+                tasks.delete(task);
+            }
+        };
+    }
 
     function append(target, node) {
         target.appendChild(node);
@@ -50,6 +85,11 @@ var app = (function () {
     }
     function detach(node) {
         node.parentNode.removeChild(node);
+    }
+    function detach_before(after) {
+        while (after.previousSibling) {
+            after.parentNode.removeChild(after.previousSibling);
+        }
     }
     function element(name) {
         return document.createElement(name);
@@ -94,6 +134,65 @@ var app = (function () {
         data = '' + data;
         if (text.data !== data)
             text.data = data;
+    }
+    function toggle_class(element, name, toggle) {
+        element.classList[toggle ? 'add' : 'remove'](name);
+    }
+
+    let stylesheet;
+    let active = 0;
+    let current_rules = {};
+    // https://github.com/darkskyapp/string-hash/blob/master/index.js
+    function hash(str) {
+        let hash = 5381;
+        let i = str.length;
+        while (i--)
+            hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+        return hash >>> 0;
+    }
+    function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
+        const step = 16.666 / duration;
+        let keyframes = '{\n';
+        for (let p = 0; p <= 1; p += step) {
+            const t = a + (b - a) * ease(p);
+            keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
+        }
+        const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
+        const name = `__svelte_${hash(rule)}_${uid}`;
+        if (!current_rules[name]) {
+            if (!stylesheet) {
+                const style = element('style');
+                document.head.appendChild(style);
+                stylesheet = style.sheet;
+            }
+            current_rules[name] = true;
+            stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
+        }
+        const animation = node.style.animation || '';
+        node.style.animation = `${animation ? `${animation}, ` : ``}${name} ${duration}ms linear ${delay}ms 1 both`;
+        active += 1;
+        return name;
+    }
+    function delete_rule(node, name) {
+        node.style.animation = (node.style.animation || '')
+            .split(', ')
+            .filter(name
+            ? anim => anim.indexOf(name) < 0 // remove specific animation
+            : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
+        )
+            .join(', ');
+        if (name && !--active)
+            clear_rules();
+    }
+    function clear_rules() {
+        raf(() => {
+            if (active)
+                return;
+            let i = stylesheet.cssRules.length;
+            while (i--)
+                stylesheet.deleteRule(i);
+            current_rules = {};
+        });
     }
 
     let current_component;
@@ -162,6 +261,17 @@ var app = (function () {
             $$.after_render.forEach(add_render_callback);
         }
     }
+
+    let promise;
+    function wait() {
+        if (!promise) {
+            promise = Promise.resolve();
+            promise.then(() => {
+                promise = null;
+            });
+        }
+        return promise;
+    }
     let outros;
     function group_outros() {
         outros = {
@@ -176,6 +286,119 @@ var app = (function () {
     }
     function on_outro(callback) {
         outros.callbacks.push(callback);
+    }
+    function create_in_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = false;
+        let animation_name;
+        let task;
+        let uid = 0;
+        function cleanup() {
+            if (animation_name)
+                delete_rule(node, animation_name);
+        }
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+            if (css)
+                animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
+            tick$$1(0, 1);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            if (task)
+                task.abort();
+            running = true;
+            task = loop(now$$1 => {
+                if (running) {
+                    if (now$$1 >= end_time) {
+                        tick$$1(1, 0);
+                        cleanup();
+                        return running = false;
+                    }
+                    if (now$$1 >= start_time) {
+                        const t = easing((now$$1 - start_time) / duration);
+                        tick$$1(t, 1 - t);
+                    }
+                }
+                return running;
+            });
+        }
+        let started = false;
+        return {
+            start() {
+                if (started)
+                    return;
+                delete_rule(node);
+                if (typeof config === 'function') {
+                    config = config();
+                    wait().then(go);
+                }
+                else {
+                    go();
+                }
+            },
+            invalidate() {
+                started = false;
+            },
+            end() {
+                if (running) {
+                    cleanup();
+                    running = false;
+                }
+            }
+        };
+    }
+    function create_out_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = true;
+        let animation_name;
+        const group = outros;
+        group.remaining += 1;
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+            if (css)
+                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            loop(now$$1 => {
+                if (running) {
+                    if (now$$1 >= end_time) {
+                        tick$$1(0, 1);
+                        if (!--group.remaining) {
+                            // this will result in `end()` being called,
+                            // so we don't need to clean up here
+                            run_all(group.callbacks);
+                        }
+                        return false;
+                    }
+                    if (now$$1 >= start_time) {
+                        const t = easing((now$$1 - start_time) / duration);
+                        tick$$1(1 - t, t);
+                    }
+                }
+                return running;
+            });
+        }
+        if (typeof config === 'function') {
+            wait().then(() => {
+                config = config();
+                go();
+            });
+        }
+        else {
+            go();
+        }
+        return {
+            end(reset) {
+                if (reset && config.tick) {
+                    config.tick(1, 0);
+                }
+                if (running) {
+                    if (animation_name)
+                        delete_rule(node, animation_name);
+                    running = false;
+                }
+            }
+        };
     }
 
     function handle_promise(promise, info) {
@@ -468,145 +691,172 @@ var app = (function () {
      */
 
     class DriverHermiebox {
-        constructor() {
-            this.name = "Driver for Hermiebox";
+      constructor() {
+        this.name = "Driver for Hermiebox";
+      }
+
+      log(pMsg, pVal = "") {
+        console.log(`[Driver Hermiebox] - ${pMsg}`, pVal);
+      }
+
+      async connect(pKeys) {
+        var server = await hermiebox.api.connect(pKeys);
+        this.log("you are", server.id);
+        this.feed = server.id;
+      }
+
+      async public(opts) {
+        var msgs = await hermiebox.api.pullPublic(opts);
+        return msgs
+      }
+
+      async thread(msgid) {
+        var msgs = await hermiebox.api.thread(msgid);
+        return msgs
+      }
+
+      async profile(feedid) {
+        var user = await hermiebox.api.profile(feedid);
+        console.log(user);
+        return user
+      }
+
+      async get(msgid) {
+        var msg = await hermiebox.api.get(msgid);
+        return msg
+      }
+
+      async setAvatarCache(feed, data) {
+        let s = {};
+        s[`avatar-${feed}`] = data;
+        return browser.storage.local.set(s)
+      }
+
+      async getCachedAvatar(feed) {
+        return browser.storage.local.get(`avatar-${feed}`)
+      }
+
+      async avatar(feed) {
+        try {
+          let avatar = await hermiebox.api.avatar(feed);
+          await this.setAvatarCache(feed, avatar);
+          return avatar
+        } catch (n) {
+          throw n
         }
 
-        log(pMsg, pVal = "") {
-            console.log(`[Driver Hermiebox] - ${pMsg}`, pVal);
+      }
+
+      async blurbFromMsg(msgid, howManyChars) {
+        let retVal = msgid;
+
+        try {
+          let data = await ssb.get(msgid);
+
+          if (data.content.type == "post") {
+            retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...");
+          }
+          return retVal
+        } catch (n) {
+          return retVal
+        }
+      }
+      plainTextFromMarkdown(text) {
+        // TODO: this doesn't belong here
+        let html = this.markdown(text);
+        let div = document.createElement("div");
+        div.innerHTML = html;
+        return div.innerText
+      }
+
+      markdown(text) {
+
+        function replaceMsgID(match, id, offset, string) {
+          let eid = encodeURIComponent(`%${id}`);
+
+          return `<a class="thread-link" href="?thread=${eid}#/thread`;
         }
 
-        async connect(pKeys) {
-            var server = await hermiebox.api.connect(pKeys);
-            this.log("you are", server.id);
-            this.feed = server.id;
+        function replaceChannel(match, id, offset, string) {
+          let eid = encodeURIComponent(id);
+
+          return `<a class="channel-link" href="?channel=${eid}#/channel`;
         }
 
-        async public(opts) {
-            var msgs = await hermiebox.api.pullPublic(opts);
-            return msgs
+
+        function replaceFeedID(match, id, offset, string) {
+          let eid = encodeURIComponent(`@${id}`);
+          return "<a class=\"profile-link\" href=\"?feed=" + eid + "#/profile";
         }
 
-        async thread(msgid) {
-            var msgs = await hermiebox.api.thread(msgid);
-            return msgs
+
+        function replaceImageLinks(match, id, offset, string) {
+          return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
         }
 
-        async profile(feedid) {
-            var user = await hermiebox.api.profile(feedid);
-            console.log(user);
-            return user
+
+        function replaceImages(match, id, offset, string) {
+          return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
         }
 
-        async get(msgid) {
-            var msg = await hermiebox.api.get(msgid);
-            return msg
+        let html = hermiebox.modules.ssbMarkdown.block(text);
+        html = html
+          .replace("<pre>", `<pre class="code">`)
+          .replace(/<a href="#([^"]*)/gi, replaceChannel)
+          .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+          .replace(/target="_blank"/gi, "")
+          .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+          .replace(/<img src="&([^"]*)/gi, replaceImages)
+          .replace(/<a href="&([^"]*)/gi, replaceImageLinks);
+
+        return html
+      }
+
+      ref() {
+        return hermiebox.modules.ssbRef
+      }
+
+      getTimestamp(msg) {
+        const arrivalTimestamp = msg.timestamp;
+        const declaredTimestamp = msg.value.timestamp;
+        return Math.min(arrivalTimestamp, declaredTimestamp);
+      }
+
+      getRootMsgId(msg) {
+        if (msg && msg.value && msg.value.content) {
+          const root = msg.value.content.root;
+          if (hermiebox.modules.ssbRef.isMsgId(root)) {
+            return root;
+          }
         }
+      }
 
-        async setAvatarCache(feed, data) {
-            let s = {};
-            s[`avatar-${feed}`] = data;
-            return browser.storage.local.set(s)
-        }
+      newPost(data) {
+        return new Promise((resolve, reject) => {
+          const schemas = hermiebox.modules.ssbMsgSchemas;
 
-        async getCachedAvatar(feed) {
-            return browser.storage.local.get(`avatar-${feed}`)
-        }
+          const text = data.text;
+          const root = data.hasOwnProperty("root") ? data.root : undefined;
+          const branch = data.hasOwnProperty("branch") ? data.branch : undefined;
+          const mentions = data.hasOwnProperty("mentions") ? data.mentions : undefined;
+          const recps = data.hasOwnProperty("recps") ? data.recps : undefined;
+          const channel = data.hasOwnProperty("channel") ? data.channel : undefined;
+          const sbot = hermiebox.sbot || false;
 
-        async avatar(feed) {
-            try {
-                let avatar = await hermiebox.api.avatar(feed);
-                await this.setAvatarCache(feed, avatar);
-                return avatar
-            } catch (n) {
-                throw n
-            }
+          const msgToPost = schemas.post(text, root, branch, mentions, recps, channel);
 
-        }
-
-        async blurbFromMsg(msgid, howManyChars) {
-            let retVal = msgid;
-
-            try {
-                let data = await ssb.get(msgid);
-
-                if (data.content.type == "post") {
-                    retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...");
-                }
-                return retVal
-            } catch (n) {
-                return retVal
-            }
-        }
-        plainTextFromMarkdown(text) {
-            // TODO: this doesn't belong here
-            let html = this.markdown(text);
-            let div = document.createElement("div");
-            div.innerHTML = html;
-            return div.innerText
-        }
-
-        markdown(text) {
-
-            function replaceMsgID(match, id, offset, string) {
-                let eid = encodeURIComponent(`%${id}`);
-
-                return `<a class="thread-link" href="?thread=${eid}#/thread`;
-            }
-
-            function replaceChannel(match, id, offset, string) {
-                let eid = encodeURIComponent(id);
-
-                return `<a class="channel-link" href="?channel=${eid}#/channel`;
-            }
-
-
-            function replaceFeedID(match, id, offset, string) {
-                let eid = encodeURIComponent(`@${id}`);
-                return "<a class=\"profile-link\" href=\"?feed="+eid+"#/profile";
-            } 
-
-
-            function replaceImageLinks(match, id, offset, string) {
-                return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
-            }
-
-
-            function replaceImages(match, id, offset, string) {
-                return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
-            }
-
-            let html = hermiebox.modules.ssbMarkdown.block(text);
-            html = html
-                .replace("<pre>", `<pre class="code">`)
-                .replace(/<a href="#([^"]*)/gi, replaceChannel)
-                .replace(/<a href="@([^"]*)/gi, replaceFeedID)
-                .replace(/target="_blank"/gi, "")
-                .replace(/<a href="%([^"]*)/gi, replaceMsgID)
-                .replace(/<img src="&([^"]*)/gi, replaceImages)
-                .replace(/<a href="&([^"]*)/gi, replaceImageLinks);
-
-            return html
-        }
-
-        ref() {
-            return hermiebox.modules.ssbRef
-        }
-
-        getTimestamp(msg) {
-            const arrivalTimestamp = msg.timestamp;
-            const declaredTimestamp = msg.value.timestamp;
-            return Math.min(arrivalTimestamp, declaredTimestamp);
-        }
-
-        getRootMsgId(msg) {
-            if (msg && msg.value && msg.value.content) {
-                const root = msg.value.content.root;
-                if (hermiebox.modules.ssbRef.isMsgId(root)) {
-                    return root;
-                }
-            }
-        }
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              // 'msg' includes the hash-id and headers
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
     }
 
     /**
@@ -1097,75 +1347,8 @@ var app = (function () {
 
     const file = "src\\messageTypes\\PostMsg.svelte";
 
-    // (27:6) {#if rootId || branchId}
-    function create_if_block(ctx) {
-    	var t, if_block1_anchor;
-
-    	var if_block0 = (ctx.msg.value.content.root) && create_if_block_2(ctx);
-
-    	var if_block1 = (ctx.msg.value.content.branch) && create_if_block_1(ctx);
-
-    	return {
-    		c: function create() {
-    			if (if_block0) if_block0.c();
-    			t = space();
-    			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
-    		},
-
-    		m: function mount(target, anchor) {
-    			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert(target, if_block1_anchor, anchor);
-    		},
-
-    		p: function update(changed, ctx) {
-    			if (ctx.msg.value.content.root) {
-    				if (if_block0) {
-    					if_block0.p(changed, ctx);
-    				} else {
-    					if_block0 = create_if_block_2(ctx);
-    					if_block0.c();
-    					if_block0.m(t.parentNode, t);
-    				}
-    			} else if (if_block0) {
-    				if_block0.d(1);
-    				if_block0 = null;
-    			}
-
-    			if (ctx.msg.value.content.branch) {
-    				if (if_block1) {
-    					if_block1.p(changed, ctx);
-    				} else {
-    					if_block1 = create_if_block_1(ctx);
-    					if_block1.c();
-    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
-    				}
-    			} else if (if_block1) {
-    				if_block1.d(1);
-    				if_block1 = null;
-    			}
-    		},
-
-    		d: function destroy(detaching) {
-    			if (if_block0) if_block0.d(detaching);
-
-    			if (detaching) {
-    				detach(t);
-    			}
-
-    			if (if_block1) if_block1.d(detaching);
-
-    			if (detaching) {
-    				detach(if_block1_anchor);
-    			}
-    		}
-    	};
-    }
-
-    // (28:8) {#if msg.value.content.root}
-    function create_if_block_2(ctx) {
+    // (32:6) {#if msg.value.content.root}
+    function create_if_block_1(ctx) {
     	var span, a, t, a_href_value;
 
     	return {
@@ -1173,9 +1356,9 @@ var app = (function () {
     			span = element("span");
     			a = element("a");
     			t = text("(root)");
-    			a.href = a_href_value = "?thread=" + rootId + "#/thread";
-    			add_location(a, file, 29, 12, 589);
-    			add_location(span, file, 28, 10, 570);
+    			a.href = a_href_value = "?thread=" + ctx.msg.value.content.root + "#/thread";
+    			add_location(a, file, 33, 10, 745);
+    			add_location(span, file, 32, 8, 728);
     		},
 
     		m: function mount(target, anchor) {
@@ -1184,7 +1367,11 @@ var app = (function () {
     			append(a, t);
     		},
 
-    		p: noop,
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + ctx.msg.value.content.root + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
@@ -1194,8 +1381,8 @@ var app = (function () {
     	};
     }
 
-    // (33:8) {#if msg.value.content.branch}
-    function create_if_block_1(ctx) {
+    // (37:6) {#if msg.value.content.branch}
+    function create_if_block(ctx) {
     	var span, a, t, a_href_value;
 
     	return {
@@ -1203,9 +1390,9 @@ var app = (function () {
     			span = element("span");
     			a = element("a");
     			t = text("(in reply to)");
-    			a.href = a_href_value = "?thread=" + branchId + "#/thread";
-    			add_location(a, file, 34, 12, 735);
-    			add_location(span, file, 33, 10, 716);
+    			a.href = a_href_value = "?thread=" + ctx.msg.value.content.branch + "#/thread";
+    			add_location(a, file, 38, 10, 897);
+    			add_location(span, file, 37, 8, 880);
     		},
 
     		m: function mount(target, anchor) {
@@ -1214,7 +1401,11 @@ var app = (function () {
     			append(a, t);
     		},
 
-    		p: noop,
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + ctx.msg.value.content.branch + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
@@ -1225,9 +1416,11 @@ var app = (function () {
     }
 
     function create_fragment(ctx) {
-    	var div0, t0, div4, div3, div1, label, input, t1, i, t2, t3, t4, div2, button;
+    	var div0, t0, div4, div3, div1, label, input, t1, i, t2, t3, t4, t5, div2, button, dispose;
 
-    	var if_block = (branchId) && create_if_block(ctx);
+    	var if_block0 = (ctx.msg.value.content.root) && create_if_block_1(ctx);
+
+    	var if_block1 = (ctx.msg.value.content.branch) && create_if_block(ctx);
 
     	return {
     		c: function create() {
@@ -1242,29 +1435,32 @@ var app = (function () {
     			i = element("i");
     			t2 = text("\n        Like");
     			t3 = space();
-    			if (if_block) if_block.c();
+    			if (if_block0) if_block0.c();
     			t4 = space();
+    			if (if_block1) if_block1.c();
+    			t5 = space();
     			div2 = element("div");
     			button = element("button");
     			button.textContent = "Reply";
     			div0.className = "card-body";
-    			add_location(div0, file, 15, 0, 213);
+    			add_location(div0, file, 20, 0, 406);
     			attr(input, "type", "checkbox");
-    			add_location(input, file, 22, 8, 406);
+    			add_location(input, file, 27, 8, 599);
     			i.className = "form-icon";
-    			add_location(i, file, 23, 8, 440);
+    			add_location(i, file, 28, 8, 633);
     			label.className = "form-switch d-inline";
-    			add_location(label, file, 21, 6, 361);
+    			add_location(label, file, 26, 6, 554);
     			div1.className = "column col-6";
-    			add_location(div1, file, 20, 4, 328);
+    			add_location(div1, file, 25, 4, 521);
     			button.className = "btn";
-    			add_location(button, file, 40, 6, 893);
+    			add_location(button, file, 43, 6, 1055);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 39, 4, 849);
+    			add_location(div2, file, 42, 4, 1011);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file, 19, 2, 290);
+    			add_location(div3, file, 24, 2, 483);
     			div4.className = "card-footer";
-    			add_location(div4, file, 18, 0, 262);
+    			add_location(div4, file, 23, 0, 455);
+    			dispose = listen(button, "click", ctx.reply);
     		},
 
     		l: function claim(nodes) {
@@ -1284,16 +1480,39 @@ var app = (function () {
     			append(label, i);
     			append(label, t2);
     			append(div1, t3);
-    			if (if_block) if_block.m(div1, null);
-    			append(div3, t4);
+    			if (if_block0) if_block0.m(div1, null);
+    			append(div1, t4);
+    			if (if_block1) if_block1.m(div1, null);
+    			append(div3, t5);
     			append(div3, div2);
     			append(div2, button);
     		},
 
     		p: function update(changed, ctx) {
-    			if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			if (ctx.msg.value.content.root) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1(ctx);
+    					if_block0.c();
+    					if_block0.m(div1, t4);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.msg.value.content.branch) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block(ctx);
+    					if_block1.c();
+    					if_block1.m(div1, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
     		},
 
@@ -1307,19 +1526,23 @@ var app = (function () {
     				detach(div4);
     			}
 
-    			if (if_block) if_block.d();
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			dispose();
     		}
     	};
     }
-
-    let rootId = false;
-
-    let branchId = false;
 
     function instance($$self, $$props, $$invalidate) {
     	let { msg } = $$props;
 
       let content = ssb.markdown(msg.value.content.text);
+
+      const reply = ev => {
+        let rootId = msg.value.content.root || msg.key;
+        let channel = msg.value.content.channel;
+        navigate("/compose", { root: rootId, branch: msg.key, channel });
+      };
 
     	const writable_props = ['msg'];
     	Object.keys($$props).forEach(key => {
@@ -1330,7 +1553,7 @@ var app = (function () {
     		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
     	};
 
-    	return { msg, content };
+    	return { msg, content, reply };
     }
 
     class PostMsg extends SvelteComponentDev {
@@ -2516,19 +2739,19 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$7, 38, 8, 866);
+    			add_location(div0, file$7, 38, 8, 885);
     			a0.href = "#/public";
-    			add_location(a0, file$7, 35, 6, 759);
+    			add_location(a0, file$7, 35, 6, 778);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$7, 34, 2, 716);
+    			add_location(li0, file$7, 34, 4, 735);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$7, 47, 8, 1146);
+    			add_location(div1, file$7, 47, 8, 1165);
     			a1.href = "#/public";
-    			add_location(a1, file$7, 42, 6, 977);
+    			add_location(a1, file$7, 42, 6, 996);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$7, 41, 4, 938);
+    			add_location(li1, file$7, 41, 4, 957);
     			ul.className = "pagination";
-    			add_location(ul, file$7, 33, 2, 690);
+    			add_location(ul, file$7, 33, 2, 707);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
@@ -2587,17 +2810,17 @@ var app = (function () {
 
     // (28:0) {#if !msgs}
     function create_if_block$2(ctx) {
-    	var p;
+    	var div;
 
     	return {
     		c: function create() {
-    			p = element("p");
-    			p.textContent = "Loading...";
-    			add_location(p, file$7, 28, 2, 590);
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$7, 28, 2, 590);
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, p, anchor);
+    			insert(target, div, anchor);
     		},
 
     		p: noop,
@@ -2606,7 +2829,7 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(p);
+    				detach(div);
     			}
     		}
     	};
@@ -2837,73 +3060,458 @@ var app = (function () {
     	}
     }
 
+    function cubicOut(t) {
+        const f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    function slide(node, { delay = 0, duration = 400, easing = cubicOut }) {
+        const style = getComputedStyle(node);
+        const opacity = +style.opacity;
+        const height = parseFloat(style.height);
+        const padding_top = parseFloat(style.paddingTop);
+        const padding_bottom = parseFloat(style.paddingBottom);
+        const margin_top = parseFloat(style.marginTop);
+        const margin_bottom = parseFloat(style.marginBottom);
+        const border_top_width = parseFloat(style.borderTopWidth);
+        const border_bottom_width = parseFloat(style.borderBottomWidth);
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `overflow: hidden;` +
+                `opacity: ${Math.min(t * 20, 1) * opacity};` +
+                `height: ${t * height}px;` +
+                `padding-top: ${t * padding_top}px;` +
+                `padding-bottom: ${t * padding_bottom}px;` +
+                `margin-top: ${t * margin_top}px;` +
+                `margin-bottom: ${t * margin_bottom}px;` +
+                `border-top-width: ${t * border_top_width}px;` +
+                `border-bottom-width: ${t * border_bottom_width}px;`
+        };
+    }
+
     /* src\views\Compose.svelte generated by Svelte v3.4.4 */
 
     const file$9 = "src\\views\\Compose.svelte";
 
-    function create_fragment$9(ctx) {
-    	var div3, div2, div1, div0, label0, t1, input0, t2, label1, t4, input1, t5, label2, t7, textarea, t8, br, t9, button;
+    // (41:6) {#if msg}
+    function create_if_block_2(ctx) {
+    	var if_block_anchor;
+
+    	function select_block_type(ctx) {
+    		if (ctx.error) return create_if_block_3;
+    		return create_else_block_1;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block = current_block_type(ctx);
 
     	return {
     		c: function create() {
-    			div3 = element("div");
-    			div2 = element("div");
-    			div1 = element("div");
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+
+    			if (detaching) {
+    				detach(if_block_anchor);
+    			}
+    		}
+    	};
+    }
+
+    // (44:8) {:else}
+    function create_else_block_1(ctx) {
+    	var div, t0, a, t1, a_href_value;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Your message has been posted. Do you want to\n            ");
+    			a = element("a");
+    			t1 = text("Check it out?");
+    			a.target = "_blank";
+    			a.href = a_href_value = "?thread=" + ctx.msg.key + "#/thread";
+    			add_location(a, file$9, 46, 12, 1070);
+    			div.className = "toast toast-success";
+    			add_location(div, file$9, 44, 10, 967);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, a);
+    			append(a, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + ctx.msg.key + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (42:8) {#if error}
+    function create_if_block_3(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Couldn't post your message: ");
+    			t1 = text(ctx.msg);
+    			div.className = "toast toast-error";
+    			add_location(div, file$9, 42, 10, 870);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.msg) {
+    				set_data(t1, ctx.msg);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (85:6) {:else}
+    function create_else_block$2(ctx) {
+    	var div4, raw_value = ctx.ssb.markdown(ctx.content), raw_after, t0, div0, t1, div3, div1, span, t3, div2, button0, t5, button1, dispose;
+
+    	return {
+    		c: function create() {
+    			div4 = element("div");
+    			raw_after = element('noscript');
+    			t0 = space();
     			div0 = element("div");
+    			t1 = space();
+    			div3 = element("div");
+    			div1 = element("div");
+    			span = element("span");
+    			span.textContent = "This message will be public and can't be edited or deleted";
+    			t3 = space();
+    			div2 = element("div");
+    			button0 = element("button");
+    			button0.textContent = "Go Back";
+    			t5 = space();
+    			button1 = element("button");
+    			button1.textContent = "Post";
+    			div0.className = "divider";
+    			add_location(div0, file$9, 88, 10, 2326);
+    			span.className = "label label-warning";
+    			add_location(span, file$9, 91, 14, 2449);
+    			div1.className = "column col-md-12 col-lg-10";
+    			add_location(div1, file$9, 90, 12, 2394);
+    			button0.className = "btn";
+    			add_location(button0, file$9, 96, 14, 2666);
+    			button1.className = "btn btn-primary";
+    			toggle_class(button1, "loading", ctx.posting);
+    			add_location(button1, file$9, 99, 14, 2788);
+    			div2.className = "column col-md-12 col-lg-2";
+    			add_location(div2, file$9, 95, 12, 2612);
+    			div3.className = "columns";
+    			add_location(div3, file$9, 89, 10, 2360);
+    			div4.className = "column col-md-12";
+    			add_location(div4, file$9, 85, 8, 2244);
+
+    			dispose = [
+    				listen(button0, "click", ctx.click_handler),
+    				listen(button1, "click", ctx.post)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div4, anchor);
+    			append(div4, raw_after);
+    			raw_after.insertAdjacentHTML("beforebegin", raw_value);
+    			append(div4, t0);
+    			append(div4, div0);
+    			append(div4, t1);
+    			append(div4, div3);
+    			append(div3, div1);
+    			append(div1, span);
+    			append(div3, t3);
+    			append(div3, div2);
+    			append(div2, button0);
+    			append(div2, t5);
+    			append(div2, button1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.content) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.content))) {
+    				detach_before(raw_after);
+    				raw_after.insertAdjacentHTML("beforebegin", raw_value);
+    			}
+
+    			if (changed.posting) {
+    				toggle_class(button1, "loading", ctx.posting);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div4);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (53:6) {#if !showPreview}
+    function create_if_block$3(ctx) {
+    	var div, label0, t1, input, t2, t3, label1, t5, textarea, t6, br, t7, button, div_intro, div_outro, current, dispose;
+
+    	var if_block = (ctx.branch) && create_if_block_1$2(ctx);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
     			label0 = element("label");
     			label0.textContent = "Channel";
     			t1 = space();
-    			input0 = element("input");
+    			input = element("input");
     			t2 = space();
+    			if (if_block) if_block.c();
+    			t3 = space();
     			label1 = element("label");
-    			label1.textContent = "In reply to";
-    			t4 = space();
-    			input1 = element("input");
+    			label1.textContent = "Message";
     			t5 = space();
-    			label2 = element("label");
-    			label2.textContent = "Message";
-    			t7 = space();
     			textarea = element("textarea");
-    			t8 = space();
+    			t6 = space();
     			br = element("br");
-    			t9 = space();
+    			t7 = space();
     			button = element("button");
     			button.textContent = "Preview";
     			label0.className = "form-label";
     			label0.htmlFor = "channel";
-    			add_location(label0, file$9, 4, 6, 108);
-    			input0.className = "form-input";
-    			attr(input0, "type", "text");
-    			input0.id = "channel";
-    			input0.placeholder = "channel";
-    			add_location(input0, file$9, 5, 6, 170);
+    			add_location(label0, file$9, 54, 12, 1300);
+    			input.className = "form-input";
+    			attr(input, "type", "text");
+    			input.id = "channel";
+    			input.placeholder = "channel";
+    			add_location(input, file$9, 55, 12, 1368);
     			label1.className = "form-label";
-    			label1.htmlFor = "reply-to";
-    			add_location(label1, file$9, 11, 6, 285);
-    			input1.className = "form-input";
-    			attr(input1, "type", "text");
-    			input1.id = "reply-to";
-    			input1.placeholder = "in reply to";
-    			add_location(input1, file$9, 12, 6, 352);
-    			label2.className = "form-label";
-    			label2.htmlFor = "content";
-    			add_location(label2, file$9, 19, 6, 473);
+    			label1.htmlFor = "content";
+    			add_location(label1, file$9, 72, 10, 1842);
     			textarea.className = "form-input";
     			textarea.id = "content";
     			textarea.placeholder = "Type in your post";
     			textarea.rows = "10";
-    			add_location(textarea, file$9, 20, 6, 535);
-    			add_location(br, file$9, 25, 6, 660);
+    			add_location(textarea, file$9, 73, 10, 1908);
+    			add_location(br, file$9, 79, 10, 2086);
     			button.className = "btn btn-primary float-right";
-    			add_location(button, file$9, 26, 6, 671);
-    			div0.className = "form-group";
-    			add_location(div0, file$9, 3, 4, 77);
-    			div1.className = "column";
-    			add_location(div1, file$9, 2, 4, 52);
-    			div2.className = "columns";
-    			add_location(div2, file$9, 1, 2, 26);
-    			div3.className = "container";
-    			add_location(div3, file$9, 0, 0, 0);
+    			add_location(button, file$9, 80, 10, 2103);
+    			div.className = "form-group";
+    			add_location(div, file$9, 53, 8, 1244);
+
+    			dispose = [
+    				listen(input, "input", ctx.input_input_handler),
+    				listen(textarea, "input", ctx.textarea_input_handler),
+    				listen(button, "click", ctx.preview)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, label0);
+    			append(div, t1);
+    			append(div, input);
+
+    			input.value = ctx.channel;
+
+    			append(div, t2);
+    			if (if_block) if_block.m(div, null);
+    			append(div, t3);
+    			append(div, label1);
+    			append(div, t5);
+    			append(div, textarea);
+
+    			textarea.value = ctx.content;
+
+    			append(div, t6);
+    			append(div, br);
+    			append(div, t7);
+    			append(div, button);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.channel && (input.value !== ctx.channel)) input.value = ctx.channel;
+
+    			if (ctx.branch) {
+    				if (if_block) {
+    					if_block.p(changed, ctx);
+    				} else {
+    					if_block = create_if_block_1$2(ctx);
+    					if_block.c();
+    					if_block.m(div, t3);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if (changed.content) textarea.value = ctx.content;
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			add_render_callback(() => {
+    				if (div_outro) div_outro.end(1);
+    				if (!div_intro) div_intro = create_in_transition(div, slide, {});
+    				div_intro.start();
+    			});
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (div_intro) div_intro.invalidate();
+
+    			if (local) {
+    				div_outro = create_out_transition(div, slide, {});
+    			}
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			if (if_block) if_block.d();
+
+    			if (detaching) {
+    				if (div_outro) div_outro.end();
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (63:10) {#if branch}
+    function create_if_block_1$2(ctx) {
+    	var label, t_1, input, dispose;
+
+    	return {
+    		c: function create() {
+    			label = element("label");
+    			label.textContent = "In reply to";
+    			t_1 = space();
+    			input = element("input");
+    			label.className = "form-label";
+    			label.htmlFor = "reply-to";
+    			add_location(label, file$9, 63, 12, 1571);
+    			input.className = "form-input";
+    			attr(input, "type", "text");
+    			input.id = "reply-to";
+    			input.placeholder = "in reply to";
+    			add_location(input, file$9, 64, 12, 1644);
+    			dispose = listen(input, "input", ctx.input_input_handler_1);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, label, anchor);
+    			insert(target, t_1, anchor);
+    			insert(target, input, anchor);
+
+    			input.value = ctx.branch;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.branch && (input.value !== ctx.branch)) input.value = ctx.branch;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(label);
+    				detach(t_1);
+    				detach(input);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$9(ctx) {
+    	var div2, div1, div0, t, current_block_type_index, if_block1, current;
+
+    	var if_block0 = (ctx.msg) && create_if_block_2(ctx);
+
+    	var if_block_creators = [
+    		create_if_block$3,
+    		create_else_block$2
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type_1(ctx) {
+    		if (!ctx.showPreview) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type_1(ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if_block1.c();
+    			div0.className = "column";
+    			add_location(div0, file$9, 39, 4, 803);
+    			div1.className = "columns";
+    			add_location(div1, file$9, 38, 2, 777);
+    			div2.className = "container";
+    			add_location(div2, file$9, 37, 0, 751);
     		},
 
     		l: function claim(nodes) {
@@ -2911,43 +3519,157 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div3, anchor);
-    			append(div3, div2);
+    			insert(target, div2, anchor);
     			append(div2, div1);
     			append(div1, div0);
-    			append(div0, label0);
-    			append(div0, t1);
-    			append(div0, input0);
-    			append(div0, t2);
-    			append(div0, label1);
-    			append(div0, t4);
-    			append(div0, input1);
-    			append(div0, t5);
-    			append(div0, label2);
-    			append(div0, t7);
-    			append(div0, textarea);
-    			append(div0, t8);
-    			append(div0, br);
-    			append(div0, t9);
-    			append(div0, button);
+    			if (if_block0) if_block0.m(div0, null);
+    			append(div0, t);
+    			if_blocks[current_block_type_index].m(div0, null);
+    			current = true;
     		},
 
-    		p: noop,
-    		i: noop,
-    		o: noop,
+    		p: function update(changed, ctx) {
+    			if (ctx.msg) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_2(ctx);
+    					if_block0.c();
+    					if_block0.m(div0, t);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type_1(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block1.o(1);
+    				check_outros();
+
+    				if_block1 = if_blocks[current_block_type_index];
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
+    				}
+    				if_block1.i(1);
+    				if_block1.m(div0, null);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block1) if_block1.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block1) if_block1.o();
+    			current = false;
+    		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div3);
+    				detach(div2);
     			}
+
+    			if (if_block0) if_block0.d();
+    			if_blocks[current_block_type_index].d();
     		}
+    	};
+    }
+
+    function instance$8($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+
+      let showPreview = false;
+      let msg = false;
+      let error = false;
+      let posting = false;
+
+      let root = $routeParams.root;
+      let branch = $routeParams.branch;
+      let channel = $routeParams.channel || "";
+      let content = "";
+
+      const post = async ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        if (!posting) {
+          $$invalidate('posting', posting = true);
+
+          try {
+            $$invalidate('msg', msg = await ssb.newPost({ text: content, channel, root, branch }));
+            $$invalidate('posting', posting = false);
+            console.log("posted", msg);
+          } catch (n) {
+            $$invalidate('error', error = true);
+            $$invalidate('msg', msg = n);
+          }
+        }
+      };
+
+      const preview = ev => {
+        $$invalidate('showPreview', showPreview = true);
+      };
+
+    	function input_input_handler() {
+    		channel = this.value;
+    		$$invalidate('channel', channel);
+    	}
+
+    	function input_input_handler_1() {
+    		branch = this.value;
+    		$$invalidate('branch', branch);
+    	}
+
+    	function textarea_input_handler() {
+    		content = this.value;
+    		$$invalidate('content', content);
+    	}
+
+    	function click_handler() {
+    		const $$result = (showPreview = false);
+    		$$invalidate('showPreview', showPreview);
+    		return $$result;
+    	}
+
+    	return {
+    		showPreview,
+    		msg,
+    		error,
+    		posting,
+    		branch,
+    		channel,
+    		content,
+    		post,
+    		preview,
+    		ssb,
+    		input_input_handler,
+    		input_input_handler_1,
+    		textarea_input_handler,
+    		click_handler
     	};
     }
 
     class Compose extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, null, create_fragment$9, safe_not_equal, []);
+    		init(this, options, instance$8, create_fragment$9, safe_not_equal, []);
     	}
     }
 
@@ -2961,8 +3683,57 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (20:0) {:else}
-    function create_else_block$2(ctx) {
+    // (29:0) {#if error}
+    function create_if_block_1$3(ctx) {
+    	var div, t0, a, t1, a_href_value, t2, t3;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Couldn't load thead ");
+    			a = element("a");
+    			t1 = text(ctx.msgid);
+    			t2 = text(": ");
+    			t3 = text(ctx.error);
+    			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
+    			add_location(a, file$a, 29, 53, 717);
+    			div.className = "toast toast-error";
+    			add_location(div, file$a, 29, 2, 666);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, a);
+    			append(a, t1);
+    			append(div, t2);
+    			append(div, t3);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.msgid) {
+    				set_data(t1, ctx.msgid);
+    			}
+
+    			if ((changed.msgid) && a_href_value !== (a_href_value = "?thread=" + ctx.msgid + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+
+    			if (changed.error) {
+    				set_data(t3, ctx.error);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (34:0) {:else}
+    function create_else_block$3(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), each_1_anchor, current;
 
     	var each_value = ctx.msgs;
@@ -3020,19 +3791,19 @@ var app = (function () {
     	};
     }
 
-    // (18:0) {#if !msgs}
-    function create_if_block$3(ctx) {
-    	var p;
+    // (32:0) {#if !msgs && !error}
+    function create_if_block$4(ctx) {
+    	var div;
 
     	return {
     		c: function create() {
-    			p = element("p");
-    			p.textContent = "Loading...";
-    			add_location(p, file$a, 18, 2, 452);
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$a, 32, 2, 808);
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, p, anchor);
+    			insert(target, div, anchor);
     		},
 
     		p: noop,
@@ -3041,13 +3812,13 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(p);
+    				detach(div);
     			}
     		}
     	};
     }
 
-    // (21:2) {#each msgs as msg (msg.key)}
+    // (35:2) {#each msgs as msg (msg.key)}
     function create_each_block$1(key_1, ctx) {
     	var first, current;
 
@@ -3102,27 +3873,31 @@ var app = (function () {
     }
 
     function create_fragment$a(ctx) {
-    	var current_block_type_index, if_block, if_block_anchor, current;
+    	var t, current_block_type_index, if_block1, if_block1_anchor, current;
+
+    	var if_block0 = (ctx.error) && create_if_block_1$3(ctx);
 
     	var if_block_creators = [
-    		create_if_block$3,
-    		create_else_block$2
+    		create_if_block$4,
+    		create_else_block$3
     	];
 
     	var if_blocks = [];
 
     	function select_block_type(ctx) {
-    		if (!ctx.msgs) return 0;
+    		if (!ctx.msgs && !ctx.error) return 0;
     		return 1;
     	}
 
     	current_block_type_index = select_block_type(ctx);
-    	if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	return {
     		c: function create() {
-    			if_block.c();
-    			if_block_anchor = empty();
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if_block1.c();
+    			if_block1_anchor = empty();
     		},
 
     		l: function claim(nodes) {
@@ -3130,12 +3905,27 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
-    			insert(target, if_block_anchor, anchor);
+    			insert(target, if_block1_anchor, anchor);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
+    			if (ctx.error) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1$3(ctx);
+    					if_block0.c();
+    					if_block0.m(t.parentNode, t);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
     			var previous_block_index = current_block_type_index;
     			current_block_type_index = select_block_type(ctx);
     			if (current_block_type_index === previous_block_index) {
@@ -3146,41 +3936,47 @@ var app = (function () {
     					if_blocks[previous_block_index].d(1);
     					if_blocks[previous_block_index] = null;
     				});
-    				if_block.o(1);
+    				if_block1.o(1);
     				check_outros();
 
-    				if_block = if_blocks[current_block_type_index];
-    				if (!if_block) {
-    					if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block.c();
+    				if_block1 = if_blocks[current_block_type_index];
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
     				}
-    				if_block.i(1);
-    				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				if_block1.i(1);
+    				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
     			}
     		},
 
     		i: function intro(local) {
     			if (current) return;
-    			if (if_block) if_block.i();
+    			if (if_block1) if_block1.i();
     			current = true;
     		},
 
     		o: function outro(local) {
-    			if (if_block) if_block.o();
+    			if (if_block1) if_block1.o();
     			current = false;
     		},
 
     		d: function destroy(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+
+    			if (detaching) {
+    				detach(t);
+    			}
+
     			if_blocks[current_block_type_index].d(detaching);
 
     			if (detaching) {
-    				detach(if_block_anchor);
+    				detach(if_block1_anchor);
     			}
     		}
     	};
     }
 
-    function instance$8($$self, $$props, $$invalidate) {
+    function instance$9($$self, $$props, $$invalidate) {
     	let $routeParams;
 
     	validate_store(routeParams, 'routeParams');
@@ -3188,26 +3984,37 @@ var app = (function () {
 
     	
       let msgs = false;
+      let error = false;
+      let msgid;
 
-    	$$self.$$.update = ($$dirty = { $routeParams: 1 }) => {
-    		if ($$dirty.$routeParams) { {
-            let msgid = $routeParams.thread;
+    	$$self.$$.update = ($$dirty = { $routeParams: 1, msgid: 1 }) => {
+    		if ($$dirty.$routeParams || $$dirty.msgid) { {
+            $$invalidate('msgid', msgid = $routeParams.thread);
+            if (msgid.startsWith("ssb:")) {
+              $$invalidate('msgid', msgid = msgid.replace("ssb:", ""));
+            }
             console.log("fetching", msgid);
-            let promise = ssb.thread(msgid).then(ms => {
-              console.log("messages arrived", ms);
-              $$invalidate('msgs', msgs = ms);
-              window.scrollTo(0, 0);
-            });
+            let promise = ssb
+              .thread(msgid)
+              .then(ms => {
+                console.log("messages arrived", ms);
+                $$invalidate('msgs', msgs = ms);
+                window.scrollTo(0, 0);
+              })
+              .catch(n => {
+                console.dir(n);
+                $$invalidate('error', error = n.message);
+              });
           } }
     	};
 
-    	return { msgs };
+    	return { msgs, error, msgid };
     }
 
     class Thread extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$8, create_fragment$a, safe_not_equal, []);
+    		init(this, options, instance$9, create_fragment$a, safe_not_equal, []);
     	}
     }
 
@@ -3518,7 +4325,7 @@ var app = (function () {
     	};
     }
 
-    function instance$9($$self, $$props, $$invalidate) {
+    function instance$a($$self, $$props, $$invalidate) {
     	let $routeParams;
 
     	validate_store(routeParams, 'routeParams');
@@ -3574,14 +4381,14 @@ var app = (function () {
     class Profile extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$9, create_fragment$b, safe_not_equal, []);
+    		init(this, options, instance$a, create_fragment$b, safe_not_equal, []);
     	}
     }
 
     const parseLocation = () => {
-        let data = queryString.parse(window.location.search);
-        let loc = window.location.hash.slice(1).replace("?", "");
-        return { data, location: loc }
+      let data = queryString.parse(window.location.search);
+      let loc = window.location.hash.slice(1).replace("?", "");
+      return { data, location: loc }
     };
 
     const connected = writable(false);
@@ -3591,37 +4398,38 @@ var app = (function () {
     const routeLocation = derived(route, $route => $route.location);
 
     const navigate = (location, data) => {
-        console.log("Navigating to", location);
-        console.dir("Data:", data);
-        route.set({ location, data });
-        let dataAsQuery = queryString.stringify(data);
-        history.pushState({location, data}, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);
+      data = data || {};
+      console.log("Navigating to", location);
+      console.dir("Data:", data);
+      route.set({ location, data });
+      let dataAsQuery = queryString.stringify(data);
+      history.pushState({ location, data }, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);
     };
 
 
     const routes = {
-        "/thread": Thread,
-        "/public": Public,
-        "/compose": Compose,
-        "/profile": Profile,
-        "*": Default
+      "/thread": Thread,
+      "/public": Public,
+      "/compose": Compose,
+      "/profile": Profile,
+      "*": Default
     };
 
 
     const currentView = derived([connected, route], ([$connected, $route]) => {
-        let r = $route.location;
-        if ($connected) {
-            console.log("currentView, searching for", r);
-            if (routes.hasOwnProperty(r)) {
-                console.log("found!", r);
-                return routes[r];
-            } else {
-                console.log("didn't find", r);
-                return routes["*"];
-            }
+      let r = $route.location;
+      if ($connected) {
+        console.log("currentView, searching for", r);
+        if (routes.hasOwnProperty(r)) {
+          console.log("found!", r);
+          return routes[r];
         } else {
-            return routes["*"]
+          console.log("didn't find", r);
+          return routes["*"];
         }
+      } else {
+        return routes["*"]
+      }
     });
 
     /* src\Navigation.svelte generated by Svelte v3.4.4 */
@@ -3691,88 +4499,89 @@ var app = (function () {
     			t24 = space();
     			div1 = element("div");
     			i0.className = "icon icon-minus text-black";
-    			add_location(i0, file$c, 51, 6, 1157);
+    			add_location(i0, file$c, 59, 6, 1302);
     			a0.href = "#/sidebar";
     			a0.className = "btn btn-link";
-    			add_location(a0, file$c, 50, 4, 1086);
+    			add_location(a0, file$c, 58, 4, 1231);
     			img0.src = ctx.avatar;
     			img0.alt = "L";
-    			add_location(img0, file$c, 55, 8, 1304);
+    			add_location(img0, file$c, 63, 8, 1472);
     			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-bx117p";
-    			add_location(i1, file$c, 56, 8, 1341);
+    			add_location(i1, file$c, 64, 8, 1509);
     			figure0.className = "avatar avatar-lg";
-    			add_location(figure0, file$c, 54, 6, 1262);
-    			a1.href = "...";
+    			add_location(figure0, file$c, 62, 6, 1430);
+    			a1.href = "#";
     			a1.className = "navbar-brand mr-2 p-1";
-    			add_location(a1, file$c, 53, 4, 1211);
+    			add_location(a1, file$c, 61, 4, 1356);
     			a2.href = "#/compose";
     			a2.className = "btn btn-link";
-    			add_location(a2, file$c, 59, 4, 1436);
+    			add_location(a2, file$c, 67, 4, 1604);
     			a3.href = "#/public";
     			a3.className = "btn btn-link";
-    			add_location(a3, file$c, 65, 4, 1571);
+    			add_location(a3, file$c, 73, 4, 1739);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$c, 71, 4, 1707);
+    			add_location(a4, file$c, 79, 4, 1875);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$c, 72, 4, 1788);
+    			add_location(a5, file$c, 80, 4, 1956);
     			section0.className = "navbar-section hide-sm";
-    			add_location(section0, file$c, 49, 2, 1041);
+    			add_location(section0, file$c, 57, 2, 1186);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$c, 77, 8, 2002);
+    			add_location(img1, file$c, 85, 8, 2170);
     			i2.className = i2_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-bx117p";
-    			add_location(i2, file$c, 78, 8, 2039);
+    			add_location(i2, file$c, 86, 8, 2207);
     			figure1.className = "avatar";
-    			add_location(figure1, file$c, 76, 6, 1970);
+    			add_location(figure1, file$c, 84, 6, 2138);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$c, 75, 4, 1919);
+    			add_location(a6, file$c, 83, 4, 2087);
     			i3.className = "icon icon-caret";
-    			add_location(i3, file$c, 88, 8, 2342);
+    			add_location(i3, file$c, 96, 8, 2510);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$c, 82, 6, 2175);
+    			add_location(a7, file$c, 90, 6, 2343);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$c, 93, 10, 2478);
+    			add_location(a8, file$c, 101, 10, 2646);
     			li0.className = "menu-item";
-    			add_location(li0, file$c, 92, 8, 2445);
+    			add_location(li0, file$c, 100, 8, 2613);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$c, 96, 10, 2582);
+    			add_location(a9, file$c, 104, 10, 2750);
     			li1.className = "menu-item";
-    			add_location(li1, file$c, 95, 8, 2549);
+    			add_location(li1, file$c, 103, 8, 2717);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$c, 99, 10, 2688);
+    			add_location(a10, file$c, 107, 10, 2856);
     			li2.className = "menu-item";
-    			add_location(li2, file$c, 98, 8, 2655);
+    			add_location(li2, file$c, 106, 8, 2823);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$c, 104, 10, 2844);
+    			add_location(a11, file$c, 112, 10, 3012);
     			li3.className = "menu-item";
-    			add_location(li3, file$c, 103, 8, 2811);
+    			add_location(li3, file$c, 111, 8, 2979);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$c, 107, 10, 2956);
+    			add_location(a12, file$c, 115, 10, 3124);
     			li4.className = "menu-item";
-    			add_location(li4, file$c, 106, 8, 2923);
+    			add_location(li4, file$c, 114, 8, 3091);
     			ul.className = "menu";
-    			add_location(ul, file$c, 91, 6, 2419);
+    			add_location(ul, file$c, 99, 6, 2587);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$c, 81, 4, 2134);
+    			add_location(div0, file$c, 89, 4, 2302);
     			section1.className = "navbar-section show-sm bg-gray above svelte-bx117p";
-    			add_location(section1, file$c, 74, 2, 1860);
+    			add_location(section1, file$c, 82, 2, 2028);
     			div1.className = "blocker show-sm svelte-bx117p";
-    			add_location(div1, file$c, 114, 2, 3115);
+    			add_location(div1, file$c, 122, 2, 3283);
     			header.className = "navbar";
-    			add_location(header, file$c, 48, 0, 1015);
+    			add_location(header, file$c, 56, 0, 1160);
 
     			dispose = [
     				listen(a0, "click", ctx.openSidebar),
+    				listen(a1, "click", ctx.openMyProfile),
     				listen(a2, "click", stop_propagation(prevent_default(ctx.goCompose))),
     				listen(a3, "click", stop_propagation(prevent_default(ctx.goPublic))),
     				listen(a4, "click", ctx.goSettings),
@@ -3872,7 +4681,7 @@ var app = (function () {
     	return "";
     }
 
-    function instance$a($$self, $$props, $$invalidate) {
+    function instance$b($$self, $$props, $$invalidate) {
     	let $connected;
 
     	validate_store(connected, 'connected');
@@ -3901,6 +4710,15 @@ var app = (function () {
         await browser.sidebarAction.close();
       };
 
+    const openMyProfile = ev => {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      if (ssb.feed) {
+        navigate("/profile", {feed: ssb.feed});
+      }
+    };
+
     	$$self.$$.update = ($$dirty = { $connected: 1 }) => {
     		if ($$dirty.$connected) { if ($connected) {
             ssb.avatar(ssb.feed).then(data => {
@@ -3916,6 +4734,7 @@ var app = (function () {
     		goPublic,
     		openSidebar,
     		closeSidebar,
+    		openMyProfile,
     		$connected
     	};
     }
@@ -3923,7 +4742,7 @@ var app = (function () {
     class Navigation extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$a, create_fragment$c, safe_not_equal, []);
+    		init(this, options, instance$b, create_fragment$c, safe_not_equal, []);
     	}
     }
 
@@ -4025,7 +4844,7 @@ var app = (function () {
     	};
     }
 
-    function instance$b($$self, $$props, $$invalidate) {
+    function instance$c($$self, $$props, $$invalidate) {
     	let $currentView;
 
     	validate_store(currentView, 'currentView');
@@ -4091,7 +4910,7 @@ var app = (function () {
     class Patchfox extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$b, create_fragment$d, safe_not_equal, []);
+    		init(this, options, instance$c, create_fragment$d, safe_not_equal, []);
     	}
     }
 

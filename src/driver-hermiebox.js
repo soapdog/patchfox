@@ -24,145 +24,170 @@
  */
 
 export class DriverHermiebox {
-    constructor() {
-        this.name = "Driver for Hermiebox"
+  constructor() {
+    this.name = "Driver for Hermiebox"
+  }
+
+  log(pMsg, pVal = "") {
+    console.log(`[Driver Hermiebox] - ${pMsg}`, pVal)
+  }
+
+  async connect(pKeys) {
+    var server = await hermiebox.api.connect(pKeys)
+    this.log("you are", server.id)
+    this.feed = server.id
+  }
+
+  async public(opts) {
+    var msgs = await hermiebox.api.pullPublic(opts)
+    return msgs
+  }
+
+  async thread(msgid) {
+    var msgs = await hermiebox.api.thread(msgid)
+    return msgs
+  }
+
+  async profile(feedid) {
+    var user = await hermiebox.api.profile(feedid)
+    console.log(user)
+    return user
+  }
+
+  async get(msgid) {
+    var msg = await hermiebox.api.get(msgid)
+    return msg
+  }
+
+  async setAvatarCache(feed, data) {
+    let s = {}
+    s[`avatar-${feed}`] = data
+    return browser.storage.local.set(s)
+  }
+
+  async getCachedAvatar(feed) {
+    return browser.storage.local.get(`avatar-${feed}`)
+  }
+
+  async avatar(feed) {
+    try {
+      let avatar = await hermiebox.api.avatar(feed)
+      await this.setAvatarCache(feed, avatar)
+      return avatar
+    } catch (n) {
+      throw n
     }
 
-    log(pMsg, pVal = "") {
-        console.log(`[Driver Hermiebox] - ${pMsg}`, pVal)
+  }
+
+  async blurbFromMsg(msgid, howManyChars) {
+    let retVal = msgid
+
+    try {
+      let data = await ssb.get(msgid)
+
+      if (data.content.type == "post") {
+        retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
+      }
+      return retVal
+    } catch (n) {
+      return retVal
+    }
+  }
+  plainTextFromMarkdown(text) {
+    // TODO: this doesn't belong here
+    let html = this.markdown(text)
+    let div = document.createElement("div")
+    div.innerHTML = html
+    return div.innerText
+  }
+
+  markdown(text) {
+
+    function replaceMsgID(match, id, offset, string) {
+      let eid = encodeURIComponent(`%${id}`);
+
+      return `<a class="thread-link" href="?thread=${eid}#/thread`;
     }
 
-    async connect(pKeys) {
-        var server = await hermiebox.api.connect(pKeys)
-        this.log("you are", server.id)
-        this.feed = server.id
+    function replaceChannel(match, id, offset, string) {
+      let eid = encodeURIComponent(id);
+
+      return `<a class="channel-link" href="?channel=${eid}#/channel`;
     }
 
-    async public(opts) {
-        var msgs = await hermiebox.api.pullPublic(opts)
-        return msgs
+
+    function replaceFeedID(match, id, offset, string) {
+      let eid = encodeURIComponent(`@${id}`);
+      return "<a class=\"profile-link\" href=\"?feed=" + eid + "#/profile";
     }
 
-    async thread(msgid) {
-        var msgs = await hermiebox.api.thread(msgid)
-        return msgs
+
+    function replaceImageLinks(match, id, offset, string) {
+      return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
     }
 
-    async profile(feedid) {
-        var user = await hermiebox.api.profile(feedid)
-        console.log(user)
-        return user
+
+    function replaceImages(match, id, offset, string) {
+      return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
     }
 
-    async get(msgid) {
-        var msg = await hermiebox.api.get(msgid)
-        return msg
+    let html = hermiebox.modules.ssbMarkdown.block(text)
+    html = html
+      .replace("<pre>", `<pre class="code">`)
+      .replace(/<a href="#([^"]*)/gi, replaceChannel)
+      .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+      .replace(/target="_blank"/gi, "")
+      .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+      .replace(/<img src="&([^"]*)/gi, replaceImages)
+      .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
+
+    return html
+  }
+
+  ref() {
+    return hermiebox.modules.ssbRef
+  }
+
+  getTimestamp(msg) {
+    const arrivalTimestamp = msg.timestamp;
+    const declaredTimestamp = msg.value.timestamp;
+    return Math.min(arrivalTimestamp, declaredTimestamp);
+  }
+
+  getRootMsgId(msg) {
+    if (msg && msg.value && msg.value.content) {
+      const root = msg.value.content.root;
+      if (hermiebox.modules.ssbRef.isMsgId(root)) {
+        return root;
+      }
     }
+  }
 
-    async setAvatarCache(feed, data) {
-        let s = {}
-        s[`avatar-${feed}`] = data
-        return browser.storage.local.set(s)
-    }
+  newPost(data) {
+    return new Promise((resolve, reject) => {
+      const schemas = hermiebox.modules.ssbMsgSchemas
 
-    async getCachedAvatar(feed) {
-        return browser.storage.local.get(`avatar-${feed}`)
-    }
+      const text = data.text
+      const root = data.hasOwnProperty("root") ? data.root : undefined
+      const branch = data.hasOwnProperty("branch") ? data.branch : undefined
+      const mentions = data.hasOwnProperty("mentions") ? data.mentions : undefined
+      const recps = data.hasOwnProperty("recps") ? data.recps : undefined
+      const channel = data.hasOwnProperty("channel") ? data.channel : undefined
+      const sbot = hermiebox.sbot || false
 
-    async avatar(feed) {
-        try {
-            let avatar = await hermiebox.api.avatar(feed)
-            await this.setAvatarCache(feed, avatar)
-            return avatar
-        } catch (n) {
-            throw n
-        }
+      const msgToPost = schemas.post(text, root, branch, mentions, recps, channel)
 
-    }
-
-    async blurbFromMsg(msgid, howManyChars) {
-        let retVal = msgid
-
-        try {
-            let data = await ssb.get(msgid)
-
-            if (data.content.type == "post") {
-                retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
-            }
-            return retVal
-        } catch (n) {
-            return retVal
-        }
-    }
-    plainTextFromMarkdown(text) {
-        // TODO: this doesn't belong here
-        let html = this.markdown(text)
-        let div = document.createElement("div")
-        div.innerHTML = html
-        return div.innerText
-    }
-
-    markdown(text) {
-
-        function replaceMsgID(match, id, offset, string) {
-            let eid = encodeURIComponent(`%${id}`);
-
-            return `<a class="thread-link" href="?thread=${eid}#/thread`;
-        }
-
-        function replaceChannel(match, id, offset, string) {
-            let eid = encodeURIComponent(id);
-
-            return `<a class="channel-link" href="?channel=${eid}#/channel`;
-        }
-
-
-        function replaceFeedID(match, id, offset, string) {
-            let eid = encodeURIComponent(`@${id}`);
-            return "<a class=\"profile-link\" href=\"?feed="+eid+"#/profile";
-        } 
-
-
-        function replaceImageLinks(match, id, offset, string) {
-            return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
-        }
-
-
-        function replaceImages(match, id, offset, string) {
-            return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
-        }
-
-        let html = hermiebox.modules.ssbMarkdown.block(text)
-        html = html
-            .replace("<pre>", `<pre class="code">`)
-            .replace(/<a href="#([^"]*)/gi, replaceChannel)
-            .replace(/<a href="@([^"]*)/gi, replaceFeedID)
-            .replace(/target="_blank"/gi, "")
-            .replace(/<a href="%([^"]*)/gi, replaceMsgID)
-            .replace(/<img src="&([^"]*)/gi, replaceImages)
-            .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
-
-        return html
-    }
-
-    ref() {
-        return hermiebox.modules.ssbRef
-    }
-
-    getTimestamp(msg) {
-        const arrivalTimestamp = msg.timestamp;
-        const declaredTimestamp = msg.value.timestamp;
-        return Math.min(arrivalTimestamp, declaredTimestamp);
-    }
-
-    getRootMsgId(msg) {
-        if (msg && msg.value && msg.value.content) {
-            const root = msg.value.content.root;
-            if (hermiebox.modules.ssbRef.isMsgId(root)) {
-                return root;
-            }
-        }
-    }
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          // 'msg' includes the hash-id and headers
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
 }
-
-

@@ -30,6 +30,14 @@
     await browser.sidebarAction.close();
   };
 
+const openMyProfile = ev => {
+  ev.stopPropagation();
+  ev.preventDefault();
+
+  if (ssb.feed) {
+    navigate("/profile", {feed: ssb.feed})
+  }
+}
 </script>
 
 <style>
@@ -51,7 +59,7 @@
     <a href="#/sidebar" class="btn btn-link" on:click={openSidebar}>
       <i class="icon icon-minus text-black" />
     </a>
-    <a href="..." class="navbar-brand mr-2 p-1">
+    <a href="#" class="navbar-brand mr-2 p-1" on:click={openMyProfile}>
       <figure class="avatar avatar-lg">
         <img src={avatar} alt="L" />
         <i class="avatar-presence {$connected ? 'online' : 'offline'}" />

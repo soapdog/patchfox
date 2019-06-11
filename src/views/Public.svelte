@@ -26,13 +26,13 @@
 </script>
 
 {#if !msgs}
-  <p>Loading...</p>
+  <div class="loading loading-lg" />
 {:else}
   {#each msgs as msg (msg.key)}
     <MessageRenderer {msg} />
   {/each}
   <ul class="pagination">
-  <li class="page-item page-previous">
+    <li class="page-item page-previous">
       <a
         href="#/public"
         on:click|stopPropagation|preventDefault={() => history.back()}>

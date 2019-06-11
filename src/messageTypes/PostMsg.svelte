@@ -1,10 +1,15 @@
 <script>
+  import { navigate } from "../utils.js";
+
   export let msg;
 
   let content = ssb.markdown(msg.value.content.text);
 
-  let rootId = false;
-  let branchId = false;
+  const reply = ev => {
+    let rootId = msg.value.content.root || msg.key;
+    let channel = msg.value.content.channel;
+    navigate("/compose", { root: rootId, branch: msg.key, channel });
+  };
 </script>
 
 <style>
@@ -24,21 +29,19 @@
         <i class="form-icon" />
         Like
       </label>
-      {#if rootId || branchId}
-        {#if msg.value.content.root}
-          <span>
-            <a href="?thread={rootId}#/thread">(root)</a>
-          </span>
-        {/if}
-        {#if msg.value.content.branch}
-          <span>
-            <a href="?thread={branchId}#/thread">(in reply to)</a>
-          </span>
-        {/if}
+      {#if msg.value.content.root}
+        <span>
+          <a href="?thread={msg.value.content.root}#/thread">(root)</a>
+        </span>
+      {/if}
+      {#if msg.value.content.branch}
+        <span>
+          <a href="?thread={msg.value.content.branch}#/thread">(in reply to)</a>
+        </span>
       {/if}
     </div>
     <div class="column col-6 text-right">
-      <button class="btn">Reply</button>
+      <button class="btn" on:click={reply}>Reply</button>
     </div>
   </div>
 
