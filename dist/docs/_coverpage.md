@@ -9,4 +9,6 @@
 - Simple and lightweight 
 
 [GitHub](https://github.com/soapdog/patchfox/)
-[Get Started](#readme)
+[Patchfox Open Collective](https://opencollective.com/patchfox)
+[Documentation](#readme)
+[Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)
