@@ -2,6 +2,7 @@
   import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
   import { navigate, routeParams } from "../utils.js";
   let msgs = false;
+  let error = $routeParams.error || false;
 
   // todo: move back into using stores.
   $: {
@@ -21,10 +22,17 @@
       console.log("messages arrived", ms);
       msgs = ms;
       window.scrollTo(0, 0);
+    }).catch(n => {
+      if (!error) {
+        navigate("/public", {error: n})
+      }
     });
   }
 </script>
 
+{#if error}
+  <div class="toast toast-error">Error: {error}</div>
+{/if}
 {#if !msgs}
   <div class="loading loading-lg" />
 {:else}

@@ -1,10 +1,11 @@
-# Patchfox
+# Patchfox :id=readme
 This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
 
 ## Requirements
 
 * [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/)
-* [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running. 
+* [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running and providing a running _sbot_. 
+
 
 ## Setup & Building
 
@@ -26,12 +27,9 @@ If you want to develop with a watcher that rebuilds the add-on when file changes
 $ npm run dev
 ```
 
-
 ## Running
 
 Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from the `dist/` folder from this repository.
-
-This will add Patchfox as a temporary add-on. It will be removed if you quit Firefox. There will be a new button on your toolbar showing a hermit crab. Thats your menu for all things Scuttlebutt.
 
 ## Setup inside Patchfox
 
@@ -52,6 +50,7 @@ I'f you're interested in learning more about the technologies behind this add-on
 * [MDN Web Docs - WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/).
 * [Native Messaging API](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging)
 * [Native Messaging setup](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging#Setup)
+* [Secure Scuttlebutt Protocol Guide](https://ssbc.github.io/scuttlebutt-protocol-guide/)
 
 Don't hesitate to reach out to me at:
 
@@ -61,8 +60,6 @@ Don't hesitate to reach out to me at:
 
 # Sponsorship
 
-Do you want a decentralized internet too? Are you worried about the loss of net neutrality and realized that radical decentralization is the way to fight back? Have some cryptobucks to spare? If you want to make a financial contribution to help me fund development of this and other dex focused software, I would love to receive contributions in the following cryptocurrencies:
+Do you want a decentralized internet too? Are you worried about the loss of net neutrality and realized that radical decentralization is the way to fight back? If you want to make a financial contribution to help me fund development of this and other dex focused software, I would love to receive contributions through these channels:
 
-* Ethereum: 0x0bd1bbb25cc9dd2ce8ea1fba4e333ff091f671a9
-* Bitcoin: 1Px1PeVBJ2Mz1iC6UF8UZVXW7zPoonMVKJ
-* DASH: Xh5b2TfS7CTUgSMUENWUQFmTqZyk3DUdQX
+* [Patchfox Open Collective](https://opencollective.com/patchfox)

@@ -5,6 +5,8 @@
   import PrivateMsg from "./PrivateMsg.svelte";
   import ContactMsg from "./ContactMsg.svelte";
   import ChannelMsg from "./ChannelMsg.svelte";
+  import AboutMsg from "./AboutMsg.svelte";
+  import PubMsg from "./PubMsg.svelte";
   import AvatarChip from "../parts/AvatarChip.svelte";
   import timestamp from "../parts/timestamp.js";
   import { navigate } from "../utils.js";
@@ -22,7 +24,9 @@
     vote: VoteMsg,
     private: PrivateMsg,
     contact: ContactMsg,
-    channel: ChannelMsg
+    channel: ChannelMsg,
+    about: AboutMsg,
+    pub: PubMsg,
   };
 
   let selectedRenderer;
@@ -87,10 +91,12 @@
     </div>
     <div class="float-right">
 
-      <span class="text-gray channel-display" on:click={() => navigate("/channel", {channel: msg.value.content.channel})}>
-        {#if msg.value.content.channel}
-        #{msg.value.content.channel}
-        {/if}
+      <span
+        class="text-gray channel-display"
+        on:click={() => navigate('/channel', {
+            channel: msg.value.content.channel
+          })}>
+        {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
       </span>
       <span class="text-gray">
         <i class="icon icon-more-vert" on:click={() => (showRaw = !showRaw)} />
@@ -115,7 +121,9 @@
           </p>
           <p>
             To learn more about it, go to
-            <a href="">the documentation about messages with type {type}</a>
+            <a target="_blank" href="/docs/index.html#/message_types/{type}">
+              the documentation about messages with type {type}
+            </a>
             .
           </p>
         </div>

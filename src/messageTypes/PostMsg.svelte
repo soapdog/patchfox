@@ -31,12 +31,12 @@
       </label>
       {#if msg.value.content.root}
         <span>
-          <a href="?thread={msg.value.content.root}#/thread">(root)</a>
+          <a href="?thread={encodeURIComponent(msg.value.content.root)}#/thread">(root)</a>
         </span>
       {/if}
       {#if msg.value.content.branch}
         <span>
-          <a href="?thread={msg.value.content.branch}#/thread">(in reply to)</a>
+          <a href="?thread={encodeURIComponent(msg.value.content.branch)}#/thread">(in reply to)</a>
         </span>
       {/if}
     </div>

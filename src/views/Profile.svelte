@@ -39,7 +39,7 @@
 
 <div class="container">
   {#await p1 && p2}
-    <p>Loading...</p>
+    <div class="loading loading-lg" />
   {:then}
     <div class="columns">
 

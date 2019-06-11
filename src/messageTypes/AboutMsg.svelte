@@ -1,0 +1,54 @@
+<script>
+  export let msg;
+
+  let person = msg.value.author;
+  let otherLink = encodeURIComponent(msg.value.content.about);
+  let otherName = msg.value.content.name || otherLink;
+  let isThisAboutFeeds = true;
+  let verb =
+    msg.value.content.about === msg.value.author
+      ? "self-identifies"
+      : "identifies";
+
+  ssb.avatar(msg.value.author).then(data => (person = data.name));
+
+  let image = msg.value.content.image
+    ? `http://localhost:8989/blobs/get/${encodeURIComponent(
+        msg.value.content.image
+      )}`
+    : false;
+
+  if (msg.value.content.description) {
+    verb += " with description";
+  }
+
+  if (msg.value.content.about.startsWith("%")) {
+    isThisAboutFeeds = false; // this appear to be a gathering
+  }
+</script>
+
+<div class="card-body">
+  {#if isThisAboutFeeds}
+    {person} {verb}
+    <a href="?feed={otherLink}#/profile">
+      {#if image}
+        <div class="chip">
+          <img src={image} class="avatar avatar-sm" alt={otherName} />
+           {otherName}
+        </div>
+      {:else}
+        <span class="chip">{otherName}</span>
+      {/if}
+    </a>
+    {#if msg.value.content.description}
+      <blockquote>
+        {@html ssb.markdown(msg.value.content.description)}
+      </blockquote>
+    {/if}
+  {:else}
+    <div class="toast">
+       {person} is doing something related to a gathering but gatherings are not
+      supported yet, sorry.
+    </div>
+  {/if}
+</div>

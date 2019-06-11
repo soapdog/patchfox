@@ -10,7 +10,7 @@
   let root = $routeParams.root;
   let branch = $routeParams.branch;
   let channel = $routeParams.channel || "";
-  let content = "";
+  let content = $routeParams.content || "";
 
   const post = async ev => {
     ev.stopPropagation();
@@ -26,6 +26,14 @@
       } catch (n) {
         error = true;
         msg = n;
+
+        if (msg.message == "stream is closed") {
+          msg +=
+            "We lost connection to sbot. We'll reload the page in 3 seconds and try to restablish it...";
+          setTimeout(() => {
+            navigate("/compose", { channel, content });
+          }, 3000);
+        }
       }
     }
   };
@@ -44,7 +52,9 @@
         {:else}
           <div class="toast toast-success">
             Your message has been posted. Do you want to
-            <a target="_blank" href="?thread={msg.key}#/thread">
+            <a
+              target="_blank"
+              href="?thread={encodeURIComponent(msg.key)}#/thread">
               Check it out?
             </a>
           </div>
@@ -52,13 +62,13 @@
       {/if}
       {#if !showPreview}
         <div class="form-group" in:slide out:slide>
-            <label class="form-label" for="channel">Channel</label>
-            <input
-              class="form-input"
-              type="text"
-              id="channel"
-              placeholder="channel"
-              bind:value={channel} />
+          <label class="form-label" for="channel">Channel</label>
+          <input
+            class="form-input"
+            type="text"
+            id="channel"
+            placeholder="channel"
+            bind:value={channel} />
 
           {#if branch}
             <label class="form-label" for="reply-to">In reply to</label>

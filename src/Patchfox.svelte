@@ -37,7 +37,7 @@
 
   const configurationMissing = () => {
     console.log("config missing");
-    window.location = "/docs/index.html#/troubleshooting";
+    window.location = "/docs/index.html#/troubleshooting?id=no-configuration";
   };
 
   onMount(() => {
