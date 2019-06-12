@@ -10,6 +10,20 @@
     let channel = msg.value.content.channel;
     navigate("/compose", { root: rootId, branch: msg.key, channel });
   };
+
+  const goRoot = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    let rootId = msg.value.content.root || msg.key;
+    navigate("/thread", { thread: rootId });
+  };
+
+  const goBranch = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    let branchId = msg.value.content.branch || msg.key;
+    navigate("/thread", { thread: branchId });
+  };
 </script>
 
 <style>
@@ -31,12 +45,20 @@
       </label>
       {#if msg.value.content.root}
         <span>
-          <a href="?thread={encodeURIComponent(msg.value.content.root)}#/thread">(root)</a>
+          <a
+            href="?thread={encodeURIComponent(msg.value.content.root)}#/thread"
+            on:click={goRoot}>
+            (root)
+          </a>
         </span>
       {/if}
       {#if msg.value.content.branch}
         <span>
-          <a href="?thread={encodeURIComponent(msg.value.content.branch)}#/thread">(in reply to)</a>
+          <a
+            href="?thread={encodeURIComponent(msg.value.content.branch)}#/thread"
+            on:click={goBranch}>
+            (in reply to)
+          </a>
         </span>
       {/if}
     </div>

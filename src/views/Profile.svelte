@@ -13,11 +13,14 @@
   // todo: move back into using stores.
   feed = $routeParams.feed;
   console.log("fetching", feed);
-  let p1 = ssb.avatar(feed).then(data => {
+  let p1;
+  let p2;
+
+  p1 = ssb.avatar(feed).then(data => {
     name = data.name;
     image = data.image;
   });
-  let p2 = ssb.profile(feed).then(data => {
+  p2 = ssb.profile(feed).then(data => {
     lastAbout = data.about.reverse().find(m => {
       let a = m.value.content;
       return a.hasOwnProperty("description");

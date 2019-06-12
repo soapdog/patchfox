@@ -1,7 +1,9 @@
 
 * [Intro](/#readme)
-* [Getting Started](getting_started.md)
-* [Troubleshooting](troubleshooting.md)
+* [Getting Started](guide.md)
+* [Troubleshooting](troubleshooting/)
+  * [No Configuration](troubleshooting/no-configuration.md)
+  * [Can't Connect To sbot](troubleshooting/no-configuration.md)
 * [Message Types](message_types/)
   * [post](message_types/post.md)
   * [contact](message_types/contact.md)

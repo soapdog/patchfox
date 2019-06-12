@@ -3,7 +3,7 @@
 
   let person = msg.value.author;
   let otherLink = encodeURIComponent(msg.value.content.about);
-  let otherName = msg.value.content.name || otherLink;
+  let otherName = msg.value.content.name || msg.value.content.about;
   let isThisAboutFeeds = true;
   let verb =
     msg.value.content.about === msg.value.author
@@ -11,6 +11,10 @@
       : "identifies";
 
   ssb.avatar(msg.value.author).then(data => (person = data.name));
+
+  if (otherName === msg.value.content.about) {
+    ssb.avatar(msg.value.content.about).then(data => (otherName = data.name));
+  }
 
   let image = msg.value.content.image
     ? `http://localhost:8989/blobs/get/${encodeURIComponent(
