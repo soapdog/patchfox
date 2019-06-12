@@ -23,7 +23,7 @@
       })
       .catch(err => {
         console.error("can't connect", err);
-        configurationIsMissing();
+        cantConnect();
       });
   };
 
@@ -37,7 +37,12 @@
 
   const configurationMissing = () => {
     console.log("config missing");
-    window.location = "/docs/index.html#/troubleshooting?id=no-configuration";
+    window.location = "/docs/index.html#/troubleshooting/no-configuration";
+  };
+
+  const cantConnect = () => {
+    console.log("config missing");
+    window.location = "/docs/index.html#/troubleshooting/no-connection";
   };
 
   onMount(() => {
@@ -55,9 +60,20 @@
       route.set({ location, data });
     }
   };
+
+  const handleUncaughtException = event => {
+    console.error("Uncaught exception", event);
+  };
+
+  const hashChange = event => {
+    console.dir("hash change", event);
+  };
 </script>
 
-<svelte:window on:popstate={popState} />
+<svelte:window
+  on:popstate={popState}
+  on:error={handleUncaughtException}
+  on:hashchange={hashChange} />
 <div class="container bg-gray">
   <Navigation />
   <svelte:component this={$currentView} />

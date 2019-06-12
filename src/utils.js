@@ -41,9 +41,7 @@ const routes = {
 export const currentView = derived([connected, route], ([$connected, $route]) => {
   let r = $route.location
   if ($connected) {
-    console.log("currentView, searching for", r)
     if (routes.hasOwnProperty(r)) {
-      console.log("found!", r);
       return routes[r];
     } else {
       console.log("didn't find", r);

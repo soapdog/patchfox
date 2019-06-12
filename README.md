@@ -1,9 +1,9 @@
 # Patchfox :id=readme
-This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. The add-on is [available to be installed from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/).
+This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
 
 ## Requirements
 
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (for unsigned extension support, see https://wiki.mozilla.org/Add-ons/Extension_Signing#FAQ)
+* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (needed so that you can sideload unsigned add-ons)
 * [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running and providing a running _sbot_. 
 
 
@@ -35,7 +35,7 @@ Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and c
 
 Once patchfox is running, it needs to learn your _remote_ and _secret_, you can just click the "browse" button on the setup screen and select your `.ssb/secret` file. Patchfox will use the data inside your secret file to derive your remote address. Remember to click save. 
 
-After saving Patchfox will then verify the configuration, if you're not running scuttle-shell, it will ask you if you want to run it.
+After saving Patchfox will then try loading your public feed. You need to have a running _sbot_ for it to work.
 
 # Testing the protocol schemas
 

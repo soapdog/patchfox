@@ -1,4 +1,5 @@
 <script>
+  import { navigate } from "../utils.js";
   export let msg;
 
   let expression = msg.value.content.vote.expression;
@@ -12,9 +13,17 @@
   });
 
   ssb.avatar(msg.value.author).then(data => (person = data.name));
+
+  const goThread = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    navigate("/thread", { thread: msgid });
+  };
 </script>
 
 <div class="card-body">
    {person} {expression}
-  <a href="/index.html?thread={encodedid}#/thread">{label}</a>
+  <a href="/index.html?thread={encodedid}#/thread" on:click={goThread}>
+    {label}
+  </a>
 </div>
