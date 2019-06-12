@@ -1,9 +1,9 @@
 # Patchfox :id=readme
-This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
+This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. The add-on is [available to be installed from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/).
 
 ## Requirements
 
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/)
+* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (for unsigned extension support, see https://wiki.mozilla.org/Add-ons/Extension_Signing#FAQ)
 * [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running and providing a running _sbot_. 
 
 
