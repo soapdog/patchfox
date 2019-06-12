@@ -24,7 +24,7 @@
       window.scrollTo(0, 0);
     }).catch(n => {
       if (!error) {
-        navigate("/public", {error: n})
+        navigate("/error", {error: n})
       }
     });
   }

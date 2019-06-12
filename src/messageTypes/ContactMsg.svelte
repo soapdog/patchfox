@@ -8,8 +8,17 @@
   let otherPersonName = otherPersonFeed;
   let verb = msg.value.content.following ? "followed" : "unfollowed";
 
+  if (msg.value.content.blocking) {
+    verb = "blocked";
+  }
+
   ssb.avatar(msg.value.author).then(data => (person = data.name));
-  ssb.avatar(otherPersonFeed).then(data => (otherPersonName = data.name));
+  ssb
+    .avatar(msg.value.content.contact)
+    .then(data => {
+      otherPersonName = data.name;
+    })
+    .catch(n => console.log(n));
 
   const goProfile = ev => {
     ev.stopPropagation();
@@ -21,6 +30,6 @@
 <div class="card-body">
    {person} {verb}
   <a href="?feed={otherPersonFeed}#/profile" on:click={goProfile}>
-    {otherPersonName}
+     {otherPersonName}
   </a>
 </div>

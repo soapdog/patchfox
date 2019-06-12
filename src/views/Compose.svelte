@@ -1,6 +1,6 @@
 <script>
   import { slide } from "svelte/transition";
-  import { navigate, routeParams } from "../utils.js";
+  import { navigate, routeParams, reconnect } from "../utils.js";
 
   let showPreview = false;
   let msg = false;
@@ -19,6 +19,10 @@
     if (!posting) {
       posting = true;
 
+      if (channel.startsWith("#")) {
+        channel = channel.slice(1);
+      }
+
       try {
         msg = await ssb.newPost({ text: content, channel, root, branch });
         posting = false;
@@ -28,11 +32,25 @@
         msg = n;
 
         if (msg.message == "stream is closed") {
-          msg +=
-            "We lost connection to sbot. We'll reload the page in 3 seconds and try to restablish it...";
-          setTimeout(() => {
-            navigate("/compose", { channel, content });
-          }, 3000);
+          msg += ". We lost connection to sbot. We'll try to restablish it...";
+
+          reconnect()
+            .then(() => {
+              showPreview = false;
+              posting = false;
+              error = false;
+              msg = "Connection to sbot reestablished. Try posting again";
+            })
+            .catch(err => {
+              window.location.search = `?root=${encodeURIComponent(
+                root
+              )}&branch=${encodeURIComponent(
+                branch
+              )}&content=${encodeURIComponent(
+                content
+              )}&channel=${encodeURIComponent(channel)}`;
+              msg = `Sorry, couldn't reconnect to sbot:${err}. Try reloading the page. Your content has been saved to the URL`;
+            });
         }
       }
     }
@@ -94,6 +112,29 @@
         </div>
       {:else}
         <div class="column col-md-12">
+          <h2>Post preview</h2>
+          {#if channel || root || branch}
+          <blockquote>
+            {#if channel}
+              <p>
+                <b>Channel:</b>
+                 {channel.startsWith("#") ? channel.slice(1) : channel}
+              </p>
+            {/if}
+            {#if root}
+              <p>
+                <b>Root:</b>
+                 {root}
+              </p>
+            {/if}
+            {#if branch}
+              <p>
+                <b>branch:</b>
+                 {branch}
+              </p>
+            {/if}
+          </blockquote>
+          {/if}
           {@html ssb.markdown(content)}
 
           <div class="divider" />

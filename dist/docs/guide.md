@@ -15,6 +15,8 @@ Since the implementation of Secure Scuttlebutt requires some technical features 
 
 Most clients have a way for the user to run without starting embedded copies of _sbot_, this makes it possible to have only one _sbot_ running and multiple clients connecting to it.
 
+You might want to checkout [our semi-official page about Secure Scuttlebutt](https://scuttlebutt.nz), there is a getting started guide there that will help you get your _sbot_ running.
+
 ## How to configure it
 
 

@@ -86,9 +86,9 @@ var app = (function () {
     function detach(node) {
         node.parentNode.removeChild(node);
     }
-    function detach_before(after) {
-        while (after.previousSibling) {
-            after.parentNode.removeChild(after.previousSibling);
+    function detach_between(before, after) {
+        while (before.nextSibling && before.nextSibling !== after) {
+            before.parentNode.removeChild(before.nextSibling);
         }
     }
     function element(name) {
@@ -666,6 +666,105 @@ var app = (function () {
     }
 
     /**
+     * Creates a `Readable` store that allows reading by subscription.
+     * @param value initial value
+     * @param {StartStopNotifier}start start and stop notifications for subscriptions
+     */
+    function readable(value, start) {
+        return {
+            subscribe: writable(value, start).subscribe,
+        };
+    }
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = [];
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (!stop) {
+                    return; // not ready
+                }
+                subscribers.forEach((s) => s[1]());
+                subscribers.forEach((s) => s[0](value));
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.push(subscriber);
+            if (subscribers.length === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                const index = subscribers.indexOf(subscriber);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                }
+                if (subscribers.length === 0) {
+                    stop();
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+    /**
+     * Derived value store by synchronizing one or more readable stores and
+     * applying an aggregation function over its input values.
+     * @param {Stores} stores input stores
+     * @param {function(Stores=, function(*)=):*}fn function callback that aggregates the values
+     * @param {*=}initial_value when used asynchronously
+     */
+    function derived(stores, fn, initial_value) {
+        const single = !Array.isArray(stores);
+        const stores_array = single
+            ? [stores]
+            : stores;
+        const auto = fn.length < 2;
+        return readable(initial_value, (set) => {
+            let inited = false;
+            const values = [];
+            let pending = 0;
+            let cleanup = noop;
+            const sync = () => {
+                if (pending) {
+                    return;
+                }
+                cleanup();
+                const result = fn(single ? values[0] : values, set);
+                if (auto) {
+                    set(result);
+                }
+                else {
+                    cleanup = is_function(result) ? result : noop;
+                }
+            };
+            const unsubscribers = stores_array.map((store, i) => store.subscribe((value) => {
+                values[i] = value;
+                pending &= ~(1 << i);
+                if (inited) {
+                    sync();
+                }
+            }, () => {
+                pending |= (1 << i);
+            }));
+            inited = true;
+            sync();
+            return function stop() {
+                run_all(unsubscribers);
+                cleanup();
+            };
+        });
+    }
+
+    /**
      * Hermiebox Driver
      *
      * TL;DR: SSB API for Patchfox using Hermiebox.
@@ -857,105 +956,6 @@ var app = (function () {
           }
         })
       }
-    }
-
-    /**
-     * Creates a `Readable` store that allows reading by subscription.
-     * @param value initial value
-     * @param {StartStopNotifier}start start and stop notifications for subscriptions
-     */
-    function readable(value, start) {
-        return {
-            subscribe: writable(value, start).subscribe,
-        };
-    }
-    /**
-     * Create a `Writable` store that allows both updating and reading by subscription.
-     * @param {*=}value initial value
-     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
-     */
-    function writable(value, start = noop) {
-        let stop;
-        const subscribers = [];
-        function set(new_value) {
-            if (safe_not_equal(value, new_value)) {
-                value = new_value;
-                if (!stop) {
-                    return; // not ready
-                }
-                subscribers.forEach((s) => s[1]());
-                subscribers.forEach((s) => s[0](value));
-            }
-        }
-        function update(fn) {
-            set(fn(value));
-        }
-        function subscribe(run, invalidate = noop) {
-            const subscriber = [run, invalidate];
-            subscribers.push(subscriber);
-            if (subscribers.length === 1) {
-                stop = start(set) || noop;
-            }
-            run(value);
-            return () => {
-                const index = subscribers.indexOf(subscriber);
-                if (index !== -1) {
-                    subscribers.splice(index, 1);
-                }
-                if (subscribers.length === 0) {
-                    stop();
-                }
-            };
-        }
-        return { set, update, subscribe };
-    }
-    /**
-     * Derived value store by synchronizing one or more readable stores and
-     * applying an aggregation function over its input values.
-     * @param {Stores} stores input stores
-     * @param {function(Stores=, function(*)=):*}fn function callback that aggregates the values
-     * @param {*=}initial_value when used asynchronously
-     */
-    function derived(stores, fn, initial_value) {
-        const single = !Array.isArray(stores);
-        const stores_array = single
-            ? [stores]
-            : stores;
-        const auto = fn.length < 2;
-        return readable(initial_value, (set) => {
-            let inited = false;
-            const values = [];
-            let pending = 0;
-            let cleanup = noop;
-            const sync = () => {
-                if (pending) {
-                    return;
-                }
-                cleanup();
-                const result = fn(single ? values[0] : values, set);
-                if (auto) {
-                    set(result);
-                }
-                else {
-                    cleanup = is_function(result) ? result : noop;
-                }
-            };
-            const unsubscribers = stores_array.map((store, i) => store.subscribe((value) => {
-                values[i] = value;
-                pending &= ~(1 << i);
-                if (inited) {
-                    sync();
-                }
-            }, () => {
-                pending |= (1 << i);
-            }));
-            inited = true;
-            sync();
-            return function stop() {
-                run_all(unsubscribers);
-                cleanup();
-            };
-        });
     }
 
     var strictUriEncode = str => encodeURIComponent(str).replace(/[!'()*]/g, x => `%${x.charCodeAt(0).toString(16).toUpperCase()}`);
@@ -1890,9 +1890,9 @@ var app = (function () {
     			a = element("a");
     			t4 = text(ctx.otherPersonName);
     			a.href = a_href_value = "?feed=" + ctx.otherPersonFeed + "#/profile";
-    			add_location(a, file$4, 22, 2, 633);
+    			add_location(a, file$4, 31, 2, 761);
     			div.className = "card-body";
-    			add_location(div, file$4, 20, 0, 588);
+    			add_location(div, file$4, 29, 0, 716);
     			dispose = listen(a, "click", ctx.goProfile);
     		},
 
@@ -1913,6 +1913,10 @@ var app = (function () {
     		p: function update(changed, ctx) {
     			if (changed.person) {
     				set_data(t0, ctx.person);
+    			}
+
+    			if (changed.verb) {
+    				set_data(t2, ctx.verb);
     			}
 
     			if (changed.otherPersonName) {
@@ -1941,8 +1945,17 @@ var app = (function () {
       let otherPersonName = otherPersonFeed;
       let verb = msg.value.content.following ? "followed" : "unfollowed";
 
+      if (msg.value.content.blocking) {
+        $$invalidate('verb', verb = "blocked");
+      }
+
       ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
-      ssb.avatar(otherPersonFeed).then(data => { const $$result = (otherPersonName = data.name); $$invalidate('otherPersonName', otherPersonName); return $$result; });
+      ssb
+        .avatar(msg.value.content.contact)
+        .then(data => {
+          $$invalidate('otherPersonName', otherPersonName = data.name);
+        })
+        .catch(n => console.log(n));
 
       const goProfile = ev => {
         ev.stopPropagation();
@@ -2100,7 +2113,7 @@ var app = (function () {
 
     const file$6 = "src\\messageTypes\\AboutMsg.svelte";
 
-    // (48:2) {:else}
+    // (52:2) {:else}
     function create_else_block_1(ctx) {
     	var div, t0, t1;
 
@@ -2110,7 +2123,7 @@ var app = (function () {
     			t0 = text(ctx.person);
     			t1 = text(" is doing something related to a gathering but gatherings are not\n      supported yet, sorry.");
     			div.className = "toast";
-    			add_location(div, file$6, 48, 4, 1257);
+    			add_location(div, file$6, 52, 4, 1402);
     		},
 
     		m: function mount(target, anchor) {
@@ -2133,7 +2146,7 @@ var app = (function () {
     	};
     }
 
-    // (31:2) {#if isThisAboutFeeds}
+    // (35:2) {#if isThisAboutFeeds}
     function create_if_block$1(ctx) {
     	var t0, t1, t2, t3, a, a_href_value, t4, if_block1_anchor;
 
@@ -2159,7 +2172,7 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			if_block1_anchor = empty();
     			a.href = a_href_value = "?feed=" + ctx.otherLink + "#/profile";
-    			add_location(a, file$6, 32, 4, 821);
+    			add_location(a, file$6, 36, 4, 966);
     		},
 
     		m: function mount(target, anchor) {
@@ -2232,7 +2245,7 @@ var app = (function () {
     	};
     }
 
-    // (39:6) {:else}
+    // (43:6) {:else}
     function create_else_block(ctx) {
     	var span, t;
 
@@ -2241,7 +2254,7 @@ var app = (function () {
     			span = element("span");
     			t = text(ctx.otherName);
     			span.className = "chip";
-    			add_location(span, file$6, 39, 8, 1035);
+    			add_location(span, file$6, 43, 8, 1180);
     		},
 
     		m: function mount(target, anchor) {
@@ -2249,7 +2262,11 @@ var app = (function () {
     			append(span, t);
     		},
 
-    		p: noop,
+    		p: function update(changed, ctx) {
+    			if (changed.otherName) {
+    				set_data(t, ctx.otherName);
+    			}
+    		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
@@ -2259,7 +2276,7 @@ var app = (function () {
     	};
     }
 
-    // (34:6) {#if image}
+    // (38:6) {#if image}
     function create_if_block_2(ctx) {
     	var div, img, t0, t1;
 
@@ -2272,9 +2289,9 @@ var app = (function () {
     			img.src = ctx.image;
     			img.className = "avatar avatar-sm";
     			img.alt = ctx.otherName;
-    			add_location(img, file$6, 35, 10, 914);
+    			add_location(img, file$6, 39, 10, 1059);
     			div.className = "chip";
-    			add_location(div, file$6, 34, 8, 885);
+    			add_location(div, file$6, 38, 8, 1030);
     		},
 
     		m: function mount(target, anchor) {
@@ -2284,7 +2301,12 @@ var app = (function () {
     			append(div, t1);
     		},
 
-    		p: noop,
+    		p: function update(changed, ctx) {
+    			if (changed.otherName) {
+    				img.alt = ctx.otherName;
+    				set_data(t1, ctx.otherName);
+    			}
+    		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
@@ -2294,14 +2316,14 @@ var app = (function () {
     	};
     }
 
-    // (43:4) {#if msg.value.content.description}
+    // (47:4) {#if msg.value.content.description}
     function create_if_block_1$1(ctx) {
     	var blockquote, raw_value = ctx.ssb.markdown(ctx.msg.value.content.description);
 
     	return {
     		c: function create() {
     			blockquote = element("blockquote");
-    			add_location(blockquote, file$6, 43, 6, 1140);
+    			add_location(blockquote, file$6, 47, 6, 1285);
     		},
 
     		m: function mount(target, anchor) {
@@ -2339,7 +2361,7 @@ var app = (function () {
     			div = element("div");
     			if_block.c();
     			div.className = "card-body";
-    			add_location(div, file$6, 29, 0, 748);
+    			add_location(div, file$6, 33, 0, 893);
     		},
 
     		l: function claim(nodes) {
@@ -2382,7 +2404,7 @@ var app = (function () {
 
       let person = msg.value.author;
       let otherLink = encodeURIComponent(msg.value.content.about);
-      let otherName = msg.value.content.name || otherLink;
+      let otherName = msg.value.content.name || msg.value.content.about;
       let isThisAboutFeeds = true;
       let verb =
         msg.value.content.about === msg.value.author
@@ -2390,6 +2412,10 @@ var app = (function () {
           : "identifies";
 
       ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
+
+      if (otherName === msg.value.content.about) {
+        ssb.avatar(msg.value.content.about).then(data => { const $$result = (otherName = data.name); $$invalidate('otherName', otherName); return $$result; });
+      }
 
       let image = msg.value.content.image
         ? `http://localhost:8989/blobs/get/${encodeURIComponent(
@@ -3240,7 +3266,7 @@ var app = (function () {
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$9, 33, 2, 721);
+    			add_location(div, file$9, 33, 2, 720);
     		},
 
     		m: function mount(target, anchor) {
@@ -3289,19 +3315,19 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$9, 46, 8, 1088);
+    			add_location(div0, file$9, 46, 8, 1087);
     			a0.href = "#/public";
-    			add_location(a0, file$9, 43, 6, 981);
+    			add_location(a0, file$9, 43, 6, 980);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$9, 42, 4, 938);
+    			add_location(li0, file$9, 42, 4, 937);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$9, 55, 8, 1368);
+    			add_location(div1, file$9, 55, 8, 1367);
     			a1.href = "#/public";
-    			add_location(a1, file$9, 50, 6, 1199);
+    			add_location(a1, file$9, 50, 6, 1198);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$9, 49, 4, 1160);
+    			add_location(li1, file$9, 49, 4, 1159);
     			ul.className = "pagination";
-    			add_location(ul, file$9, 41, 2, 910);
+    			add_location(ul, file$9, 41, 2, 909);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
@@ -3366,7 +3392,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$9, 36, 2, 793);
+    			add_location(div, file$9, 36, 2, 792);
     		},
 
     		m: function mount(target, anchor) {
@@ -3583,7 +3609,7 @@ var app = (function () {
               window.scrollTo(0, 0);
             }).catch(n => {
               if (!error) {
-                navigate("/public", {error: n});
+                navigate("/error", {error: n});
               }
             });
           } }
@@ -3680,12 +3706,12 @@ var app = (function () {
 
     const file$b = "src\\views\\Compose.svelte";
 
-    // (49:6) {#if msg}
-    function create_if_block_2$1(ctx) {
+    // (67:6) {#if msg}
+    function create_if_block_6(ctx) {
     	var if_block_anchor;
 
     	function select_block_type(ctx) {
-    		if (ctx.error) return create_if_block_3;
+    		if (ctx.error) return create_if_block_7;
     		return create_else_block_1$1;
     	}
 
@@ -3726,7 +3752,7 @@ var app = (function () {
     	};
     }
 
-    // (52:8) {:else}
+    // (70:8) {:else}
     function create_else_block_1$1(ctx) {
     	var div, t0, a, t1, a_href_value;
 
@@ -3737,10 +3763,10 @@ var app = (function () {
     			a = element("a");
     			t1 = text("Check it out?");
     			a.target = "_blank";
-    			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.key) + "#/thread";
-    			add_location(a, file$b, 54, 12, 1382);
+    			a.href = a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
+    			add_location(a, file$b, 72, 12, 2020);
     			div.className = "toast toast-success";
-    			add_location(div, file$b, 52, 10, 1279);
+    			add_location(div, file$b, 70, 10, 1917);
     		},
 
     		m: function mount(target, anchor) {
@@ -3751,7 +3777,7 @@ var app = (function () {
     		},
 
     		p: function update(changed, ctx) {
-    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.key) + "#/thread")) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread")) {
     				a.href = a_href_value;
     			}
     		},
@@ -3764,8 +3790,8 @@ var app = (function () {
     	};
     }
 
-    // (50:8) {#if error}
-    function create_if_block_3(ctx) {
+    // (68:8) {#if error}
+    function create_if_block_7(ctx) {
     	var div, t0, t1;
 
     	return {
@@ -3774,7 +3800,7 @@ var app = (function () {
     			t0 = text("Couldn't post your message: ");
     			t1 = text(ctx.msg);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 50, 10, 1182);
+    			add_location(div, file$b, 68, 10, 1820);
     		},
 
     		m: function mount(target, anchor) {
@@ -3797,45 +3823,54 @@ var app = (function () {
     	};
     }
 
-    // (95:6) {:else}
+    // (113:6) {:else}
     function create_else_block$3(ctx) {
-    	var div4, raw_value = ctx.ssb.markdown(ctx.content), raw_after, t0, div0, t1, div3, div1, span, t3, div2, button0, t5, button1, dispose;
+    	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
+
+    	var if_block = (ctx.channel || ctx.root || ctx.branch) && create_if_block_2$1(ctx);
 
     	return {
     		c: function create() {
     			div4 = element("div");
-    			raw_after = element('noscript');
-    			t0 = space();
-    			div0 = element("div");
+    			h2 = element("h2");
+    			h2.textContent = "Post preview";
     			t1 = space();
+    			if (if_block) if_block.c();
+    			t2 = space();
+    			raw_before = element('noscript');
+    			raw_after = element('noscript');
+    			t3 = space();
+    			div0 = element("div");
+    			t4 = space();
     			div3 = element("div");
     			div1 = element("div");
     			span = element("span");
     			span.textContent = "This message will be public and can't be edited or deleted";
-    			t3 = space();
+    			t6 = space();
     			div2 = element("div");
     			button0 = element("button");
     			button0.textContent = "Go Back";
-    			t5 = space();
+    			t8 = space();
     			button1 = element("button");
     			button1.textContent = "Post";
+    			add_location(h2, file$b, 114, 10, 3269);
     			div0.className = "divider";
-    			add_location(div0, file$b, 98, 10, 2672);
+    			add_location(div0, file$b, 139, 10, 3900);
     			span.className = "label label-warning";
-    			add_location(span, file$b, 101, 14, 2795);
+    			add_location(span, file$b, 142, 14, 4023);
     			div1.className = "column col-md-12 col-lg-10";
-    			add_location(div1, file$b, 100, 12, 2740);
+    			add_location(div1, file$b, 141, 12, 3968);
     			button0.className = "btn";
-    			add_location(button0, file$b, 106, 14, 3012);
+    			add_location(button0, file$b, 147, 14, 4240);
     			button1.className = "btn btn-primary";
     			toggle_class(button1, "loading", ctx.posting);
-    			add_location(button1, file$b, 109, 14, 3134);
+    			add_location(button1, file$b, 150, 14, 4362);
     			div2.className = "column col-md-12 col-lg-2";
-    			add_location(div2, file$b, 105, 12, 2958);
+    			add_location(div2, file$b, 146, 12, 4186);
     			div3.className = "columns";
-    			add_location(div3, file$b, 99, 10, 2706);
+    			add_location(div3, file$b, 140, 10, 3934);
     			div4.className = "column col-md-12";
-    			add_location(div4, file$b, 95, 8, 2590);
+    			add_location(div4, file$b, 113, 8, 3228);
 
     			dispose = [
     				listen(button0, "click", ctx.click_handler),
@@ -3845,25 +3880,43 @@ var app = (function () {
 
     		m: function mount(target, anchor) {
     			insert(target, div4, anchor);
-    			append(div4, raw_after);
-    			raw_after.insertAdjacentHTML("beforebegin", raw_value);
-    			append(div4, t0);
-    			append(div4, div0);
+    			append(div4, h2);
     			append(div4, t1);
+    			if (if_block) if_block.m(div4, null);
+    			append(div4, t2);
+    			append(div4, raw_before);
+    			raw_before.insertAdjacentHTML("afterend", raw_value);
+    			append(div4, raw_after);
+    			append(div4, t3);
+    			append(div4, div0);
+    			append(div4, t4);
     			append(div4, div3);
     			append(div3, div1);
     			append(div1, span);
-    			append(div3, t3);
+    			append(div3, t6);
     			append(div3, div2);
     			append(div2, button0);
-    			append(div2, t5);
+    			append(div2, t8);
     			append(div2, button1);
     		},
 
     		p: function update(changed, ctx) {
+    			if (ctx.channel || ctx.root || ctx.branch) {
+    				if (if_block) {
+    					if_block.p(changed, ctx);
+    				} else {
+    					if_block = create_if_block_2$1(ctx);
+    					if_block.c();
+    					if_block.m(div4, t2);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
     			if ((changed.content) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.content))) {
-    				detach_before(raw_after);
-    				raw_after.insertAdjacentHTML("beforebegin", raw_value);
+    				detach_between(raw_before, raw_after);
+    				raw_before.insertAdjacentHTML("afterend", raw_value);
     			}
 
     			if (changed.posting) {
@@ -3879,12 +3932,13 @@ var app = (function () {
     				detach(div4);
     			}
 
+    			if (if_block) if_block.d();
     			run_all(dispose);
     		}
     	};
     }
 
-    // (63:6) {#if !showPreview}
+    // (81:6) {#if !showPreview}
     function create_if_block$4(ctx) {
     	var div, label0, t1, input, t2, t3, label1, t5, textarea, t6, br, t7, button, div_intro, div_outro, current, dispose;
 
@@ -3911,25 +3965,25 @@ var app = (function () {
     			button.textContent = "Preview";
     			label0.className = "form-label";
     			label0.htmlFor = "channel";
-    			add_location(label0, file$b, 64, 10, 1658);
+    			add_location(label0, file$b, 82, 10, 2296);
     			input.className = "form-input";
     			attr(input, "type", "text");
     			input.id = "channel";
     			input.placeholder = "channel";
-    			add_location(input, file$b, 65, 10, 1724);
+    			add_location(input, file$b, 83, 10, 2362);
     			label1.className = "form-label";
     			label1.htmlFor = "content";
-    			add_location(label1, file$b, 82, 10, 2188);
+    			add_location(label1, file$b, 100, 10, 2826);
     			textarea.className = "form-input";
     			textarea.id = "content";
     			textarea.placeholder = "Type in your post";
     			textarea.rows = "10";
-    			add_location(textarea, file$b, 83, 10, 2254);
-    			add_location(br, file$b, 89, 10, 2432);
+    			add_location(textarea, file$b, 101, 10, 2892);
+    			add_location(br, file$b, 107, 10, 3070);
     			button.className = "btn btn-primary float-right";
-    			add_location(button, file$b, 90, 10, 2449);
+    			add_location(button, file$b, 108, 10, 3087);
     			div.className = "form-group";
-    			add_location(div, file$b, 63, 8, 1604);
+    			add_location(div, file$b, 81, 8, 2242);
 
     			dispose = [
     				listen(input, "input", ctx.input_input_handler),
@@ -4018,7 +4072,194 @@ var app = (function () {
     	};
     }
 
-    // (73:10) {#if branch}
+    // (116:10) {#if channel || root || branch}
+    function create_if_block_2$1(ctx) {
+    	var blockquote, t0, t1;
+
+    	var if_block0 = (ctx.channel) && create_if_block_5(ctx);
+
+    	var if_block1 = (ctx.root) && create_if_block_4(ctx);
+
+    	var if_block2 = (ctx.branch) && create_if_block_3(ctx);
+
+    	return {
+    		c: function create() {
+    			blockquote = element("blockquote");
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			if (if_block2) if_block2.c();
+    			add_location(blockquote, file$b, 116, 10, 3343);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, blockquote, anchor);
+    			if (if_block0) if_block0.m(blockquote, null);
+    			append(blockquote, t0);
+    			if (if_block1) if_block1.m(blockquote, null);
+    			append(blockquote, t1);
+    			if (if_block2) if_block2.m(blockquote, null);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.channel) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_5(ctx);
+    					if_block0.c();
+    					if_block0.m(blockquote, t0);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.root) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_4(ctx);
+    					if_block1.c();
+    					if_block1.m(blockquote, t1);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (ctx.branch) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    				} else {
+    					if_block2 = create_if_block_3(ctx);
+    					if_block2.c();
+    					if_block2.m(blockquote, null);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(blockquote);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    		}
+    	};
+    }
+
+    // (118:12) {#if channel}
+    function create_if_block_5(ctx) {
+    	var p, b, t1, t2_value = ctx.channel.startsWith("#") ? ctx.channel.slice(1) : ctx.channel, t2;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			b = element("b");
+    			b.textContent = "Channel:";
+    			t1 = space();
+    			t2 = text(t2_value);
+    			add_location(b, file$b, 119, 16, 3416);
+    			add_location(p, file$b, 118, 14, 3396);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, b);
+    			append(p, t1);
+    			append(p, t2);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.channel) && t2_value !== (t2_value = ctx.channel.startsWith("#") ? ctx.channel.slice(1) : ctx.channel)) {
+    				set_data(t2, t2_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (124:12) {#if root}
+    function create_if_block_4(ctx) {
+    	var p, b, t1, t2;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			b = element("b");
+    			b.textContent = "Root:";
+    			t1 = space();
+    			t2 = text(ctx.root);
+    			add_location(b, file$b, 125, 16, 3598);
+    			add_location(p, file$b, 124, 14, 3578);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, b);
+    			append(p, t1);
+    			append(p, t2);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (130:12) {#if branch}
+    function create_if_block_3(ctx) {
+    	var p, b, t1, t2;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			b = element("b");
+    			b.textContent = "branch:";
+    			t1 = space();
+    			t2 = text(ctx.branch);
+    			add_location(b, file$b, 131, 16, 3731);
+    			add_location(p, file$b, 130, 14, 3711);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, b);
+    			append(p, t1);
+    			append(p, t2);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.branch) {
+    				set_data(t2, ctx.branch);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (91:10) {#if branch}
     function create_if_block_1$4(ctx) {
     	var label, t_1, input, dispose;
 
@@ -4030,12 +4271,12 @@ var app = (function () {
     			input = element("input");
     			label.className = "form-label";
     			label.htmlFor = "reply-to";
-    			add_location(label, file$b, 73, 12, 1917);
+    			add_location(label, file$b, 91, 12, 2555);
     			input.className = "form-input";
     			attr(input, "type", "text");
     			input.id = "reply-to";
     			input.placeholder = "in reply to";
-    			add_location(input, file$b, 74, 12, 1990);
+    			add_location(input, file$b, 92, 12, 2628);
     			dispose = listen(input, "input", ctx.input_input_handler_1);
     		},
 
@@ -4066,7 +4307,7 @@ var app = (function () {
     function create_fragment$b(ctx) {
     	var div2, div1, div0, t, current_block_type_index, if_block1, current;
 
-    	var if_block0 = (ctx.msg) && create_if_block_2$1(ctx);
+    	var if_block0 = (ctx.msg) && create_if_block_6(ctx);
 
     	var if_block_creators = [
     		create_if_block$4,
@@ -4092,11 +4333,11 @@ var app = (function () {
     			t = space();
     			if_block1.c();
     			div0.className = "column";
-    			add_location(div0, file$b, 47, 4, 1115);
+    			add_location(div0, file$b, 65, 4, 1753);
     			div1.className = "columns";
-    			add_location(div1, file$b, 46, 2, 1089);
+    			add_location(div1, file$b, 64, 2, 1727);
     			div2.className = "container";
-    			add_location(div2, file$b, 45, 0, 1063);
+    			add_location(div2, file$b, 63, 0, 1701);
     		},
 
     		l: function claim(nodes) {
@@ -4118,7 +4359,7 @@ var app = (function () {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
-    					if_block0 = create_if_block_2$1(ctx);
+    					if_block0 = create_if_block_6(ctx);
     					if_block0.c();
     					if_block0.m(div0, t);
     				}
@@ -4197,6 +4438,10 @@ var app = (function () {
         if (!posting) {
           $$invalidate('posting', posting = true);
 
+          if (channel.startsWith("#")) {
+            $$invalidate('channel', channel = channel.slice(1));
+          }
+
           try {
             $$invalidate('msg', msg = await ssb.newPost({ text: content, channel, root, branch }));
             $$invalidate('posting', posting = false);
@@ -4206,11 +4451,25 @@ var app = (function () {
             $$invalidate('msg', msg = n);
 
             if (msg.message == "stream is closed") {
-              $$invalidate('msg', msg +=
-                "We lost connection to sbot. We'll reload the page in 3 seconds and try to restablish it...");
-              setTimeout(() => {
-                navigate("/compose", { channel, content });
-              }, 3000);
+              $$invalidate('msg', msg += ". We lost connection to sbot. We'll try to restablish it...");
+
+              reconnect()
+                .then(() => {
+                  $$invalidate('showPreview', showPreview = false);
+                  $$invalidate('posting', posting = false);
+                  $$invalidate('error', error = false);
+                  $$invalidate('msg', msg = "Connection to sbot reestablished. Try posting again");
+                })
+                .catch(err => {
+                  window.location.search = `?root=${encodeURIComponent(
+                root
+              )}&branch=${encodeURIComponent(
+                branch
+              )}&content=${encodeURIComponent(
+                content
+              )}&channel=${encodeURIComponent(channel)}`;
+                  $$invalidate('msg', msg = `Sorry, couldn't reconnect to sbot:${err}. Try reloading the page. Your content has been saved to the URL`);
+                });
             }
           }
         }
@@ -4246,12 +4505,14 @@ var app = (function () {
     		msg,
     		error,
     		posting,
+    		root,
     		branch,
     		channel,
     		content,
     		post,
     		preview,
     		ssb,
+    		encodeURIComponent,
     		input_input_handler,
     		input_input_handler_1,
     		textarea_input_handler,
@@ -4621,7 +4882,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (65:2) {:catch n}
+    // (68:2) {:catch n}
     function create_catch_block(ctx) {
     	var p, t0, t1_value = ctx.n.message, t1;
 
@@ -4630,7 +4891,7 @@ var app = (function () {
     			p = element("p");
     			t0 = text("Error: ");
     			t1 = text(t1_value);
-    			add_location(p, file$d, 65, 4, 1532);
+    			add_location(p, file$d, 68, 4, 1545);
     		},
 
     		m: function mount(target, anchor) {
@@ -4639,7 +4900,12 @@ var app = (function () {
     			append(p, t1);
     		},
 
-    		p: noop,
+    		p: function update(changed, ctx) {
+    			if ((changed.p1 || changed.p2) && t1_value !== (t1_value = ctx.n.message)) {
+    				set_data(t1, t1_value);
+    			}
+    		},
+
     		i: noop,
     		o: noop,
 
@@ -4651,7 +4917,7 @@ var app = (function () {
     	};
     }
 
-    // (43:2) {:then}
+    // (46:2) {:then}
     function create_then_block(ctx) {
     	var div2, div0, img, img_src_value, t0, div1, h1, t1, t2, p, raw_value = ctx.ssb.markdown(ctx.description), t3, div3, each_blocks = [], each_1_lookup = new Map(), current;
 
@@ -4683,16 +4949,16 @@ var app = (function () {
     			img.className = "img-responsive";
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
     			img.alt = ctx.feed;
-    			add_location(img, file$d, 46, 8, 1124);
+    			add_location(img, file$d, 49, 8, 1137);
     			div0.className = "column col-6";
-    			add_location(div0, file$d, 45, 6, 1089);
-    			add_location(h1, file$d, 52, 8, 1296);
-    			add_location(p, file$d, 53, 8, 1320);
+    			add_location(div0, file$d, 48, 6, 1102);
+    			add_location(h1, file$d, 55, 8, 1309);
+    			add_location(p, file$d, 56, 8, 1333);
     			div1.className = "column col-6";
-    			add_location(div1, file$d, 51, 6, 1261);
+    			add_location(div1, file$d, 54, 6, 1274);
     			div2.className = "columns";
-    			add_location(div2, file$d, 43, 4, 1060);
-    			add_location(div3, file$d, 59, 4, 1410);
+    			add_location(div2, file$d, 46, 4, 1073);
+    			add_location(div3, file$d, 62, 4, 1423);
     		},
 
     		m: function mount(target, anchor) {
@@ -4763,7 +5029,7 @@ var app = (function () {
     	};
     }
 
-    // (61:6) {#each lastMsgs as msg (msg.key)}
+    // (64:6) {#each lastMsgs as msg (msg.key)}
     function create_each_block$2(key_1, ctx) {
     	var first, current;
 
@@ -4817,7 +5083,7 @@ var app = (function () {
     	};
     }
 
-    // (41:19)      <div class="loading loading-lg" />   {:then}
+    // (44:19)      <div class="loading loading-lg" />   {:then}
     function create_pending_block(ctx) {
     	var div;
 
@@ -4825,7 +5091,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$d, 41, 4, 1011);
+    			add_location(div, file$d, 44, 4, 1024);
     		},
 
     		m: function mount(target, anchor) {
@@ -4866,7 +5132,7 @@ var app = (function () {
 
     			info.block.c();
     			div.className = "container";
-    			add_location(div, file$d, 39, 0, 963);
+    			add_location(div, file$d, 42, 0, 976);
     		},
 
     		l: function claim(nodes) {
@@ -4887,7 +5153,7 @@ var app = (function () {
     			ctx = new_ctx;
     			info.ctx = ctx;
 
-    			if (promise !== (promise = ctx.p1 && ctx.p2) && handle_promise(promise, info)) ; else {
+    			if (('p1' in changed || 'p2' in changed) && promise !== (promise = ctx.p1 && ctx.p2) && handle_promise(promise, info)) ; else {
     				info.block.p(changed, assign(assign({}, ctx), info.resolved));
     			}
     		},
@@ -4936,11 +5202,14 @@ var app = (function () {
       // todo: move back into using stores.
       $$invalidate('feed', feed = $routeParams.feed);
       console.log("fetching", feed);
-      let p1 = ssb.avatar(feed).then(data => {
+      let p1;
+      let p2;
+
+      $$invalidate('p1', p1 = ssb.avatar(feed).then(data => {
         $$invalidate('name', name = data.name);
         $$invalidate('image', image = data.image);
-      });
-      let p2 = ssb.profile(feed).then(data => {
+      }));
+      $$invalidate('p2', p2 = ssb.profile(feed).then(data => {
         lastAbout = data.about.reverse().find(m => {
           let a = m.value.content;
           return a.hasOwnProperty("description");
@@ -4957,7 +5226,7 @@ var app = (function () {
           $$invalidate('description', description = "");
         }
         window.scrollTo(0, 0);
-      });
+      }));
 
     	return {
     		description,
@@ -4975,6 +5244,259 @@ var app = (function () {
     	constructor(options) {
     		super(options);
     		init(this, options, instance$c, create_fragment$d, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\ErrorView.svelte generated by Svelte v3.4.4 */
+
+    const file$e = "src\\views\\ErrorView.svelte";
+
+    // (42:2) {#if toast}
+    function create_if_block_1$6(ctx) {
+    	var div, t, div_class_value;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t = text(ctx.msg);
+    			div.className = div_class_value = "toast " + ctx.toastClass;
+    			add_location(div, file$e, 42, 4, 983);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.msg) {
+    				set_data(t, ctx.msg);
+    			}
+
+    			if ((changed.toastClass) && div_class_value !== (div_class_value = "toast " + ctx.toastClass)) {
+    				div.className = div_class_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (51:4) {#if cta}
+    function create_if_block$6(ctx) {
+    	var li, a, t_value = ctx.cta.label, t, dispose;
+
+    	return {
+    		c: function create() {
+    			li = element("li");
+    			a = element("a");
+    			t = text(t_value);
+    			a.href = "#";
+    			add_location(a, file$e, 52, 8, 1199);
+    			add_location(li, file$e, 51, 6, 1186);
+    			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.cta.action)));
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, li, anchor);
+    			append(li, a);
+    			append(a, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.cta) && t_value !== (t_value = ctx.cta.label)) {
+    				set_data(t, t_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(li);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$e(ctx) {
+    	var div, h1, t1, t2, h4, t4, pre, code, t5, t6, p, t8, ul, t9, li0, a0, t11, li1, a1, t13;
+
+    	var if_block0 = (ctx.toast) && create_if_block_1$6(ctx);
+
+    	var if_block1 = (ctx.cta) && create_if_block$6(ctx);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			h1 = element("h1");
+    			h1.textContent = "😿 An Error Has Occurred, sorry 😭";
+    			t1 = space();
+    			if (if_block0) if_block0.c();
+    			t2 = space();
+    			h4 = element("h4");
+    			h4.textContent = "This is what we know about it";
+    			t4 = space();
+    			pre = element("pre");
+    			code = element("code");
+    			t5 = text(ctx.error);
+    			t6 = space();
+    			p = element("p");
+    			p.textContent = "You might want to:";
+    			t8 = space();
+    			ul = element("ul");
+    			if (if_block1) if_block1.c();
+    			t9 = space();
+    			li0 = element("li");
+    			a0 = element("a");
+    			a0.textContent = "Open our troubleshooting documentation.";
+    			t11 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			a1.textContent = "Add an issue";
+    			t13 = text("\n      to the Patchfox repository.");
+    			add_location(h1, file$e, 40, 2, 921);
+    			add_location(h4, file$e, 44, 2, 1037);
+    			add_location(code, file$e, 46, 4, 1101);
+    			pre.className = "code";
+    			add_location(pre, file$e, 45, 2, 1078);
+    			add_location(p, file$e, 48, 2, 1133);
+    			a0.href = "/docs/index.html#/troubleshooting/";
+    			a0.target = "_blank";
+    			add_location(a0, file$e, 58, 6, 1338);
+    			add_location(li0, file$e, 57, 4, 1327);
+    			a1.href = "https://github.com/soapdog/patchfox/issues";
+    			a1.target = "_blank";
+    			add_location(a1, file$e, 63, 6, 1484);
+    			add_location(li1, file$e, 62, 4, 1473);
+    			add_location(ul, file$e, 49, 2, 1161);
+    			div.className = "container";
+    			add_location(div, file$e, 39, 0, 895);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, h1);
+    			append(div, t1);
+    			if (if_block0) if_block0.m(div, null);
+    			append(div, t2);
+    			append(div, h4);
+    			append(div, t4);
+    			append(div, pre);
+    			append(pre, code);
+    			append(code, t5);
+    			append(div, t6);
+    			append(div, p);
+    			append(div, t8);
+    			append(div, ul);
+    			if (if_block1) if_block1.m(ul, null);
+    			append(ul, t9);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(ul, t11);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(li1, t13);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.toast) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1$6(ctx);
+    					if_block0.c();
+    					if_block0.m(div, t2);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.cta) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block$6(ctx);
+    					if_block1.c();
+    					if_block1.m(ul, t9);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    		}
+    	};
+    }
+
+    function instance$d($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	let error = $routeParams.error;
+      let toastClass = "";
+      let toast = false;
+      let msg;
+      let cta = false;
+
+      const tryReconnect = () => {
+        $$invalidate('toast', toast = true);
+        $$invalidate('toastClass', toastClass = "toast-warning");
+        $$invalidate('msg', msg = "Attempting to reconnect to sbot...");
+        reconnect()
+          .then(() => {
+            $$invalidate('toastClass', toastClass = "toast-success");
+            $$invalidate('toast', toast = true);
+            $$invalidate('msg', msg =
+              "Connection to sbot reestablished. Try going to your public feed.");
+          })
+          .catch(n => {
+            $$invalidate('toastClass', toastClass = "toast-error");
+            $$invalidate('toast', toast = true);
+            $$invalidate('msg', msg = "Couldn't reconnect. Try reloading the page.");
+          });
+      };
+
+      let errorMapping = {
+        "Error: stream is closed": {
+          label: "Want to try to reconnect?",
+          action: tryReconnect
+        }
+      };
+
+      if (errorMapping.hasOwnProperty(error)) {
+        $$invalidate('cta', cta = errorMapping[error]);
+      }
+
+    	return { error, toastClass, toast, msg, cta };
+    }
+
+    class ErrorView extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$d, create_fragment$e, safe_not_equal, []);
     	}
     }
 
@@ -5005,6 +5527,7 @@ var app = (function () {
       "/public": Public,
       "/compose": Compose,
       "/profile": Profile,
+      "/error": ErrorView,
       "*": Default
     };
 
@@ -5023,11 +5546,85 @@ var app = (function () {
       }
     });
 
+
+    /// connection stuff
+
+    const configurationIsOK = savedData => {
+      return (
+        savedData.hasOwnProperty("keys") ||
+        savedData.hasOwnProperty("keys") ||
+        savedData.hasOwnProperty("keys")
+      );
+    };
+
+    const connectAndLaunch = savedData => {
+      window.ssb = new DriverHermiebox();
+
+      ssb
+        .connect(savedData.keys)
+        .then(data => {
+          console.log("connected");
+          connected.set(true);
+        })
+        .catch(err => {
+          console.error("can't connect", err);
+          cantConnect();
+        });
+    };
+
+    const configurationPresent = savedData => {
+      if (!configurationIsOK(savedData)) {
+        configurationMissing();
+      } else {
+        connectAndLaunch(savedData);
+      }
+    };
+
+    const configurationMissing = () => {
+      console.log("config missing");
+      window.location = "/docs/index.html#/troubleshooting/no-configuration";
+    };
+
+    const cantConnect = () => {
+      console.log("config missing");
+      window.location = "/docs/index.html#/troubleshooting/no-connection";
+    };
+
+    const connect = () => {
+      browser.storage.local
+        .get()
+        .then(configurationPresent, configurationMissing);
+    };
+
+    const reconnect = () => {
+      return new Promise((resolve, reject) => {
+        const tryConnect = (savedData) => {
+          window.ssb = new DriverHermiebox();
+
+          ssb
+            .connect(savedData.keys)
+            .then(data => {
+              console.log("connected");
+              connected.set(true);
+              resolve();
+            })
+            .catch(err => {
+              console.error("can't reconnect", err);
+              reject(err);
+            });
+        };
+
+        browser.storage.local
+          .get()
+          .then(tryConnect, reject);
+      })
+    };
+
     /* src\Navigation.svelte generated by Svelte v3.4.4 */
 
-    const file$e = "src\\Navigation.svelte";
+    const file$f = "src\\Navigation.svelte";
 
-    function create_fragment$e(ctx) {
+    function create_fragment$f(ctx) {
     	var header, section0, a0, i0, t0, a1, figure0, img0, t1, i1, i1_class_value, t2, a2, t4, a3, t6, a4, t8, a5, t10, section1, a6, figure1, img1, t11, i2, i2_class_value, t12, div0, a7, t13, i3, t14, ul, li0, a8, t16, li1, a9, t18, li2, a10, t20, li3, a11, t22, li4, a12, t24, div1, dispose;
 
     	return {
@@ -5090,85 +5687,85 @@ var app = (function () {
     			t24 = space();
     			div1 = element("div");
     			i0.className = "icon icon-minus text-black";
-    			add_location(i0, file$e, 59, 6, 1302);
+    			add_location(i0, file$f, 59, 6, 1302);
     			a0.href = "#/sidebar";
     			a0.className = "btn btn-link";
-    			add_location(a0, file$e, 58, 4, 1231);
+    			add_location(a0, file$f, 58, 4, 1231);
     			img0.src = ctx.avatar;
     			img0.alt = "L";
-    			add_location(img0, file$e, 63, 8, 1472);
+    			add_location(img0, file$f, 63, 8, 1472);
     			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-bx117p";
-    			add_location(i1, file$e, 64, 8, 1509);
+    			add_location(i1, file$f, 64, 8, 1509);
     			figure0.className = "avatar avatar-lg";
-    			add_location(figure0, file$e, 62, 6, 1430);
+    			add_location(figure0, file$f, 62, 6, 1430);
     			a1.href = "#";
     			a1.className = "navbar-brand mr-2 p-1";
-    			add_location(a1, file$e, 61, 4, 1356);
+    			add_location(a1, file$f, 61, 4, 1356);
     			a2.href = "#/compose";
     			a2.className = "btn btn-link";
-    			add_location(a2, file$e, 67, 4, 1604);
+    			add_location(a2, file$f, 67, 4, 1604);
     			a3.href = "#/public";
     			a3.className = "btn btn-link";
-    			add_location(a3, file$e, 73, 4, 1739);
+    			add_location(a3, file$f, 73, 4, 1739);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$e, 79, 4, 1875);
+    			add_location(a4, file$f, 79, 4, 1875);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$e, 80, 4, 1956);
+    			add_location(a5, file$f, 80, 4, 1956);
     			section0.className = "navbar-section hide-sm";
-    			add_location(section0, file$e, 57, 2, 1186);
+    			add_location(section0, file$f, 57, 2, 1186);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$e, 85, 8, 2170);
+    			add_location(img1, file$f, 85, 8, 2170);
     			i2.className = i2_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-bx117p";
-    			add_location(i2, file$e, 86, 8, 2207);
+    			add_location(i2, file$f, 86, 8, 2207);
     			figure1.className = "avatar";
-    			add_location(figure1, file$e, 84, 6, 2138);
+    			add_location(figure1, file$f, 84, 6, 2138);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$e, 83, 4, 2087);
+    			add_location(a6, file$f, 83, 4, 2087);
     			i3.className = "icon icon-caret";
-    			add_location(i3, file$e, 96, 8, 2510);
+    			add_location(i3, file$f, 96, 8, 2510);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$e, 90, 6, 2343);
+    			add_location(a7, file$f, 90, 6, 2343);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$e, 101, 10, 2646);
+    			add_location(a8, file$f, 101, 10, 2646);
     			li0.className = "menu-item";
-    			add_location(li0, file$e, 100, 8, 2613);
+    			add_location(li0, file$f, 100, 8, 2613);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$e, 104, 10, 2750);
+    			add_location(a9, file$f, 104, 10, 2750);
     			li1.className = "menu-item";
-    			add_location(li1, file$e, 103, 8, 2717);
+    			add_location(li1, file$f, 103, 8, 2717);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$e, 107, 10, 2856);
+    			add_location(a10, file$f, 107, 10, 2856);
     			li2.className = "menu-item";
-    			add_location(li2, file$e, 106, 8, 2823);
+    			add_location(li2, file$f, 106, 8, 2823);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$e, 112, 10, 3012);
+    			add_location(a11, file$f, 112, 10, 3012);
     			li3.className = "menu-item";
-    			add_location(li3, file$e, 111, 8, 2979);
+    			add_location(li3, file$f, 111, 8, 2979);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$e, 115, 10, 3124);
+    			add_location(a12, file$f, 115, 10, 3124);
     			li4.className = "menu-item";
-    			add_location(li4, file$e, 114, 8, 3091);
+    			add_location(li4, file$f, 114, 8, 3091);
     			ul.className = "menu";
-    			add_location(ul, file$e, 99, 6, 2587);
+    			add_location(ul, file$f, 99, 6, 2587);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$e, 89, 4, 2302);
+    			add_location(div0, file$f, 89, 4, 2302);
     			section1.className = "navbar-section show-sm bg-gray above svelte-bx117p";
-    			add_location(section1, file$e, 82, 2, 2028);
+    			add_location(section1, file$f, 82, 2, 2028);
     			div1.className = "blocker show-sm svelte-bx117p";
-    			add_location(div1, file$e, 122, 2, 3283);
+    			add_location(div1, file$f, 122, 2, 3283);
     			header.className = "navbar";
-    			add_location(header, file$e, 56, 0, 1160);
+    			add_location(header, file$f, 56, 0, 1160);
 
     			dispose = [
     				listen(a0, "click", ctx.openSidebar),
@@ -5272,7 +5869,7 @@ var app = (function () {
     	return "";
     }
 
-    function instance$d($$self, $$props, $$invalidate) {
+    function instance$e($$self, $$props, $$invalidate) {
     	let $connected;
 
     	validate_store(connected, 'connected');
@@ -5333,15 +5930,15 @@ var app = (function () {
     class Navigation extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$d, create_fragment$e, safe_not_equal, []);
+    		init(this, options, instance$e, create_fragment$f, safe_not_equal, []);
     	}
     }
 
     /* src\Patchfox.svelte generated by Svelte v3.4.4 */
 
-    const file$f = "src\\Patchfox.svelte";
+    const file$g = "src\\Patchfox.svelte";
 
-    function create_fragment$f(ctx) {
+    function create_fragment$g(ctx) {
     	var div, t, current, dispose;
 
     	var navigation = new Navigation({ $$inline: true });
@@ -5363,7 +5960,7 @@ var app = (function () {
     			t = space();
     			if (switch_instance) switch_instance.$$.fragment.c();
     			div.className = "container bg-gray";
-    			add_location(div, file$f, 76, 0, 1849);
+    			add_location(div, file$g, 33, 0, 774);
 
     			dispose = [
     				listen(window, "popstate", ctx.popState),
@@ -5440,7 +6037,7 @@ var app = (function () {
     	};
     }
 
-    function instance$e($$self, $$props, $$invalidate) {
+    function instance$f($$self, $$props, $$invalidate) {
     	let $currentView;
 
     	validate_store(currentView, 'currentView');
@@ -5448,54 +6045,11 @@ var app = (function () {
 
     	
 
-      const configurationIsOK = savedData => {
-        return (
-          savedData.hasOwnProperty("keys") ||
-          savedData.hasOwnProperty("keys") ||
-          savedData.hasOwnProperty("keys")
-        );
-      };
-
-      const connectAndLaunch = savedData => {
-        window.ssb = new DriverHermiebox();
-
-        ssb
-          .connect(savedData.keys)
-          .then(data => {
-            console.log("connected");
-            connected.set(true);
-          })
-          .catch(err => {
-            console.error("can't connect", err);
-            cantConnect();
-          });
-      };
-
-      const configurationPresent = savedData => {
-        if (!configurationIsOK(savedData)) {
-          configurationMissing();
-        } else {
-          connectAndLaunch(savedData);
-        }
-      };
-
-      const configurationMissing = () => {
-        console.log("config missing");
-        window.location = "/docs/index.html#/troubleshooting/no-configuration";
-      };
-
-      const cantConnect = () => {
-        console.log("config missing");
-        window.location = "/docs/index.html#/troubleshooting/no-connection";
-      };
+      window.ssb = false;
 
       onMount(() => {
-        browser.storage.local
-          .get()
-          .then(configurationPresent, configurationMissing);
+        connect();
       });
-
-      window.ssb = false;
 
       const popState = event => {
         if (event.state !== null) {
@@ -5507,6 +6061,7 @@ var app = (function () {
 
       const handleUncaughtException = event => {
         console.error("Uncaught exception", event);
+        navigate("/error", {error: event.message});
       };
 
       const hashChange = event => {
@@ -5524,7 +6079,7 @@ var app = (function () {
     class Patchfox extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$e, create_fragment$f, safe_not_equal, []);
+    		init(this, options, instance$f, create_fragment$g, safe_not_equal, []);
     	}
     }
 
