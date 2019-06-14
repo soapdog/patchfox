@@ -9,4 +9,7 @@
   * [contact](message_types/contact.md)
   * [vote](message_types/vote.md)
   * [channel](message_types/channel.md)
+  * [blog](message_types/blog.md)
+  * [about](message_types/about.md)
+
 
