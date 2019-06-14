@@ -1,6 +1,4 @@
 <script>
-  // ssb:%x4+H95OSsvVgsPl6kASM1hDD0KPM8Y3eHQ9lj2oKNb4=.sha256
-
   import { navigate } from "../utils.js";
 
   export let msg;

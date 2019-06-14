@@ -2594,7 +2594,7 @@ var app = (function () {
 
     const file$8 = "src\\messageTypes\\BlogMsg.svelte";
 
-    // (66:0) {#if thumbnail}
+    // (64:0) {#if thumbnail}
     function create_if_block_6(ctx) {
     	var div, img, img_src_value;
 
@@ -2605,9 +2605,9 @@ var app = (function () {
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + encodeURIComponent(ctx.thumbnail);
     			img.className = "img-responsive";
     			img.alt = ctx.title;
-    			add_location(img, file$8, 67, 4, 1536);
+    			add_location(img, file$8, 65, 4, 1473);
     			div.className = "card-image";
-    			add_location(div, file$8, 66, 2, 1507);
+    			add_location(div, file$8, 64, 2, 1444);
     		},
 
     		m: function mount(target, anchor) {
@@ -2625,7 +2625,7 @@ var app = (function () {
     	};
     }
 
-    // (75:2) {#if title}
+    // (73:2) {#if title}
     function create_if_block_5(ctx) {
     	var h1, t;
 
@@ -2634,7 +2634,7 @@ var app = (function () {
     			h1 = element("h1");
     			t = text(ctx.title);
     			h1.className = "card-title h5";
-    			add_location(h1, file$8, 75, 4, 1724);
+    			add_location(h1, file$8, 73, 4, 1661);
     		},
 
     		m: function mount(target, anchor) {
@@ -2652,7 +2652,7 @@ var app = (function () {
     	};
     }
 
-    // (79:2) {#if toast}
+    // (77:2) {#if toast}
     function create_if_block_4(ctx) {
     	var div, t0, t1;
 
@@ -2662,7 +2662,7 @@ var app = (function () {
     			t0 = text("Can't load blogpost: ");
     			t1 = text(ctx.toastMsg);
     			div.className = "toast toast-error";
-    			add_location(div, file$8, 79, 4, 1790);
+    			add_location(div, file$8, 77, 4, 1727);
     		},
 
     		m: function mount(target, anchor) {
@@ -2685,7 +2685,7 @@ var app = (function () {
     	};
     }
 
-    // (84:2) {:else}
+    // (82:2) {:else}
     function create_else_block_1$1(ctx) {
     	var raw_before, raw_after;
 
@@ -2713,7 +2713,7 @@ var app = (function () {
     	};
     }
 
-    // (82:2) {#if showBlogpost}
+    // (80:2) {#if showBlogpost}
     function create_if_block_3(ctx) {
     	var raw_before, raw_after;
 
@@ -2746,7 +2746,7 @@ var app = (function () {
     	};
     }
 
-    // (96:6) {#if msg.value.content.root}
+    // (94:6) {#if msg.value.content.root}
     function create_if_block_2$1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -2756,8 +2756,8 @@ var app = (function () {
     			a = element("a");
     			t = text("(root)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
-    			add_location(a, file$8, 97, 10, 2240);
-    			add_location(span, file$8, 96, 8, 2223);
+    			add_location(a, file$8, 95, 10, 2177);
+    			add_location(span, file$8, 94, 8, 2160);
     			dispose = listen(a, "click", ctx.goRoot);
     		},
 
@@ -2783,7 +2783,7 @@ var app = (function () {
     	};
     }
 
-    // (105:6) {#if msg.value.content.branch}
+    // (103:6) {#if msg.value.content.branch}
     function create_if_block_1$2(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -2793,8 +2793,8 @@ var app = (function () {
     			a = element("a");
     			t = text("(in reply to)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
-    			add_location(a, file$8, 106, 10, 2478);
-    			add_location(span, file$8, 105, 8, 2461);
+    			add_location(a, file$8, 104, 10, 2415);
+    			add_location(span, file$8, 103, 8, 2398);
     			dispose = listen(a, "click", ctx.goBranch);
     		},
 
@@ -2820,7 +2820,7 @@ var app = (function () {
     	};
     }
 
-    // (124:6) {:else}
+    // (122:6) {:else}
     function create_else_block$1(ctx) {
     	var button, dispose;
 
@@ -2830,7 +2830,7 @@ var app = (function () {
     			button.textContent = "Close Blogpost";
     			button.className = "btn btn-primary";
     			toggle_class(button, "locating", ctx.loading);
-    			add_location(button, file$8, 124, 8, 2989);
+    			add_location(button, file$8, 122, 8, 2926);
     			dispose = listen(button, "click", ctx.click_handler);
     		},
 
@@ -2854,7 +2854,7 @@ var app = (function () {
     	};
     }
 
-    // (117:6) {#if !showBlogpost}
+    // (115:6) {#if !showBlogpost}
     function create_if_block$2(ctx) {
     	var button, dispose;
 
@@ -2864,7 +2864,7 @@ var app = (function () {
     			button.textContent = "Read Blogpost";
     			button.className = "btn btn-primary";
     			toggle_class(button, "locating", ctx.loading);
-    			add_location(button, file$8, 117, 8, 2810);
+    			add_location(button, file$8, 115, 8, 2747);
     			dispose = listen(button, "click", ctx.displayBlogPost);
     		},
 
@@ -2947,23 +2947,23 @@ var app = (function () {
     			t10 = space();
     			if_block6.c();
     			div0.className = "card-body";
-    			add_location(div0, file$8, 73, 0, 1682);
+    			add_location(div0, file$8, 71, 0, 1619);
     			attr(input, "type", "checkbox");
-    			add_location(input, file$8, 91, 8, 2094);
+    			add_location(input, file$8, 89, 8, 2031);
     			i.className = "form-icon";
-    			add_location(i, file$8, 92, 8, 2128);
+    			add_location(i, file$8, 90, 8, 2065);
     			label.className = "form-switch d-inline";
-    			add_location(label, file$8, 90, 6, 2049);
+    			add_location(label, file$8, 88, 6, 1986);
     			div1.className = "column col-6";
-    			add_location(div1, file$8, 89, 4, 2016);
+    			add_location(div1, file$8, 87, 4, 1953);
     			button.className = "btn";
-    			add_location(button, file$8, 115, 6, 2724);
+    			add_location(button, file$8, 113, 6, 2661);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file$8, 114, 4, 2680);
+    			add_location(div2, file$8, 112, 4, 2617);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file$8, 88, 2, 1978);
+    			add_location(div3, file$8, 86, 2, 1915);
     			div4.className = "card-footer";
-    			add_location(div4, file$8, 87, 0, 1950);
+    			add_location(div4, file$8, 85, 0, 1887);
     			dispose = listen(button, "click", ctx.reply);
     		},
 
