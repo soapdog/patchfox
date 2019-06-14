@@ -7,6 +7,7 @@
   import ChannelMsg from "./ChannelMsg.svelte";
   import AboutMsg from "./AboutMsg.svelte";
   import PubMsg from "./PubMsg.svelte";
+  import BlogMsg from "./BlogMsg.svelte";
   import AvatarChip from "../parts/AvatarChip.svelte";
   import timestamp from "../parts/timestamp.js";
   import { navigate } from "../utils.js";
@@ -27,6 +28,7 @@
     channel: ChannelMsg,
     about: AboutMsg,
     pub: PubMsg,
+    blog: BlogMsg
   };
 
   let selectedRenderer;

@@ -1,5 +1,5 @@
 <script>
-  import { connected, navigate } from "./utils.js";
+  import { connected, navigate, routeLocation } from "./utils.js";
 
   let avatar = "/images/icon.png";
 
@@ -52,6 +52,13 @@ const openMyProfile = ev => {
     padding: 5px;
     position: fixed;
   }
+
+  .current {
+    border: none;
+    background: none;
+    border-bottom: solid 2px rgb(2, 146, 50);
+    outline: none;
+  }
 </style>
 
 <header class="navbar">
@@ -68,12 +75,14 @@ const openMyProfile = ev => {
     <a
       href="#/compose"
       class="btn btn-link"
+      class:current={$routeLocation == "/compose"}
       on:click|stopPropagation|preventDefault={goCompose}>
       New
     </a>
     <a
       href="#/public"
       class="btn btn-link"
+      class:current={$routeLocation == "/public"}
       on:click|stopPropagation|preventDefault={goPublic}>
       Public
     </a>

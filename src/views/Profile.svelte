@@ -12,6 +12,11 @@
 
   // todo: move back into using stores.
   feed = $routeParams.feed;
+
+  if (!feed) {
+    feed = ssb.feed
+  }
+  
   console.log("fetching", feed);
   let p1;
   let p2;
@@ -30,10 +35,7 @@
     }
     try {
       description = lastAbout.value.content.description;
-      console.log("d", description);
     } catch (n) {
-      console.log("err", n);
-      console.log("profile", data);
       description = "";
     }
     window.scrollTo(0, 0);

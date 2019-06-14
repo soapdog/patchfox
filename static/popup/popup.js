@@ -13,6 +13,13 @@ function goCompose() {
   window.close();
 }
 
+function goProfile() {
+  browser.tabs.create({
+    url: "/index.html#/profile"
+  });
+  window.close();
+}
+
 
 function goSettings() {
   browser.runtime.openOptionsPage();
@@ -38,6 +45,12 @@ document.getElementById("go-to-public").addEventListener("click", (ev) => {
   ev.stopPropagation();
   ev.preventDefault();
   goPublic();
+});
+
+document.getElementById("go-to-profile").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goProfile();
 });
 
 document.getElementById("compose").addEventListener("click", (ev) => {

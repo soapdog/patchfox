@@ -80043,7 +80043,7 @@ const api = {
         })
     },
 
-    aboutMessages: function(sourceId, destId) {
+    aboutMessages: function (sourceId, destId) {
         return new Promise((resolve, reject) => {
             var pull = hermiebox.modules.pullStream
 
@@ -80097,6 +80097,30 @@ const api = {
 
         })
     },
+
+    getBlob: function (blobid) {
+        return new Promise((resolve, reject) => {
+            let sbot = hermiebox.sbot
+            sbot.blobs.want(blobid, function (err) {
+                if (err) {
+                    reject(err)
+                } else {
+                    var pull = hermiebox.modules.pullStream
+
+                    pull(
+                        sbot.blobs.get(blobid),
+                        pull.collect(function (err, values) {
+                            if (err) {
+                                reject(err)
+                            } else {
+                                resolve(values)
+                            }
+                        })
+                    )
+                }
+            })
+        })
+    }
 
 }
 

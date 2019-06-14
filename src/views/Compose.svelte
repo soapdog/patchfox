@@ -59,6 +59,14 @@
   const preview = ev => {
     showPreview = true;
   };
+
+  const saveToURL = ev => {
+    window.location.search = `?root=${encodeURIComponent(
+      root
+    )}&branch=${encodeURIComponent(branch)}&content=${encodeURIComponent(
+      content
+    )}&channel=${encodeURIComponent(channel)}`;
+  };
 </script>
 
 <div class="container">
@@ -114,26 +122,26 @@
         <div class="column col-md-12">
           <h2>Post preview</h2>
           {#if channel || root || branch}
-          <blockquote>
-            {#if channel}
-              <p>
-                <b>Channel:</b>
-                 {channel.startsWith("#") ? channel.slice(1) : channel}
-              </p>
-            {/if}
-            {#if root}
-              <p>
-                <b>Root:</b>
-                 {root}
-              </p>
-            {/if}
-            {#if branch}
-              <p>
-                <b>branch:</b>
-                 {branch}
-              </p>
-            {/if}
-          </blockquote>
+            <blockquote>
+              {#if channel}
+                <p>
+                  <b>Channel:</b>
+                   {channel.startsWith('#') ? channel.slice(1) : channel}
+                </p>
+              {/if}
+              {#if root}
+                <p>
+                  <b>Root:</b>
+                   {root}
+                </p>
+              {/if}
+              {#if branch}
+                <p>
+                  <b>branch:</b>
+                   {branch}
+                </p>
+              {/if}
+            </blockquote>
           {/if}
           {@html ssb.markdown(content)}
 

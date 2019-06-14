@@ -190,4 +190,8 @@ export class DriverHermiebox {
       }
     })
   }
+
+  getBlob(blobid) {
+    return hermiebox.api.getBlob(blobid)
+  }
 }
