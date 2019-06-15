@@ -4927,7 +4927,7 @@ var app = (function () {
 
     const file$d = "src\\views\\Compose.svelte";
 
-    // (164:6) {#if msg}
+    // (176:6) {#if msg}
     function create_if_block_7(ctx) {
     	var if_block_anchor;
 
@@ -4973,7 +4973,7 @@ var app = (function () {
     	};
     }
 
-    // (167:8) {:else}
+    // (179:8) {:else}
     function create_else_block_1$3(ctx) {
     	var div, t0, a, t1, a_href_value;
 
@@ -4985,9 +4985,9 @@ var app = (function () {
     			t1 = text("Check it out?");
     			a.target = "_blank";
     			a.href = a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
-    			add_location(a, file$d, 169, 12, 4324);
+    			add_location(a, file$d, 181, 12, 4535);
     			div.className = "toast toast-success";
-    			add_location(div, file$d, 167, 10, 4221);
+    			add_location(div, file$d, 179, 10, 4432);
     		},
 
     		m: function mount(target, anchor) {
@@ -5011,7 +5011,7 @@ var app = (function () {
     	};
     }
 
-    // (165:8) {#if error}
+    // (177:8) {#if error}
     function create_if_block_8(ctx) {
     	var div, t;
 
@@ -5020,7 +5020,7 @@ var app = (function () {
     			div = element("div");
     			t = text(ctx.msg);
     			div.className = "toast toast-error";
-    			add_location(div, file$d, 165, 10, 4152);
+    			add_location(div, file$d, 177, 10, 4363);
     		},
 
     		m: function mount(target, anchor) {
@@ -5042,7 +5042,7 @@ var app = (function () {
     	};
     }
 
-    // (221:6) {:else}
+    // (235:6) {:else}
     function create_else_block$5(ctx) {
     	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
 
@@ -5072,24 +5072,24 @@ var app = (function () {
     			t8 = space();
     			button1 = element("button");
     			button1.textContent = "Post";
-    			add_location(h2, file$d, 222, 10, 6024);
+    			add_location(h2, file$d, 236, 10, 6384);
     			div0.className = "divider";
-    			add_location(div0, file$d, 247, 10, 6700);
+    			add_location(div0, file$d, 261, 10, 7060);
     			span.className = "label label-warning";
-    			add_location(span, file$d, 250, 14, 6823);
+    			add_location(span, file$d, 264, 14, 7183);
     			div1.className = "column col-md-12 col-lg-10";
-    			add_location(div1, file$d, 249, 12, 6768);
+    			add_location(div1, file$d, 263, 12, 7128);
     			button0.className = "btn";
-    			add_location(button0, file$d, 255, 14, 7040);
+    			add_location(button0, file$d, 269, 14, 7400);
     			button1.className = "btn btn-primary";
     			toggle_class(button1, "loading", ctx.posting);
-    			add_location(button1, file$d, 258, 14, 7162);
+    			add_location(button1, file$d, 272, 14, 7522);
     			div2.className = "column col-md-12 col-lg-2";
-    			add_location(div2, file$d, 254, 12, 6986);
+    			add_location(div2, file$d, 268, 12, 7346);
     			div3.className = "columns";
-    			add_location(div3, file$d, 248, 10, 6734);
+    			add_location(div3, file$d, 262, 10, 7094);
     			div4.className = "column col-md-12";
-    			add_location(div4, file$d, 221, 8, 5983);
+    			add_location(div4, file$d, 235, 8, 6343);
 
     			dispose = [
     				listen(button0, "click", ctx.click_handler),
@@ -5157,9 +5157,9 @@ var app = (function () {
     	};
     }
 
-    // (178:6) {#if !showPreview}
+    // (190:6) {#if !showPreview}
     function create_if_block$6(ctx) {
-    	var div, label0, t1, input, t2, t3, t4, label1, t6, textarea, t7, br, t8, button, div_intro, div_outro, current, dispose;
+    	var div, label0, t1, input0, t2, t3, t4, label1, t6, textarea, t7, br, t8, input1, t9, button0, t11, button1, div_intro, div_outro, current, dispose;
 
     	var if_block0 = (ctx.branch) && create_if_block_2$3(ctx);
 
@@ -5171,7 +5171,7 @@ var app = (function () {
     			label0 = element("label");
     			label0.textContent = "Channel";
     			t1 = space();
-    			input = element("input");
+    			input0 = element("input");
     			t2 = space();
     			if (if_block0) if_block0.c();
     			t3 = space();
@@ -5184,37 +5184,50 @@ var app = (function () {
     			t7 = space();
     			br = element("br");
     			t8 = space();
-    			button = element("button");
-    			button.textContent = "Preview";
+    			input1 = element("input");
+    			t9 = space();
+    			button0 = element("button");
+    			button0.textContent = "Attach File";
+    			t11 = space();
+    			button1 = element("button");
+    			button1.textContent = "Preview";
     			label0.className = "form-label";
     			label0.htmlFor = "channel";
-    			add_location(label0, file$d, 179, 10, 4600);
-    			input.className = "form-input";
-    			attr(input, "type", "text");
-    			input.id = "channel";
-    			input.placeholder = "channel";
-    			add_location(input, file$d, 180, 10, 4666);
+    			add_location(label0, file$d, 191, 10, 4811);
+    			input0.className = "form-input";
+    			attr(input0, "type", "text");
+    			input0.id = "channel";
+    			input0.placeholder = "channel";
+    			add_location(input0, file$d, 192, 10, 4877);
     			label1.className = "form-label";
     			label1.htmlFor = "content";
-    			add_location(label1, file$d, 205, 10, 5405);
-    			textarea.className = "form-input svelte-13kwbx7";
+    			add_location(label1, file$d, 217, 10, 5616);
+    			textarea.className = "form-input svelte-1kmc4x";
     			textarea.id = "content";
     			textarea.placeholder = "Type in your post";
     			textarea.rows = "10";
     			toggle_class(textarea, "file-on-top", ctx.fileOnTop);
-    			add_location(textarea, file$d, 206, 10, 5471);
-    			add_location(br, file$d, 215, 10, 5825);
-    			button.className = "btn btn-primary float-right";
-    			add_location(button, file$d, 216, 10, 5842);
+    			add_location(textarea, file$d, 218, 10, 5682);
+    			add_location(br, file$d, 227, 10, 6036);
+    			attr(input1, "type", "file");
+    			input1.id = "fileInput";
+    			input1.className = "svelte-1kmc4x";
+    			add_location(input1, file$d, 228, 10, 6053);
+    			button0.className = "btn";
+    			add_location(button0, file$d, 229, 10, 6122);
+    			button1.className = "btn btn-primary float-right";
+    			add_location(button1, file$d, 230, 10, 6202);
     			div.className = "form-group";
-    			add_location(div, file$d, 178, 8, 4546);
+    			add_location(div, file$d, 190, 8, 4757);
 
     			dispose = [
-    				listen(input, "input", ctx.input_input_handler),
+    				listen(input0, "input", ctx.input0_input_handler),
     				listen(textarea, "input", ctx.textarea_input_handler),
     				listen(textarea, "dragover", stop_propagation(prevent_default(ctx.dragOver))),
     				listen(textarea, "dragleave", stop_propagation(prevent_default(ctx.dragLeave))),
-    				listen(button, "click", ctx.preview)
+    				listen(input1, "input", ctx.attachFile),
+    				listen(button0, "click", ctx.attachFileTrigger),
+    				listen(button1, "click", ctx.preview)
     			];
     		},
 
@@ -5222,9 +5235,9 @@ var app = (function () {
     			insert(target, div, anchor);
     			append(div, label0);
     			append(div, t1);
-    			append(div, input);
+    			append(div, input0);
 
-    			input.value = ctx.channel;
+    			input0.value = ctx.channel;
 
     			append(div, t2);
     			if (if_block0) if_block0.m(div, null);
@@ -5240,12 +5253,16 @@ var app = (function () {
     			append(div, t7);
     			append(div, br);
     			append(div, t8);
-    			append(div, button);
+    			append(div, input1);
+    			append(div, t9);
+    			append(div, button0);
+    			append(div, t11);
+    			append(div, button1);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
-    			if (changed.channel && (input.value !== ctx.channel)) input.value = ctx.channel;
+    			if (changed.channel && (input0.value !== ctx.channel)) input0.value = ctx.channel;
 
     			if (ctx.branch) {
     				if (if_block0) {
@@ -5329,7 +5346,7 @@ var app = (function () {
     	};
     }
 
-    // (224:10) {#if channel || root || branch}
+    // (238:10) {#if channel || root || branch}
     function create_if_block_3$1(ctx) {
     	var blockquote, t0, t1;
 
@@ -5347,7 +5364,7 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			t1 = space();
     			if (if_block2) if_block2.c();
-    			add_location(blockquote, file$d, 224, 12, 6100);
+    			add_location(blockquote, file$d, 238, 12, 6460);
     		},
 
     		m: function mount(target, anchor) {
@@ -5412,7 +5429,7 @@ var app = (function () {
     	};
     }
 
-    // (226:14) {#if channel}
+    // (240:14) {#if channel}
     function create_if_block_6$1(ctx) {
     	var p, b, t1, t2_value = ctx.channel.startsWith('#') ? ctx.channel.slice(1) : ctx.channel, t2;
 
@@ -5423,8 +5440,8 @@ var app = (function () {
     			b.textContent = "Channel:";
     			t1 = space();
     			t2 = text(t2_value);
-    			add_location(b, file$d, 227, 18, 6179);
-    			add_location(p, file$d, 226, 16, 6157);
+    			add_location(b, file$d, 241, 18, 6539);
+    			add_location(p, file$d, 240, 16, 6517);
     		},
 
     		m: function mount(target, anchor) {
@@ -5448,7 +5465,7 @@ var app = (function () {
     	};
     }
 
-    // (232:14) {#if root}
+    // (246:14) {#if root}
     function create_if_block_5$1(ctx) {
     	var p, b, t1, t2;
 
@@ -5459,8 +5476,8 @@ var app = (function () {
     			b.textContent = "Root:";
     			t1 = space();
     			t2 = text(ctx.root);
-    			add_location(b, file$d, 233, 18, 6373);
-    			add_location(p, file$d, 232, 16, 6351);
+    			add_location(b, file$d, 247, 18, 6733);
+    			add_location(p, file$d, 246, 16, 6711);
     		},
 
     		m: function mount(target, anchor) {
@@ -5480,7 +5497,7 @@ var app = (function () {
     	};
     }
 
-    // (238:14) {#if branch}
+    // (252:14) {#if branch}
     function create_if_block_4$1(ctx) {
     	var p, b, t1, t2;
 
@@ -5491,8 +5508,8 @@ var app = (function () {
     			b.textContent = "In Reply To:";
     			t1 = space();
     			t2 = text(ctx.branch);
-    			add_location(b, file$d, 239, 18, 6518);
-    			add_location(p, file$d, 238, 16, 6496);
+    			add_location(b, file$d, 253, 18, 6878);
+    			add_location(p, file$d, 252, 16, 6856);
     		},
 
     		m: function mount(target, anchor) {
@@ -5516,7 +5533,7 @@ var app = (function () {
     	};
     }
 
-    // (188:10) {#if branch}
+    // (200:10) {#if branch}
     function create_if_block_2$3(ctx) {
     	var label, t_1, input, dispose;
 
@@ -5528,13 +5545,13 @@ var app = (function () {
     			input = element("input");
     			label.className = "form-label";
     			label.htmlFor = "reply-to";
-    			add_location(label, file$d, 188, 12, 4859);
+    			add_location(label, file$d, 200, 12, 5070);
     			input.className = "form-input";
     			attr(input, "type", "text");
     			input.id = "reply-to";
     			input.placeholder = "in reply to";
-    			add_location(input, file$d, 189, 12, 4932);
-    			dispose = listen(input, "input", ctx.input_input_handler_1);
+    			add_location(input, file$d, 201, 12, 5143);
+    			dispose = listen(input, "input", ctx.input_input_handler);
     		},
 
     		m: function mount(target, anchor) {
@@ -5561,7 +5578,7 @@ var app = (function () {
     	};
     }
 
-    // (198:10) {#if replyfeed}
+    // (210:10) {#if replyfeed}
     function create_if_block_1$5(ctx) {
     	var div, span, t, current;
 
@@ -5577,9 +5594,9 @@ var app = (function () {
     			span = element("span");
     			t = text("Click the avatar to add a link to the message:\n                ");
     			avatarchip.$$.fragment.c();
-    			add_location(span, file$d, 199, 14, 5191);
+    			add_location(span, file$d, 211, 14, 5402);
     			div.className = "mt-2";
-    			add_location(div, file$d, 198, 12, 5158);
+    			add_location(div, file$d, 210, 12, 5369);
     		},
 
     		m: function mount(target, anchor) {
@@ -5647,11 +5664,11 @@ var app = (function () {
     			t = space();
     			if_block1.c();
     			div0.className = "column";
-    			add_location(div0, file$d, 162, 4, 4085);
+    			add_location(div0, file$d, 174, 4, 4296);
     			div1.className = "columns";
-    			add_location(div1, file$d, 161, 2, 4059);
+    			add_location(div1, file$d, 173, 2, 4270);
     			div2.className = "container";
-    			add_location(div2, file$d, 160, 0, 4033);
+    			add_location(div2, file$d, 172, 0, 4244);
     		},
 
     		l: function claim(nodes) {
@@ -5746,62 +5763,62 @@ var app = (function () {
       let content = $routeParams.content || "";
       let replyfeed = $routeParams.replyfeed || false;
       let fileOnTop = false;
+      let pull = hermiebox.modules.pullStream;
+      let fileReader = hermiebox.modules.pullFileReader;
+      let sbot = hermiebox.sbot;
 
       onMount(() => {
-        let pull = hermiebox.modules.pullStream;
-        let fileReader = hermiebox.modules.pullFileReader;
-        let sbot = hermiebox.sbot;
-
         $$invalidate('error', error = false);
         $$invalidate('msg', msg = "");
 
         // this code could be in some better/smarter place.
         // e.dataTransfer.getData('url'); from images in the browser window
 
-        ondrop(document.getElementById("content"), function(files) {
-          
-          $$invalidate('error', error = false);
-          $$invalidate('msg', msg = "");
-
-          if (files.length == 0) {
-            $$invalidate('fileOnTop', fileOnTop = false);
-            console.log("this is not a file");
-            return false
-          }
-
-          var first = files[0];
-          console.log(first);
-
-          if (!first.type.startsWith("image")) {
-            $$invalidate('error', error = true);
-            $$invalidate('msg', msg = `You can only drag & drop image, this file is a ${first.type}`);
-            return false;
-          }
-
-          if (first.size >= 5000000) {
-            $$invalidate('error', error = true);
-            $$invalidate('msg', msg = `File too large: ${Math.floor(
-          first.size / 1048576,
-          2
-        )}mb when max size is 5mb`);
-            return false;
-          }
-
-          pull(
-            fileReader(first),
-            sbot.blobs.add(function(err, hash) {
-              // 'hash' is the hash-id of the blob
-              if (err) {
-                $$invalidate('error', error = true);
-                $$invalidate('msg', msg = "Couldn't attach file: " + err);
-              } else {
-                $$invalidate('content', content += ` ![${first.name}](${hash})`);
-              }
-              $$invalidate('fileOnTop', fileOnTop = false);
-            })
-          );
-        });
+        ondrop(document.getElementById("content"), files => readFileAndAttach(files));
       });
+
+      const readFileAndAttach = files => {
+        $$invalidate('error', error = false);
+        $$invalidate('msg', msg = "");
+
+        if (files.length == 0) {
+          $$invalidate('fileOnTop', fileOnTop = false);
+          console.log("this is not a file");
+          return false;
+        }
+
+        var first = files[0];
+        console.log(first);
+
+        if (!first.type.startsWith("image")) {
+          $$invalidate('error', error = true);
+          $$invalidate('msg', msg = `You can only drag & drop image, this file is a ${first.type}`);
+          return false;
+        }
+
+        if (first.size >= 5000000) {
+          $$invalidate('error', error = true);
+          $$invalidate('msg', msg = `File too large: ${Math.floor(
+        first.size / 1048576,
+        2
+      )}mb when max size is 5mb`);
+          return false;
+        }
+
+        pull(
+          fileReader(first),
+          sbot.blobs.add(function(err, hash) {
+            // 'hash' is the hash-id of the blob
+            if (err) {
+              $$invalidate('error', error = true);
+              $$invalidate('msg', msg = "Couldn't attach file: " + err);
+            } else {
+              $$invalidate('content', content += ` ![${first.name}](${hash})`);
+            }
+            $$invalidate('fileOnTop', fileOnTop = false);
+          })
+        );
+      };
 
       const post = async ev => {
         ev.stopPropagation();
@@ -5872,12 +5889,21 @@ var app = (function () {
         $$invalidate('fileOnTop', fileOnTop = false);
       };
 
-    	function input_input_handler() {
+      const attachFileTrigger = () => {
+        document.getElementById("fileInput").click();
+      };
+
+      const attachFile = ev => {
+        const files = ev.target.files;
+        readFileAndAttach(files);
+      };
+
+    	function input0_input_handler() {
     		channel = this.value;
     		$$invalidate('channel', channel);
     	}
 
-    	function input_input_handler_1() {
+    	function input_input_handler() {
     		branch = this.value;
     		$$invalidate('branch', branch);
     	}
@@ -5909,10 +5935,12 @@ var app = (function () {
     		avatarClick,
     		dragOver,
     		dragLeave,
+    		attachFileTrigger,
+    		attachFile,
     		ssb,
     		encodeURIComponent,
+    		input0_input_handler,
     		input_input_handler,
-    		input_input_handler_1,
     		textarea_input_handler,
     		click_handler
     	};
@@ -6912,8 +6940,6 @@ var app = (function () {
 
     const navigate = (location, data) => {
       data = data || {};
-      console.log("Navigating to", location);
-      console.dir("Data:", data);
       route.set({ location, data });
       let dataAsQuery = queryString.stringify(data);
       history.pushState({ location, data }, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);
@@ -7358,7 +7384,7 @@ var app = (function () {
     			t = space();
     			if (switch_instance) switch_instance.$$.fragment.c();
     			div.className = "container bg-gray";
-    			add_location(div, file$i, 57, 0, 1242);
+    			add_location(div, file$i, 59, 0, 1303);
 
     			dispose = [
     				listen(window, "popstate", ctx.popState),
@@ -7451,16 +7477,18 @@ var app = (function () {
         connect();
 
         interval = setInterval(() => {
-          hermiebox.sbot.whoami((err, v) => {
-            if (err) {
-              console.error("can't call whoami", err);
-              reconnect().catch(n => {
-                console.error("can't reconnect");
-                clearInterval(interval);
-                navigate("/error", {error: n});
-              });
-            }
-          });
+          if (hermiebox.sbot) {
+            hermiebox.sbot.whoami((err, v) => {
+              if (err) {
+                console.error("can't call whoami", err);
+                reconnect().catch(n => {
+                  console.error("can't reconnect");
+                  clearInterval(interval);
+                  navigate("/error", { error: n });
+                });
+              }
+            });
+          }
         }, 5000);
       });
 

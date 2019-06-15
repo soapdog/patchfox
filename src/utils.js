@@ -24,8 +24,6 @@ export const routeLocation = derived(route, $route => $route.location)
 
 export const navigate = (location, data) => {
   data = data || {}
-  console.log("Navigating to", location)
-  console.dir("Data:", data)
   route.set({ location, data });
   let dataAsQuery = queryString.stringify(data);
   history.pushState({ location, data }, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);

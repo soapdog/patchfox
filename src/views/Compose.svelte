@@ -16,62 +16,62 @@
   let content = $routeParams.content || "";
   let replyfeed = $routeParams.replyfeed || false;
   let fileOnTop = false;
+  let pull = hermiebox.modules.pullStream;
+  let fileReader = hermiebox.modules.pullFileReader;
+  let sbot = hermiebox.sbot;
 
   onMount(() => {
-    let pull = hermiebox.modules.pullStream;
-    let fileReader = hermiebox.modules.pullFileReader;
-    let sbot = hermiebox.sbot;
-
     error = false;
     msg = "";
 
     // this code could be in some better/smarter place.
     // e.dataTransfer.getData('url'); from images in the browser window
 
-    drop(document.getElementById("content"), function(files) {
-      
-      error = false;
-      msg = "";
-
-      if (files.length == 0) {
-        fileOnTop = false;
-        console.log("this is not a file")
-        return false
-      }
-
-      var first = files[0];
-      console.log(first);
-
-      if (!first.type.startsWith("image")) {
-        error = true;
-        msg = `You can only drag & drop image, this file is a ${first.type}`;
-        return false;
-      }
-
-      if (first.size >= 5000000) {
-        error = true;
-        msg = `File too large: ${Math.floor(
-          first.size / 1048576,
-          2
-        )}mb when max size is 5mb`;
-        return false;
-      }
-
-      pull(
-        fileReader(first),
-        sbot.blobs.add(function(err, hash) {
-          // 'hash' is the hash-id of the blob
-          if (err) {
-            error = true;
-            msg = "Couldn't attach file: " + err;
-          } else {
-            content += ` ![${first.name}](${hash})`;
-          }
-          fileOnTop = false;
-        })
-      );
-    });
+    drop(document.getElementById("content"), files => readFileAndAttach(files));
   });
+
+  const readFileAndAttach = files => {
+    error = false;
+    msg = "";
+
+    if (files.length == 0) {
+      fileOnTop = false;
+      console.log("this is not a file");
+      return false;
+    }
+
+    var first = files[0];
+    console.log(first);
+
+    if (!first.type.startsWith("image")) {
+      error = true;
+      msg = `You can only drag & drop image, this file is a ${first.type}`;
+      return false;
+    }
+
+    if (first.size >= 5000000) {
+      error = true;
+      msg = `File too large: ${Math.floor(
+        first.size / 1048576,
+        2
+      )}mb when max size is 5mb`;
+      return false;
+    }
+
+    pull(
+      fileReader(first),
+      sbot.blobs.add(function(err, hash) {
+        // 'hash' is the hash-id of the blob
+        if (err) {
+          error = true;
+          msg = "Couldn't attach file: " + err;
+        } else {
+          content += ` ![${first.name}](${hash})`;
+        }
+        fileOnTop = false;
+      })
+    );
+  };
 
   const post = async ev => {
     ev.stopPropagation();
@@ -150,11 +150,23 @@
     fileOnTop = false;
   };
 
+  const attachFileTrigger = () => {
+    document.getElementById("fileInput").click();
+  };
+
+  const attachFile = ev => {
+    const files = ev.target.files;
+    readFileAndAttach(files);
+  };
 </script>
 
 <style>
   .file-on-top {
     border: solid 2px rgb(26, 192, 11);
+  }
+
+  input[type="file"] {
+    display: none;
   }
 </style>
 
@@ -214,6 +226,8 @@
             class:file-on-top={fileOnTop}
             bind:value={content} />
           <br />
+          <input type="file" on:input={attachFile} id="fileInput" />
+          <button class="btn" on:click={attachFileTrigger}>Attach File</button>
           <button class="btn btn-primary float-right" on:click={preview}>
             Preview
           </button>
