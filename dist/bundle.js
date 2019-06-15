@@ -7162,24 +7162,24 @@ var app = (function () {
     			add_location(li0, file$h, 107, 8, 2751);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$h, 111, 10, 2888);
+    			add_location(a9, file$h, 111, 10, 2940);
     			li1.className = "menu-item";
-    			add_location(li1, file$h, 110, 8, 2855);
+    			add_location(li1, file$h, 110, 8, 2907);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$h, 114, 10, 2994);
+    			add_location(a10, file$h, 114, 10, 3097);
     			li2.className = "menu-item";
-    			add_location(li2, file$h, 113, 8, 2961);
+    			add_location(li2, file$h, 113, 8, 3064);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$h, 119, 10, 3150);
+    			add_location(a11, file$h, 119, 10, 3253);
     			li3.className = "menu-item";
-    			add_location(li3, file$h, 118, 8, 3117);
+    			add_location(li3, file$h, 118, 8, 3220);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$h, 122, 10, 3262);
+    			add_location(a12, file$h, 122, 10, 3365);
     			li4.className = "menu-item";
-    			add_location(li4, file$h, 121, 8, 3229);
+    			add_location(li4, file$h, 121, 8, 3332);
     			ul.className = "menu";
     			add_location(ul, file$h, 106, 6, 2725);
     			div0.className = "dropdown float-right";
@@ -7187,7 +7187,7 @@ var app = (function () {
     			section1.className = "navbar-section show-sm bg-gray above svelte-1ucmw71";
     			add_location(section1, file$h, 89, 2, 2166);
     			div1.className = "blocker show-sm svelte-1ucmw71";
-    			add_location(div1, file$h, 129, 2, 3421);
+    			add_location(div1, file$h, 129, 2, 3524);
     			header.className = "navbar";
     			add_location(header, file$h, 63, 0, 1298);
 
@@ -7198,6 +7198,8 @@ var app = (function () {
     				listen(a3, "click", stop_propagation(prevent_default(ctx.goPublic))),
     				listen(a4, "click", ctx.goSettings),
     				listen(a7, "click", stop_propagation(prevent_default(click_handler))),
+    				listen(a8, "click", stop_propagation(prevent_default(ctx.goCompose))),
+    				listen(a9, "click", stop_propagation(prevent_default(ctx.goPublic))),
     				listen(a10, "click", ctx.goSettings),
     				listen(a12, "click", ctx.closeSidebar)
     			];

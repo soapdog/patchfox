@@ -106,10 +106,10 @@ const openMyProfile = ev => {
       <!-- menu component -->
       <ul class="menu">
         <li class="menu-item">
-          <a href="#/compose" class="btn btn-link">New</a>
+          <a href="#/compose" class="btn btn-link" on:click|stopPropagation|preventDefault={goCompose}>New</a>
         </li>
         <li class="menu-item">
-          <a href="#/public" class="btn btn-link">Public</a>
+          <a href="#/public" class="btn btn-link" on:click|stopPropagation|preventDefault={goPublic}>Public</a>
         </li>
         <li class="menu-item">
           <a href="#/settings" class="btn btn-link" on:click={goSettings}>
