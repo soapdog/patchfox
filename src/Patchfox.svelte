@@ -18,16 +18,18 @@
     connect();
 
     interval = setInterval(() => {
-      hermiebox.sbot.whoami((err, v) => {
-        if (err) {
-          console.error("can't call whoami", err);
-          reconnect().catch(n => {
-            console.error("can't reconnect")
-            clearInterval(interval)
-            navigate("/error", {error: n})
-          });
-        }
-      });
+      if (hermiebox.sbot) {
+        hermiebox.sbot.whoami((err, v) => {
+          if (err) {
+            console.error("can't call whoami", err);
+            reconnect().catch(n => {
+              console.error("can't reconnect");
+              clearInterval(interval);
+              navigate("/error", { error: n });
+            });
+          }
+        });
+      }
     }, 5000);
   });
 

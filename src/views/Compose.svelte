@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from "svelte";
+  import drop from "drag-and-drop-files";
   import { slide } from "svelte/transition";
   import { navigate, routeParams, reconnect } from "../utils.js";
   import AvatarChip from "../parts/AvatarChip.svelte";
@@ -13,6 +15,63 @@
   let channel = $routeParams.channel || "";
   let content = $routeParams.content || "";
   let replyfeed = $routeParams.replyfeed || false;
+  let fileOnTop = false;
+
+  onMount(() => {
+    let pull = hermiebox.modules.pullStream;
+    let fileReader = hermiebox.modules.pullFileReader;
+    let sbot = hermiebox.sbot;
+
+    error = false;
+    msg = "";
+
+    // this code could be in some better/smarter place.
+    // e.dataTransfer.getData('url'); from images in the browser window
+
+    drop(document.getElementById("content"), function(files) {
+      
+      error = false;
+      msg = "";
+
+      if (files.length == 0) {
+        fileOnTop = false;
+        console.log("this is not a file")
+        return false
+      }
+
+      var first = files[0];
+      console.log(first);
+
+      if (!first.type.startsWith("image")) {
+        error = true;
+        msg = `You can only drag & drop image, this file is a ${first.type}`;
+        return false;
+      }
+
+      if (first.size >= 5000000) {
+        error = true;
+        msg = `File too large: ${Math.floor(
+          first.size / 1048576,
+          2
+        )}mb when max size is 5mb`;
+        return false;
+      }
+
+      pull(
+        fileReader(first),
+        sbot.blobs.add(function(err, hash) {
+          // 'hash' is the hash-id of the blob
+          if (err) {
+            error = true;
+            msg = "Couldn't attach file: " + err;
+          } else {
+            content += ` ![${first.name}](${hash})`;
+          }
+          fileOnTop = false;
+        })
+      );
+    });
+  });
 
   const post = async ev => {
     ev.stopPropagation();
@@ -29,9 +88,11 @@
         msg = await ssb.newPost({ text: content, channel, root, branch });
         posting = false;
         console.log("posted", msg);
+        window.scrollTo(0, 0);
       } catch (n) {
         error = true;
-        msg = n;
+        msg = `Couldn't post your message: ${n}`;
+        window.scrollTo(0, 0);
 
         if (msg.message == "stream is closed") {
           msg += ". We lost connection to sbot. We'll try to restablish it...";
@@ -80,14 +141,29 @@
       content = `[${name}](${feed})`;
     }
   };
+
+  const dragOver = ev => {
+    fileOnTop = true;
+  };
+
+  const dragLeave = ev => {
+    fileOnTop = false;
+  };
+
 </script>
+
+<style>
+  .file-on-top {
+    border: solid 2px rgb(26, 192, 11);
+  }
+</style>
 
 <div class="container">
   <div class="columns">
     <div class="column">
       {#if msg}
         {#if error}
-          <div class="toast toast-error">Couldn't post your message: {msg}</div>
+          <div class="toast toast-error">{msg}</div>
         {:else}
           <div class="toast toast-success">
             Your message has been posted. Do you want to
@@ -133,6 +209,9 @@
             id="content"
             placeholder="Type in your post"
             rows="10"
+            on:dragover|preventDefault|stopPropagation={dragOver}
+            on:dragleave|preventDefault|stopPropagation={dragLeave}
+            class:file-on-top={fileOnTop}
             bind:value={content} />
           <br />
           <button class="btn btn-primary float-right" on:click={preview}>

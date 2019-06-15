@@ -2,6 +2,7 @@
   "name": "patchfox",
   "version": "8.0.0",
   "devDependencies": {
+    "drag-and-drop-files": "0.0.1",
     "rollup": "^1.10.1",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-copy": "^2.0.1",
