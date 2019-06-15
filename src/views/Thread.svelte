@@ -24,6 +24,9 @@
   }
 </script>
 
+<div class="container">
+<h4>Thread <small class="label hide-sm">{msgid}</small></h4>
+</div>
 {#if error}
   <div class="toast toast-error">Couldn't load thead <a href="?thread={msgid}#/thread">{msgid}</a>: {error}</div>
 {/if}

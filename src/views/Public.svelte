@@ -17,17 +17,23 @@
       opts.lt = parseInt(opts.lt);
     }
 
-    let promise = ssb.public(opts).then(ms => {
-      msgs = ms;
-      window.scrollTo(0, 0);
-    }).catch(n => {
-      if (!error) {
-       console.error("errrrooooor")
-      }
-    });
+    let promise = ssb
+      .public(opts)
+      .then(ms => {
+        msgs = ms;
+        window.scrollTo(0, 0);
+      })
+      .catch(n => {
+        if (!error) {
+          console.error("errrrooooor");
+        }
+      });
   }
 </script>
 
+<div class="container">
+  <h4>Public Feed</h4>
+</div>
 {#if error}
   <div class="toast toast-error">Error: {error}</div>
 {/if}

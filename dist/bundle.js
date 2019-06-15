@@ -4459,7 +4459,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (31:0) {#if error}
+    // (37:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -4469,7 +4469,7 @@ var app = (function () {
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 31, 2, 643);
+    			add_location(div, file$b, 37, 2, 734);
     		},
 
     		m: function mount(target, anchor) {
@@ -4488,7 +4488,7 @@ var app = (function () {
     	};
     }
 
-    // (36:0) {:else}
+    // (42:0) {:else}
     function create_else_block$4(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -4518,19 +4518,19 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$b, 44, 8, 1010);
+    			add_location(div0, file$b, 50, 8, 1101);
     			a0.href = "#/public";
-    			add_location(a0, file$b, 41, 6, 903);
+    			add_location(a0, file$b, 47, 6, 994);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$b, 40, 4, 860);
+    			add_location(li0, file$b, 46, 4, 951);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$b, 53, 8, 1290);
+    			add_location(div1, file$b, 59, 8, 1381);
     			a1.href = "#/public";
-    			add_location(a1, file$b, 48, 6, 1121);
+    			add_location(a1, file$b, 54, 6, 1212);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$b, 47, 4, 1082);
+    			add_location(li1, file$b, 53, 4, 1173);
     			ul.className = "pagination";
-    			add_location(ul, file$b, 39, 2, 832);
+    			add_location(ul, file$b, 45, 2, 923);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
@@ -4587,7 +4587,7 @@ var app = (function () {
     	};
     }
 
-    // (34:0) {#if !msgs}
+    // (40:0) {#if !msgs}
     function create_if_block$5(ctx) {
     	var div;
 
@@ -4595,7 +4595,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$b, 34, 2, 715);
+    			add_location(div, file$b, 40, 2, 806);
     		},
 
     		m: function mount(target, anchor) {
@@ -4614,7 +4614,7 @@ var app = (function () {
     	};
     }
 
-    // (37:2) {#each msgs as msg (msg.key)}
+    // (43:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -4669,7 +4669,7 @@ var app = (function () {
     }
 
     function create_fragment$b(ctx) {
-    	var t, current_block_type_index, if_block1, if_block1_anchor, current;
+    	var div, h4, t1, t2, current_block_type_index, if_block1, if_block1_anchor, current;
 
     	var if_block0 = (ctx.error) && create_if_block_1$4(ctx);
 
@@ -4690,10 +4690,17 @@ var app = (function () {
 
     	return {
     		c: function create() {
+    			div = element("div");
+    			h4 = element("h4");
+    			h4.textContent = "Public Feed";
+    			t1 = space();
     			if (if_block0) if_block0.c();
-    			t = space();
+    			t2 = space();
     			if_block1.c();
     			if_block1_anchor = empty();
+    			add_location(h4, file$b, 34, 2, 692);
+    			div.className = "container";
+    			add_location(div, file$b, 33, 0, 666);
     		},
 
     		l: function claim(nodes) {
@@ -4701,8 +4708,11 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, h4);
+    			insert(target, t1, anchor);
     			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t, anchor);
+    			insert(target, t2, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
     			insert(target, if_block1_anchor, anchor);
     			current = true;
@@ -4715,7 +4725,7 @@ var app = (function () {
     				} else {
     					if_block0 = create_if_block_1$4(ctx);
     					if_block0.c();
-    					if_block0.m(t.parentNode, t);
+    					if_block0.m(t2.parentNode, t2);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -4757,10 +4767,15 @@ var app = (function () {
     		},
 
     		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    				detach(t1);
+    			}
+
     			if (if_block0) if_block0.d(detaching);
 
     			if (detaching) {
-    				detach(t);
+    				detach(t2);
     			}
 
     			if_blocks[current_block_type_index].d(detaching);
@@ -4805,14 +4820,17 @@ var app = (function () {
               opts.lt = parseInt(opts.lt);
             }
         
-            let promise = ssb.public(opts).then(ms => {
-              $$invalidate('msgs', msgs = ms);
-              window.scrollTo(0, 0);
-            }).catch(n => {
-              if (!error) {
-               console.error("errrrooooor");
-              }
-            });
+            let promise = ssb
+              .public(opts)
+              .then(ms => {
+                $$invalidate('msgs', msgs = ms);
+                window.scrollTo(0, 0);
+              })
+              .catch(n => {
+                if (!error) {
+                  console.error("errrrooooor");
+                }
+              });
           } }
     	};
 
@@ -5963,7 +5981,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (27:0) {#if error}
+    // (30:0) {#if error}
     function create_if_block_1$6(ctx) {
     	var div, t0, a, t1, a_href_value, t2, t3;
 
@@ -5976,9 +5994,9 @@ var app = (function () {
     			t2 = text(": ");
     			t3 = text(ctx.error);
     			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
-    			add_location(a, file$e, 27, 53, 636);
+    			add_location(a, file$e, 30, 53, 728);
     			div.className = "toast toast-error";
-    			add_location(div, file$e, 27, 2, 585);
+    			add_location(div, file$e, 30, 2, 677);
     		},
 
     		m: function mount(target, anchor) {
@@ -6012,7 +6030,7 @@ var app = (function () {
     	};
     }
 
-    // (32:0) {:else}
+    // (35:0) {:else}
     function create_else_block$6(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), each_1_anchor, current;
 
@@ -6071,7 +6089,7 @@ var app = (function () {
     	};
     }
 
-    // (30:0) {#if !msgs && !error}
+    // (33:0) {#if !msgs && !error}
     function create_if_block$7(ctx) {
     	var div;
 
@@ -6079,7 +6097,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$e, 30, 2, 727);
+    			add_location(div, file$e, 33, 2, 819);
     		},
 
     		m: function mount(target, anchor) {
@@ -6098,7 +6116,7 @@ var app = (function () {
     	};
     }
 
-    // (33:2) {#each msgs as msg (msg.key)}
+    // (36:2) {#each msgs as msg (msg.key)}
     function create_each_block$1(key_1, ctx) {
     	var first, current;
 
@@ -6153,7 +6171,7 @@ var app = (function () {
     }
 
     function create_fragment$e(ctx) {
-    	var t, current_block_type_index, if_block1, if_block1_anchor, current;
+    	var div, h4, t0, small, t1, t2, t3, current_block_type_index, if_block1, if_block1_anchor, current;
 
     	var if_block0 = (ctx.error) && create_if_block_1$6(ctx);
 
@@ -6174,10 +6192,21 @@ var app = (function () {
 
     	return {
     		c: function create() {
+    			div = element("div");
+    			h4 = element("h4");
+    			t0 = text("Thread ");
+    			small = element("small");
+    			t1 = text(ctx.msgid);
+    			t2 = space();
     			if (if_block0) if_block0.c();
-    			t = space();
+    			t3 = space();
     			if_block1.c();
     			if_block1_anchor = empty();
+    			small.className = "label hide-sm";
+    			add_location(small, file$e, 27, 11, 606);
+    			add_location(h4, file$e, 27, 0, 595);
+    			div.className = "container";
+    			add_location(div, file$e, 26, 0, 571);
     		},
 
     		l: function claim(nodes) {
@@ -6185,21 +6214,31 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, h4);
+    			append(h4, t0);
+    			append(h4, small);
+    			append(small, t1);
+    			insert(target, t2, anchor);
     			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t, anchor);
+    			insert(target, t3, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
     			insert(target, if_block1_anchor, anchor);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
+    			if (!current || changed.msgid) {
+    				set_data(t1, ctx.msgid);
+    			}
+
     			if (ctx.error) {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
     					if_block0 = create_if_block_1$6(ctx);
     					if_block0.c();
-    					if_block0.m(t.parentNode, t);
+    					if_block0.m(t3.parentNode, t3);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -6241,10 +6280,15 @@ var app = (function () {
     		},
 
     		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    				detach(t2);
+    			}
+
     			if (if_block0) if_block0.d(detaching);
 
     			if (detaching) {
-    				detach(t);
+    				detach(t3);
     			}
 
     			if_blocks[current_block_type_index].d(detaching);
