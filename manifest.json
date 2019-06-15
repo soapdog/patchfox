@@ -2,7 +2,7 @@
   "description": "Patchfox is a Secure Scuttlebutt client",
   "manifest_version": 2,
   "name": "Patchfox",
-  "version": "9.1",
+  "version": "2019.6.2",
   "icons": {
     "96": "images/icon.png"
   },
@@ -52,7 +52,9 @@
     "tabs",
     "activeTab",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "clipboardWrite",
+    "clipboardRead"
   ],
   "sidebar_action": {
     "default_icon": {

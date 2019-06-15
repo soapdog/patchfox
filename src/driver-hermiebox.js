@@ -191,6 +191,28 @@ export class DriverHermiebox {
     })
   }
 
+  follow(userId) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      if (sbot) {
+        sbot.publish({
+          type: "contact",
+          contact: userId,
+          following: true
+        },  (err, msg)  => {
+          // 'msg' includes the hash-id and headers
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+
   getBlob(blobid) {
     return hermiebox.api.getBlob(blobid)
   }

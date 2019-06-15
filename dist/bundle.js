@@ -957,6 +957,28 @@ var app = (function () {
         })
       }
 
+      follow(userId) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            sbot.publish({
+              type: "contact",
+              contact: userId,
+              following: true
+            },  (err, msg)  => {
+              // 'msg' includes the hash-id and headers
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+
       getBlob(blobid) {
         return hermiebox.api.getBlob(blobid)
       }
@@ -3384,8 +3406,8 @@ var app = (function () {
 
     const file$9 = "src\\messageTypes\\MessageRenderer.svelte";
 
-    // (101:8) {#if msg.value.content.channel}
-    function create_if_block_1$3(ctx) {
+    // (131:8) {#if msg.value.content.channel}
+    function create_if_block_2$2(ctx) {
     	var t0, t1_value = ctx.msg.value.content.channel, t1;
 
     	return {
@@ -3414,7 +3436,49 @@ var app = (function () {
     	};
     }
 
-    // (110:2) {:else}
+    // (167:44) {:else}
+    function create_else_block_1$2(ctx) {
+    	var t;
+
+    	return {
+    		c: function create() {
+    			t = text("Close raw message");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, t, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(t);
+    			}
+    		}
+    	};
+    }
+
+    // (167:14) {#if !showRaw}
+    function create_if_block_1$3(ctx) {
+    	var t;
+
+    	return {
+    		c: function create() {
+    			t = text("Show raw message");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, t, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(t);
+    			}
+    		}
+    	};
+    }
+
+    // (176:2) {:else}
     function create_else_block$2(ctx) {
     	var div3, div2, div0, pre, code, t0, t1, div1, p0, t2, em, t3, t4, t5, p1, t6, a, t7, t8, a_href_value, t9;
 
@@ -3440,23 +3504,23 @@ var app = (function () {
     			t7 = text("the documentation about messages with type ");
     			t8 = text(ctx.type);
     			t9 = text("\n            .");
-    			add_location(code, file$9, 114, 12, 2893);
+    			add_location(code, file$9, 180, 12, 4771);
     			pre.className = "code";
-    			add_location(pre, file$9, 113, 10, 2862);
+    			add_location(pre, file$9, 179, 10, 4740);
     			div0.className = "column col-9";
-    			add_location(div0, file$9, 112, 8, 2825);
-    			add_location(em, file$9, 120, 12, 3050);
-    			add_location(p0, file$9, 118, 10, 2996);
+    			add_location(div0, file$9, 178, 8, 4703);
+    			add_location(em, file$9, 186, 12, 4928);
+    			add_location(p0, file$9, 184, 10, 4874);
     			a.target = "_blank";
     			a.href = a_href_value = "/docs/index.html#/message_types/" + ctx.type;
-    			add_location(a, file$9, 125, 12, 3163);
-    			add_location(p1, file$9, 123, 10, 3105);
+    			add_location(a, file$9, 191, 12, 5041);
+    			add_location(p1, file$9, 189, 10, 4983);
     			div1.className = "column col-3";
-    			add_location(div1, file$9, 117, 8, 2959);
+    			add_location(div1, file$9, 183, 8, 4837);
     			div2.className = "columns";
-    			add_location(div2, file$9, 111, 6, 2795);
+    			add_location(div2, file$9, 177, 6, 4673);
     			div3.className = "card-body";
-    			add_location(div3, file$9, 110, 4, 2765);
+    			add_location(div3, file$9, 176, 4, 4643);
     		},
 
     		m: function mount(target, anchor) {
@@ -3504,7 +3568,7 @@ var app = (function () {
     	};
     }
 
-    // (108:2) {#if !showRaw}
+    // (174:2) {#if !showRaw}
     function create_if_block$3(ctx) {
     	var switch_instance_anchor, current;
 
@@ -3590,9 +3654,17 @@ var app = (function () {
     }
 
     function create_fragment$9(ctx) {
-    	var div9, div8, div6, div5, div4, div1, div0, img, t0, div3, div2, t1, t2, small, t3_value = timestamp(ctx.msg.value.timestamp), t3, t4, div7, span0, t5, span1, i, t6, current_block_type_index, if_block1, current, dispose;
+    	var div10, div9, div6, div5, div4, div1, div0, img, t0, div3, div2, t1, t2, small, t3_value = timestamp(ctx.msg.value.timestamp), t3, t4, div8, span0, t5, div7, span1, i0, t6, ul, li0, a0, i1, t7, a0_href_value, t8, li1, a1, i2, t9, t10, li2, a2, i3, t11, t12, li3, t13, li4, a3, i4, t14, t15, current_block_type_index, if_block2, current, dispose;
 
-    	var if_block0 = (ctx.msg.value.content.channel) && create_if_block_1$3(ctx);
+    	var if_block0 = (ctx.msg.value.content.channel) && create_if_block_2$2(ctx);
+
+    	function select_block_type(ctx) {
+    		if (!ctx.showRaw) return create_if_block_1$3;
+    		return create_else_block_1$2;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block1 = current_block_type(ctx);
 
     	var if_block_creators = [
     		create_if_block$3,
@@ -3601,18 +3673,18 @@ var app = (function () {
 
     	var if_blocks = [];
 
-    	function select_block_type(ctx) {
+    	function select_block_type_1(ctx) {
     		if (!ctx.showRaw) return 0;
     		return 1;
     	}
 
-    	current_block_type_index = select_block_type(ctx);
-    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	current_block_type_index = select_block_type_1(ctx);
+    	if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	return {
     		c: function create() {
+    			div10 = element("div");
     			div9 = element("div");
-    			div8 = element("div");
     			div6 = element("div");
     			div5 = element("div");
     			div4 = element("div");
@@ -3627,51 +3699,113 @@ var app = (function () {
     			small = element("small");
     			t3 = text(t3_value);
     			t4 = space();
-    			div7 = element("div");
+    			div8 = element("div");
     			span0 = element("span");
     			if (if_block0) if_block0.c();
     			t5 = space();
+    			div7 = element("div");
     			span1 = element("span");
-    			i = element("i");
+    			i0 = element("i");
     			t6 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			a0 = element("a");
+    			i1 = element("i");
+    			t7 = text("\n              Open in new tab");
+    			t8 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			i2 = element("i");
+    			t9 = text("\n              Copy permalink to clipboard");
+    			t10 = space();
+    			li2 = element("li");
+    			a2 = element("a");
+    			i3 = element("i");
+    			t11 = text("\n              Copy message id to clipboard");
+    			t12 = space();
+    			li3 = element("li");
+    			t13 = space();
+    			li4 = element("li");
+    			a3 = element("a");
+    			i4 = element("i");
+    			t14 = space();
     			if_block1.c();
+    			t15 = space();
+    			if_block2.c();
     			img.src = ctx.image;
     			img.className = "avatar avatar-lg";
     			img.alt = ctx.feed;
-    			add_location(img, file$9, 81, 14, 1898);
+    			add_location(img, file$9, 111, 14, 2562);
     			div0.className = "example-tile-icon";
-    			add_location(div0, file$9, 80, 12, 1852);
+    			add_location(div0, file$9, 110, 12, 2516);
     			div1.className = "tile-icon";
-    			add_location(div1, file$9, 79, 10, 1816);
+    			add_location(div1, file$9, 109, 10, 2480);
     			div2.className = "tile-title";
-    			add_location(div2, file$9, 85, 12, 2039);
+    			add_location(div2, file$9, 115, 12, 2703);
     			small.className = "tile-subtitle text-gray";
-    			add_location(small, file$9, 86, 12, 2088);
+    			add_location(small, file$9, 116, 12, 2752);
     			div3.className = "tile-content";
-    			add_location(div3, file$9, 84, 10, 2000);
-    			div4.className = "tile tile-centered feed-display svelte-1bmt2jj";
-    			add_location(div4, file$9, 76, 8, 1692);
+    			add_location(div3, file$9, 114, 10, 2664);
+    			div4.className = "tile tile-centered feed-display svelte-17ozi8u";
+    			add_location(div4, file$9, 106, 8, 2356);
     			div5.className = "card-title";
-    			add_location(div5, file$9, 75, 6, 1659);
+    			add_location(div5, file$9, 105, 6, 2323);
     			div6.className = "float-left";
-    			add_location(div6, file$9, 74, 4, 1628);
-    			span0.className = "text-gray channel-display svelte-1bmt2jj";
-    			add_location(span0, file$9, 95, 6, 2290);
-    			i.className = "icon icon-more-vert";
-    			add_location(i, file$9, 103, 8, 2573);
-    			span1.className = "text-gray";
-    			add_location(span1, file$9, 102, 6, 2540);
-    			div7.className = "float-right";
-    			add_location(div7, file$9, 93, 4, 2257);
-    			div8.className = "card-header";
-    			add_location(div8, file$9, 73, 2, 1598);
-    			div9.className = "card m-2";
-    			add_location(div9, file$9, 72, 0, 1573);
+    			add_location(div6, file$9, 104, 4, 2292);
+    			span0.className = "text-gray channel-display svelte-17ozi8u";
+    			add_location(span0, file$9, 125, 6, 2954);
+    			i0.className = "icon icon-more-vert";
+    			add_location(i0, file$9, 138, 10, 3424);
+    			span1.className = "btn btn-link dropdown-toggle";
+    			span1.tabIndex = "0";
+    			toggle_class(span1, "active", ctx.dropdownActive);
+    			add_location(span1, file$9, 133, 8, 3235);
+    			i1.className = "icon icon-share";
+    			add_location(i1, file$9, 146, 14, 3672);
+    			a0.href = a0_href_value = "?thread=" + encodeURIComponent(ctx.msg.key) + "#/thread";
+    			a0.target = "_blank";
+    			add_location(a0, file$9, 143, 12, 3557);
+    			li0.className = "menu-item";
+    			add_location(li0, file$9, 141, 10, 3521);
+    			i2.className = "icon icon-copy";
+    			add_location(i2, file$9, 152, 14, 3877);
+    			a1.href = "#";
+    			add_location(a1, file$9, 151, 12, 3810);
+    			li1.className = "menu-item";
+    			add_location(li1, file$9, 150, 10, 3775);
+    			i3.className = "icon icon-copy";
+    			add_location(i3, file$9, 158, 14, 4088);
+    			a2.href = "#";
+    			add_location(a2, file$9, 157, 12, 4026);
+    			li2.className = "menu-item";
+    			add_location(li2, file$9, 156, 10, 3991);
+    			li3.className = "divider";
+    			li3.dataset.content = "FOR THE CURIOUS";
+    			add_location(li3, file$9, 162, 10, 4203);
+    			i4.className = "icon icon-message";
+    			add_location(i4, file$9, 165, 14, 4371);
+    			a3.href = "#";
+    			add_location(a3, file$9, 164, 12, 4301);
+    			li4.className = "menu-item";
+    			add_location(li4, file$9, 163, 10, 4266);
+    			ul.className = "menu menu-right svelte-17ozi8u";
+    			add_location(ul, file$9, 140, 8, 3482);
+    			div7.className = "dropdown";
+    			add_location(div7, file$9, 132, 6, 3204);
+    			div8.className = "float-right";
+    			add_location(div8, file$9, 123, 4, 2921);
+    			div9.className = "card-header";
+    			add_location(div9, file$9, 103, 2, 2262);
+    			div10.className = "card m-2";
+    			add_location(div10, file$9, 102, 0, 2237);
 
     			dispose = [
     				listen(div4, "click", ctx.click_handler),
     				listen(span0, "click", ctx.click_handler_1),
-    				listen(i, "click", ctx.click_handler_2)
+    				listen(span1, "click", ctx.click_handler_2),
+    				listen(a1, "click", prevent_default(ctx.copyPermalink)),
+    				listen(a2, "click", prevent_default(ctx.copyHash)),
+    				listen(a3, "click", prevent_default(ctx.toggleRawMessage))
     			];
     		},
 
@@ -3680,9 +3814,9 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div9, anchor);
-    			append(div9, div8);
-    			append(div8, div6);
+    			insert(target, div10, anchor);
+    			append(div10, div9);
+    			append(div9, div6);
     			append(div6, div5);
     			append(div5, div4);
     			append(div4, div1);
@@ -3695,15 +3829,40 @@ var app = (function () {
     			append(div3, t2);
     			append(div3, small);
     			append(small, t3);
-    			append(div8, t4);
-    			append(div8, div7);
-    			append(div7, span0);
+    			append(div9, t4);
+    			append(div9, div8);
+    			append(div8, span0);
     			if (if_block0) if_block0.m(span0, null);
-    			append(div7, t5);
+    			append(div8, t5);
+    			append(div8, div7);
     			append(div7, span1);
-    			append(span1, i);
-    			append(div9, t6);
-    			if_blocks[current_block_type_index].m(div9, null);
+    			append(span1, i0);
+    			append(div7, t6);
+    			append(div7, ul);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(a0, i1);
+    			append(a0, t7);
+    			append(ul, t8);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(a1, i2);
+    			append(a1, t9);
+    			append(ul, t10);
+    			append(ul, li2);
+    			append(li2, a2);
+    			append(a2, i3);
+    			append(a2, t11);
+    			append(ul, t12);
+    			append(ul, li3);
+    			append(ul, t13);
+    			append(ul, li4);
+    			append(li4, a3);
+    			append(a3, i4);
+    			append(a3, t14);
+    			if_block1.m(a3, null);
+    			append(div10, t15);
+    			if_blocks[current_block_type_index].m(div10, null);
     			current = true;
     		},
 
@@ -3724,7 +3883,7 @@ var app = (function () {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
-    					if_block0 = create_if_block_1$3(ctx);
+    					if_block0 = create_if_block_2$2(ctx);
     					if_block0.c();
     					if_block0.m(span0, null);
     				}
@@ -3733,8 +3892,25 @@ var app = (function () {
     				if_block0 = null;
     			}
 
+    			if (changed.dropdownActive) {
+    				toggle_class(span1, "active", ctx.dropdownActive);
+    			}
+
+    			if ((!current || changed.msg) && a0_href_value !== (a0_href_value = "?thread=" + encodeURIComponent(ctx.msg.key) + "#/thread")) {
+    				a0.href = a0_href_value;
+    			}
+
+    			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
+    				if_block1.d(1);
+    				if_block1 = current_block_type(ctx);
+    				if (if_block1) {
+    					if_block1.c();
+    					if_block1.m(a3, null);
+    				}
+    			}
+
     			var previous_block_index = current_block_type_index;
-    			current_block_type_index = select_block_type(ctx);
+    			current_block_type_index = select_block_type_1(ctx);
     			if (current_block_type_index === previous_block_index) {
     				if_blocks[current_block_type_index].p(changed, ctx);
     			} else {
@@ -3743,36 +3919,37 @@ var app = (function () {
     					if_blocks[previous_block_index].d(1);
     					if_blocks[previous_block_index] = null;
     				});
-    				if_block1.o(1);
+    				if_block2.o(1);
     				check_outros();
 
-    				if_block1 = if_blocks[current_block_type_index];
-    				if (!if_block1) {
-    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block1.c();
+    				if_block2 = if_blocks[current_block_type_index];
+    				if (!if_block2) {
+    					if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block2.c();
     				}
-    				if_block1.i(1);
-    				if_block1.m(div9, null);
+    				if_block2.i(1);
+    				if_block2.m(div10, null);
     			}
     		},
 
     		i: function intro(local) {
     			if (current) return;
-    			if (if_block1) if_block1.i();
+    			if (if_block2) if_block2.i();
     			current = true;
     		},
 
     		o: function outro(local) {
-    			if (if_block1) if_block1.o();
+    			if (if_block2) if_block2.o();
     			current = false;
     		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div9);
+    				detach(div10);
     			}
 
     			if (if_block0) if_block0.d();
+    			if_block1.d();
     			if_blocks[current_block_type_index].d();
     			run_all(dispose);
     		}
@@ -3788,6 +3965,7 @@ var app = (function () {
       let feed = msg.value.author;
       let showRaw = false;
       let rawContent = JSON.stringify(msg, null, 2);
+      let dropdownActive = false;
 
       let messageTypes = {
         "*": GenericMsg,
@@ -3825,6 +4003,29 @@ var app = (function () {
         $$invalidate('name', name = data.name);
       });
 
+      const toggleRawMessage = () => {
+        $$invalidate('showRaw', showRaw = !showRaw);
+        $$invalidate('dropdownActive', dropdownActive = false);
+      };
+
+      const copyPermalink = () => {
+        navigator.clipboard
+          .writeText(`ssb:${msg.key}`)
+          .then(() => console.log("permalink copied"))
+          .catch(err => console.error("can't copy permalink", err));
+
+        $$invalidate('dropdownActive', dropdownActive = false);
+      };
+
+      const copyHash = () => {
+        navigator.clipboard
+          .writeText(`${msg.key}`)
+          .then(() => console.log("hash copied"))
+          .catch(err => console.error("can't copy hash", err));
+
+        $$invalidate('dropdownActive', dropdownActive = false);
+      };
+
     	const writable_props = ['msg'];
     	Object.keys($$props).forEach(key => {
     		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<MessageRenderer> was created with unknown prop '${key}'`);
@@ -3841,8 +4042,8 @@ var app = (function () {
     	}
 
     	function click_handler_2() {
-    		const $$result = (showRaw = !showRaw);
-    		$$invalidate('showRaw', showRaw);
+    		const $$result = (dropdownActive = !dropdownActive);
+    		$$invalidate('dropdownActive', dropdownActive);
     		return $$result;
     	}
 
@@ -3856,9 +4057,13 @@ var app = (function () {
     		feed,
     		showRaw,
     		rawContent,
+    		dropdownActive,
     		selectedRenderer,
     		image,
     		name,
+    		toggleRawMessage,
+    		copyPermalink,
+    		copyHash,
     		click_handler,
     		click_handler_1,
     		click_handler_2
@@ -4352,7 +4557,7 @@ var app = (function () {
 
     	function select_block_type(ctx) {
     		if (ctx.error) return create_if_block_7;
-    		return create_else_block_1$2;
+    		return create_else_block_1$3;
     	}
 
     	var current_block_type = select_block_type(ctx);
@@ -4393,7 +4598,7 @@ var app = (function () {
     }
 
     // (78:8) {:else}
-    function create_else_block_1$2(ctx) {
+    function create_else_block_1$3(ctx) {
     	var div, t0, a, t1, a_href_value;
 
     	return {
@@ -4467,7 +4672,7 @@ var app = (function () {
     function create_else_block$4(ctx) {
     	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
 
-    	var if_block = (ctx.channel || ctx.root || ctx.branch) && create_if_block_2$2(ctx);
+    	var if_block = (ctx.channel || ctx.root || ctx.branch) && create_if_block_2$3(ctx);
 
     	return {
     		c: function create() {
@@ -4545,7 +4750,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(changed, ctx);
     				} else {
-    					if_block = create_if_block_2$2(ctx);
+    					if_block = create_if_block_2$3(ctx);
     					if_block.c();
     					if_block.m(div4, t2);
     				}
@@ -4713,7 +4918,7 @@ var app = (function () {
     }
 
     // (124:10) {#if channel || root || branch}
-    function create_if_block_2$2(ctx) {
+    function create_if_block_2$3(ctx) {
     	var blockquote, t0, t1;
 
     	var if_block0 = (ctx.channel) && create_if_block_5$1(ctx);
