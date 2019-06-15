@@ -38,8 +38,8 @@ export class DriverHermiebox {
     this.feed = server.id
   }
 
-  async public(opts) {
-    var msgs = await hermiebox.api.pullPublic(opts)
+  async public(opts, nonStandard) {
+    var msgs = await hermiebox.api.pullPublic(opts, nonStandard)
     return msgs
   }
 

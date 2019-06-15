@@ -80031,7 +80031,7 @@ const api = {
     },
 
 
-    pullPublic: function (extraOpts) {
+    pullPublic: function (extraOpts, nonStandard) {
         return new Promise((resolve, reject) => {
             let defaultOpts = {
                 reverse: true,
@@ -80041,6 +80041,18 @@ const api = {
             pull(
                 hermiebox.sbot.createFeedStream(Object.assign(defaultOpts, extraOpts)),
                 pull.filter(msg => msg && msg.value && msg.value.content),
+                pull.filter(msg => {
+                    if (!nonStandard.onlyRoots) {
+                        return true
+                    }
+
+                    if (msg && msg.value && msg.value.content) {
+                        if (msg.value.content.root || msg.value.content.branch) {
+                            return false
+                        }
+                    }
+                    return true
+                }),
                 // pull.asyncMap(addNameToMsg(this.ssb)),
                 pull.collect((err, msgs) => {
                     if (err) {

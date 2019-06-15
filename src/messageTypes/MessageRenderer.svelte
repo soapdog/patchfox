@@ -160,7 +160,7 @@
               Copy message id to clipboard
             </a>
           </li>
-          <li class="divider" data-content="FOR THE CURIOUS"/>
+          <li class="divider" data-content="FOR THE CURIOUS" />
           <li class="menu-item">
             <a href="#" on:click|preventDefault={toggleRawMessage}>
               <i class="icon icon-message" />

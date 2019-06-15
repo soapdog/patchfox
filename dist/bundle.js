@@ -127,6 +127,9 @@ var app = (function () {
         else
             node.setAttribute(attribute, value);
     }
+    function to_number(value) {
+        return value === '' ? undefined : +value;
+    }
     function children(element) {
         return Array.from(element.childNodes);
     }
@@ -826,8 +829,8 @@ var app = (function () {
         this.feed = server.id;
       }
 
-      async public(opts) {
-        var msgs = await hermiebox.api.pullPublic(opts);
+      async public(opts, nonStandard) {
+        var msgs = await hermiebox.api.pullPublic(opts, nonStandard);
         return msgs
       }
 
@@ -3862,23 +3865,23 @@ var app = (function () {
     			t7 = text("the documentation about messages with type ");
     			t8 = text(ctx.type);
     			t9 = text("\n            .");
-    			add_location(code, file$a, 180, 12, 4771);
+    			add_location(code, file$a, 180, 12, 4772);
     			pre.className = "code";
-    			add_location(pre, file$a, 179, 10, 4740);
+    			add_location(pre, file$a, 179, 10, 4741);
     			div0.className = "column col-9";
-    			add_location(div0, file$a, 178, 8, 4703);
-    			add_location(em, file$a, 186, 12, 4928);
-    			add_location(p0, file$a, 184, 10, 4874);
+    			add_location(div0, file$a, 178, 8, 4704);
+    			add_location(em, file$a, 186, 12, 4929);
+    			add_location(p0, file$a, 184, 10, 4875);
     			a.target = "_blank";
     			a.href = a_href_value = "/docs/index.html#/message_types/" + ctx.type;
-    			add_location(a, file$a, 191, 12, 5041);
-    			add_location(p1, file$a, 189, 10, 4983);
+    			add_location(a, file$a, 191, 12, 5042);
+    			add_location(p1, file$a, 189, 10, 4984);
     			div1.className = "column col-3";
-    			add_location(div1, file$a, 183, 8, 4837);
+    			add_location(div1, file$a, 183, 8, 4838);
     			div2.className = "columns";
-    			add_location(div2, file$a, 177, 6, 4673);
+    			add_location(div2, file$a, 177, 6, 4674);
     			div3.className = "card-body";
-    			add_location(div3, file$a, 176, 4, 4643);
+    			add_location(div3, file$a, 176, 4, 4644);
     		},
 
     		m: function mount(target, anchor) {
@@ -4141,11 +4144,11 @@ var app = (function () {
     			li3.dataset.content = "FOR THE CURIOUS";
     			add_location(li3, file$a, 162, 10, 4203);
     			i4.className = "icon icon-message";
-    			add_location(i4, file$a, 165, 14, 4371);
+    			add_location(i4, file$a, 165, 14, 4372);
     			a3.href = "#";
-    			add_location(a3, file$a, 164, 12, 4301);
+    			add_location(a3, file$a, 164, 12, 4302);
     			li4.className = "menu-item";
-    			add_location(li4, file$a, 163, 10, 4266);
+    			add_location(li4, file$a, 163, 10, 4267);
     			ul.className = "menu menu-right svelte-17ozi8u";
     			add_location(ul, file$a, 140, 8, 3482);
     			div7.className = "dropdown";
@@ -4459,7 +4462,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (37:0) {#if error}
+    // (87:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -4469,7 +4472,7 @@ var app = (function () {
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 37, 2, 734);
+    			add_location(div, file$b, 87, 2, 2093);
     		},
 
     		m: function mount(target, anchor) {
@@ -4488,7 +4491,7 @@ var app = (function () {
     	};
     }
 
-    // (42:0) {:else}
+    // (92:0) {:else}
     function create_else_block$4(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -4518,23 +4521,23 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$b, 50, 8, 1101);
+    			add_location(div0, file$b, 100, 8, 2460);
     			a0.href = "#/public";
-    			add_location(a0, file$b, 47, 6, 994);
+    			add_location(a0, file$b, 97, 6, 2353);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$b, 46, 4, 951);
+    			add_location(li0, file$b, 96, 4, 2310);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$b, 59, 8, 1381);
+    			add_location(div1, file$b, 111, 8, 2810);
     			a1.href = "#/public";
-    			add_location(a1, file$b, 54, 6, 1212);
+    			add_location(a1, file$b, 104, 6, 2571);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$b, 53, 4, 1173);
+    			add_location(li1, file$b, 103, 4, 2532);
     			ul.className = "pagination";
-    			add_location(ul, file$b, 45, 2, 923);
+    			add_location(ul, file$b, 95, 2, 2282);
 
     			dispose = [
-    				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
-    				listen(a1, "click", stop_propagation(prevent_default(ctx.click_handler_1)))
+    				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler_1))),
+    				listen(a1, "click", stop_propagation(prevent_default(ctx.click_handler_2)))
     			];
     		},
 
@@ -4587,7 +4590,7 @@ var app = (function () {
     	};
     }
 
-    // (40:0) {#if !msgs}
+    // (90:0) {#if !msgs}
     function create_if_block$5(ctx) {
     	var div;
 
@@ -4595,7 +4598,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$b, 40, 2, 806);
+    			add_location(div, file$b, 90, 2, 2165);
     		},
 
     		m: function mount(target, anchor) {
@@ -4614,7 +4617,7 @@ var app = (function () {
     	};
     }
 
-    // (43:2) {#each msgs as msg (msg.key)}
+    // (93:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -4669,7 +4672,7 @@ var app = (function () {
     }
 
     function create_fragment$b(ctx) {
-    	var div, h4, t1, t2, current_block_type_index, if_block1, if_block1_anchor, current;
+    	var div3, div2, h4, t1, div1, div0, span, i0, t2, ul, li0, label0, input0, t3, i1, t4, t5, li1, label1, t6, t7_value = ctx.opts.limit, t7, t8, t9, input1, t10, t11, current_block_type_index, if_block1, if_block1_anchor, current, dispose;
 
     	var if_block0 = (ctx.error) && create_if_block_1$4(ctx);
 
@@ -4690,17 +4693,80 @@ var app = (function () {
 
     	return {
     		c: function create() {
-    			div = element("div");
+    			div3 = element("div");
+    			div2 = element("div");
     			h4 = element("h4");
     			h4.textContent = "Public Feed";
     			t1 = space();
-    			if (if_block0) if_block0.c();
+    			div1 = element("div");
+    			div0 = element("div");
+    			span = element("span");
+    			i0 = element("i");
     			t2 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			label0 = element("label");
+    			input0 = element("input");
+    			t3 = space();
+    			i1 = element("i");
+    			t4 = text("\n              Show Only Roots");
+    			t5 = space();
+    			li1 = element("li");
+    			label1 = element("label");
+    			t6 = text("Fetch ");
+    			t7 = text(t7_value);
+    			t8 = text(" messages");
+    			t9 = space();
+    			input1 = element("input");
+    			t10 = space();
+    			if (if_block0) if_block0.c();
+    			t11 = space();
     			if_block1.c();
     			if_block1_anchor = empty();
-    			add_location(h4, file$b, 34, 2, 692);
-    			div.className = "container";
-    			add_location(div, file$b, 33, 0, 666);
+    			h4.className = "column";
+    			add_location(h4, file$b, 50, 4, 1013);
+    			i0.className = "icon icon-more-horiz text-gray";
+    			add_location(i0, file$b, 58, 10, 1312);
+    			span.className = "btn btn-link dropdown-toggle";
+    			span.tabIndex = "0";
+    			toggle_class(span, "active", ctx.dropdownActive);
+    			add_location(span, file$b, 53, 8, 1123);
+    			attr(input0, "type", "checkbox");
+    			add_location(input0, file$b, 63, 14, 1499);
+    			i1.className = "form-icon";
+    			add_location(i1, file$b, 64, 14, 1564);
+    			label0.className = "form-checkbox";
+    			add_location(label0, file$b, 62, 12, 1455);
+    			li0.className = "menu-item";
+    			add_location(li0, file$b, 61, 10, 1420);
+    			label1.className = "form-label";
+    			label1.htmlFor = "input-example-1";
+    			add_location(label1, file$b, 69, 12, 1700);
+    			input1.className = "slider tooltip";
+    			attr(input1, "type", "range");
+    			input1.min = "10";
+    			input1.max = "100";
+    			input1.value = "50";
+    			add_location(input1, file$b, 72, 12, 1824);
+    			li1.className = "menu-item";
+    			add_location(li1, file$b, 68, 10, 1665);
+    			ul.className = "menu menu-right svelte-72ihda";
+    			add_location(ul, file$b, 60, 8, 1381);
+    			div0.className = "dropdown float-right";
+    			add_location(div0, file$b, 52, 6, 1080);
+    			div1.className = "column";
+    			add_location(div1, file$b, 51, 4, 1053);
+    			div2.className = "columns";
+    			add_location(div2, file$b, 49, 2, 987);
+    			div3.className = "container";
+    			add_location(div3, file$b, 48, 0, 961);
+
+    			dispose = [
+    				listen(span, "click", ctx.click_handler),
+    				listen(input0, "change", ctx.input0_change_handler),
+    				listen(input1, "change", ctx.input1_change_input_handler),
+    				listen(input1, "input", ctx.input1_change_input_handler)
+    			];
     		},
 
     		l: function claim(nodes) {
@@ -4708,24 +4774,64 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div, anchor);
-    			append(div, h4);
-    			insert(target, t1, anchor);
+    			insert(target, div3, anchor);
+    			append(div3, div2);
+    			append(div2, h4);
+    			append(div2, t1);
+    			append(div2, div1);
+    			append(div1, div0);
+    			append(div0, span);
+    			append(span, i0);
+    			append(div0, t2);
+    			append(div0, ul);
+    			append(ul, li0);
+    			append(li0, label0);
+    			append(label0, input0);
+
+    			input0.checked = ctx.onlyRoots;
+
+    			append(label0, t3);
+    			append(label0, i1);
+    			append(label0, t4);
+    			append(ul, t5);
+    			append(ul, li1);
+    			append(li1, label1);
+    			append(label1, t6);
+    			append(label1, t7);
+    			append(label1, t8);
+    			append(li1, t9);
+    			append(li1, input1);
+
+    			input1.value = ctx.opts.limit;
+
+    			insert(target, t10, anchor);
     			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t2, anchor);
+    			insert(target, t11, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
     			insert(target, if_block1_anchor, anchor);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
+    			if (changed.dropdownActive) {
+    				toggle_class(span, "active", ctx.dropdownActive);
+    			}
+
+    			if (changed.onlyRoots) input0.checked = ctx.onlyRoots;
+
+    			if ((!current || changed.opts) && t7_value !== (t7_value = ctx.opts.limit)) {
+    				set_data(t7, t7_value);
+    			}
+
+    			if (changed.opts) input1.value = ctx.opts.limit;
+
     			if (ctx.error) {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
     					if_block0 = create_if_block_1$4(ctx);
     					if_block0.c();
-    					if_block0.m(t2.parentNode, t2);
+    					if_block0.m(t11.parentNode, t11);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -4768,14 +4874,14 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div);
-    				detach(t1);
+    				detach(div3);
+    				detach(t10);
     			}
 
     			if (if_block0) if_block0.d(detaching);
 
     			if (detaching) {
-    				detach(t2);
+    				detach(t11);
     			}
 
     			if_blocks[current_block_type_index].d(detaching);
@@ -4783,6 +4889,8 @@ var app = (function () {
     			if (detaching) {
     				detach(if_block1_anchor);
     			}
+
+    			run_all(dispose);
     		}
     	};
     }
@@ -4796,39 +4904,64 @@ var app = (function () {
     	
       let msgs = false;
       let error = $routeParams.error || false;
+      let dropdownActive = false;
+
+      let opts = {
+        limit: $routeParams.limit || 10,
+        reverse: true
+      };
+
+      let onlyRoots = $routeParams.onlyRoots || false;
 
     	function click_handler() {
-    		return history.back();
+    		const $$result = (dropdownActive = !dropdownActive);
+    		$$invalidate('dropdownActive', dropdownActive);
+    		return $$result;
+    	}
+
+    	function input0_change_handler() {
+    		onlyRoots = this.checked;
+    		$$invalidate('onlyRoots', onlyRoots);
+    	}
+
+    	function input1_change_input_handler() {
+    		opts.limit = to_number(this.value);
+    		$$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
     	}
 
     	function click_handler_1() {
+    		return history.back();
+    	}
+
+    	function click_handler_2() {
     		return navigate('/public', {
-    	            lt: msgs[msgs.length - 1].rts
+    	            lt: msgs[msgs.length - 1].rts,
+    	            limit: opts.limit,
+    	            onlyRoots: opts.onlyRoots
     	          });
     	}
 
-    	$$self.$$.update = ($$dirty = { $routeParams: 1, error: 1 }) => {
-    		if ($$dirty.$routeParams || $$dirty.error) { {
-            let opts = {
-              limit: 10,
-              reverse: true
-            };
-        
+    	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, onlyRoots: 1, error: 1 }) => {
+    		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.onlyRoots || $$dirty.error) { {
             Object.assign(opts, $routeParams);
         
             if (opts.hasOwnProperty("lt")) {
-              opts.lt = parseInt(opts.lt);
+              opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
+            }
+        
+            if (opts.hasOwnProperty("limit")) {
+              opts.limit = parseInt(opts.limit); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
             }
         
             let promise = ssb
-              .public(opts)
+              .public(opts, { onlyRoots })
               .then(ms => {
                 $$invalidate('msgs', msgs = ms);
                 window.scrollTo(0, 0);
               })
               .catch(n => {
                 if (!error) {
-                  console.error("errrrooooor");
+                  console.error("errrrooooor", n);
                 }
               });
           } }
@@ -4837,8 +4970,14 @@ var app = (function () {
     	return {
     		msgs,
     		error,
+    		dropdownActive,
+    		opts,
+    		onlyRoots,
     		click_handler,
-    		click_handler_1
+    		input0_change_handler,
+    		input1_change_input_handler,
+    		click_handler_1,
+    		click_handler_2
     	};
     }
 
