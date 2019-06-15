@@ -33,7 +33,8 @@
   const reply = ev => {
     let rootId = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
-    navigate("/compose", { root: rootId, branch: msg.key, channel });
+    let replyfeed = msg.value.author;
+    navigate("/compose", { root: rootId, branch: msg.key, channel, replyfeed });
   };
 
   const goRoot = ev => {

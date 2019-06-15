@@ -1,8 +1,10 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   export let feed;
 
-  let image = "images/icon.png";
+  let image = false;
   let name = feed;
+  const dispatch = createEventDispatcher();
 
   ssb.avatar(feed).then(data => {
     if (data.image !== null) {
@@ -10,16 +12,20 @@
     }
     name = data.name;
   });
+
+  function avatarClick() {
+    dispatch("avatarClick", {
+      feed,
+      name
+    });
+  }
 </script>
 
-<div class="tile tile-centered">
-  <div class="tile-icon">
-    <div class="example-tile-icon">
-      <img src={image} class="avatar avatar-lg" alt={feed} />
-    </div>
+{#if image}
+  <div class="chip" on:click={avatarClick}>
+    <img src={image} class="avatar avatar-sm" />
+     {name}
   </div>
-  <div class="tile-content">
-    <div class="tile-title">{name}</div>
-    <small class="tile-subtitle text-gray">14MB · Public · 1 Jan, 2017</small>
-  </div>
-</div>
+{:else}
+  <span class="chip" on:click={avatarClick}> {name} </span>
+{/if}

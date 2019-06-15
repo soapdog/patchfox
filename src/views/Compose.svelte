@@ -1,6 +1,7 @@
 <script>
   import { slide } from "svelte/transition";
   import { navigate, routeParams, reconnect } from "../utils.js";
+  import AvatarChip from "../parts/AvatarChip.svelte";
 
   let showPreview = false;
   let msg = false;
@@ -11,6 +12,7 @@
   let branch = $routeParams.branch;
   let channel = $routeParams.channel || "";
   let content = $routeParams.content || "";
+  let replyfeed = $routeParams.replyfeed || false;
 
   const post = async ev => {
     ev.stopPropagation();
@@ -67,6 +69,17 @@
       content
     )}&channel=${encodeURIComponent(channel)}`;
   };
+
+  const avatarClick = ev => {
+    let feed = ev.detail.feed;
+    let name = ev.detail.name;
+
+    if (content.length > 0) {
+      content += ` [${name}](${feed})`;
+    } else {
+      content = `[${name}](${feed})`;
+    }
+  };
 </script>
 
 <div class="container">
@@ -106,6 +119,14 @@
               bind:value={branch} />
           {/if}
 
+          {#if replyfeed}
+            <div class="mt-2">
+              <span>
+                Click the avatar to add a link to the message:
+                <AvatarChip feed={replyfeed} on:avatarClick={avatarClick} />
+              </span>
+            </div>
+          {/if}
           <label class="form-label" for="content">Message</label>
           <textarea
             class="form-input"
