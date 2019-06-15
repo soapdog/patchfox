@@ -1,7 +1,7 @@
 # contact
-Contact messages are used to follow or unfollow another user. This affects your social graph and gossiping. Once you follow a given user, you'll start replicating all that user feed and depending on how your client is configured you will also replicate their friends. Most clients will do two levels of replication, so you end up with all your friends data and friends of friends data, much like the physical world in which you receive gossip regarding your friends friends.
+Contact messages are used to follow or unfollow another user. This affects your social graph and gossiping. Once you follow a given user, you'll start replicating all of that user's feed and, depending on how your client is configured, their friends. Most clients will do two levels of replication, so you end up with all your friends' data and friends-of-friends' data, much like the physical world in which you receive gossip regarding your friends' friends.
 
-## How does it look like?
+## What does it look like?
 
 ~~~
 {

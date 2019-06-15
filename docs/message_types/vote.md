@@ -1,7 +1,7 @@
 # vote
 This message is akin to _likes_, _hearts_ and _stars_ in social networks. They represent an intention to support the message. Secure Scuttlebutt doesn't mandate a term to be used in this case and some clients will call it _like_ while others call it _dig_, it doesn't matter, the message structure is the same.
 
-## How does it looks like?
+## What does it looks like?
 
 ~~~
 {
@@ -30,4 +30,4 @@ This message is akin to _likes_, _hearts_ and _stars_ in social networks. They r
 
 On the message above you can see that the author is doing a _Like_ (as specified by the `expression` field) towards a message specified by the `link` field. The value `1` means a positive outcome, a value `-1` means withdrawing your positive vote from the message.
 
-There is [more information about `vote` message](http://scuttlebot.io/docs/message-types/vote.html) available online.
+There is [more information about the `vote` message](http://scuttlebot.io/docs/message-types/vote.html) available online.
