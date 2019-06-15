@@ -11,5 +11,6 @@
   * [channel](message_types/channel.md)
   * [blog](message_types/blog.md)
   * [about](message_types/about.md)
+  * [private](message_types/private.md)
 
 
