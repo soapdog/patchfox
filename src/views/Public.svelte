@@ -12,19 +12,17 @@
     };
 
     Object.assign(opts, $routeParams);
-    console.dir("opts", opts);
 
     if (opts.hasOwnProperty("lt")) {
       opts.lt = parseInt(opts.lt);
     }
 
     let promise = ssb.public(opts).then(ms => {
-      console.log("messages arrived", ms);
       msgs = ms;
       window.scrollTo(0, 0);
     }).catch(n => {
       if (!error) {
-        navigate("/error", {error: n})
+       console.error("errrrooooor")
       }
     });
   }

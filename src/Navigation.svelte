@@ -75,14 +75,12 @@ const openMyProfile = ev => {
     <a
       href="#/compose"
       class="btn btn-link"
-      class:current={$routeLocation == "/compose"}
       on:click|stopPropagation|preventDefault={goCompose}>
       New
     </a>
     <a
       href="#/public"
       class="btn btn-link"
-      class:current={$routeLocation == "/public"}
       on:click|stopPropagation|preventDefault={goPublic}>
       Public
     </a>

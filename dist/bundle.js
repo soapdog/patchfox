@@ -207,6 +207,9 @@ var app = (function () {
     function onMount(fn) {
         get_current_component().$$.on_mount.push(fn);
     }
+    function onDestroy(fn) {
+        get_current_component().$$.on_destroy.push(fn);
+    }
 
     const dirty_components = [];
     const resolved_promise = Promise.resolve();
@@ -900,7 +903,7 @@ var app = (function () {
 
         let html = hermiebox.modules.ssbMarkdown.block(text);
         html = html
-          .replace("<pre>", `<pre class="code">`)
+          .replace("<pre>", "<pre class=\"code\">")
           .replace(/<a href="#([^"]*)/gi, replaceChannel)
           .replace(/<a href="@([^"]*)/gi, replaceFeedID)
           .replace(/target="_blank"/gi, "")
@@ -966,7 +969,7 @@ var app = (function () {
               type: "contact",
               contact: userId,
               following: true
-            },  (err, msg)  => {
+            }, (err, msg) => {
               // 'msg' includes the hash-id and headers
               if (err) {
                 reject(err);
@@ -981,6 +984,77 @@ var app = (function () {
 
       getBlob(blobid) {
         return hermiebox.api.getBlob(blobid)
+      }
+
+      votes(msgid) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot;
+
+          if (sbot) {
+            pull(
+              sbot.links({ dest: msgid, rel: "vote", values: true }),
+              pull.collect((err, msgs) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(msgs);
+                }
+              })
+            );
+          }
+        })
+      }
+
+      like(msgid) {
+        return new Promise((resolve, reject) => {
+
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "vote",
+            "vote": {
+              "link": msgid,
+              "value": 1,
+              "expression": "Like"
+            }
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      unlike(msgid) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "vote",
+            "vote": {
+              "link": msgid,
+              "value": 0,
+              "expression": "Unlike"
+            }
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
       }
     }
 
@@ -1373,7 +1447,7 @@ var app = (function () {
 
     const file = "src\\messageTypes\\PostMsg.svelte";
 
-    // (46:6) {#if msg.value.content.root}
+    // (67:6) {#if msg.value.content.root}
     function create_if_block_1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1383,9 +1457,9 @@ var app = (function () {
     			a = element("a");
     			t = text("(root)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
-    			add_location(a, file, 47, 10, 1158);
-    			add_location(span, file, 46, 8, 1140);
-    			dispose = listen(a, "click", ctx.goRoot);
+    			add_location(a, file, 68, 10, 1625);
+    			add_location(span, file, 67, 8, 1608);
+    			dispose = listen(a, "click", prevent_default(ctx.goRoot));
     		},
 
     		m: function mount(target, anchor) {
@@ -1410,7 +1484,7 @@ var app = (function () {
     	};
     }
 
-    // (55:6) {#if msg.value.content.branch}
+    // (76:6) {#if msg.value.content.branch}
     function create_if_block(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1420,9 +1494,9 @@ var app = (function () {
     			a = element("a");
     			t = text("(in reply to)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
-    			add_location(a, file, 56, 10, 1405);
-    			add_location(span, file, 55, 8, 1387);
-    			dispose = listen(a, "click", ctx.goBranch);
+    			add_location(a, file, 77, 10, 1878);
+    			add_location(span, file, 76, 8, 1861);
+    			dispose = listen(a, "click", prevent_default(ctx.goBranch));
     		},
 
     		m: function mount(target, anchor) {
@@ -1465,7 +1539,7 @@ var app = (function () {
     			input = element("input");
     			t1 = space();
     			i = element("i");
-    			t2 = text("\r\n        Like");
+    			t2 = text("\n        Like");
     			t3 = space();
     			if (if_block0) if_block0.c();
     			t4 = space();
@@ -1475,24 +1549,29 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "Reply";
     			div0.className = "card-body";
-    			add_location(div0, file, 34, 0, 806);
+    			add_location(div0, file, 55, 0, 1246);
     			attr(input, "type", "checkbox");
-    			add_location(input, file, 41, 8, 1006);
+    			input.checked = ctx.liked;
+    			add_location(input, file, 62, 8, 1439);
     			i.className = "form-icon";
-    			add_location(i, file, 42, 8, 1041);
+    			add_location(i, file, 63, 8, 1513);
     			label.className = "form-switch d-inline";
-    			add_location(label, file, 40, 6, 960);
+    			add_location(label, file, 61, 6, 1394);
     			div1.className = "column col-6";
-    			add_location(div1, file, 39, 4, 926);
+    			add_location(div1, file, 60, 4, 1361);
     			button.className = "btn";
-    			add_location(button, file, 65, 6, 1660);
+    			add_location(button, file, 86, 6, 2139);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 64, 4, 1615);
+    			add_location(div2, file, 85, 4, 2095);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file, 38, 2, 887);
+    			add_location(div3, file, 59, 2, 1323);
     			div4.className = "card-footer";
-    			add_location(div4, file, 37, 0, 858);
-    			dispose = listen(button, "click", ctx.reply);
+    			add_location(div4, file, 58, 0, 1295);
+
+    			dispose = [
+    				listen(input, "change", ctx.likeChanged),
+    				listen(button, "click", ctx.reply)
+    			];
     		},
 
     		l: function claim(nodes) {
@@ -1521,6 +1600,10 @@ var app = (function () {
     		},
 
     		p: function update(changed, ctx) {
+    			if (changed.liked) {
+    				input.checked = ctx.liked;
+    			}
+
     			if (ctx.msg.value.content.root) {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
@@ -1560,7 +1643,7 @@ var app = (function () {
 
     			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
-    			dispose();
+    			run_all(dispose);
     		}
     	};
     }
@@ -1569,6 +1652,31 @@ var app = (function () {
     	let { msg } = $$props;
 
       let content = ssb.markdown(msg.value.content.text);
+      let liked = false;
+
+      ssb.votes(msg.key).then(ms => {
+        ms.forEach(m => {
+          let author = m.value.author;
+          if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+            $$invalidate('liked', liked = true);
+          }
+        });
+      });
+
+      const likeChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb
+            .like(msg.key)
+            .then(() => console.log("liked", msg.key))
+            .catch(() => { const $$result = (liked = false); $$invalidate('liked', liked); return $$result; });
+        } else {
+          ssb
+            .unlike(msg.key)
+            .then(() => console.log("unliked", msg.key))
+            .catch(() => { const $$result = (liked = true); $$invalidate('liked', liked); return $$result; });
+        }
+      };
 
       const reply = ev => {
         let rootId = msg.value.content.root || msg.key;
@@ -1577,15 +1685,11 @@ var app = (function () {
       };
 
       const goRoot = ev => {
-        ev.stopPropagation();
-        ev.preventDefault();
         let rootId = msg.value.content.root || msg.key;
         navigate("/thread", { thread: rootId });
       };
 
       const goBranch = ev => {
-        ev.stopPropagation();
-        ev.preventDefault();
         let branchId = msg.value.content.branch || msg.key;
         navigate("/thread", { thread: branchId });
       };
@@ -1599,7 +1703,15 @@ var app = (function () {
     		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
     	};
 
-    	return { msg, content, reply, goRoot, goBranch };
+    	return {
+    		msg,
+    		content,
+    		liked,
+    		likeChanged,
+    		reply,
+    		goRoot,
+    		goBranch
+    	};
     }
 
     class PostMsg extends SvelteComponentDev {
@@ -1721,9 +1833,9 @@ var app = (function () {
     			a = element("a");
     			t4 = text(ctx.label);
     			a.href = a_href_value = "/index.html?thread=" + ctx.encodedid + "#/thread";
-    			add_location(a, file$2, 25, 2, 622);
+    			add_location(a, file$2, 25, 2, 597);
     			div.className = "card-body";
-    			add_location(div, file$2, 23, 0, 569);
+    			add_location(div, file$2, 23, 0, 546);
     			dispose = listen(a, "click", ctx.goThread);
     		},
 
@@ -2616,7 +2728,7 @@ var app = (function () {
 
     const file$8 = "src\\messageTypes\\BlogMsg.svelte";
 
-    // (64:0) {#if thumbnail}
+    // (87:0) {#if thumbnail}
     function create_if_block_6(ctx) {
     	var div, img, img_src_value;
 
@@ -2627,9 +2739,9 @@ var app = (function () {
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + encodeURIComponent(ctx.thumbnail);
     			img.className = "img-responsive";
     			img.alt = ctx.title;
-    			add_location(img, file$8, 65, 4, 1473);
+    			add_location(img, file$8, 88, 4, 1991);
     			div.className = "card-image";
-    			add_location(div, file$8, 64, 2, 1444);
+    			add_location(div, file$8, 87, 2, 1962);
     		},
 
     		m: function mount(target, anchor) {
@@ -2647,7 +2759,7 @@ var app = (function () {
     	};
     }
 
-    // (73:2) {#if title}
+    // (96:2) {#if title}
     function create_if_block_5(ctx) {
     	var h1, t;
 
@@ -2656,7 +2768,7 @@ var app = (function () {
     			h1 = element("h1");
     			t = text(ctx.title);
     			h1.className = "card-title h5";
-    			add_location(h1, file$8, 73, 4, 1661);
+    			add_location(h1, file$8, 96, 4, 2179);
     		},
 
     		m: function mount(target, anchor) {
@@ -2674,7 +2786,7 @@ var app = (function () {
     	};
     }
 
-    // (77:2) {#if toast}
+    // (100:2) {#if toast}
     function create_if_block_4(ctx) {
     	var div, t0, t1;
 
@@ -2684,7 +2796,7 @@ var app = (function () {
     			t0 = text("Can't load blogpost: ");
     			t1 = text(ctx.toastMsg);
     			div.className = "toast toast-error";
-    			add_location(div, file$8, 77, 4, 1727);
+    			add_location(div, file$8, 100, 4, 2245);
     		},
 
     		m: function mount(target, anchor) {
@@ -2707,7 +2819,7 @@ var app = (function () {
     	};
     }
 
-    // (82:2) {:else}
+    // (105:2) {:else}
     function create_else_block_1$1(ctx) {
     	var raw_before, raw_after;
 
@@ -2735,7 +2847,7 @@ var app = (function () {
     	};
     }
 
-    // (80:2) {#if showBlogpost}
+    // (103:2) {#if showBlogpost}
     function create_if_block_3(ctx) {
     	var raw_before, raw_after;
 
@@ -2768,7 +2880,7 @@ var app = (function () {
     	};
     }
 
-    // (94:6) {#if msg.value.content.root}
+    // (117:6) {#if msg.value.content.root}
     function create_if_block_2$1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -2778,9 +2890,9 @@ var app = (function () {
     			a = element("a");
     			t = text("(root)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
-    			add_location(a, file$8, 95, 10, 2177);
-    			add_location(span, file$8, 94, 8, 2160);
-    			dispose = listen(a, "click", ctx.goRoot);
+    			add_location(a, file$8, 118, 10, 2735);
+    			add_location(span, file$8, 117, 8, 2718);
+    			dispose = listen(a, "click", prevent_default(ctx.goRoot));
     		},
 
     		m: function mount(target, anchor) {
@@ -2805,7 +2917,7 @@ var app = (function () {
     	};
     }
 
-    // (103:6) {#if msg.value.content.branch}
+    // (126:6) {#if msg.value.content.branch}
     function create_if_block_1$2(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -2815,9 +2927,9 @@ var app = (function () {
     			a = element("a");
     			t = text("(in reply to)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
-    			add_location(a, file$8, 104, 10, 2415);
-    			add_location(span, file$8, 103, 8, 2398);
-    			dispose = listen(a, "click", ctx.goBranch);
+    			add_location(a, file$8, 127, 10, 2988);
+    			add_location(span, file$8, 126, 8, 2971);
+    			dispose = listen(a, "click", prevent_default(ctx.goBranch));
     		},
 
     		m: function mount(target, anchor) {
@@ -2842,7 +2954,7 @@ var app = (function () {
     	};
     }
 
-    // (122:6) {:else}
+    // (145:6) {:else}
     function create_else_block$1(ctx) {
     	var button, dispose;
 
@@ -2852,7 +2964,7 @@ var app = (function () {
     			button.textContent = "Close Blogpost";
     			button.className = "btn btn-primary";
     			toggle_class(button, "locating", ctx.loading);
-    			add_location(button, file$8, 122, 8, 2926);
+    			add_location(button, file$8, 145, 8, 3514);
     			dispose = listen(button, "click", ctx.click_handler);
     		},
 
@@ -2876,7 +2988,7 @@ var app = (function () {
     	};
     }
 
-    // (115:6) {#if !showBlogpost}
+    // (138:6) {#if !showBlogpost}
     function create_if_block$2(ctx) {
     	var button, dispose;
 
@@ -2886,7 +2998,7 @@ var app = (function () {
     			button.textContent = "Read Blogpost";
     			button.className = "btn btn-primary";
     			toggle_class(button, "locating", ctx.loading);
-    			add_location(button, file$8, 115, 8, 2747);
+    			add_location(button, file$8, 138, 8, 3335);
     			dispose = listen(button, "click", ctx.displayBlogPost);
     		},
 
@@ -2969,24 +3081,29 @@ var app = (function () {
     			t10 = space();
     			if_block6.c();
     			div0.className = "card-body";
-    			add_location(div0, file$8, 71, 0, 1619);
+    			add_location(div0, file$8, 94, 0, 2137);
     			attr(input, "type", "checkbox");
-    			add_location(input, file$8, 89, 8, 2031);
+    			input.checked = ctx.liked;
+    			add_location(input, file$8, 112, 8, 2549);
     			i.className = "form-icon";
-    			add_location(i, file$8, 90, 8, 2065);
+    			add_location(i, file$8, 113, 8, 2623);
     			label.className = "form-switch d-inline";
-    			add_location(label, file$8, 88, 6, 1986);
+    			add_location(label, file$8, 111, 6, 2504);
     			div1.className = "column col-6";
-    			add_location(div1, file$8, 87, 4, 1953);
+    			add_location(div1, file$8, 110, 4, 2471);
     			button.className = "btn";
-    			add_location(button, file$8, 113, 6, 2661);
+    			add_location(button, file$8, 136, 6, 3249);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file$8, 112, 4, 2617);
+    			add_location(div2, file$8, 135, 4, 3205);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file$8, 86, 2, 1915);
+    			add_location(div3, file$8, 109, 2, 2433);
     			div4.className = "card-footer";
-    			add_location(div4, file$8, 85, 0, 1887);
-    			dispose = listen(button, "click", ctx.reply);
+    			add_location(div4, file$8, 108, 0, 2405);
+
+    			dispose = [
+    				listen(input, "change", ctx.likeChanged),
+    				listen(button, "click", ctx.reply)
+    			];
     		},
 
     		l: function claim(nodes) {
@@ -3073,6 +3190,10 @@ var app = (function () {
     				}
     			}
 
+    			if (changed.liked) {
+    				input.checked = ctx.liked;
+    			}
+
     			if (ctx.msg.value.content.root) {
     				if (if_block4) {
     					if_block4.p(changed, ctx);
@@ -3134,12 +3255,17 @@ var app = (function () {
     			if (if_block4) if_block4.d();
     			if (if_block5) if_block5.d();
     			if_block6.d();
-    			dispose();
+    			run_all(dispose);
     		}
     	};
     }
 
     function instance$8($$self, $$props, $$invalidate) {
+    	let $routeLocation;
+
+    	validate_store(routeLocation, 'routeLocation');
+    	subscribe($$self, routeLocation, $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
+
     	let { msg } = $$props;
 
       let content = msg.value.content;
@@ -3153,10 +3279,33 @@ var app = (function () {
       let toastMsg = "";
       let post = summary;
 
-      const displayBlogPost = ev => {
-        ev.stopPropagation();
-        ev.preventDefault();
+      let liked = false;
 
+      ssb.votes(msg.key).then(ms => {
+        ms.forEach(m => {
+          let author = m.value.author;
+          if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+            $$invalidate('liked', liked = true);
+          }
+        });
+      });
+
+      const likeChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb
+            .like(msg.key)
+            .then(() => console.log("liked", msg.key))
+            .catch(() => { const $$result = (liked = false); $$invalidate('liked', liked); return $$result; });
+        } else {
+          ssb
+            .unlike(msg.key)
+            .then(() => console.log("unliked", msg.key))
+            .catch(() => { const $$result = (liked = true); $$invalidate('liked', liked); return $$result; });
+        }
+      };
+
+      const displayBlogPost = ev => {
         $$invalidate('loading', loading = true);
         console.log("loading blogpost", content.blog);
 
@@ -3180,18 +3329,18 @@ var app = (function () {
       };
 
       const goRoot = ev => {
-        ev.stopPropagation();
-        ev.preventDefault();
         let rootId = msg.value.content.root || msg.key;
         navigate("/thread", { thread: rootId });
       };
 
       const goBranch = ev => {
-        ev.stopPropagation();
-        ev.preventDefault();
         let branchId = msg.value.content.branch || msg.key;
         navigate("/thread", { thread: branchId });
       };
+
+      if ($routeLocation == "/thread") {
+        setTimeout(displayBlogPost, 100);
+      }
 
     	const writable_props = ['msg'];
     	Object.keys($$props).forEach(key => {
@@ -3218,6 +3367,8 @@ var app = (function () {
     		toast,
     		toastMsg,
     		post,
+    		liked,
+    		likeChanged,
     		displayBlogPost,
     		reply,
     		goRoot,
@@ -4101,7 +4252,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (33:0) {#if error}
+    // (31:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -4111,7 +4262,7 @@ var app = (function () {
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$a, 33, 2, 753);
+    			add_location(div, file$a, 31, 2, 643);
     		},
 
     		m: function mount(target, anchor) {
@@ -4130,7 +4281,7 @@ var app = (function () {
     	};
     }
 
-    // (38:0) {:else}
+    // (36:0) {:else}
     function create_else_block$3(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -4160,19 +4311,19 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$a, 46, 8, 1133);
+    			add_location(div0, file$a, 44, 8, 1010);
     			a0.href = "#/public";
-    			add_location(a0, file$a, 43, 6, 1023);
+    			add_location(a0, file$a, 41, 6, 903);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$a, 42, 4, 979);
+    			add_location(li0, file$a, 40, 4, 860);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$a, 55, 8, 1422);
+    			add_location(div1, file$a, 53, 8, 1290);
     			a1.href = "#/public";
-    			add_location(a1, file$a, 50, 6, 1248);
+    			add_location(a1, file$a, 48, 6, 1121);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$a, 49, 4, 1208);
+    			add_location(li1, file$a, 47, 4, 1082);
     			ul.className = "pagination";
-    			add_location(ul, file$a, 41, 2, 950);
+    			add_location(ul, file$a, 39, 2, 832);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
@@ -4229,7 +4380,7 @@ var app = (function () {
     	};
     }
 
-    // (36:0) {#if !msgs}
+    // (34:0) {#if !msgs}
     function create_if_block$4(ctx) {
     	var div;
 
@@ -4237,7 +4388,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$a, 36, 2, 828);
+    			add_location(div, file$a, 34, 2, 715);
     		},
 
     		m: function mount(target, anchor) {
@@ -4256,7 +4407,7 @@ var app = (function () {
     	};
     }
 
-    // (39:2) {#each msgs as msg (msg.key)}
+    // (37:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -4442,19 +4593,17 @@ var app = (function () {
             };
         
             Object.assign(opts, $routeParams);
-            console.dir("opts", opts);
         
             if (opts.hasOwnProperty("lt")) {
               opts.lt = parseInt(opts.lt);
             }
         
             let promise = ssb.public(opts).then(ms => {
-              console.log("messages arrived", ms);
               $$invalidate('msgs', msgs = ms);
               window.scrollTo(0, 0);
             }).catch(n => {
               if (!error) {
-                navigate("/error", {error: n});
+               console.error("errrrooooor");
               }
             });
           } }
@@ -4700,20 +4849,20 @@ var app = (function () {
     			button1.textContent = "Post";
     			add_location(h2, file$c, 122, 10, 3508);
     			div0.className = "divider";
-    			add_location(div0, file$c, 147, 10, 4179);
+    			add_location(div0, file$c, 147, 10, 4184);
     			span.className = "label label-warning";
-    			add_location(span, file$c, 150, 14, 4302);
+    			add_location(span, file$c, 150, 14, 4307);
     			div1.className = "column col-md-12 col-lg-10";
-    			add_location(div1, file$c, 149, 12, 4247);
+    			add_location(div1, file$c, 149, 12, 4252);
     			button0.className = "btn";
-    			add_location(button0, file$c, 155, 14, 4519);
+    			add_location(button0, file$c, 155, 14, 4524);
     			button1.className = "btn btn-primary";
     			toggle_class(button1, "loading", ctx.posting);
-    			add_location(button1, file$c, 158, 14, 4641);
+    			add_location(button1, file$c, 158, 14, 4646);
     			div2.className = "column col-md-12 col-lg-2";
-    			add_location(div2, file$c, 154, 12, 4465);
+    			add_location(div2, file$c, 154, 12, 4470);
     			div3.className = "columns";
-    			add_location(div3, file$c, 148, 10, 4213);
+    			add_location(div3, file$c, 148, 10, 4218);
     			div4.className = "column col-md-12";
     			add_location(div4, file$c, 121, 8, 3467);
 
@@ -5076,7 +5225,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			b = element("b");
-    			b.textContent = "branch:";
+    			b.textContent = "In Reply To:";
     			t1 = space();
     			t2 = text(ctx.branch);
     			add_location(b, file$c, 139, 18, 4002);
@@ -5382,7 +5531,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (29:0) {#if error}
+    // (27:0) {#if error}
     function create_if_block_1$6(ctx) {
     	var div, t0, a, t1, a_href_value, t2, t3;
 
@@ -5395,9 +5544,9 @@ var app = (function () {
     			t2 = text(": ");
     			t3 = text(ctx.error);
     			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
-    			add_location(a, file$d, 29, 53, 717);
+    			add_location(a, file$d, 27, 53, 636);
     			div.className = "toast toast-error";
-    			add_location(div, file$d, 29, 2, 666);
+    			add_location(div, file$d, 27, 2, 585);
     		},
 
     		m: function mount(target, anchor) {
@@ -5431,7 +5580,7 @@ var app = (function () {
     	};
     }
 
-    // (34:0) {:else}
+    // (32:0) {:else}
     function create_else_block$5(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), each_1_anchor, current;
 
@@ -5490,7 +5639,7 @@ var app = (function () {
     	};
     }
 
-    // (32:0) {#if !msgs && !error}
+    // (30:0) {#if !msgs && !error}
     function create_if_block$6(ctx) {
     	var div;
 
@@ -5498,7 +5647,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$d, 32, 2, 808);
+    			add_location(div, file$d, 30, 2, 727);
     		},
 
     		m: function mount(target, anchor) {
@@ -5517,7 +5666,7 @@ var app = (function () {
     	};
     }
 
-    // (35:2) {#each msgs as msg (msg.key)}
+    // (33:2) {#each msgs as msg (msg.key)}
     function create_each_block$1(key_1, ctx) {
     	var first, current;
 
@@ -5692,11 +5841,9 @@ var app = (function () {
             if (msgid.startsWith("ssb:")) {
               $$invalidate('msgid', msgid = msgid.replace("ssb:", ""));
             }
-            console.log("fetching", msgid);
             let promise = ssb
               .thread(msgid)
               .then(ms => {
-                console.log("messages arrived", ms);
                 $$invalidate('msgs', msgs = ms);
                 window.scrollTo(0, 0);
               })
@@ -6549,70 +6696,68 @@ var app = (function () {
     			a1.className = "navbar-brand mr-2 p-1";
     			add_location(a1, file$g, 68, 4, 1494);
     			a2.href = "#/compose";
-    			a2.className = "btn btn-link svelte-1ucmw71";
-    			toggle_class(a2, "current", ctx.$routeLocation == "/compose");
+    			a2.className = "btn btn-link";
     			add_location(a2, file$g, 74, 4, 1742);
     			a3.href = "#/public";
-    			a3.className = "btn btn-link svelte-1ucmw71";
-    			toggle_class(a3, "current", ctx.$routeLocation == "/public");
-    			add_location(a3, file$g, 81, 4, 1928);
+    			a3.className = "btn btn-link";
+    			add_location(a3, file$g, 80, 4, 1877);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$g, 88, 4, 2114);
+    			add_location(a4, file$g, 86, 4, 2013);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$g, 89, 4, 2195);
+    			add_location(a5, file$g, 87, 4, 2094);
     			section0.className = "navbar-section hide-sm";
     			add_location(section0, file$g, 64, 2, 1324);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$g, 94, 8, 2409);
+    			add_location(img1, file$g, 92, 8, 2308);
     			i2.className = i2_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-1ucmw71";
-    			add_location(i2, file$g, 95, 8, 2446);
+    			add_location(i2, file$g, 93, 8, 2345);
     			figure1.className = "avatar";
-    			add_location(figure1, file$g, 93, 6, 2377);
+    			add_location(figure1, file$g, 91, 6, 2276);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$g, 92, 4, 2326);
+    			add_location(a6, file$g, 90, 4, 2225);
     			i3.className = "icon icon-caret";
-    			add_location(i3, file$g, 105, 8, 2749);
+    			add_location(i3, file$g, 103, 8, 2648);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$g, 99, 6, 2582);
+    			add_location(a7, file$g, 97, 6, 2481);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$g, 110, 10, 2885);
+    			add_location(a8, file$g, 108, 10, 2784);
     			li0.className = "menu-item";
-    			add_location(li0, file$g, 109, 8, 2852);
+    			add_location(li0, file$g, 107, 8, 2751);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$g, 113, 10, 2989);
+    			add_location(a9, file$g, 111, 10, 2888);
     			li1.className = "menu-item";
-    			add_location(li1, file$g, 112, 8, 2956);
+    			add_location(li1, file$g, 110, 8, 2855);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$g, 116, 10, 3095);
+    			add_location(a10, file$g, 114, 10, 2994);
     			li2.className = "menu-item";
-    			add_location(li2, file$g, 115, 8, 3062);
+    			add_location(li2, file$g, 113, 8, 2961);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$g, 121, 10, 3251);
+    			add_location(a11, file$g, 119, 10, 3150);
     			li3.className = "menu-item";
-    			add_location(li3, file$g, 120, 8, 3218);
+    			add_location(li3, file$g, 118, 8, 3117);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$g, 124, 10, 3363);
+    			add_location(a12, file$g, 122, 10, 3262);
     			li4.className = "menu-item";
-    			add_location(li4, file$g, 123, 8, 3330);
+    			add_location(li4, file$g, 121, 8, 3229);
     			ul.className = "menu";
-    			add_location(ul, file$g, 108, 6, 2826);
+    			add_location(ul, file$g, 106, 6, 2725);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$g, 98, 4, 2541);
+    			add_location(div0, file$g, 96, 4, 2440);
     			section1.className = "navbar-section show-sm bg-gray above svelte-1ucmw71";
-    			add_location(section1, file$g, 91, 2, 2267);
+    			add_location(section1, file$g, 89, 2, 2166);
     			div1.className = "blocker show-sm svelte-1ucmw71";
-    			add_location(div1, file$g, 131, 2, 3522);
+    			add_location(div1, file$g, 129, 2, 3421);
     			header.className = "navbar";
     			add_location(header, file$g, 63, 0, 1298);
 
@@ -6692,11 +6837,6 @@ var app = (function () {
     				i1.className = i1_class_value;
     			}
 
-    			if (changed.$routeLocation) {
-    				toggle_class(a2, "current", ctx.$routeLocation == "/compose");
-    				toggle_class(a3, "current", ctx.$routeLocation == "/public");
-    			}
-
     			if (changed.avatar) {
     				img1.src = ctx.avatar;
     			}
@@ -6724,12 +6864,10 @@ var app = (function () {
     }
 
     function instance$f($$self, $$props, $$invalidate) {
-    	let $connected, $routeLocation;
+    	let $connected;
 
     	validate_store(connected, 'connected');
     	subscribe($$self, connected, $$value => { $connected = $$value; $$invalidate('$connected', $connected); });
-    	validate_store(routeLocation, 'routeLocation');
-    	subscribe($$self, routeLocation, $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
 
     	let avatar = "/images/icon.png";
 
@@ -6779,8 +6917,7 @@ var app = (function () {
     		openSidebar,
     		closeSidebar,
     		openMyProfile,
-    		$connected,
-    		$routeLocation
+    		$connected
     	};
     }
 
@@ -6817,7 +6954,7 @@ var app = (function () {
     			t = space();
     			if (switch_instance) switch_instance.$$.fragment.c();
     			div.className = "container bg-gray";
-    			add_location(div, file$h, 33, 0, 807);
+    			add_location(div, file$h, 57, 0, 1242);
 
     			dispose = [
     				listen(window, "popstate", ctx.popState),
@@ -6904,9 +7041,26 @@ var app = (function () {
 
       window.ssb = false;
 
+      let interval;
+
       onMount(() => {
         connect();
+
+        interval = setInterval(() => {
+          hermiebox.sbot.whoami((err, v) => {
+            if (err) {
+              console.error("can't call whoami", err);
+              reconnect().catch(n => {
+                console.error("can't reconnect");
+                clearInterval(interval);
+                navigate("/error", {error: n});
+              });
+            }
+          });
+        }, 5000);
       });
+
+      onDestroy(() => clearInterval(interval));
 
       const popState = event => {
         if (event.state !== null) {
@@ -6918,7 +7072,7 @@ var app = (function () {
 
       const handleUncaughtException = event => {
         console.error("Uncaught exception", event);
-        navigate("/error", {error: event.message});
+        navigate("/error", { error: event.message });
       };
 
       const hashChange = event => {

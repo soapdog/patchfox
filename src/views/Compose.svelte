@@ -137,7 +137,7 @@
               {/if}
               {#if branch}
                 <p>
-                  <b>branch:</b>
+                  <b>In Reply To:</b>
                    {branch}
                 </p>
               {/if}

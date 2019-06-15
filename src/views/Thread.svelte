@@ -11,11 +11,9 @@
     if (msgid.startsWith("ssb:")) {
       msgid = msgid.replace("ssb:", "");
     }
-    console.log("fetching", msgid);
     let promise = ssb
       .thread(msgid)
       .then(ms => {
-        console.log("messages arrived", ms);
         msgs = ms;
         window.scrollTo(0, 0);
       })

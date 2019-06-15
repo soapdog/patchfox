@@ -134,7 +134,7 @@ export class DriverHermiebox {
 
     let html = hermiebox.modules.ssbMarkdown.block(text)
     html = html
-      .replace("<pre>", `<pre class="code">`)
+      .replace("<pre>", "<pre class=\"code\">")
       .replace(/<a href="#([^"]*)/gi, replaceChannel)
       .replace(/<a href="@([^"]*)/gi, replaceFeedID)
       .replace(/target="_blank"/gi, "")
@@ -200,7 +200,7 @@ export class DriverHermiebox {
           type: "contact",
           contact: userId,
           following: true
-        },  (err, msg)  => {
+        }, (err, msg) => {
           // 'msg' includes the hash-id and headers
           if (err) {
             reject(err)
@@ -215,5 +215,76 @@ export class DriverHermiebox {
 
   getBlob(blobid) {
     return hermiebox.api.getBlob(blobid)
+  }
+
+  votes(msgid) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot
+
+      if (sbot) {
+        pull(
+          sbot.links({ dest: msgid, rel: "vote", values: true }),
+          pull.collect((err, msgs) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(msgs)
+            }
+          })
+        )
+      }
+    })
+  }
+
+  like(msgid) {
+    return new Promise((resolve, reject) => {
+
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "vote",
+        "vote": {
+          "link": msgid,
+          "value": 1,
+          "expression": "Like"
+        }
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  unlike(msgid) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "vote",
+        "vote": {
+          "link": msgid,
+          "value": 0,
+          "expression": "Unlike"
+        }
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
   }
 }

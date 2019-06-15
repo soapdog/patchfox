@@ -1,5 +1,5 @@
 <script>
-  import { navigate } from "../utils.js";
+  import { navigate, routeLocation } from "../utils.js";
 
   export let msg;
 
@@ -14,10 +14,33 @@
   let toastMsg = "";
   let post = summary;
 
-  const displayBlogPost = ev => {
-    ev.stopPropagation();
-    ev.preventDefault();
+  let liked = false;
 
+  ssb.votes(msg.key).then(ms => {
+    ms.forEach(m => {
+      let author = m.value.author;
+      if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+        liked = true;
+      }
+    });
+  });
+
+  const likeChanged = ev => {
+    let v = ev.target.checked;
+    if (v) {
+      ssb
+        .like(msg.key)
+        .then(() => console.log("liked", msg.key))
+        .catch(() => (liked = false));
+    } else {
+      ssb
+        .unlike(msg.key)
+        .then(() => console.log("unliked", msg.key))
+        .catch(() => (liked = true));
+    }
+  };
+
+  const displayBlogPost = ev => {
     loading = true;
     console.log("loading blogpost", content.blog);
 
@@ -41,18 +64,18 @@
   };
 
   const goRoot = ev => {
-    ev.stopPropagation();
-    ev.preventDefault();
     let rootId = msg.value.content.root || msg.key;
     navigate("/thread", { thread: rootId });
   };
 
   const goBranch = ev => {
-    ev.stopPropagation();
-    ev.preventDefault();
     let branchId = msg.value.content.branch || msg.key;
     navigate("/thread", { thread: branchId });
   };
+
+  if ($routeLocation == "/thread") {
+    setTimeout(displayBlogPost, 100);
+  }
 </script>
 
 <style>
@@ -87,7 +110,7 @@
   <div class="columns col-gapless">
     <div class="column col-6">
       <label class="form-switch d-inline">
-        <input type="checkbox" />
+        <input type="checkbox" on:change={likeChanged} checked={liked} />
         <i class="form-icon" />
         Like
       </label>
@@ -95,7 +118,7 @@
         <span>
           <a
             href="?thread={encodeURIComponent(msg.value.content.root)}#/thread"
-            on:click={goRoot}>
+            on:click|preventDefault={goRoot}>
             (root)
           </a>
         </span>
@@ -104,7 +127,7 @@
         <span>
           <a
             href="?thread={encodeURIComponent(msg.value.content.branch)}#/thread"
-            on:click={goBranch}>
+            on:click|preventDefault={goBranch}>
             (in reply to)
           </a>
         </span>
