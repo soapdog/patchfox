@@ -13,8 +13,8 @@
     browser.runtime.openOptionsPage();
   };
 
-  const goCompose = () => navigate("/compose")
-  const goPublic = () => navigate("/public")
+  const goCompose = () => navigate("/compose");
+  const goPublic = () => navigate("/public");
 
   const openSidebar = async ev => {
     let loc = window.location.href;
@@ -30,14 +30,14 @@
     await browser.sidebarAction.close();
   };
 
-const openMyProfile = ev => {
-  ev.stopPropagation();
-  ev.preventDefault();
+  const openMyProfile = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
 
-  if (ssb.feed) {
-    navigate("/profile", {feed: ssb.feed})
-  }
-}
+    if (ssb.feed) {
+      navigate("/profile", { feed: ssb.feed });
+    }
+  };
 </script>
 
 <style>
@@ -88,6 +88,9 @@ const openMyProfile = ev => {
     <a href="/docs/index.html" class="btn btn-link">Help</a>
   </section>
   <section class="navbar-section show-sm bg-gray above">
+    <button class="btn btn-link" on:click={() => history.back()}>
+      <i class="icon icon-back" />
+    </button>
     <a href="..." class="navbar-brand mr-2 p-1">
       <figure class="avatar">
         <img src={avatar} alt="L" />
@@ -99,17 +102,27 @@ const openMyProfile = ev => {
         href="?"
         class="btn btn-link dropdown-toggle"
         tabindex="0"
-        on:click|stopPropagation|preventDefault={() => ""}>
+        on:click|stopPropagation|preventDefault={() => ''}>
         Menu
         <i class="icon icon-caret" />
       </a>
       <!-- menu component -->
       <ul class="menu">
         <li class="menu-item">
-          <a href="#/compose" class="btn btn-link" on:click|stopPropagation|preventDefault={goCompose}>New</a>
+          <a
+            href="#/compose"
+            class="btn btn-link"
+            on:click|stopPropagation|preventDefault={goCompose}>
+            New
+          </a>
         </li>
         <li class="menu-item">
-          <a href="#/public" class="btn btn-link" on:click|stopPropagation|preventDefault={goPublic}>Public</a>
+          <a
+            href="#/public"
+            class="btn btn-link"
+            on:click|stopPropagation|preventDefault={goPublic}>
+            Public
+          </a>
         </li>
         <li class="menu-item">
           <a href="#/settings" class="btn btn-link" on:click={goSettings}>

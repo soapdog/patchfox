@@ -7232,7 +7232,7 @@ var app = (function () {
     const file$h = "src\\Navigation.svelte";
 
     function create_fragment$h(ctx) {
-    	var header, section0, a0, i0, t0, a1, figure0, img0, t1, i1, i1_class_value, t2, a2, t4, a3, t6, a4, t8, a5, t10, section1, a6, figure1, img1, t11, i2, i2_class_value, t12, div0, a7, t13, i3, t14, ul, li0, a8, t16, li1, a9, t18, li2, a10, t20, li3, a11, t22, li4, a12, t24, div1, dispose;
+    	var header, section0, a0, i0, t0, a1, figure0, img0, t1, i1, i1_class_value, t2, a2, t4, a3, t6, a4, t8, a5, t10, section1, button, i2, t11, a6, figure1, img1, t12, i3, i3_class_value, t13, div0, a7, t14, i4, t15, ul, li0, a8, t17, li1, a9, t19, li2, a10, t21, li3, a11, t23, li4, a12, t25, div1, dispose;
 
     	return {
     		c: function create() {
@@ -7260,119 +7260,126 @@ var app = (function () {
     			a5.textContent = "Help";
     			t10 = space();
     			section1 = element("section");
+    			button = element("button");
+    			i2 = element("i");
+    			t11 = space();
     			a6 = element("a");
     			figure1 = element("figure");
     			img1 = element("img");
-    			t11 = space();
-    			i2 = element("i");
     			t12 = space();
+    			i3 = element("i");
+    			t13 = space();
     			div0 = element("div");
     			a7 = element("a");
-    			t13 = text("Menu\n        ");
-    			i3 = element("i");
-    			t14 = space();
+    			t14 = text("Menu\n        ");
+    			i4 = element("i");
+    			t15 = space();
     			ul = element("ul");
     			li0 = element("li");
     			a8 = element("a");
     			a8.textContent = "New";
-    			t16 = space();
+    			t17 = space();
     			li1 = element("li");
     			a9 = element("a");
     			a9.textContent = "Public";
-    			t18 = space();
+    			t19 = space();
     			li2 = element("li");
     			a10 = element("a");
     			a10.textContent = "Settings";
-    			t20 = space();
+    			t21 = space();
     			li3 = element("li");
     			a11 = element("a");
     			a11.textContent = "Help";
-    			t22 = space();
+    			t23 = space();
     			li4 = element("li");
     			a12 = element("a");
     			a12.textContent = "Open as a Tab";
-    			t24 = space();
+    			t25 = space();
     			div1 = element("div");
     			i0.className = "icon icon-minus text-black";
-    			add_location(i0, file$h, 66, 6, 1440);
+    			add_location(i0, file$h, 66, 6, 1460);
     			a0.href = "#/sidebar";
     			a0.className = "btn btn-link";
-    			add_location(a0, file$h, 65, 4, 1369);
+    			add_location(a0, file$h, 65, 4, 1389);
     			img0.src = ctx.avatar;
     			img0.alt = "L";
-    			add_location(img0, file$h, 70, 8, 1610);
+    			add_location(img0, file$h, 70, 8, 1630);
     			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-1ucmw71";
-    			add_location(i1, file$h, 71, 8, 1647);
+    			add_location(i1, file$h, 71, 8, 1667);
     			figure0.className = "avatar avatar-lg";
-    			add_location(figure0, file$h, 69, 6, 1568);
+    			add_location(figure0, file$h, 69, 6, 1588);
     			a1.href = "#";
     			a1.className = "navbar-brand mr-2 p-1";
-    			add_location(a1, file$h, 68, 4, 1494);
+    			add_location(a1, file$h, 68, 4, 1514);
     			a2.href = "#/compose";
     			a2.className = "btn btn-link";
-    			add_location(a2, file$h, 74, 4, 1742);
+    			add_location(a2, file$h, 74, 4, 1762);
     			a3.href = "#/public";
     			a3.className = "btn btn-link";
-    			add_location(a3, file$h, 80, 4, 1877);
+    			add_location(a3, file$h, 80, 4, 1897);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$h, 86, 4, 2013);
+    			add_location(a4, file$h, 86, 4, 2033);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$h, 87, 4, 2094);
+    			add_location(a5, file$h, 87, 4, 2114);
     			section0.className = "navbar-section hide-sm";
-    			add_location(section0, file$h, 64, 2, 1324);
+    			add_location(section0, file$h, 64, 2, 1344);
+    			i2.className = "icon icon-back";
+    			add_location(i2, file$h, 91, 6, 2313);
+    			button.className = "btn btn-link";
+    			add_location(button, file$h, 90, 4, 2245);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$h, 92, 8, 2308);
-    			i2.className = i2_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-1ucmw71";
-    			add_location(i2, file$h, 93, 8, 2345);
+    			add_location(img1, file$h, 95, 8, 2443);
+    			i3.className = i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-1ucmw71";
+    			add_location(i3, file$h, 96, 8, 2480);
     			figure1.className = "avatar";
-    			add_location(figure1, file$h, 91, 6, 2276);
+    			add_location(figure1, file$h, 94, 6, 2411);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$h, 90, 4, 2225);
-    			i3.className = "icon icon-caret";
-    			add_location(i3, file$h, 103, 8, 2648);
+    			add_location(a6, file$h, 93, 4, 2360);
+    			i4.className = "icon icon-caret";
+    			add_location(i4, file$h, 106, 8, 2783);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$h, 97, 6, 2481);
+    			add_location(a7, file$h, 100, 6, 2616);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$h, 108, 10, 2784);
+    			add_location(a8, file$h, 111, 10, 2919);
     			li0.className = "menu-item";
-    			add_location(li0, file$h, 107, 8, 2751);
+    			add_location(li0, file$h, 110, 8, 2886);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$h, 111, 10, 2940);
+    			add_location(a9, file$h, 119, 10, 3135);
     			li1.className = "menu-item";
-    			add_location(li1, file$h, 110, 8, 2907);
+    			add_location(li1, file$h, 118, 8, 3102);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$h, 114, 10, 3097);
+    			add_location(a10, file$h, 127, 10, 3352);
     			li2.className = "menu-item";
-    			add_location(li2, file$h, 113, 8, 3064);
+    			add_location(li2, file$h, 126, 8, 3319);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$h, 119, 10, 3253);
+    			add_location(a11, file$h, 132, 10, 3508);
     			li3.className = "menu-item";
-    			add_location(li3, file$h, 118, 8, 3220);
+    			add_location(li3, file$h, 131, 8, 3475);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$h, 122, 10, 3365);
+    			add_location(a12, file$h, 135, 10, 3620);
     			li4.className = "menu-item";
-    			add_location(li4, file$h, 121, 8, 3332);
+    			add_location(li4, file$h, 134, 8, 3587);
     			ul.className = "menu";
-    			add_location(ul, file$h, 106, 6, 2725);
+    			add_location(ul, file$h, 109, 6, 2860);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$h, 96, 4, 2440);
+    			add_location(div0, file$h, 99, 4, 2575);
     			section1.className = "navbar-section show-sm bg-gray above svelte-1ucmw71";
-    			add_location(section1, file$h, 89, 2, 2166);
+    			add_location(section1, file$h, 89, 2, 2186);
     			div1.className = "blocker show-sm svelte-1ucmw71";
-    			add_location(div1, file$h, 129, 2, 3524);
+    			add_location(div1, file$h, 142, 2, 3779);
     			header.className = "navbar";
-    			add_location(header, file$h, 63, 0, 1298);
+    			add_location(header, file$h, 63, 0, 1318);
 
     			dispose = [
     				listen(a0, "click", ctx.openSidebar),
@@ -7380,7 +7387,8 @@ var app = (function () {
     				listen(a2, "click", stop_propagation(prevent_default(ctx.goCompose))),
     				listen(a3, "click", stop_propagation(prevent_default(ctx.goPublic))),
     				listen(a4, "click", ctx.goSettings),
-    				listen(a7, "click", stop_propagation(prevent_default(click_handler))),
+    				listen(button, "click", ctx.click_handler),
+    				listen(a7, "click", stop_propagation(prevent_default(click_handler_1))),
     				listen(a8, "click", stop_propagation(prevent_default(ctx.goCompose))),
     				listen(a9, "click", stop_propagation(prevent_default(ctx.goPublic))),
     				listen(a10, "click", ctx.goSettings),
@@ -7413,33 +7421,36 @@ var app = (function () {
     			append(section0, a5);
     			append(header, t10);
     			append(header, section1);
+    			append(section1, button);
+    			append(button, i2);
+    			append(section1, t11);
     			append(section1, a6);
     			append(a6, figure1);
     			append(figure1, img1);
-    			append(figure1, t11);
-    			append(figure1, i2);
-    			append(section1, t12);
+    			append(figure1, t12);
+    			append(figure1, i3);
+    			append(section1, t13);
     			append(section1, div0);
     			append(div0, a7);
-    			append(a7, t13);
-    			append(a7, i3);
-    			append(div0, t14);
+    			append(a7, t14);
+    			append(a7, i4);
+    			append(div0, t15);
     			append(div0, ul);
     			append(ul, li0);
     			append(li0, a8);
-    			append(ul, t16);
+    			append(ul, t17);
     			append(ul, li1);
     			append(li1, a9);
-    			append(ul, t18);
+    			append(ul, t19);
     			append(ul, li2);
     			append(li2, a10);
-    			append(ul, t20);
+    			append(ul, t21);
     			append(ul, li3);
     			append(li3, a11);
-    			append(ul, t22);
+    			append(ul, t23);
     			append(ul, li4);
     			append(li4, a12);
-    			append(header, t24);
+    			append(header, t25);
     			append(header, div1);
     		},
 
@@ -7456,8 +7467,8 @@ var app = (function () {
     				img1.src = ctx.avatar;
     			}
 
-    			if ((changed.$connected) && i2_class_value !== (i2_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-1ucmw71")) {
-    				i2.className = i2_class_value;
+    			if ((changed.$connected) && i3_class_value !== (i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-1ucmw71")) {
+    				i3.className = i3_class_value;
     			}
     		},
 
@@ -7474,8 +7485,8 @@ var app = (function () {
     	};
     }
 
-    function click_handler() {
-    	return "";
+    function click_handler_1() {
+    	return '';
     }
 
     function instance$g($$self, $$props, $$invalidate) {
@@ -7507,14 +7518,18 @@ var app = (function () {
         await browser.sidebarAction.close();
       };
 
-    const openMyProfile = ev => {
-      ev.stopPropagation();
-      ev.preventDefault();
+      const openMyProfile = ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
 
-      if (ssb.feed) {
-        navigate("/profile", {feed: ssb.feed});
-      }
-    };
+        if (ssb.feed) {
+          navigate("/profile", { feed: ssb.feed });
+        }
+      };
+
+    	function click_handler() {
+    		return history.back();
+    	}
 
     	$$self.$$.update = ($$dirty = { $connected: 1 }) => {
     		if ($$dirty.$connected) { if ($connected) {
@@ -7532,7 +7547,8 @@ var app = (function () {
     		openSidebar,
     		closeSidebar,
     		openMyProfile,
-    		$connected
+    		$connected,
+    		click_handler
     	};
     }
 
