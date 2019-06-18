@@ -17,13 +17,17 @@
   const goThread = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    navigate("/thread", { thread: msgid });
+    if (ev.ctrlKey) {
+      window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
+    } else {
+      navigate("/thread", { thread: msgid });
+    }
   };
 </script>
 
 <div class="card-body">
    {person} {expression}
   <a href="/index.html?thread={encodedid}#/thread" on:click={goThread}>
-    {label}
+     {label}
   </a>
 </div>

@@ -78,6 +78,14 @@
 
     dropdownActive = false;
   };
+
+  const goProfile = (ev) => {
+     if (ev.ctrlKey) {
+      window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
+    } else {
+      navigate('/profile', { feed })
+    }
+  }
 </script>
 
 <style>
@@ -106,7 +114,7 @@
       <div class="card-title">
         <div
           class="tile tile-centered feed-display"
-          on:click={() => navigate('/profile', { feed })}>
+          on:click={goProfile}>
           <div class="tile-icon">
             <div class="example-tile-icon">
               <img src={image} class="avatar avatar-lg" alt={feed} />

@@ -1856,9 +1856,9 @@ var app = (function () {
     			a = element("a");
     			t4 = text(ctx.label);
     			a.href = a_href_value = "/index.html?thread=" + ctx.encodedid + "#/thread";
-    			add_location(a, file$2, 25, 2, 597);
+    			add_location(a, file$2, 29, 2, 707);
     			div.className = "card-body";
-    			add_location(div, file$2, 23, 0, 546);
+    			add_location(div, file$2, 27, 0, 656);
     			dispose = listen(a, "click", ctx.goThread);
     		},
 
@@ -1917,7 +1917,11 @@ var app = (function () {
       const goThread = ev => {
         ev.stopPropagation();
         ev.preventDefault();
-        navigate("/thread", { thread: msgid });
+        if (ev.ctrlKey) {
+          window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
+        } else {
+          navigate("/thread", { thread: msgid });
+        }
       };
 
     	const writable_props = ['msg'];
@@ -3767,7 +3771,7 @@ var app = (function () {
 
     const file$a = "src\\messageTypes\\MessageRenderer.svelte";
 
-    // (131:8) {#if msg.value.content.channel}
+    // (139:8) {#if msg.value.content.channel}
     function create_if_block_2$2(ctx) {
     	var t0, t1_value = ctx.msg.value.content.channel, t1;
 
@@ -3797,7 +3801,7 @@ var app = (function () {
     	};
     }
 
-    // (167:44) {:else}
+    // (175:44) {:else}
     function create_else_block_1$2(ctx) {
     	var t;
 
@@ -3818,7 +3822,7 @@ var app = (function () {
     	};
     }
 
-    // (167:14) {#if !showRaw}
+    // (175:14) {#if !showRaw}
     function create_if_block_1$3(ctx) {
     	var t;
 
@@ -3839,7 +3843,7 @@ var app = (function () {
     	};
     }
 
-    // (176:2) {:else}
+    // (184:2) {:else}
     function create_else_block$3(ctx) {
     	var div3, div2, div0, pre, code, t0, t1, div1, p0, t2, em, t3, t4, t5, p1, t6, a, t7, t8, a_href_value, t9;
 
@@ -3865,23 +3869,23 @@ var app = (function () {
     			t7 = text("the documentation about messages with type ");
     			t8 = text(ctx.type);
     			t9 = text("\n            .");
-    			add_location(code, file$a, 180, 12, 4772);
+    			add_location(code, file$a, 188, 12, 4924);
     			pre.className = "code";
-    			add_location(pre, file$a, 179, 10, 4741);
+    			add_location(pre, file$a, 187, 10, 4893);
     			div0.className = "column col-9";
-    			add_location(div0, file$a, 178, 8, 4704);
-    			add_location(em, file$a, 186, 12, 4929);
-    			add_location(p0, file$a, 184, 10, 4875);
+    			add_location(div0, file$a, 186, 8, 4856);
+    			add_location(em, file$a, 194, 12, 5081);
+    			add_location(p0, file$a, 192, 10, 5027);
     			a.target = "_blank";
     			a.href = a_href_value = "/docs/index.html#/message_types/" + ctx.type;
-    			add_location(a, file$a, 191, 12, 5042);
-    			add_location(p1, file$a, 189, 10, 4984);
+    			add_location(a, file$a, 199, 12, 5194);
+    			add_location(p1, file$a, 197, 10, 5136);
     			div1.className = "column col-3";
-    			add_location(div1, file$a, 183, 8, 4838);
+    			add_location(div1, file$a, 191, 8, 4990);
     			div2.className = "columns";
-    			add_location(div2, file$a, 177, 6, 4674);
+    			add_location(div2, file$a, 185, 6, 4826);
     			div3.className = "card-body";
-    			add_location(div3, file$a, 176, 4, 4644);
+    			add_location(div3, file$a, 184, 4, 4796);
     		},
 
     		m: function mount(target, anchor) {
@@ -3929,7 +3933,7 @@ var app = (function () {
     	};
     }
 
-    // (174:2) {#if !showRaw}
+    // (182:2) {#if !showRaw}
     function create_if_block$4(ctx) {
     	var switch_instance_anchor, current;
 
@@ -4096,74 +4100,74 @@ var app = (function () {
     			img.src = ctx.image;
     			img.className = "avatar avatar-lg";
     			img.alt = ctx.feed;
-    			add_location(img, file$a, 111, 14, 2562);
+    			add_location(img, file$a, 119, 14, 2714);
     			div0.className = "example-tile-icon";
-    			add_location(div0, file$a, 110, 12, 2516);
+    			add_location(div0, file$a, 118, 12, 2668);
     			div1.className = "tile-icon";
-    			add_location(div1, file$a, 109, 10, 2480);
+    			add_location(div1, file$a, 117, 10, 2632);
     			div2.className = "tile-title";
-    			add_location(div2, file$a, 115, 12, 2703);
+    			add_location(div2, file$a, 123, 12, 2855);
     			small.className = "tile-subtitle text-gray";
-    			add_location(small, file$a, 116, 12, 2752);
+    			add_location(small, file$a, 124, 12, 2904);
     			div3.className = "tile-content";
-    			add_location(div3, file$a, 114, 10, 2664);
+    			add_location(div3, file$a, 122, 10, 2816);
     			div4.className = "tile tile-centered feed-display svelte-17ozi8u";
-    			add_location(div4, file$a, 106, 8, 2356);
+    			add_location(div4, file$a, 114, 8, 2535);
     			div5.className = "card-title";
-    			add_location(div5, file$a, 105, 6, 2323);
+    			add_location(div5, file$a, 113, 6, 2502);
     			div6.className = "float-left";
-    			add_location(div6, file$a, 104, 4, 2292);
+    			add_location(div6, file$a, 112, 4, 2471);
     			span0.className = "text-gray channel-display svelte-17ozi8u";
-    			add_location(span0, file$a, 125, 6, 2954);
+    			add_location(span0, file$a, 133, 6, 3106);
     			i0.className = "icon icon-more-vert";
-    			add_location(i0, file$a, 138, 10, 3424);
+    			add_location(i0, file$a, 146, 10, 3576);
     			span1.className = "btn btn-link dropdown-toggle";
     			span1.tabIndex = "0";
     			toggle_class(span1, "active", ctx.dropdownActive);
-    			add_location(span1, file$a, 133, 8, 3235);
+    			add_location(span1, file$a, 141, 8, 3387);
     			i1.className = "icon icon-share";
-    			add_location(i1, file$a, 146, 14, 3672);
-    			a0.href = a0_href_value = "?thread=" + encodeURIComponent(ctx.msg.key) + "#/thread";
+    			add_location(i1, file$a, 154, 14, 3824);
+    			a0.href = a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
     			a0.target = "_blank";
-    			add_location(a0, file$a, 143, 12, 3557);
+    			add_location(a0, file$a, 151, 12, 3709);
     			li0.className = "menu-item";
-    			add_location(li0, file$a, 141, 10, 3521);
+    			add_location(li0, file$a, 149, 10, 3673);
     			i2.className = "icon icon-copy";
-    			add_location(i2, file$a, 152, 14, 3877);
+    			add_location(i2, file$a, 160, 14, 4029);
     			a1.href = "#";
-    			add_location(a1, file$a, 151, 12, 3810);
+    			add_location(a1, file$a, 159, 12, 3962);
     			li1.className = "menu-item";
-    			add_location(li1, file$a, 150, 10, 3775);
+    			add_location(li1, file$a, 158, 10, 3927);
     			i3.className = "icon icon-copy";
-    			add_location(i3, file$a, 158, 14, 4088);
+    			add_location(i3, file$a, 166, 14, 4240);
     			a2.href = "#";
-    			add_location(a2, file$a, 157, 12, 4026);
+    			add_location(a2, file$a, 165, 12, 4178);
     			li2.className = "menu-item";
-    			add_location(li2, file$a, 156, 10, 3991);
+    			add_location(li2, file$a, 164, 10, 4143);
     			li3.className = "divider";
     			li3.dataset.content = "FOR THE CURIOUS";
-    			add_location(li3, file$a, 162, 10, 4203);
+    			add_location(li3, file$a, 170, 10, 4355);
     			i4.className = "icon icon-message";
-    			add_location(i4, file$a, 165, 14, 4372);
+    			add_location(i4, file$a, 173, 14, 4524);
     			a3.href = "#";
-    			add_location(a3, file$a, 164, 12, 4302);
+    			add_location(a3, file$a, 172, 12, 4454);
     			li4.className = "menu-item";
-    			add_location(li4, file$a, 163, 10, 4267);
+    			add_location(li4, file$a, 171, 10, 4419);
     			ul.className = "menu menu-right svelte-17ozi8u";
-    			add_location(ul, file$a, 140, 8, 3482);
+    			add_location(ul, file$a, 148, 8, 3634);
     			div7.className = "dropdown";
-    			add_location(div7, file$a, 132, 6, 3204);
+    			add_location(div7, file$a, 140, 6, 3356);
     			div8.className = "float-right";
-    			add_location(div8, file$a, 123, 4, 2921);
+    			add_location(div8, file$a, 131, 4, 3073);
     			div9.className = "card-header";
-    			add_location(div9, file$a, 103, 2, 2262);
+    			add_location(div9, file$a, 111, 2, 2441);
     			div10.className = "card m-2";
-    			add_location(div10, file$a, 102, 0, 2237);
+    			add_location(div10, file$a, 110, 0, 2416);
 
     			dispose = [
-    				listen(div4, "click", ctx.click_handler),
-    				listen(span0, "click", ctx.click_handler_1),
-    				listen(span1, "click", ctx.click_handler_2),
+    				listen(div4, "click", ctx.goProfile),
+    				listen(span0, "click", ctx.click_handler),
+    				listen(span1, "click", ctx.click_handler_1),
     				listen(a1, "click", prevent_default(ctx.copyPermalink)),
     				listen(a2, "click", prevent_default(ctx.copyHash)),
     				listen(a3, "click", prevent_default(ctx.toggleRawMessage))
@@ -4257,7 +4261,7 @@ var app = (function () {
     				toggle_class(span1, "active", ctx.dropdownActive);
     			}
 
-    			if ((!current || changed.msg) && a0_href_value !== (a0_href_value = "?thread=" + encodeURIComponent(ctx.msg.key) + "#/thread")) {
+    			if ((!current || changed.msg) && a0_href_value !== (a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread")) {
     				a0.href = a0_href_value;
     			}
 
@@ -4387,22 +4391,26 @@ var app = (function () {
         $$invalidate('dropdownActive', dropdownActive = false);
       };
 
+      const goProfile = (ev) => {
+         if (ev.ctrlKey) {
+          window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
+        } else {
+          navigate('/profile', { feed });
+        }
+      };
+
     	const writable_props = ['msg'];
     	Object.keys($$props).forEach(key => {
     		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<MessageRenderer> was created with unknown prop '${key}'`);
     	});
 
     	function click_handler() {
-    		return navigate('/profile', { feed });
-    	}
-
-    	function click_handler_1() {
     		return navigate('/channel', {
     	            channel: msg.value.content.channel
     	          });
     	}
 
-    	function click_handler_2() {
+    	function click_handler_1() {
     		const $$result = (dropdownActive = !dropdownActive);
     		$$invalidate('dropdownActive', dropdownActive);
     		return $$result;
@@ -4425,9 +4433,10 @@ var app = (function () {
     		toggleRawMessage,
     		copyPermalink,
     		copyHash,
+    		goProfile,
+    		encodeURIComponent,
     		click_handler,
-    		click_handler_1,
-    		click_handler_2
+    		click_handler_1
     	};
     }
 
