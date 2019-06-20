@@ -457,4 +457,190 @@ export class DriverHermiebox {
       }
     })
   }
+
+  follow(feed) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "contact",
+        "contact": feed,
+        "following": true
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  unfollow(feed) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "contact",
+        "contact": feed,
+        "following": false
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  block(feed) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "contact",
+        "contact": feed,
+        "blocking": true
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  unblock(feed) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "contact",
+        "contact": feed,
+        "blocking": false
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  following(feed, byWhom) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+
+      if (sbot) {
+        if (!byWhom) {
+          byWhom = sbot.id
+        }
+
+        let query = {
+          "$filter": {
+            value: {
+              author: byWhom,
+              content: {
+                type: "contact",
+                contact: feed,
+                following: {$is: "boolean"}
+              }
+            }
+          }
+        }
+
+
+        pull(
+          sbot.query.read({
+            query: [
+              query
+            ],
+            reverse: true
+          }),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              if (data.length > 0) {
+                resolve(data[0].value.content.following || false)
+              } else {
+                resolve(false)
+              }
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
+
+  blocking(feed, byWhom) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+
+      if (sbot) {
+        if (!byWhom) {
+          byWhom = sbot.id
+        }
+
+        let query = {
+          "$filter": {
+            value: {
+              author: byWhom,
+              content: {
+                type: "contact",
+                contact: feed,
+                blocking: {$is: "boolean"}
+              }
+            }
+          }
+        }
+
+
+        pull(
+          sbot.query.read({
+            query: [
+              query
+            ],
+            reverse: true
+          }),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              if (data.length > 0) {
+                resolve(data[0].value.content.blocking || false)
+              } else {
+                resolve(false)
+              }
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
 }

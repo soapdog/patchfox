@@ -4,8 +4,9 @@
   let profile = false;
 
   let description = false;
-  let name,
-    image,
+  let following = false;
+  let blocking = false;
+  let image,
     feed,
     lastMsgs = [],
     lastAbout;
@@ -16,6 +17,8 @@
   if (!feed) {
     feed = ssb.feed;
   }
+
+  let name = feed;
 
   document.title = `Patchfox - Feed: ${feed}`;
 
@@ -43,6 +46,29 @@
     }
     window.scrollTo(0, 0);
   });
+
+  if (feed !== ssb.feed) {
+    ssb.following(feed).then(f => (following = f));
+    ssb.blocking(feed).then(f => (blocking = f));
+  }
+
+  const blockingChanged = ev => {
+    let v = ev.target.checked;
+    if (v) {
+      ssb.block(feed).catch(() => (blocking = false));
+    } else {
+      ssb.unblock(feed).catch(() => (blocking = true));
+    }
+  };
+
+  const followingChanged = ev => {
+    let v = ev.target.checked;
+    if (v) {
+      ssb.follow(feed).catch(() => (following = false));
+    } else {
+      ssb.unfollow(feed).catch(() => (following = true));
+    }
+  };
 </script>
 
 <div class="container">
@@ -52,13 +78,39 @@
     <div class="columns">
 
       <div class="column col-6">
-        <img
-          class="img-responsive"
-          src="http://localhost:8989/blobs/get/{image}"
-          alt={feed} />
+        <div class="container">
+          <img
+            class="img-responsive"
+            src="http://localhost:8989/blobs/get/{image}"
+            alt={feed} />
+        </div>
       </div>
       <div class="column col-6">
         <h1>{name}</h1>
+        {#if feed !== ssb.feed}
+          <div class="container">
+            <div class="divider" />
+            <div class="form-group">
+              <label class="form-switch form-inline">
+                <input
+                  type="checkbox"
+                  on:change={followingChanged}
+                  bind:checked={following} />
+                <i class="form-icon" />
+                following
+              </label>
+              <label class="form-switch form-inline">
+                <input
+                  type="checkbox"
+                  on:change={blockingChanged}
+                  bind:checked={blocking} />
+                <i class="form-icon" />
+                blocking
+              </label>
+            </div>
+            <div class="divider" />
+          </div>
+        {/if}
         <p>
           {@html ssb.markdown(description)}
         </p>
