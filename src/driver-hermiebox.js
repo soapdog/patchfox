@@ -287,4 +287,174 @@ export class DriverHermiebox {
       }
     })
   }
+
+  channels() {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+
+      if (sbot) {
+        console.log("querying channels")
+        pull(
+          sbot.query.read({
+            query: [
+              { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
+              {
+                "$reduce": {
+                  "channel": ["value", "content", "channel"],
+                  "count": { "$count": true },
+                  "timestamp": { "$max": ["value", "timestamp"] }
+                }
+              },
+              { "$sort": [["timestamp"], ["count"]] }
+            ],
+            limit: 20
+          }),
+          pull.collect(function (err, data) {
+            console.log("channels", data)
+            if (err) {
+              reject(err)
+            } else {
+              resolve(data)
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
+
+  channel(channel, opts) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+      let query = {
+        "$filter": {
+          value: {
+            content: { channel }
+          }
+        }
+      }
+
+      if (opts.lt) {
+        query.$filter.value.timestamp = { $lt: opts.lt }
+      }
+
+      console.dir(query)
+
+      if (sbot) {
+        pull(
+          sbot.query.read({
+            query: [
+              query
+            ],
+            limit: opts.limit,
+            reverse: true
+          }),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(data)
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
+
+  channelSubscribe(channel) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "channel",
+        "channel": channel,
+        "subscribed": true
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  channelUnsubscribe(channel) {
+    return new Promise((resolve, reject) => {
+      const sbot = hermiebox.sbot || false
+
+      const msgToPost = {
+        "type": "channel",
+        "channel": channel,
+        "subscribed": false
+      }
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
+  channelSubscribed(channel, feed) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+
+      if (sbot) {
+        if (!feed) {
+          feed = sbot.id
+        }
+
+        let query = {
+          "$filter": {
+            value: {
+              author: feed,
+              content: {
+                type: "channel",
+                channel
+              }
+            }
+          }
+        }
+
+
+        pull(
+          sbot.query.read({
+            query: [
+              query
+            ],
+            reverse: true
+          }),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              if (data.length > 0) {
+                resolve(data[0].value.content.subscribed || false)
+              } else {
+                resolve(false)
+              }
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
 }

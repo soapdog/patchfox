@@ -10,7 +10,9 @@
         "m": true,
         "hljs": true,
         "ssb": true,
-        "process": true
+        "process": true,
+        "history": true,
+        "location": true,
     },
     "extends": "eslint:recommended",
     "parserOptions": {

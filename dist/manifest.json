@@ -4,7 +4,7 @@
   "name": "Patchfox",
   "version": "2019.6.2",
   "icons": {
-    "96": "images/icon.png"
+    "32": "images/icon_backpackgreen.png"
   },
   "applications": {
     "gecko": {
@@ -23,9 +23,7 @@
   },
   "browser_action": {
     "default_icon": {
-      "96": "images/icon96.png",
-      "512": "images/icon.png",
-      "32": "images/icon32.png"
+      "32": "images/icon_backpackgreen.png"
     },
     "default_popup": "popup/popup.html"
   },
@@ -58,7 +56,7 @@
   ],
   "sidebar_action": {
     "default_icon": {
-      "32": "images/icon32.png"
+      "32": "images/icon_backpackgreen.png"
     },
     "default_title": "Patchfox",
     "default_panel": "/index.html",

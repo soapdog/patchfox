@@ -8,6 +8,8 @@ import Compose from "./views/Compose.svelte";
 import Thread from "./views/Thread.svelte";
 import Profile from "./views/Profile.svelte";
 import ErrorView from "./views/ErrorView.svelte";
+import Channels from "./views/Channels.svelte"
+import Channel from "./views/Channel.svelte"
 
 
 export const parseLocation = () => {
@@ -18,6 +20,8 @@ export const parseLocation = () => {
 
 export const connected = writable(false);
 
+// maybe in the future, migrate routing system to:
+// https://github.com/ItalyPaleAle/svelte-spa-router
 export const route = writable(parseLocation());
 export const routeParams = derived(route, $route => $route.data)
 export const routeLocation = derived(route, $route => $route.location)
@@ -36,6 +40,8 @@ const routes = {
   "/compose": Compose,
   "/profile": Profile,
   "/error": ErrorView,
+  "/channels": Channels,
+  "/channel": Channel,
   "*": Default
 };
 

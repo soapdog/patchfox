@@ -70,9 +70,4 @@ keymage("p", goPublic);
 keymage("s", goSettings);
 keymage("c", goCompose);
 
-if (!browser) {
-  window.browser = window.chrome;
-}
-
-console.log("browser", browser);
 

@@ -15,6 +15,7 @@
 
   const goCompose = () => navigate("/compose");
   const goPublic = () => navigate("/public");
+  const goChannels = () => navigate("/channels");
 
   const openSidebar = async ev => {
     let loc = window.location.href;
