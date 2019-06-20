@@ -23,6 +23,8 @@
   $: {
     Object.assign(opts, $routeParams);
 
+    document.title = `Patchfox - #${channel}` 
+
     if (opts.hasOwnProperty("lt")) {
       opts.lt = parseInt(opts.lt);
     }
@@ -87,6 +89,8 @@
 {:else}
   {#each msgs as msg (msg.key)}
     <MessageRenderer {msg} />
+  {:else}
+    <p>No messages.</p>
   {/each}
   <ul class="pagination">
     <li class="page-item page-previous">

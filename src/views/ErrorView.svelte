@@ -7,6 +7,8 @@
   let msg;
   let cta = false;
 
+  document.title = `Patchfox - Error`;
+
   const tryReconnect = () => {
     toast = true;
     toastClass = "toast-warning";

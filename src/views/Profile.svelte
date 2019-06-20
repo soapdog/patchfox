@@ -14,9 +14,11 @@
   feed = $routeParams.feed;
 
   if (!feed) {
-    feed = ssb.feed
+    feed = ssb.feed;
   }
-  
+
+  document.title = `Patchfox - Feed: ${feed}`;
+
   console.log("fetching", feed);
   let p1;
   let p2;
@@ -24,6 +26,7 @@
   p1 = ssb.avatar(feed).then(data => {
     name = data.name;
     image = data.image;
+    document.title = `Patchfox - Feed: ${name}`;
   });
   p2 = ssb.profile(feed).then(data => {
     lastAbout = data.about.reverse().find(m => {

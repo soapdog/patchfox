@@ -16,6 +16,8 @@
   $: {
     Object.assign(opts, $routeParams);
 
+    document.title = `Patchfox - Public`;
+
     if (opts.hasOwnProperty("lt")) {
       opts.lt = parseInt(opts.lt);
     }

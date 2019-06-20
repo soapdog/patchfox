@@ -52,12 +52,22 @@
     console.dir("hash change", event);
   };
 </script>
+<style>
+.reduced-line-length {
+  max-width: 840px;
+  margin: auto;
+}
+</style>
 
 <svelte:window
   on:popstate={popState}
   on:error={handleUncaughtException}
   on:hashchange={hashChange} />
 <div class="container bg-gray">
-  <Navigation />
-  <svelte:component this={$currentView} />
+  <div class="columns">
+    <div class="column reduced-line-length">
+      <Navigation />
+      <svelte:component this={$currentView} />
+    </div>
+  </div>
 </div>

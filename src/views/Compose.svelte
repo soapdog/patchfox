@@ -20,6 +20,9 @@
   let fileReader = hermiebox.modules.pullFileReader;
   let sbot = hermiebox.sbot;
 
+  document.title = `Patchfox - compose` 
+
+
   onMount(() => {
     error = false;
     msg = "";

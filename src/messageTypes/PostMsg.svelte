@@ -52,6 +52,10 @@
   div img.is-image-from-blob {
     max-width: 90%;
   }
+
+  .card-body {
+    overflow-wrap: break-word;
+  }
 </style>
 
 <div class="card-body">

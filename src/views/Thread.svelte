@@ -11,6 +11,8 @@
     if (msgid.startsWith("ssb:")) {
       msgid = msgid.replace("ssb:", "");
     }
+    document.title = `Patchfox - Thread: ${msgid}`;
+
     let promise = ssb
       .thread(msgid)
       .then(ms => {
@@ -18,20 +20,27 @@
         window.scrollTo(0, 0);
       })
       .catch(n => {
-        console.dir(n)
+        console.dir(n);
         error = n.message;
       });
   }
 </script>
 
 <div class="container">
-<h4>Thread <small class="label hide-sm">{msgid}</small></h4>
+  <h4>
+    Thread
+    <small class="label hide-sm">{msgid}</small>
+  </h4>
 </div>
 {#if error}
-  <div class="toast toast-error">Couldn't load thead <a href="?thread={msgid}#/thread">{msgid}</a>: {error}</div>
+  <div class="toast toast-error">
+    Couldn't load thead
+    <a href="?thread={msgid}#/thread">{msgid}</a>
+    : {error}
+  </div>
 {/if}
 {#if !msgs && !error}
-  <div class="loading loading-lg"></div>
+  <div class="loading loading-lg" />
 {:else}
   {#each msgs as msg (msg.key)}
     <MessageRenderer {msg} />

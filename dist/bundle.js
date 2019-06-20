@@ -1645,7 +1645,7 @@ var app = (function () {
 
     const file = "src/messageTypes/PostMsg.svelte";
 
-    // (68:6) {#if msg.value.content.root}
+    // (72:6) {#if msg.value.content.root}
     function create_if_block_1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1655,8 +1655,8 @@ var app = (function () {
     			a = element("a");
     			t = text("(root)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
-    			add_location(a, file, 69, 10, 1674);
-    			add_location(span, file, 68, 8, 1657);
+    			add_location(a, file, 73, 10, 1725);
+    			add_location(span, file, 72, 8, 1708);
     			dispose = listen(a, "click", prevent_default(ctx.goRoot));
     		},
 
@@ -1682,7 +1682,7 @@ var app = (function () {
     	};
     }
 
-    // (77:6) {#if msg.value.content.branch}
+    // (81:6) {#if msg.value.content.branch}
     function create_if_block(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1692,8 +1692,8 @@ var app = (function () {
     			a = element("a");
     			t = text("(in reply to)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
-    			add_location(a, file, 78, 10, 1927);
-    			add_location(span, file, 77, 8, 1910);
+    			add_location(a, file, 82, 10, 1978);
+    			add_location(span, file, 81, 8, 1961);
     			dispose = listen(a, "click", prevent_default(ctx.goBranch));
     		},
 
@@ -1746,25 +1746,25 @@ var app = (function () {
     			div2 = element("div");
     			button = element("button");
     			button.textContent = "Reply";
-    			div0.className = "card-body";
-    			add_location(div0, file, 56, 0, 1295);
+    			div0.className = "card-body svelte-10kjcnj";
+    			add_location(div0, file, 60, 0, 1346);
     			attr(input, "type", "checkbox");
     			input.checked = ctx.liked;
-    			add_location(input, file, 63, 8, 1488);
+    			add_location(input, file, 67, 8, 1539);
     			i.className = "form-icon";
-    			add_location(i, file, 64, 8, 1562);
+    			add_location(i, file, 68, 8, 1613);
     			label.className = "form-switch d-inline";
-    			add_location(label, file, 62, 6, 1443);
+    			add_location(label, file, 66, 6, 1494);
     			div1.className = "column col-6";
-    			add_location(div1, file, 61, 4, 1410);
+    			add_location(div1, file, 65, 4, 1461);
     			button.className = "btn";
-    			add_location(button, file, 87, 6, 2188);
+    			add_location(button, file, 91, 6, 2239);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 86, 4, 2144);
+    			add_location(div2, file, 90, 4, 2195);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file, 60, 2, 1372);
+    			add_location(div3, file, 64, 2, 1423);
     			div4.className = "card-footer";
-    			add_location(div4, file, 59, 0, 1344);
+    			add_location(div4, file, 63, 0, 1395);
 
     			dispose = [
     				listen(input, "change", ctx.likeChanged),
@@ -4647,7 +4647,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (87:0) {#if error}
+    // (89:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -4657,7 +4657,7 @@ var app = (function () {
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 87, 2, 2093);
+    			add_location(div, file$b, 89, 2, 2136);
     		},
 
     		m: function mount(target, anchor) {
@@ -4676,7 +4676,7 @@ var app = (function () {
     	};
     }
 
-    // (92:0) {:else}
+    // (94:0) {:else}
     function create_else_block$4(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -4706,19 +4706,19 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$b, 100, 8, 2460);
+    			add_location(div0, file$b, 102, 8, 2503);
     			a0.href = "#/public";
-    			add_location(a0, file$b, 97, 6, 2353);
+    			add_location(a0, file$b, 99, 6, 2396);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$b, 96, 4, 2310);
+    			add_location(li0, file$b, 98, 4, 2353);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$b, 111, 8, 2810);
+    			add_location(div1, file$b, 113, 8, 2853);
     			a1.href = "#/public";
-    			add_location(a1, file$b, 104, 6, 2571);
+    			add_location(a1, file$b, 106, 6, 2614);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$b, 103, 4, 2532);
+    			add_location(li1, file$b, 105, 4, 2575);
     			ul.className = "pagination";
-    			add_location(ul, file$b, 95, 2, 2282);
+    			add_location(ul, file$b, 97, 2, 2325);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler_1))),
@@ -4775,7 +4775,7 @@ var app = (function () {
     	};
     }
 
-    // (90:0) {#if !msgs}
+    // (92:0) {#if !msgs}
     function create_if_block$5(ctx) {
     	var div;
 
@@ -4783,7 +4783,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$b, 90, 2, 2165);
+    			add_location(div, file$b, 92, 2, 2208);
     		},
 
     		m: function mount(target, anchor) {
@@ -4802,7 +4802,7 @@ var app = (function () {
     	};
     }
 
-    // (93:2) {#each msgs as msg (msg.key)}
+    // (95:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -4909,42 +4909,42 @@ var app = (function () {
     			if_block1.c();
     			if_block1_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$b, 50, 4, 1013);
+    			add_location(h4, file$b, 52, 4, 1056);
     			i0.className = "icon icon-more-horiz text-gray";
-    			add_location(i0, file$b, 58, 10, 1312);
+    			add_location(i0, file$b, 60, 10, 1355);
     			span.className = "btn btn-link dropdown-toggle";
     			span.tabIndex = "0";
     			toggle_class(span, "active", ctx.dropdownActive);
-    			add_location(span, file$b, 53, 8, 1123);
+    			add_location(span, file$b, 55, 8, 1166);
     			attr(input0, "type", "checkbox");
-    			add_location(input0, file$b, 63, 14, 1499);
+    			add_location(input0, file$b, 65, 14, 1542);
     			i1.className = "form-icon";
-    			add_location(i1, file$b, 64, 14, 1564);
+    			add_location(i1, file$b, 66, 14, 1607);
     			label0.className = "form-checkbox";
-    			add_location(label0, file$b, 62, 12, 1455);
+    			add_location(label0, file$b, 64, 12, 1498);
     			li0.className = "menu-item";
-    			add_location(li0, file$b, 61, 10, 1420);
+    			add_location(li0, file$b, 63, 10, 1463);
     			label1.className = "form-label";
     			label1.htmlFor = "input-example-1";
-    			add_location(label1, file$b, 69, 12, 1700);
+    			add_location(label1, file$b, 71, 12, 1743);
     			input1.className = "slider tooltip";
     			attr(input1, "type", "range");
     			input1.min = "10";
     			input1.max = "100";
     			input1.value = "50";
-    			add_location(input1, file$b, 72, 12, 1824);
+    			add_location(input1, file$b, 74, 12, 1867);
     			li1.className = "menu-item";
-    			add_location(li1, file$b, 68, 10, 1665);
+    			add_location(li1, file$b, 70, 10, 1708);
     			ul.className = "menu menu-right svelte-72ihda";
-    			add_location(ul, file$b, 60, 8, 1381);
+    			add_location(ul, file$b, 62, 8, 1424);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$b, 52, 6, 1080);
+    			add_location(div0, file$b, 54, 6, 1123);
     			div1.className = "column";
-    			add_location(div1, file$b, 51, 4, 1053);
+    			add_location(div1, file$b, 53, 4, 1096);
     			div2.className = "columns";
-    			add_location(div2, file$b, 49, 2, 987);
+    			add_location(div2, file$b, 51, 2, 1030);
     			div3.className = "container";
-    			add_location(div3, file$b, 48, 0, 961);
+    			add_location(div3, file$b, 50, 0, 1004);
 
     			dispose = [
     				listen(span, "click", ctx.click_handler),
@@ -5130,6 +5130,8 @@ var app = (function () {
     		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.onlyRoots || $$dirty.error) { {
             Object.assign(opts, $routeParams);
         
+            document.title = `Patchfox - Public`;
+        
             if (opts.hasOwnProperty("lt")) {
               opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
             }
@@ -5269,7 +5271,7 @@ var app = (function () {
 
     const file$d = "src/views/Compose.svelte";
 
-    // (176:6) {#if msg}
+    // (179:6) {#if msg}
     function create_if_block_7(ctx) {
     	var if_block_anchor;
 
@@ -5315,7 +5317,7 @@ var app = (function () {
     	};
     }
 
-    // (179:8) {:else}
+    // (182:8) {:else}
     function create_else_block_1$3(ctx) {
     	var div, t0, a, t1, a_href_value;
 
@@ -5327,9 +5329,9 @@ var app = (function () {
     			t1 = text("Check it out?");
     			a.target = "_blank";
     			a.href = a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
-    			add_location(a, file$d, 181, 12, 4535);
+    			add_location(a, file$d, 184, 12, 4578);
     			div.className = "toast toast-success";
-    			add_location(div, file$d, 179, 10, 4432);
+    			add_location(div, file$d, 182, 10, 4475);
     		},
 
     		m: function mount(target, anchor) {
@@ -5353,7 +5355,7 @@ var app = (function () {
     	};
     }
 
-    // (177:8) {#if error}
+    // (180:8) {#if error}
     function create_if_block_8(ctx) {
     	var div, t;
 
@@ -5362,7 +5364,7 @@ var app = (function () {
     			div = element("div");
     			t = text(ctx.msg);
     			div.className = "toast toast-error";
-    			add_location(div, file$d, 177, 10, 4363);
+    			add_location(div, file$d, 180, 10, 4406);
     		},
 
     		m: function mount(target, anchor) {
@@ -5384,7 +5386,7 @@ var app = (function () {
     	};
     }
 
-    // (235:6) {:else}
+    // (238:6) {:else}
     function create_else_block$5(ctx) {
     	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
 
@@ -5414,24 +5416,24 @@ var app = (function () {
     			t8 = space();
     			button1 = element("button");
     			button1.textContent = "Post";
-    			add_location(h2, file$d, 236, 10, 6384);
+    			add_location(h2, file$d, 239, 10, 6427);
     			div0.className = "divider";
-    			add_location(div0, file$d, 261, 10, 7060);
+    			add_location(div0, file$d, 264, 10, 7103);
     			span.className = "label label-warning";
-    			add_location(span, file$d, 264, 14, 7183);
+    			add_location(span, file$d, 267, 14, 7226);
     			div1.className = "column col-md-12 col-lg-10";
-    			add_location(div1, file$d, 263, 12, 7128);
+    			add_location(div1, file$d, 266, 12, 7171);
     			button0.className = "btn";
-    			add_location(button0, file$d, 269, 14, 7400);
+    			add_location(button0, file$d, 272, 14, 7443);
     			button1.className = "btn btn-primary";
     			toggle_class(button1, "loading", ctx.posting);
-    			add_location(button1, file$d, 272, 14, 7522);
+    			add_location(button1, file$d, 275, 14, 7565);
     			div2.className = "column col-md-12 col-lg-2";
-    			add_location(div2, file$d, 268, 12, 7346);
+    			add_location(div2, file$d, 271, 12, 7389);
     			div3.className = "columns";
-    			add_location(div3, file$d, 262, 10, 7094);
+    			add_location(div3, file$d, 265, 10, 7137);
     			div4.className = "column col-md-12";
-    			add_location(div4, file$d, 235, 8, 6343);
+    			add_location(div4, file$d, 238, 8, 6386);
 
     			dispose = [
     				listen(button0, "click", ctx.click_handler),
@@ -5499,7 +5501,7 @@ var app = (function () {
     	};
     }
 
-    // (190:6) {#if !showPreview}
+    // (193:6) {#if !showPreview}
     function create_if_block$6(ctx) {
     	var div, label0, t1, input0, t2, t3, t4, label1, t6, textarea, t7, br, t8, input1, t9, button0, t11, button1, div_intro, div_outro, current, dispose;
 
@@ -5535,32 +5537,32 @@ var app = (function () {
     			button1.textContent = "Preview";
     			label0.className = "form-label";
     			label0.htmlFor = "channel";
-    			add_location(label0, file$d, 191, 10, 4811);
+    			add_location(label0, file$d, 194, 10, 4854);
     			input0.className = "form-input";
     			attr(input0, "type", "text");
     			input0.id = "channel";
     			input0.placeholder = "channel";
-    			add_location(input0, file$d, 192, 10, 4877);
+    			add_location(input0, file$d, 195, 10, 4920);
     			label1.className = "form-label";
     			label1.htmlFor = "content";
-    			add_location(label1, file$d, 217, 10, 5616);
+    			add_location(label1, file$d, 220, 10, 5659);
     			textarea.className = "form-input svelte-1kmc4x";
     			textarea.id = "content";
     			textarea.placeholder = "Type in your post";
     			textarea.rows = "10";
     			toggle_class(textarea, "file-on-top", ctx.fileOnTop);
-    			add_location(textarea, file$d, 218, 10, 5682);
-    			add_location(br, file$d, 227, 10, 6036);
+    			add_location(textarea, file$d, 221, 10, 5725);
+    			add_location(br, file$d, 230, 10, 6079);
     			attr(input1, "type", "file");
     			input1.id = "fileInput";
     			input1.className = "svelte-1kmc4x";
-    			add_location(input1, file$d, 228, 10, 6053);
+    			add_location(input1, file$d, 231, 10, 6096);
     			button0.className = "btn";
-    			add_location(button0, file$d, 229, 10, 6122);
+    			add_location(button0, file$d, 232, 10, 6165);
     			button1.className = "btn btn-primary float-right";
-    			add_location(button1, file$d, 230, 10, 6202);
+    			add_location(button1, file$d, 233, 10, 6245);
     			div.className = "form-group";
-    			add_location(div, file$d, 190, 8, 4757);
+    			add_location(div, file$d, 193, 8, 4800);
 
     			dispose = [
     				listen(input0, "input", ctx.input0_input_handler),
@@ -5688,7 +5690,7 @@ var app = (function () {
     	};
     }
 
-    // (238:10) {#if channel || root || branch}
+    // (241:10) {#if channel || root || branch}
     function create_if_block_3$1(ctx) {
     	var blockquote, t0, t1;
 
@@ -5706,7 +5708,7 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			t1 = space();
     			if (if_block2) if_block2.c();
-    			add_location(blockquote, file$d, 238, 12, 6460);
+    			add_location(blockquote, file$d, 241, 12, 6503);
     		},
 
     		m: function mount(target, anchor) {
@@ -5771,7 +5773,7 @@ var app = (function () {
     	};
     }
 
-    // (240:14) {#if channel}
+    // (243:14) {#if channel}
     function create_if_block_6$1(ctx) {
     	var p, b, t1, t2_value = ctx.channel.startsWith('#') ? ctx.channel.slice(1) : ctx.channel, t2;
 
@@ -5782,8 +5784,8 @@ var app = (function () {
     			b.textContent = "Channel:";
     			t1 = space();
     			t2 = text(t2_value);
-    			add_location(b, file$d, 241, 18, 6539);
-    			add_location(p, file$d, 240, 16, 6517);
+    			add_location(b, file$d, 244, 18, 6582);
+    			add_location(p, file$d, 243, 16, 6560);
     		},
 
     		m: function mount(target, anchor) {
@@ -5807,7 +5809,7 @@ var app = (function () {
     	};
     }
 
-    // (246:14) {#if root}
+    // (249:14) {#if root}
     function create_if_block_5$1(ctx) {
     	var p, b, t1, t2;
 
@@ -5818,8 +5820,8 @@ var app = (function () {
     			b.textContent = "Root:";
     			t1 = space();
     			t2 = text(ctx.root);
-    			add_location(b, file$d, 247, 18, 6733);
-    			add_location(p, file$d, 246, 16, 6711);
+    			add_location(b, file$d, 250, 18, 6776);
+    			add_location(p, file$d, 249, 16, 6754);
     		},
 
     		m: function mount(target, anchor) {
@@ -5839,7 +5841,7 @@ var app = (function () {
     	};
     }
 
-    // (252:14) {#if branch}
+    // (255:14) {#if branch}
     function create_if_block_4$1(ctx) {
     	var p, b, t1, t2;
 
@@ -5850,8 +5852,8 @@ var app = (function () {
     			b.textContent = "In Reply To:";
     			t1 = space();
     			t2 = text(ctx.branch);
-    			add_location(b, file$d, 253, 18, 6878);
-    			add_location(p, file$d, 252, 16, 6856);
+    			add_location(b, file$d, 256, 18, 6921);
+    			add_location(p, file$d, 255, 16, 6899);
     		},
 
     		m: function mount(target, anchor) {
@@ -5875,7 +5877,7 @@ var app = (function () {
     	};
     }
 
-    // (200:10) {#if branch}
+    // (203:10) {#if branch}
     function create_if_block_2$3(ctx) {
     	var label, t_1, input, dispose;
 
@@ -5887,12 +5889,12 @@ var app = (function () {
     			input = element("input");
     			label.className = "form-label";
     			label.htmlFor = "reply-to";
-    			add_location(label, file$d, 200, 12, 5070);
+    			add_location(label, file$d, 203, 12, 5113);
     			input.className = "form-input";
     			attr(input, "type", "text");
     			input.id = "reply-to";
     			input.placeholder = "in reply to";
-    			add_location(input, file$d, 201, 12, 5143);
+    			add_location(input, file$d, 204, 12, 5186);
     			dispose = listen(input, "input", ctx.input_input_handler);
     		},
 
@@ -5920,7 +5922,7 @@ var app = (function () {
     	};
     }
 
-    // (210:10) {#if replyfeed}
+    // (213:10) {#if replyfeed}
     function create_if_block_1$5(ctx) {
     	var div, span, t, current;
 
@@ -5936,9 +5938,9 @@ var app = (function () {
     			span = element("span");
     			t = text("Click the avatar to add a link to the message:\n                ");
     			avatarchip.$$.fragment.c();
-    			add_location(span, file$d, 211, 14, 5402);
+    			add_location(span, file$d, 214, 14, 5445);
     			div.className = "mt-2";
-    			add_location(div, file$d, 210, 12, 5369);
+    			add_location(div, file$d, 213, 12, 5412);
     		},
 
     		m: function mount(target, anchor) {
@@ -6006,11 +6008,11 @@ var app = (function () {
     			t = space();
     			if_block1.c();
     			div0.className = "column";
-    			add_location(div0, file$d, 174, 4, 4296);
+    			add_location(div0, file$d, 177, 4, 4339);
     			div1.className = "columns";
-    			add_location(div1, file$d, 173, 2, 4270);
+    			add_location(div1, file$d, 176, 2, 4313);
     			div2.className = "container";
-    			add_location(div2, file$d, 172, 0, 4244);
+    			add_location(div2, file$d, 175, 0, 4287);
     		},
 
     		l: function claim(nodes) {
@@ -6108,6 +6110,9 @@ var app = (function () {
       let pull = hermiebox.modules.pullStream;
       let fileReader = hermiebox.modules.pullFileReader;
       let sbot = hermiebox.sbot;
+
+      document.title = `Patchfox - compose`; 
+
 
       onMount(() => {
         $$invalidate('error', error = false);
@@ -6305,22 +6310,22 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (30:0) {#if error}
+    // (35:0) {#if error}
     function create_if_block_1$6(ctx) {
     	var div, t0, a, t1, a_href_value, t2, t3;
 
     	return {
     		c: function create() {
     			div = element("div");
-    			t0 = text("Couldn't load thead ");
+    			t0 = text("Couldn't load thead\n    ");
     			a = element("a");
     			t1 = text(ctx.msgid);
-    			t2 = text(": ");
+    			t2 = text("\n    : ");
     			t3 = text(ctx.error);
     			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
-    			add_location(a, file$e, 30, 53, 728);
+    			add_location(a, file$e, 37, 4, 805);
     			div.className = "toast toast-error";
-    			add_location(div, file$e, 30, 2, 677);
+    			add_location(div, file$e, 35, 2, 745);
     		},
 
     		m: function mount(target, anchor) {
@@ -6354,7 +6359,7 @@ var app = (function () {
     	};
     }
 
-    // (35:0) {:else}
+    // (44:0) {:else}
     function create_else_block$6(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), each_1_anchor, current;
 
@@ -6413,7 +6418,7 @@ var app = (function () {
     	};
     }
 
-    // (33:0) {#if !msgs && !error}
+    // (42:0) {#if !msgs && !error}
     function create_if_block$7(ctx) {
     	var div;
 
@@ -6421,7 +6426,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$e, 33, 2, 819);
+    			add_location(div, file$e, 42, 2, 904);
     		},
 
     		m: function mount(target, anchor) {
@@ -6440,7 +6445,7 @@ var app = (function () {
     	};
     }
 
-    // (36:2) {#each msgs as msg (msg.key)}
+    // (45:2) {#each msgs as msg (msg.key)}
     function create_each_block$1(key_1, ctx) {
     	var first, current;
 
@@ -6518,7 +6523,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			h4 = element("h4");
-    			t0 = text("Thread ");
+    			t0 = text("Thread\n    ");
     			small = element("small");
     			t1 = text(ctx.msgid);
     			t2 = space();
@@ -6527,10 +6532,10 @@ var app = (function () {
     			if_block1.c();
     			if_block1_anchor = empty();
     			small.className = "label hide-sm";
-    			add_location(small, file$e, 27, 11, 606);
-    			add_location(h4, file$e, 27, 0, 595);
+    			add_location(small, file$e, 31, 4, 671);
+    			add_location(h4, file$e, 29, 2, 651);
     			div.className = "container";
-    			add_location(div, file$e, 26, 0, 571);
+    			add_location(div, file$e, 28, 0, 625);
     		},
 
     		l: function claim(nodes) {
@@ -6641,6 +6646,8 @@ var app = (function () {
             if (msgid.startsWith("ssb:")) {
               $$invalidate('msgid', msgid = msgid.replace("ssb:", ""));
             }
+            document.title = `Patchfox - Thread: ${msgid}`;
+        
             let promise = ssb
               .thread(msgid)
               .then(ms => {
@@ -6674,7 +6681,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (70:2) {:catch n}
+    // (73:2) {:catch n}
     function create_catch_block(ctx) {
     	var p, t0, t1_value = ctx.n.message, t1;
 
@@ -6683,7 +6690,7 @@ var app = (function () {
     			p = element("p");
     			t0 = text("Error: ");
     			t1 = text(t1_value);
-    			add_location(p, file$f, 70, 4, 1486);
+    			add_location(p, file$f, 73, 4, 1582);
     		},
 
     		m: function mount(target, anchor) {
@@ -6709,7 +6716,7 @@ var app = (function () {
     	};
     }
 
-    // (48:2) {:then}
+    // (51:2) {:then}
     function create_then_block(ctx) {
     	var div2, div0, img, img_src_value, t0, div1, h1, t1, t2, p, raw_value = ctx.ssb.markdown(ctx.description), t3, div3, each_blocks = [], each_1_lookup = new Map(), current;
 
@@ -6741,16 +6748,16 @@ var app = (function () {
     			img.className = "img-responsive";
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
     			img.alt = ctx.feed;
-    			add_location(img, file$f, 51, 8, 1078);
+    			add_location(img, file$f, 54, 8, 1174);
     			div0.className = "column col-6";
-    			add_location(div0, file$f, 50, 6, 1043);
-    			add_location(h1, file$f, 57, 8, 1250);
-    			add_location(p, file$f, 58, 8, 1274);
+    			add_location(div0, file$f, 53, 6, 1139);
+    			add_location(h1, file$f, 60, 8, 1346);
+    			add_location(p, file$f, 61, 8, 1370);
     			div1.className = "column col-6";
-    			add_location(div1, file$f, 56, 6, 1215);
+    			add_location(div1, file$f, 59, 6, 1311);
     			div2.className = "columns";
-    			add_location(div2, file$f, 48, 4, 1014);
-    			add_location(div3, file$f, 64, 4, 1364);
+    			add_location(div2, file$f, 51, 4, 1110);
+    			add_location(div3, file$f, 67, 4, 1460);
     		},
 
     		m: function mount(target, anchor) {
@@ -6821,7 +6828,7 @@ var app = (function () {
     	};
     }
 
-    // (66:6) {#each lastMsgs as msg (msg.key)}
+    // (69:6) {#each lastMsgs as msg (msg.key)}
     function create_each_block$2(key_1, ctx) {
     	var first, current;
 
@@ -6875,7 +6882,7 @@ var app = (function () {
     	};
     }
 
-    // (46:19)      <div class="loading loading-lg" />   {:then}
+    // (49:19)      <div class="loading loading-lg" />   {:then}
     function create_pending_block(ctx) {
     	var div;
 
@@ -6883,7 +6890,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$f, 46, 4, 965);
+    			add_location(div, file$f, 49, 4, 1061);
     		},
 
     		m: function mount(target, anchor) {
@@ -6924,7 +6931,7 @@ var app = (function () {
 
     			info.block.c();
     			div.className = "container";
-    			add_location(div, file$f, 44, 0, 917);
+    			add_location(div, file$f, 47, 0, 1013);
     		},
 
     		l: function claim(nodes) {
@@ -6997,7 +7004,9 @@ var app = (function () {
       if (!feed) {
         $$invalidate('feed', feed = ssb.feed);
       }
-      
+
+      document.title = `Patchfox - Feed: ${feed}`;
+
       console.log("fetching", feed);
       let p1;
       let p2;
@@ -7005,6 +7014,7 @@ var app = (function () {
       $$invalidate('p1', p1 = ssb.avatar(feed).then(data => {
         $$invalidate('name', name = data.name);
         $$invalidate('image', image = data.image);
+        document.title = `Patchfox - Feed: ${name}`;
       }));
       $$invalidate('p2', p2 = ssb.profile(feed).then(data => {
         lastAbout = data.about.reverse().find(m => {
@@ -7045,7 +7055,7 @@ var app = (function () {
 
     const file$g = "src/views/ErrorView.svelte";
 
-    // (42:2) {#if toast}
+    // (44:2) {#if toast}
     function create_if_block_1$7(ctx) {
     	var div, t, div_class_value;
 
@@ -7054,7 +7064,7 @@ var app = (function () {
     			div = element("div");
     			t = text(ctx.msg);
     			div.className = div_class_value = "toast " + ctx.toastClass;
-    			add_location(div, file$g, 42, 4, 983);
+    			add_location(div, file$g, 44, 4, 1023);
     		},
 
     		m: function mount(target, anchor) {
@@ -7080,7 +7090,7 @@ var app = (function () {
     	};
     }
 
-    // (51:4) {#if cta}
+    // (53:4) {#if cta}
     function create_if_block$8(ctx) {
     	var li, a, t_value = ctx.cta.label, t, dispose;
 
@@ -7090,8 +7100,8 @@ var app = (function () {
     			a = element("a");
     			t = text(t_value);
     			a.href = "#";
-    			add_location(a, file$g, 52, 8, 1199);
-    			add_location(li, file$g, 51, 6, 1186);
+    			add_location(a, file$g, 54, 8, 1239);
+    			add_location(li, file$g, 53, 6, 1226);
     			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.cta.action)));
     		},
 
@@ -7153,23 +7163,23 @@ var app = (function () {
     			a1 = element("a");
     			a1.textContent = "Add an issue";
     			t13 = text("\n      to the Patchfox repository.");
-    			add_location(h1, file$g, 40, 2, 921);
-    			add_location(h4, file$g, 44, 2, 1037);
-    			add_location(code, file$g, 46, 4, 1101);
+    			add_location(h1, file$g, 42, 2, 961);
+    			add_location(h4, file$g, 46, 2, 1077);
+    			add_location(code, file$g, 48, 4, 1141);
     			pre.className = "code";
-    			add_location(pre, file$g, 45, 2, 1078);
-    			add_location(p, file$g, 48, 2, 1133);
+    			add_location(pre, file$g, 47, 2, 1118);
+    			add_location(p, file$g, 50, 2, 1173);
     			a0.href = "/docs/index.html#/troubleshooting/";
     			a0.target = "_blank";
-    			add_location(a0, file$g, 58, 6, 1338);
-    			add_location(li0, file$g, 57, 4, 1327);
+    			add_location(a0, file$g, 60, 6, 1378);
+    			add_location(li0, file$g, 59, 4, 1367);
     			a1.href = "https://github.com/soapdog/patchfox/issues";
     			a1.target = "_blank";
-    			add_location(a1, file$g, 63, 6, 1484);
-    			add_location(li1, file$g, 62, 4, 1473);
-    			add_location(ul, file$g, 49, 2, 1161);
+    			add_location(a1, file$g, 65, 6, 1524);
+    			add_location(li1, file$g, 64, 4, 1513);
+    			add_location(ul, file$g, 51, 2, 1201);
     			div.className = "container";
-    			add_location(div, file$g, 39, 0, 895);
+    			add_location(div, file$g, 41, 0, 935);
     		},
 
     		l: function claim(nodes) {
@@ -7254,6 +7264,8 @@ var app = (function () {
       let toast = false;
       let msg;
       let cta = false;
+
+      document.title = `Patchfox - Error`;
 
       const tryReconnect = () => {
         $$invalidate('toast', toast = true);
@@ -7556,7 +7568,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (82:0) {#if error}
+    // (84:0) {#if error}
     function create_if_block_1$8(ctx) {
     	var div, t0, t1;
 
@@ -7566,7 +7578,7 @@ var app = (function () {
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$i, 82, 2, 1848);
+    			add_location(div, file$i, 84, 2, 1896);
     		},
 
     		m: function mount(target, anchor) {
@@ -7585,7 +7597,7 @@ var app = (function () {
     	};
     }
 
-    // (87:0) {:else}
+    // (89:0) {:else}
     function create_else_block$7(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -7597,6 +7609,13 @@ var app = (function () {
     		let child_ctx = get_each_context$4(ctx, each_value, i);
     		let key = get_key(child_ctx);
     		each_1_lookup.set(key, each_blocks[i] = create_each_block$4(key, child_ctx));
+    	}
+
+    	var each_1_else = null;
+
+    	if (!each_value.length) {
+    		each_1_else = create_else_block_1$4(ctx);
+    		each_1_else.c();
     	}
 
     	return {
@@ -7615,19 +7634,19 @@ var app = (function () {
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$i, 95, 8, 2215);
+    			add_location(div0, file$i, 99, 8, 2297);
     			a0.href = "#/public";
-    			add_location(a0, file$i, 92, 6, 2108);
+    			add_location(a0, file$i, 96, 6, 2190);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$i, 91, 4, 2065);
+    			add_location(li0, file$i, 95, 4, 2147);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$i, 107, 8, 2587);
+    			add_location(div1, file$i, 111, 8, 2669);
     			a1.href = "#/public";
-    			add_location(a1, file$i, 99, 6, 2326);
+    			add_location(a1, file$i, 103, 6, 2408);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$i, 98, 4, 2287);
+    			add_location(li1, file$i, 102, 4, 2369);
     			ul.className = "pagination";
-    			add_location(ul, file$i, 90, 2, 2037);
+    			add_location(ul, file$i, 94, 2, 2119);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
@@ -7637,6 +7656,10 @@ var app = (function () {
 
     		m: function mount(target, anchor) {
     			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			if (each_1_else) {
+    				each_1_else.m(target, null);
+    			}
 
     			insert(target, t0, anchor);
     			insert(target, ul, anchor);
@@ -7656,6 +7679,17 @@ var app = (function () {
     			group_outros();
     			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, t0.parentNode, outro_and_destroy_block, create_each_block$4, t0, get_each_context$4);
     			check_outros();
+
+    			if (each_value.length) {
+    				if (each_1_else) {
+    					each_1_else.d(1);
+    					each_1_else = null;
+    				}
+    			} else if (!each_1_else) {
+    				each_1_else = create_else_block_1$4(ctx);
+    				each_1_else.c();
+    				each_1_else.m(t0.parentNode, t0);
+    			}
     		},
 
     		i: function intro(local) {
@@ -7674,6 +7708,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
 
+    			if (each_1_else) each_1_else.d(detaching);
+
     			if (detaching) {
     				detach(t0);
     				detach(ul);
@@ -7684,7 +7720,7 @@ var app = (function () {
     	};
     }
 
-    // (85:0) {#if !msgs}
+    // (87:0) {#if !msgs}
     function create_if_block$9(ctx) {
     	var div;
 
@@ -7692,7 +7728,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$i, 85, 2, 1920);
+    			add_location(div, file$i, 87, 2, 1968);
     		},
 
     		m: function mount(target, anchor) {
@@ -7711,7 +7747,30 @@ var app = (function () {
     	};
     }
 
-    // (88:2) {#each msgs as msg (msg.key)}
+    // (92:2) {:else}
+    function create_else_block_1$4(ctx) {
+    	var p;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "No messages.";
+    			add_location(p, file$i, 92, 4, 2087);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (90:2) {#each msgs as msg (msg.key)}
     function create_each_block$4(key_1, ctx) {
     	var first, current;
 
@@ -7805,19 +7864,19 @@ var app = (function () {
     			if_block1.c();
     			if_block1_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$i, 71, 4, 1535);
+    			add_location(h4, file$i, 73, 4, 1583);
     			attr(input, "type", "checkbox");
-    			add_location(input, file$i, 74, 8, 1658);
+    			add_location(input, file$i, 76, 8, 1706);
     			i.className = "form-icon";
-    			add_location(i, file$i, 75, 8, 1750);
+    			add_location(i, file$i, 77, 8, 1798);
     			label.className = "form-switch float-right";
-    			add_location(label, file$i, 73, 6, 1610);
+    			add_location(label, file$i, 75, 6, 1658);
     			div0.className = "column";
-    			add_location(div0, file$i, 72, 4, 1583);
+    			add_location(div0, file$i, 74, 4, 1631);
     			div1.className = "columns";
-    			add_location(div1, file$i, 70, 2, 1509);
+    			add_location(div1, file$i, 72, 2, 1557);
     			div2.className = "container";
-    			add_location(div2, file$i, 69, 0, 1483);
+    			add_location(div2, file$i, 71, 0, 1531);
 
     			dispose = [
     				listen(input, "change", ctx.input_change_handler),
@@ -7985,6 +8044,8 @@ var app = (function () {
     	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, channel: 1, error: 1 }) => {
     		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.channel || $$dirty.error) { {
             Object.assign(opts, $routeParams);
+        
+            document.title = `Patchfox - #${channel}`; 
         
             if (opts.hasOwnProperty("lt")) {
               opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('channel', channel), $$invalidate('error', error);
@@ -8488,7 +8549,7 @@ var app = (function () {
     const file$k = "src/Patchfox.svelte";
 
     function create_fragment$k(ctx) {
-    	var div, t, current, dispose;
+    	var div2, div1, div0, t, current, dispose;
 
     	var navigation = new Navigation({ $$inline: true });
 
@@ -8504,12 +8565,18 @@ var app = (function () {
 
     	return {
     		c: function create() {
-    			div = element("div");
+    			div2 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
     			navigation.$$.fragment.c();
     			t = space();
     			if (switch_instance) switch_instance.$$.fragment.c();
-    			div.className = "container bg-gray";
-    			add_location(div, file$k, 59, 0, 1303);
+    			div0.className = "column reduced-line-length svelte-6by8ah";
+    			add_location(div0, file$k, 67, 4, 1441);
+    			div1.className = "columns";
+    			add_location(div1, file$k, 66, 2, 1415);
+    			div2.className = "container bg-gray";
+    			add_location(div2, file$k, 65, 0, 1381);
 
     			dispose = [
     				listen(window, "popstate", ctx.popState),
@@ -8523,12 +8590,14 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div, anchor);
-    			mount_component(navigation, div, null);
-    			append(div, t);
+    			insert(target, div2, anchor);
+    			append(div2, div1);
+    			append(div1, div0);
+    			mount_component(navigation, div0, null);
+    			append(div0, t);
 
     			if (switch_instance) {
-    				mount_component(switch_instance, div, null);
+    				mount_component(switch_instance, div0, null);
     			}
 
     			current = true;
@@ -8551,7 +8620,7 @@ var app = (function () {
 
     					switch_instance.$$.fragment.c();
     					switch_instance.$$.fragment.i(1);
-    					mount_component(switch_instance, div, null);
+    					mount_component(switch_instance, div0, null);
     				} else {
     					switch_instance = null;
     				}
@@ -8575,7 +8644,7 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div);
+    				detach(div2);
     			}
 
     			navigation.$destroy();
