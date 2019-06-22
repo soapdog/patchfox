@@ -77,7 +77,7 @@
       href="#/compose"
       class="btn btn-link"
       on:click|stopPropagation|preventDefault={goCompose}>
-      New
+      Compose
     </a>
     <a
       href="#/public"
@@ -85,6 +85,12 @@
       on:click|stopPropagation|preventDefault={goPublic}>
       Public
     </a>
+     <!-- <a
+      href="#/channels" 
+      class="btn btn-link"
+      on:click|stopPropagation|preventDefault={goChannels}>
+      Channels
+    </a> -->
     <a href="#/settings" class="btn btn-link" on:click={goSettings}>Settings</a>
     <a href="/docs/index.html" class="btn btn-link">Help</a>
   </section>

@@ -9,7 +9,7 @@
   ssb.votes(msg.key).then(ms => {
     ms.forEach(m => {
       let author = m.value.author;
-      if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+      if (author === ssb.feed && m.value.content.vote.value === 1) {
         liked = true;
       }
     });
@@ -35,6 +35,12 @@
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
     navigate("/compose", { root: rootId, branch: msg.key, channel, replyfeed });
+  };
+
+  const fork = ev => {
+    let channel = msg.value.content.channel;
+    let replyfeed = msg.value.author;
+    navigate("/compose", { fork: msg.key, channel, replyfeed });
   };
 
   const goRoot = ev => {
@@ -88,7 +94,10 @@
         </span>
       {/if}
     </div>
+
     <div class="column col-6 text-right">
+      <button class="btn" on:click={fork}>Fork</button>
+
       <button class="btn" on:click={reply}>Reply</button>
     </div>
   </div>

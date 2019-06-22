@@ -80195,28 +80195,15 @@ const api = {
 
             var pull = hermiebox.modules.pullStream
 
-            let opts = {
-                id: feedid,
-                reverse: true,
-                limit: 10
-            }
+            try {
+                let user = {
+                    about: await this.aboutMessages(feedid, feedid)
+                }
 
-            let user = {
-                msgs: [],
-                about: await this.aboutMessages(feedid, feedid)
+                resolve(user)
+            } catch (n) {
+                reject(n)
             }
-
-            pull(
-                hermiebox.sbot.createUserStream(opts),
-                pull.collect(function (err, data) {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        user.msgs = data
-                        resolve(user)
-                    }
-                })
-            )
 
         })
     },

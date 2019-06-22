@@ -21,6 +21,11 @@
  * Hermiebox is a browserified fat package of common NodeJS modules from our community and also
  * few highlevel API methods for common tasks. It uses WebSockets to connect to a running sbot
  * using muxrpc and shs stuff, so it needs your `secret` to be available.
+ * 
+ * ATTENTION:
+ * This is a legacy from when Patchfox was vanilla JS. I'm gonna need to refactor this a lot
+ * 
+ * TODO: Refactor to use `ssb-query`
  */
 
 export class DriverHermiebox {
@@ -49,9 +54,14 @@ export class DriverHermiebox {
   }
 
   async profile(feedid) {
-    var user = await hermiebox.api.profile(feedid)
-    console.log(user)
-    return user
+    try {
+      var user = await hermiebox.api.profile(feedid)
+      return user
+
+    } catch (n) {
+      console.error(n)
+      return false
+    }
   }
 
   async get(msgid) {
@@ -174,13 +184,18 @@ export class DriverHermiebox {
       const mentions = data.hasOwnProperty("mentions") ? data.mentions : undefined
       const recps = data.hasOwnProperty("recps") ? data.recps : undefined
       const channel = data.hasOwnProperty("channel") ? data.channel : undefined
+      const fork = data.hasOwnProperty("fork") ? data.fork : undefined
       const sbot = hermiebox.sbot || false
 
       const msgToPost = schemas.post(text, root, branch, mentions, recps, channel)
 
+      if (fork) {
+        // TODO: ssb-msg-schemas doesn't have a fork param
+        msgToPost.fork = fork
+      }
+
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
-          // 'msg' includes the hash-id and headers
           if (err) {
             reject(err)
           } else {
@@ -458,6 +473,54 @@ export class DriverHermiebox {
     })
   }
 
+  subscribedChannels(channel, feed) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+
+      if (sbot) {
+        if (!feed) {
+          feed = sbot.id
+        }
+
+        let query = {
+          "$filter": {
+            value: {
+              author: feed,
+              content: {
+                type: "channel"
+              }
+            }
+          },
+          "$map": {
+            channel: ["value", "content", "channel"],
+            subscribed: ["value", "content", "subscribed"]
+          },
+          "$sort": [["value", "timestamp"]]
+        }
+
+
+        pull(
+          sbot.query.read({
+            query: [
+              query
+            ],
+            reverse: true
+          }),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(data)
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
+
   follow(feed) {
     return new Promise((resolve, reject) => {
       const sbot = hermiebox.sbot || false
@@ -563,7 +626,7 @@ export class DriverHermiebox {
               content: {
                 type: "contact",
                 contact: feed,
-                following: {$is: "boolean"}
+                following: { $is: "boolean" }
               }
             }
           }
@@ -612,7 +675,7 @@ export class DriverHermiebox {
               content: {
                 type: "contact",
                 contact: feed,
-                blocking: {$is: "boolean"}
+                blocking: { $is: "boolean" }
               }
             }
           }
@@ -635,6 +698,52 @@ export class DriverHermiebox {
               } else {
                 resolve(false)
               }
+            }
+          })
+        )
+      } else {
+        reject("no sbot")
+      }
+    })
+  }
+
+  query(filter, limit, reverse, map, reduce) {
+    return new Promise((resolve, reject) => {
+      let pull = hermiebox.modules.pullStream
+      let sbot = hermiebox.sbot || false
+
+      if (sbot) {
+
+        let query = {
+          "$filter": filter
+        }
+
+        if (map) {
+          query.$map = map
+        }
+
+        if (reduce) {
+          query.$reduce = reduce
+        }
+
+        if (typeof reverse == "undefined") {
+          reverse = true
+        }
+
+        console.log(`query call with limit: ${limit} and reverse: ${reverse}`, query)
+        pull(
+          sbot.query.read({
+            query: [
+              query
+            ],
+            reverse: reverse,
+            limit: limit
+          }),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(data)
             }
           })
         )

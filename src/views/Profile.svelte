@@ -23,22 +23,18 @@
   document.title = `Patchfox - Feed: ${feed}`;
 
   console.log("fetching", feed);
-  let p1;
-  let p2;
 
-  p1 = ssb.avatar(feed).then(data => {
+  let avatarPromise = ssb.avatar(feed).then(data => {
     name = data.name;
     image = data.image;
     document.title = `Patchfox - Feed: ${name}`;
   });
-  p2 = ssb.profile(feed).then(data => {
+
+  let aboutPromise = ssb.profile(feed).then(data => {
     lastAbout = data.about.reverse().find(m => {
       let a = m.value.content;
       return a.hasOwnProperty("description");
     });
-    if (data.hasOwnProperty("msgs")) {
-      lastMsgs = data.msgs;
-    }
     try {
       description = lastAbout.value.content.description;
     } catch (n) {
@@ -46,6 +42,21 @@
     }
     window.scrollTo(0, 0);
   });
+
+  let messagePromise = ssb
+    .query(
+      {
+        value: {
+          author: feed 
+        }
+      },
+      10
+    )
+    .then(msgs => {
+      lastMsgs = msgs;
+
+      window.scrollTo(0, 0);
+    });
 
   if (feed !== ssb.feed) {
     ssb.following(feed).then(f => (following = f));
@@ -69,10 +80,30 @@
       ssb.unfollow(feed).catch(() => (following = true));
     }
   };
+
+  // todo: refactor navigation here. This is a hack it shouldn't hide and show values which are
+  // not reloading.
+  const loadMoreMessages = lt => {
+    messagePromise = ssb
+      .query(
+        {
+          value: {
+            author: feed,
+            timestamp: { $lt: lt }
+          }
+        },
+        10
+      )
+      .then(msgs => {
+        lastMsgs = msgs;
+
+        window.scrollTo(0, 0);
+      });
+  };
 </script>
 
 <div class="container">
-  {#await p1 && p2}
+  {#await aboutPromise && avatarPromise}
     <div class="loading loading-lg" />
   {:then}
     <div class="columns">
@@ -118,9 +149,29 @@
     </div>
 
     <div>
-      {#each lastMsgs as msg (msg.key)}
-        <MessageRenderer {msg} />
-      {/each}
+      {#await messagePromise}
+        <div class="loading" />
+      {:then data}
+        {#each lastMsgs as msg (msg.key)}
+          <MessageRenderer {msg} />
+        {/each}
+        <ul class="pagination">
+
+          <li class="page-item page-next">
+            <a
+              href="#/public"
+              on:click|stopPropagation|preventDefault={() => {
+                loadMoreMessages(lastMsgs[lastMsgs.length - 1].timestamp);
+              }}>
+              <div class="page-item-subtitle">Load More</div>
+            </a>
+          </li>
+        </ul>
+      {:catch n}
+        <p>Error fetching messages: {n.message}</p>
+
+      {/await}
+
     </div>
   {:catch n}
     <p>Error: {n.message}</p>

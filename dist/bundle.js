@@ -818,6 +818,11 @@ var app = (function () {
      * Hermiebox is a browserified fat package of common NodeJS modules from our community and also
      * few highlevel API methods for common tasks. It uses WebSockets to connect to a running sbot
      * using muxrpc and shs stuff, so it needs your `secret` to be available.
+     * 
+     * ATTENTION:
+     * This is a legacy from when Patchfox was vanilla JS. I'm gonna need to refactor this a lot
+     * 
+     * TODO: Refactor to use `ssb-query`
      */
 
     class DriverHermiebox {
@@ -846,9 +851,14 @@ var app = (function () {
       }
 
       async profile(feedid) {
-        var user = await hermiebox.api.profile(feedid);
-        console.log(user);
-        return user
+        try {
+          var user = await hermiebox.api.profile(feedid);
+          return user
+
+        } catch (n) {
+          console.error(n);
+          return false
+        }
       }
 
       async get(msgid) {
@@ -971,13 +981,18 @@ var app = (function () {
           const mentions = data.hasOwnProperty("mentions") ? data.mentions : undefined;
           const recps = data.hasOwnProperty("recps") ? data.recps : undefined;
           const channel = data.hasOwnProperty("channel") ? data.channel : undefined;
+          const fork = data.hasOwnProperty("fork") ? data.fork : undefined;
           const sbot = hermiebox.sbot || false;
 
           const msgToPost = schemas.post(text, root, branch, mentions, recps, channel);
 
+          if (fork) {
+            // TODO: ssb-msg-schemas doesn't have a fork param
+            msgToPost.fork = fork;
+          }
+
           if (sbot) {
             sbot.publish(msgToPost, function (err, msg) {
-              // 'msg' includes the hash-id and headers
               if (err) {
                 reject(err);
               } else {
@@ -1255,6 +1270,54 @@ var app = (function () {
         })
       }
 
+      subscribedChannels(channel, feed) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            if (!feed) {
+              feed = sbot.id;
+            }
+
+            let query = {
+              "$filter": {
+                value: {
+                  author: feed,
+                  content: {
+                    type: "channel"
+                  }
+                }
+              },
+              "$map": {
+                channel: ["value", "content", "channel"],
+                subscribed: ["value", "content", "subscribed"]
+              },
+              "$sort": [["value", "timestamp"]]
+            };
+
+
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: true
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
       follow(feed) {
         return new Promise((resolve, reject) => {
           const sbot = hermiebox.sbot || false;
@@ -1360,7 +1423,7 @@ var app = (function () {
                   content: {
                     type: "contact",
                     contact: feed,
-                    following: {$is: "boolean"}
+                    following: { $is: "boolean" }
                   }
                 }
               }
@@ -1409,7 +1472,7 @@ var app = (function () {
                   content: {
                     type: "contact",
                     contact: feed,
-                    blocking: {$is: "boolean"}
+                    blocking: { $is: "boolean" }
                   }
                 }
               }
@@ -1432,6 +1495,52 @@ var app = (function () {
                   } else {
                     resolve(false);
                   }
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      query(filter, limit, reverse, map, reduce) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+
+            let query = {
+              "$filter": filter
+            };
+
+            if (map) {
+              query.$map = map;
+            }
+
+            if (reduce) {
+              query.$reduce = reduce;
+            }
+
+            if (typeof reverse == "undefined") {
+              reverse = true;
+            }
+
+            console.log(`query call with limit: ${limit} and reverse: ${reverse}`, query);
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: reverse,
+                limit: limit
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
                 }
               })
             );
@@ -1831,7 +1940,7 @@ var app = (function () {
 
     const file = "src\\messageTypes\\PostMsg.svelte";
 
-    // (72:6) {#if msg.value.content.root}
+    // (78:6) {#if msg.value.content.root}
     function create_if_block_1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1841,8 +1950,8 @@ var app = (function () {
     			a = element("a");
     			t = text("(root)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
-    			add_location(a, file, 73, 10, 1798);
-    			add_location(span, file, 72, 8, 1780);
+    			add_location(a, file, 79, 10, 1979);
+    			add_location(span, file, 78, 8, 1961);
     			dispose = listen(a, "click", prevent_default(ctx.goRoot));
     		},
 
@@ -1868,7 +1977,7 @@ var app = (function () {
     	};
     }
 
-    // (81:6) {#if msg.value.content.branch}
+    // (87:6) {#if msg.value.content.branch}
     function create_if_block(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1878,8 +1987,8 @@ var app = (function () {
     			a = element("a");
     			t = text("(in reply to)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
-    			add_location(a, file, 82, 10, 2060);
-    			add_location(span, file, 81, 8, 2042);
+    			add_location(a, file, 88, 10, 2241);
+    			add_location(span, file, 87, 8, 2223);
     			dispose = listen(a, "click", prevent_default(ctx.goBranch));
     		},
 
@@ -1906,7 +2015,7 @@ var app = (function () {
     }
 
     function create_fragment(ctx) {
-    	var div0, t0, div4, div3, div1, label, input, t1, i, t2, t3, t4, t5, div2, button, dispose;
+    	var div0, t0, div4, div3, div1, label, input, t1, i, t2, t3, t4, t5, div2, button0, t7, button1, dispose;
 
     	var if_block0 = (ctx.msg.value.content.root) && create_if_block_1(ctx);
 
@@ -1930,31 +2039,37 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			t5 = space();
     			div2 = element("div");
-    			button = element("button");
-    			button.textContent = "Reply";
+    			button0 = element("button");
+    			button0.textContent = "Fork";
+    			t7 = space();
+    			button1 = element("button");
+    			button1.textContent = "Reply";
     			div0.className = "card-body svelte-1ftdgav";
-    			add_location(div0, file, 60, 0, 1406);
+    			add_location(div0, file, 66, 0, 1587);
     			attr(input, "type", "checkbox");
     			input.checked = ctx.liked;
-    			add_location(input, file, 67, 8, 1606);
+    			add_location(input, file, 73, 8, 1787);
     			i.className = "form-icon";
-    			add_location(i, file, 68, 8, 1681);
+    			add_location(i, file, 74, 8, 1862);
     			label.className = "form-switch d-inline";
-    			add_location(label, file, 66, 6, 1560);
+    			add_location(label, file, 72, 6, 1741);
     			div1.className = "column col-6";
-    			add_location(div1, file, 65, 4, 1526);
-    			button.className = "btn";
-    			add_location(button, file, 91, 6, 2330);
+    			add_location(div1, file, 71, 4, 1707);
+    			button0.className = "btn";
+    			add_location(button0, file, 98, 6, 2513);
+    			button1.className = "btn";
+    			add_location(button1, file, 100, 6, 2572);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 90, 4, 2285);
+    			add_location(div2, file, 97, 4, 2468);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file, 64, 2, 1487);
+    			add_location(div3, file, 70, 2, 1668);
     			div4.className = "card-footer";
-    			add_location(div4, file, 63, 0, 1458);
+    			add_location(div4, file, 69, 0, 1639);
 
     			dispose = [
     				listen(input, "change", ctx.likeChanged),
-    				listen(button, "click", ctx.reply)
+    				listen(button0, "click", ctx.fork),
+    				listen(button1, "click", ctx.reply)
     			];
     		},
 
@@ -1980,7 +2095,9 @@ var app = (function () {
     			if (if_block1) if_block1.m(div1, null);
     			append(div3, t5);
     			append(div3, div2);
-    			append(div2, button);
+    			append(div2, button0);
+    			append(div2, t7);
+    			append(div2, button1);
     		},
 
     		p: function update(changed, ctx) {
@@ -2041,7 +2158,7 @@ var app = (function () {
       ssb.votes(msg.key).then(ms => {
         ms.forEach(m => {
           let author = m.value.author;
-          if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+          if (author === ssb.feed && m.value.content.vote.value === 1) {
             $$invalidate('liked', liked = true);
           }
         });
@@ -2066,17 +2183,23 @@ var app = (function () {
         let rootId = msg.value.content.root || msg.key;
         let channel = msg.value.content.channel;
         let replyfeed = msg.value.author;
-        navigate$1("/compose", { root: rootId, branch: msg.key, channel, replyfeed });
+        navigate("/compose", { root: rootId, branch: msg.key, channel, replyfeed });
+      };
+
+      const fork = ev => {
+        let channel = msg.value.content.channel;
+        let replyfeed = msg.value.author;
+        navigate("/compose", { fork: msg.key, channel, replyfeed });
       };
 
       const goRoot = ev => {
         let rootId = msg.value.content.root || msg.key;
-        navigate$1("/thread", { thread: rootId });
+        navigate("/thread", { thread: rootId });
       };
 
       const goBranch = ev => {
         let branchId = msg.value.content.branch || msg.key;
-        navigate$1("/thread", { thread: branchId });
+        navigate("/thread", { thread: branchId });
       };
 
     	const writable_props = ['msg'];
@@ -2094,6 +2217,7 @@ var app = (function () {
     		liked,
     		likeChanged,
     		reply,
+    		fork,
     		goRoot,
     		goBranch
     	};
@@ -2282,7 +2406,7 @@ var app = (function () {
         if (ev.ctrlKey) {
           window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
         } else {
-          navigate$1("/thread", { thread: msgid });
+          navigate("/thread", { thread: msgid });
         }
       };
 
@@ -2487,7 +2611,7 @@ var app = (function () {
       const goProfile = ev => {
         ev.stopPropagation();
         ev.preventDefault();
-        navigate$1("/profile", { feed: msg.value.content.contact });
+        navigate("/profile", { feed: msg.value.content.contact });
       };
 
     	const writable_props = ['msg'];
@@ -2600,7 +2724,7 @@ var app = (function () {
        const goChannel = ev => {
         ev.stopPropagation();
         ev.preventDefault();
-        navigate$1("/channel", { channel: msg.value.content.channel });
+        navigate("/channel", { channel: msg.value.content.channel });
       };
 
     	const writable_props = ['msg'];
@@ -3070,7 +3194,7 @@ var app = (function () {
       const goProfile = ev => {
         ev.stopPropagation();
         ev.preventDefault();
-        navigate$1("/profile", { feed: msg.value.content.address.key });
+        navigate("/profile", { feed: msg.value.content.address.key });
       };
 
     	const writable_props = ['msg'];
@@ -3714,17 +3838,17 @@ var app = (function () {
       const reply = ev => {
         let rootId = msg.value.content.root || msg.key;
         let channel = msg.value.content.channel;
-        navigate$1("/compose", { root: rootId, branch: msg.key, channel });
+        navigate("/compose", { root: rootId, branch: msg.key, channel });
       };
 
       const goRoot = ev => {
         let rootId = msg.value.content.root || msg.key;
-        navigate$1("/thread", { thread: rootId });
+        navigate("/thread", { thread: rootId });
       };
 
       const goBranch = ev => {
         let branchId = msg.value.content.branch || msg.key;
-        navigate$1("/thread", { thread: branchId });
+        navigate("/thread", { thread: branchId });
       };
 
       if ($routeLocation == "/thread") {
@@ -4757,7 +4881,7 @@ var app = (function () {
          if (ev.ctrlKey) {
           window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
         } else {
-          navigate$1('/profile', { feed });
+          navigate('/profile', { feed });
         }
       };
 
@@ -4767,7 +4891,7 @@ var app = (function () {
     	});
 
     	function click_handler() {
-    		return navigate$1('/channel', {
+    		return navigate('/channel', {
     	            channel: msg.value.content.channel
     	          });
     	}
@@ -5305,7 +5429,7 @@ var app = (function () {
     	}
 
     	function click_handler_2() {
-    		return navigate$1('/public', {
+    		return navigate('/public', {
     	            lt: msgs[msgs.length - 1].rts,
     	            limit: opts.limit,
     	            onlyRoots: opts.onlyRoots
@@ -5457,7 +5581,36 @@ var app = (function () {
 
     const file$d = "src\\views\\Compose.svelte";
 
-    // (179:6) {#if msg}
+    // (179:6) {#if fork}
+    function create_if_block_9(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("You are forking: ");
+    			t1 = text(ctx.fork);
+    			div.className = "toast toast-warning";
+    			add_location(div, file$d, 179, 8, 4601);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (182:6) {#if msg}
     function create_if_block_7(ctx) {
     	var if_block_anchor;
 
@@ -5503,7 +5656,7 @@ var app = (function () {
     	};
     }
 
-    // (182:8) {:else}
+    // (185:8) {:else}
     function create_else_block_1$3(ctx) {
     	var div, t0, a, t1, a_href_value;
 
@@ -5515,9 +5668,9 @@ var app = (function () {
     			t1 = text("Check it out?");
     			a.target = "_blank";
     			a.href = a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
-    			add_location(a, file$d, 184, 12, 4762);
+    			add_location(a, file$d, 187, 12, 4902);
     			div.className = "toast toast-success";
-    			add_location(div, file$d, 182, 10, 4657);
+    			add_location(div, file$d, 185, 10, 4797);
     		},
 
     		m: function mount(target, anchor) {
@@ -5541,7 +5694,7 @@ var app = (function () {
     	};
     }
 
-    // (180:8) {#if error}
+    // (183:8) {#if error}
     function create_if_block_8(ctx) {
     	var div, t;
 
@@ -5550,7 +5703,7 @@ var app = (function () {
     			div = element("div");
     			t = text(ctx.msg);
     			div.className = "toast toast-error";
-    			add_location(div, file$d, 180, 10, 4586);
+    			add_location(div, file$d, 183, 10, 4726);
     		},
 
     		m: function mount(target, anchor) {
@@ -5572,7 +5725,7 @@ var app = (function () {
     	};
     }
 
-    // (238:6) {:else}
+    // (241:6) {:else}
     function create_else_block$5(ctx) {
     	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
 
@@ -5602,24 +5755,24 @@ var app = (function () {
     			t8 = space();
     			button1 = element("button");
     			button1.textContent = "Post";
-    			add_location(h2, file$d, 239, 10, 6666);
+    			add_location(h2, file$d, 242, 10, 6806);
     			div0.className = "divider";
-    			add_location(div0, file$d, 264, 10, 7367);
+    			add_location(div0, file$d, 267, 10, 7507);
     			span.className = "label label-warning";
-    			add_location(span, file$d, 267, 14, 7493);
+    			add_location(span, file$d, 270, 14, 7633);
     			div1.className = "column col-md-12 col-lg-10";
-    			add_location(div1, file$d, 266, 12, 7437);
+    			add_location(div1, file$d, 269, 12, 7577);
     			button0.className = "btn";
-    			add_location(button0, file$d, 272, 14, 7715);
+    			add_location(button0, file$d, 275, 14, 7855);
     			button1.className = "btn btn-primary";
     			toggle_class(button1, "loading", ctx.posting);
-    			add_location(button1, file$d, 275, 14, 7840);
+    			add_location(button1, file$d, 278, 14, 7980);
     			div2.className = "column col-md-12 col-lg-2";
-    			add_location(div2, file$d, 271, 12, 7660);
+    			add_location(div2, file$d, 274, 12, 7800);
     			div3.className = "columns";
-    			add_location(div3, file$d, 265, 10, 7402);
+    			add_location(div3, file$d, 268, 10, 7542);
     			div4.className = "column col-md-12";
-    			add_location(div4, file$d, 238, 8, 6624);
+    			add_location(div4, file$d, 241, 8, 6764);
 
     			dispose = [
     				listen(button0, "click", ctx.click_handler),
@@ -5687,7 +5840,7 @@ var app = (function () {
     	};
     }
 
-    // (193:6) {#if !showPreview}
+    // (196:6) {#if !showPreview}
     function create_if_block$6(ctx) {
     	var div, label0, t1, input0, t2, t3, t4, label1, t6, textarea, t7, br, t8, input1, t9, button0, t11, button1, div_intro, div_outro, current, dispose;
 
@@ -5723,32 +5876,32 @@ var app = (function () {
     			button1.textContent = "Preview";
     			label0.className = "form-label";
     			label0.htmlFor = "channel";
-    			add_location(label0, file$d, 194, 10, 5048);
+    			add_location(label0, file$d, 197, 10, 5188);
     			input0.className = "form-input";
     			attr(input0, "type", "text");
     			input0.id = "channel";
     			input0.placeholder = "channel";
-    			add_location(input0, file$d, 195, 10, 5115);
+    			add_location(input0, file$d, 198, 10, 5255);
     			label1.className = "form-label";
     			label1.htmlFor = "content";
-    			add_location(label1, file$d, 220, 10, 5879);
+    			add_location(label1, file$d, 223, 10, 6019);
     			textarea.className = "form-input svelte-olsuyr";
     			textarea.id = "content";
     			textarea.placeholder = "Type in your post";
     			textarea.rows = "10";
     			toggle_class(textarea, "file-on-top", ctx.fileOnTop);
-    			add_location(textarea, file$d, 221, 10, 5946);
-    			add_location(br, file$d, 230, 10, 6309);
+    			add_location(textarea, file$d, 224, 10, 6086);
+    			add_location(br, file$d, 233, 10, 6449);
     			attr(input1, "type", "file");
     			input1.id = "fileInput";
     			input1.className = "svelte-olsuyr";
-    			add_location(input1, file$d, 231, 10, 6327);
+    			add_location(input1, file$d, 234, 10, 6467);
     			button0.className = "btn";
-    			add_location(button0, file$d, 232, 10, 6397);
+    			add_location(button0, file$d, 235, 10, 6537);
     			button1.className = "btn btn-primary float-right";
-    			add_location(button1, file$d, 233, 10, 6478);
+    			add_location(button1, file$d, 236, 10, 6618);
     			div.className = "form-group";
-    			add_location(div, file$d, 193, 8, 4993);
+    			add_location(div, file$d, 196, 8, 5133);
 
     			dispose = [
     				listen(input0, "input", ctx.input0_input_handler),
@@ -5876,7 +6029,7 @@ var app = (function () {
     	};
     }
 
-    // (241:10) {#if channel || root || branch}
+    // (244:10) {#if channel || root || branch}
     function create_if_block_3$1(ctx) {
     	var blockquote, t0, t1;
 
@@ -5894,7 +6047,7 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			t1 = space();
     			if (if_block2) if_block2.c();
-    			add_location(blockquote, file$d, 241, 12, 6744);
+    			add_location(blockquote, file$d, 244, 12, 6884);
     		},
 
     		m: function mount(target, anchor) {
@@ -5959,7 +6112,7 @@ var app = (function () {
     	};
     }
 
-    // (243:14) {#if channel}
+    // (246:14) {#if channel}
     function create_if_block_6$1(ctx) {
     	var p, b, t1, t2_value = ctx.channel.startsWith('#') ? ctx.channel.slice(1) : ctx.channel, t2;
 
@@ -5970,8 +6123,8 @@ var app = (function () {
     			b.textContent = "Channel:";
     			t1 = space();
     			t2 = text(t2_value);
-    			add_location(b, file$d, 244, 18, 6826);
-    			add_location(p, file$d, 243, 16, 6803);
+    			add_location(b, file$d, 247, 18, 6966);
+    			add_location(p, file$d, 246, 16, 6943);
     		},
 
     		m: function mount(target, anchor) {
@@ -5995,7 +6148,7 @@ var app = (function () {
     	};
     }
 
-    // (249:14) {#if root}
+    // (252:14) {#if root}
     function create_if_block_5$1(ctx) {
     	var p, b, t1, t2;
 
@@ -6006,8 +6159,8 @@ var app = (function () {
     			b.textContent = "Root:";
     			t1 = space();
     			t2 = text(ctx.root);
-    			add_location(b, file$d, 250, 18, 7026);
-    			add_location(p, file$d, 249, 16, 7003);
+    			add_location(b, file$d, 253, 18, 7166);
+    			add_location(p, file$d, 252, 16, 7143);
     		},
 
     		m: function mount(target, anchor) {
@@ -6027,7 +6180,7 @@ var app = (function () {
     	};
     }
 
-    // (255:14) {#if branch}
+    // (258:14) {#if branch}
     function create_if_block_4$1(ctx) {
     	var p, b, t1, t2;
 
@@ -6038,8 +6191,8 @@ var app = (function () {
     			b.textContent = "In Reply To:";
     			t1 = space();
     			t2 = text(ctx.branch);
-    			add_location(b, file$d, 256, 18, 7177);
-    			add_location(p, file$d, 255, 16, 7154);
+    			add_location(b, file$d, 259, 18, 7317);
+    			add_location(p, file$d, 258, 16, 7294);
     		},
 
     		m: function mount(target, anchor) {
@@ -6063,7 +6216,7 @@ var app = (function () {
     	};
     }
 
-    // (203:10) {#if branch}
+    // (206:10) {#if branch}
     function create_if_block_2$3(ctx) {
     	var label, t_1, input, dispose;
 
@@ -6075,12 +6228,12 @@ var app = (function () {
     			input = element("input");
     			label.className = "form-label";
     			label.htmlFor = "reply-to";
-    			add_location(label, file$d, 203, 12, 5316);
+    			add_location(label, file$d, 206, 12, 5456);
     			input.className = "form-input";
     			attr(input, "type", "text");
     			input.id = "reply-to";
     			input.placeholder = "in reply to";
-    			add_location(input, file$d, 204, 12, 5390);
+    			add_location(input, file$d, 207, 12, 5530);
     			dispose = listen(input, "input", ctx.input_input_handler);
     		},
 
@@ -6108,7 +6261,7 @@ var app = (function () {
     	};
     }
 
-    // (213:10) {#if replyfeed}
+    // (216:10) {#if replyfeed}
     function create_if_block_1$5(ctx) {
     	var div, span, t, current;
 
@@ -6124,9 +6277,9 @@ var app = (function () {
     			span = element("span");
     			t = text("Click the avatar to add a link to the message:\r\n                ");
     			avatarchip.$$.fragment.c();
-    			add_location(span, file$d, 214, 14, 5659);
+    			add_location(span, file$d, 217, 14, 5799);
     			div.className = "mt-2";
-    			add_location(div, file$d, 213, 12, 5625);
+    			add_location(div, file$d, 216, 12, 5765);
     		},
 
     		m: function mount(target, anchor) {
@@ -6166,9 +6319,11 @@ var app = (function () {
     }
 
     function create_fragment$d(ctx) {
-    	var div2, div1, div0, t, current_block_type_index, if_block1, current;
+    	var div2, div1, div0, t0, t1, current_block_type_index, if_block2, current;
 
-    	var if_block0 = (ctx.msg) && create_if_block_7(ctx);
+    	var if_block0 = (ctx.fork) && create_if_block_9(ctx);
+
+    	var if_block1 = (ctx.msg) && create_if_block_7(ctx);
 
     	var if_block_creators = [
     		create_if_block$6,
@@ -6183,7 +6338,7 @@ var app = (function () {
     	}
 
     	current_block_type_index = select_block_type_1(ctx);
-    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	return {
     		c: function create() {
@@ -6191,14 +6346,16 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			if (if_block0) if_block0.c();
-    			t = space();
-    			if_block1.c();
+    			t0 = space();
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			if_block2.c();
     			div0.className = "column";
-    			add_location(div0, file$d, 177, 4, 4516);
+    			add_location(div0, file$d, 177, 4, 4553);
     			div1.className = "columns";
-    			add_location(div1, file$d, 176, 2, 4489);
+    			add_location(div1, file$d, 176, 2, 4526);
     			div2.className = "container";
-    			add_location(div2, file$d, 175, 0, 4462);
+    			add_location(div2, file$d, 175, 0, 4499);
     		},
 
     		l: function claim(nodes) {
@@ -6210,23 +6367,38 @@ var app = (function () {
     			append(div2, div1);
     			append(div1, div0);
     			if (if_block0) if_block0.m(div0, null);
-    			append(div0, t);
+    			append(div0, t0);
+    			if (if_block1) if_block1.m(div0, null);
+    			append(div0, t1);
     			if_blocks[current_block_type_index].m(div0, null);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
-    			if (ctx.msg) {
+    			if (ctx.fork) {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
-    					if_block0 = create_if_block_7(ctx);
+    					if_block0 = create_if_block_9(ctx);
     					if_block0.c();
-    					if_block0.m(div0, t);
+    					if_block0.m(div0, t0);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
     				if_block0 = null;
+    			}
+
+    			if (ctx.msg) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_7(ctx);
+    					if_block1.c();
+    					if_block1.m(div0, t1);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			var previous_block_index = current_block_type_index;
@@ -6239,27 +6411,27 @@ var app = (function () {
     					if_blocks[previous_block_index].d(1);
     					if_blocks[previous_block_index] = null;
     				});
-    				if_block1.o(1);
+    				if_block2.o(1);
     				check_outros();
 
-    				if_block1 = if_blocks[current_block_type_index];
-    				if (!if_block1) {
-    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block1.c();
+    				if_block2 = if_blocks[current_block_type_index];
+    				if (!if_block2) {
+    					if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block2.c();
     				}
-    				if_block1.i(1);
-    				if_block1.m(div0, null);
+    				if_block2.i(1);
+    				if_block2.m(div0, null);
     			}
     		},
 
     		i: function intro(local) {
     			if (current) return;
-    			if (if_block1) if_block1.i();
+    			if (if_block2) if_block2.i();
     			current = true;
     		},
 
     		o: function outro(local) {
-    			if (if_block1) if_block1.o();
+    			if (if_block2) if_block2.o();
     			current = false;
     		},
 
@@ -6269,6 +6441,7 @@ var app = (function () {
     			}
 
     			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
     			if_blocks[current_block_type_index].d();
     		}
     	};
@@ -6292,13 +6465,13 @@ var app = (function () {
       let channel = $routeParams.channel || "";
       let content = $routeParams.content || "";
       let replyfeed = $routeParams.replyfeed || false;
+      let fork = $routeParams.fork;
       let fileOnTop = false;
       let pull = hermiebox.modules.pullStream;
       let fileReader = hermiebox.modules.pullFileReader;
       let sbot = hermiebox.sbot;
 
-      document.title = `Patchfox - compose`; 
-
+      document.title = `Patchfox - compose`;
 
       onMount(() => {
         $$invalidate('error', error = false);
@@ -6365,7 +6538,7 @@ var app = (function () {
           }
 
           try {
-            $$invalidate('msg', msg = await ssb.newPost({ text: content, channel, root, branch }));
+            $$invalidate('msg', msg = await ssb.newPost({ text: content, channel, root, branch, fork }));
             $$invalidate('posting', posting = false);
             console.log("posted", msg);
             window.scrollTo(0, 0);
@@ -6462,6 +6635,7 @@ var app = (function () {
     		channel,
     		content,
     		replyfeed,
+    		fork,
     		fileOnTop,
     		post,
     		preview,
@@ -6867,8 +7041,8 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (125:2) {:catch n}
-    function create_catch_block(ctx) {
+    // (176:2) {:catch n}
+    function create_catch_block_1(ctx) {
     	var p, t0, t1_value = ctx.n.message, t1;
 
     	return {
@@ -6876,7 +7050,7 @@ var app = (function () {
     			p = element("p");
     			t0 = text("Error: ");
     			t1 = text(t1_value);
-    			add_location(p, file$f, 125, 4, 3071);
+    			add_location(p, file$f, 176, 4, 4209);
     		},
 
     		m: function mount(target, anchor) {
@@ -6885,12 +7059,7 @@ var app = (function () {
     			append(p, t1);
     		},
 
-    		p: function update(changed, ctx) {
-    			if ((changed.p1 || changed.p2) && t1_value !== (t1_value = ctx.n.message)) {
-    				set_data(t1, t1_value);
-    			}
-    		},
-
+    		p: noop,
     		i: noop,
     		o: noop,
 
@@ -6902,21 +7071,24 @@ var app = (function () {
     	};
     }
 
-    // (77:2) {:then}
+    // (108:2) {:then}
     function create_then_block(ctx) {
-    	var div3, div1, div0, img, img_src_value, t0, div2, h1, t1, t2, t3, p, raw_value = ctx.ssb.markdown(ctx.description), t4, div4, each_blocks = [], each_1_lookup = new Map(), current;
+    	var div3, div1, div0, img, img_src_value, t0, div2, h1, t1, t2, t3, p, raw_value = ctx.ssb.markdown(ctx.description), t4, div4, promise, current;
 
     	var if_block = (ctx.feed !== ctx.ssb.feed) && create_if_block$8(ctx);
 
-    	var each_value = ctx.lastMsgs;
+    	let info = {
+    		ctx,
+    		current: null,
+    		pending: create_pending_block_1,
+    		then: create_then_block_1,
+    		catch: create_catch_block,
+    		value: 'data',
+    		error: 'n',
+    		blocks: Array(3)
+    	};
 
-    	const get_key = ctx => ctx.msg.key;
-
-    	for (var i = 0; i < each_value.length; i += 1) {
-    		let child_ctx = get_each_context$2(ctx, each_value, i);
-    		let key = get_key(child_ctx);
-    		each_1_lookup.set(key, each_blocks[i] = create_each_block$2(key, child_ctx));
-    	}
+    	handle_promise(promise = ctx.messagePromise, info);
 
     	return {
     		c: function create() {
@@ -6935,22 +7107,22 @@ var app = (function () {
     			t4 = space();
     			div4 = element("div");
 
-    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+    			info.block.c();
     			img.className = "img-responsive";
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
     			img.alt = ctx.feed;
-    			add_location(img, file$f, 81, 10, 1834);
+    			add_location(img, file$f, 112, 10, 2413);
     			div0.className = "container";
-    			add_location(div0, file$f, 80, 8, 1800);
+    			add_location(div0, file$f, 111, 8, 2379);
     			div1.className = "column col-6";
-    			add_location(div1, file$f, 79, 6, 1765);
-    			add_location(h1, file$f, 88, 8, 2027);
-    			add_location(p, file$f, 113, 8, 2859);
+    			add_location(div1, file$f, 110, 6, 2344);
+    			add_location(h1, file$f, 119, 8, 2606);
+    			add_location(p, file$f, 144, 8, 3438);
     			div2.className = "column col-6";
-    			add_location(div2, file$f, 87, 6, 1992);
+    			add_location(div2, file$f, 118, 6, 2571);
     			div3.className = "columns";
-    			add_location(div3, file$f, 77, 4, 1736);
-    			add_location(div4, file$f, 119, 4, 2949);
+    			add_location(div3, file$f, 108, 4, 2315);
+    			add_location(div4, file$f, 150, 4, 3528);
     		},
 
     		m: function mount(target, anchor) {
@@ -6970,12 +7142,15 @@ var app = (function () {
     			insert(target, t4, anchor);
     			insert(target, div4, anchor);
 
-    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(div4, null);
+    			info.block.m(div4, info.anchor = null);
+    			info.mount = () => div4;
+    			info.anchor = null;
 
     			current = true;
     		},
 
-    		p: function update(changed, ctx) {
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
     			if ((!current || changed.image) && img_src_value !== (img_src_value = "http://localhost:8989/blobs/get/" + ctx.image)) {
     				img.src = img_src_value;
     			}
@@ -7005,22 +7180,24 @@ var app = (function () {
     				p.innerHTML = raw_value;
     			}
 
-    			const each_value = ctx.lastMsgs;
+    			info.ctx = ctx;
 
-    			group_outros();
-    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, div4, outro_and_destroy_block, create_each_block$2, null, get_each_context$2);
-    			check_outros();
+    			if (('messagePromise' in changed) && promise !== (promise = ctx.messagePromise) && handle_promise(promise, info)) ; else {
+    				info.block.p(changed, assign(assign({}, ctx), info.resolved));
+    			}
     		},
 
     		i: function intro(local) {
     			if (current) return;
-    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
-
+    			info.block.i();
     			current = true;
     		},
 
     		o: function outro(local) {
-    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+    			for (let i = 0; i < 3; i += 1) {
+    				const block = info.blocks[i];
+    				if (block) block.o();
+    			}
 
     			current = false;
     		},
@@ -7037,12 +7214,13 @@ var app = (function () {
     				detach(div4);
     			}
 
-    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d();
+    			info.block.d();
+    			info = null;
     		}
     	};
     }
 
-    // (90:8) {#if feed !== ssb.feed}
+    // (121:8) {#if feed !== ssb.feed}
     function create_if_block$8(ctx) {
     	var div3, div0, t0, div1, label0, input0, t1, i0, t2, t3, label1, input1, t4, i1, t5, t6, div2, dispose;
 
@@ -7066,25 +7244,25 @@ var app = (function () {
     			t6 = space();
     			div2 = element("div");
     			div0.className = "divider";
-    			add_location(div0, file$f, 91, 12, 2121);
+    			add_location(div0, file$f, 122, 12, 2700);
     			attr(input0, "type", "checkbox");
-    			add_location(input0, file$f, 94, 16, 2252);
+    			add_location(input0, file$f, 125, 16, 2831);
     			i0.className = "form-icon";
-    			add_location(i0, file$f, 98, 16, 2402);
+    			add_location(i0, file$f, 129, 16, 2981);
     			label0.className = "form-switch form-inline";
-    			add_location(label0, file$f, 93, 14, 2196);
+    			add_location(label0, file$f, 124, 14, 2775);
     			attr(input1, "type", "checkbox");
-    			add_location(input1, file$f, 102, 16, 2545);
+    			add_location(input1, file$f, 133, 16, 3124);
     			i1.className = "form-icon";
-    			add_location(i1, file$f, 106, 16, 2693);
+    			add_location(i1, file$f, 137, 16, 3272);
     			label1.className = "form-switch form-inline";
-    			add_location(label1, file$f, 101, 14, 2489);
+    			add_location(label1, file$f, 132, 14, 3068);
     			div1.className = "form-group";
-    			add_location(div1, file$f, 92, 12, 2157);
+    			add_location(div1, file$f, 123, 12, 2736);
     			div2.className = "divider";
-    			add_location(div2, file$f, 110, 12, 2796);
+    			add_location(div2, file$f, 141, 12, 3375);
     			div3.className = "container";
-    			add_location(div3, file$f, 90, 10, 2085);
+    			add_location(div3, file$f, 121, 10, 2664);
 
     			dispose = [
     				listen(input0, "change", ctx.input0_change_handler),
@@ -7135,7 +7313,122 @@ var app = (function () {
     	};
     }
 
-    // (121:6) {#each lastMsgs as msg (msg.key)}
+    // (170:6) {:catch n}
+    function create_catch_block(ctx) {
+    	var p, t0, t1_value = ctx.n.message, t1;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			t0 = text("Error fetching messages: ");
+    			t1 = text(t1_value);
+    			add_location(p, file$f, 170, 8, 4120);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, t0);
+    			append(p, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.messagePromise) && t1_value !== (t1_value = ctx.n.message)) {
+    				set_data(t1, t1_value);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (154:6) {:then data}
+    function create_then_block_1(ctx) {
+    	var each_blocks = [], each_1_lookup = new Map(), t, ul, li, a, div, current, dispose;
+
+    	var each_value = ctx.lastMsgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$2(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$2(key, child_ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+
+    			t = space();
+    			ul = element("ul");
+    			li = element("li");
+    			a = element("a");
+    			div = element("div");
+    			div.textContent = "Load More";
+    			div.className = "page-item-subtitle";
+    			add_location(div, file$f, 165, 14, 4000);
+    			a.href = "#/public";
+    			add_location(a, file$f, 160, 12, 3797);
+    			li.className = "page-item page-next";
+    			add_location(li, file$f, 159, 10, 3752);
+    			ul.className = "pagination";
+    			add_location(ul, file$f, 157, 8, 3717);
+    			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.click_handler)));
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			insert(target, t, anchor);
+    			insert(target, ul, anchor);
+    			append(ul, li);
+    			append(li, a);
+    			append(a, div);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			const each_value = ctx.lastMsgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, t.parentNode, outro_and_destroy_block, create_each_block$2, t, get_each_context$2);
+    			check_outros();
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
+
+    			if (detaching) {
+    				detach(t);
+    				detach(ul);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (155:8) {#each lastMsgs as msg (msg.key)}
     function create_each_block$2(key_1, ctx) {
     	var first, current;
 
@@ -7189,7 +7482,34 @@ var app = (function () {
     	};
     }
 
-    // (75:19)      <div class="loading loading-lg" />   {:then}
+    // (152:29)          <div class="loading" />       {:then data}
+    function create_pending_block_1(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading";
+    			add_location(div, file$f, 152, 8, 3572);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (106:40)      <div class="loading loading-lg" />   {:then}
     function create_pending_block(ctx) {
     	var div;
 
@@ -7197,7 +7517,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$f, 75, 4, 1687);
+    			add_location(div, file$f, 106, 4, 2266);
     		},
 
     		m: function mount(target, anchor) {
@@ -7224,13 +7544,13 @@ var app = (function () {
     		current: null,
     		pending: create_pending_block,
     		then: create_then_block,
-    		catch: create_catch_block,
+    		catch: create_catch_block_1,
     		value: 'null',
     		error: 'n',
     		blocks: Array(3)
     	};
 
-    	handle_promise(promise = ctx.p1 && ctx.p2, info);
+    	handle_promise(promise = ctx.aboutPromise && ctx.avatarPromise, info);
 
     	return {
     		c: function create() {
@@ -7238,7 +7558,7 @@ var app = (function () {
 
     			info.block.c();
     			div.className = "container";
-    			add_location(div, file$f, 73, 0, 1639);
+    			add_location(div, file$f, 104, 0, 2197);
     		},
 
     		l: function claim(nodes) {
@@ -7259,7 +7579,7 @@ var app = (function () {
     			ctx = new_ctx;
     			info.ctx = ctx;
 
-    			if (('p1' in changed || 'p2' in changed) && promise !== (promise = ctx.p1 && ctx.p2) && handle_promise(promise, info)) ; else {
+    			if (promise !== (promise = ctx.aboutPromise && ctx.avatarPromise) && handle_promise(promise, info)) ; else {
     				info.block.p(changed, assign(assign({}, ctx), info.resolved));
     			}
     		},
@@ -7318,29 +7638,40 @@ var app = (function () {
       document.title = `Patchfox - Feed: ${feed}`;
 
       console.log("fetching", feed);
-      let p1;
-      let p2;
 
-      $$invalidate('p1', p1 = ssb.avatar(feed).then(data => {
+      let avatarPromise = ssb.avatar(feed).then(data => {
         $$invalidate('name', name = data.name);
         $$invalidate('image', image = data.image);
         document.title = `Patchfox - Feed: ${name}`;
-      }));
-      $$invalidate('p2', p2 = ssb.profile(feed).then(data => {
+      });
+
+      let aboutPromise = ssb.profile(feed).then(data => {
         lastAbout = data.about.reverse().find(m => {
           let a = m.value.content;
           return a.hasOwnProperty("description");
         });
-        if (data.hasOwnProperty("msgs")) {
-          $$invalidate('lastMsgs', lastMsgs = data.msgs);
-        }
         try {
           $$invalidate('description', description = lastAbout.value.content.description);
         } catch (n) {
           $$invalidate('description', description = "");
         }
         window.scrollTo(0, 0);
-      }));
+      });
+
+      let messagePromise = ssb
+        .query(
+          {
+            value: {
+              author: feed 
+            }
+          },
+          10
+        )
+        .then(msgs => {
+          $$invalidate('lastMsgs', lastMsgs = msgs);
+
+          window.scrollTo(0, 0);
+        });
 
       if (feed !== ssb.feed) {
         ssb.following(feed).then(f => { const $$result = (following = f); $$invalidate('following', following); return $$result; });
@@ -7365,6 +7696,26 @@ var app = (function () {
         }
       };
 
+      // todo: refactor navigation here. This is a hack it shouldn't hide and show values which are
+      // not reloading.
+      const loadMoreMessages = lt => {
+        $$invalidate('messagePromise', messagePromise = ssb
+          .query(
+            {
+              value: {
+                author: feed,
+                timestamp: { $lt: lt }
+              }
+            },
+            10
+          )
+          .then(msgs => {
+            $$invalidate('lastMsgs', lastMsgs = msgs);
+
+            window.scrollTo(0, 0);
+          }));
+      };
+
     	function input0_change_handler() {
     		following = this.checked;
     		$$invalidate('following', following);
@@ -7375,6 +7726,10 @@ var app = (function () {
     		$$invalidate('blocking', blocking);
     	}
 
+    	function click_handler() {
+    	                loadMoreMessages(lastMsgs[lastMsgs.length - 1].timestamp);
+    	              }
+
     	return {
     		description,
     		following,
@@ -7383,13 +7738,16 @@ var app = (function () {
     		feed,
     		lastMsgs,
     		name,
-    		p1,
-    		p2,
+    		avatarPromise,
+    		aboutPromise,
+    		messagePromise,
     		blockingChanged,
     		followingChanged,
+    		loadMoreMessages,
     		ssb,
     		input0_change_handler,
-    		input1_change_handler
+    		input1_change_handler,
+    		click_handler
     	};
     }
 
@@ -7665,15 +8023,21 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (27:0) {:catch err}
-    function create_catch_block$1(ctx) {
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.c = list[i];
+    	return child_ctx;
+    }
+
+    // (45:0) {:catch err}
+    function create_catch_block_1$1(ctx) {
     	var p, t_value = ctx.err, t;
 
     	return {
     		c: function create() {
     			p = element("p");
     			t = text(t_value);
-    			add_location(p, file$h, 27, 2, 665);
+    			add_location(p, file$h, 45, 2, 1128);
     		},
 
     		m: function mount(target, anchor) {
@@ -7691,7 +8055,172 @@ var app = (function () {
     	};
     }
 
-    // (21:0) {:then data}
+    // (36:0) {:then data}
+    function create_then_block_1$1(ctx) {
+    	var each_1_anchor;
+
+    	var each_value_1 = ctx.subscribedChannels;
+
+    	var each_blocks = [];
+
+    	for (var i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (var i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (var i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert(target, each_1_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.subscribedChannels) {
+    				each_value_1 = ctx.subscribedChannels;
+
+    				for (var i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(changed, child_ctx);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+    				each_blocks.length = each_value_1.length;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+
+    			if (detaching) {
+    				detach(each_1_anchor);
+    			}
+    		}
+    	};
+    }
+
+    // (37:2) {#each subscribedChannels as c}
+    function create_each_block_1(ctx) {
+    	var span, t_value = ctx.c.channel, t, span_data_badge_value, dispose;
+
+    	function click_handler() {
+    		return ctx.click_handler(ctx);
+    	}
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			t = text(t_value);
+    			span.className = "label label-rounded badge m-2";
+    			span.dataset.badge = span_data_badge_value = ctx.c.count;
+    			add_location(span, file$h, 37, 4, 918);
+    			dispose = listen(span, "click", click_handler);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, t);
+    		},
+
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
+    			if ((changed.subscribedChannels) && t_value !== (t_value = ctx.c.channel)) {
+    				set_data(t, t_value);
+    			}
+
+    			if ((changed.subscribedChannels) && span_data_badge_value !== (span_data_badge_value = ctx.c.count)) {
+    				span.dataset.badge = span_data_badge_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (33:18)     <div class="loading" />    <p>This is a complex query, it might take a while...</p>  {:then data}
+    function create_pending_block_1$1(ctx) {
+    	var div, t, p;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t = space();
+    			p = element("p");
+    			p.textContent = "This is a complex query, it might take a while...";
+    			div.className = "loading";
+    			add_location(div, file$h, 33, 2, 780);
+    			add_location(p, file$h, 34, 2, 807);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			insert(target, t, anchor);
+    			insert(target, p, anchor);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    				detach(t);
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (61:0) {:catch err}
+    function create_catch_block$1(ctx) {
+    	var p, t_value = ctx.err, t;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			t = text(t_value);
+    			add_location(p, file$h, 61, 2, 1544);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, t);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (52:0) {:then data}
     function create_then_block$1(ctx) {
     	var each_1_anchor;
 
@@ -7753,9 +8282,13 @@ var app = (function () {
     	};
     }
 
-    // (22:2) {#each activeChannels as c}
+    // (53:2) {#each activeChannels as c}
     function create_each_block$3(ctx) {
-    	var span, t0_value = ctx.c.channel, t0, t1, span_data_badge_value;
+    	var span, t0_value = ctx.c.channel, t0, t1, span_data_badge_value, dispose;
+
+    	function click_handler_1() {
+    		return ctx.click_handler_1(ctx);
+    	}
 
     	return {
     		c: function create() {
@@ -7764,7 +8297,8 @@ var app = (function () {
     			t1 = space();
     			span.className = "label label-rounded badge m-2";
     			span.dataset.badge = span_data_badge_value = ctx.c.count;
-    			add_location(span, file$h, 22, 4, 538);
+    			add_location(span, file$h, 53, 4, 1334);
+    			dispose = listen(span, "click", click_handler_1);
     		},
 
     		m: function mount(target, anchor) {
@@ -7773,7 +8307,8 @@ var app = (function () {
     			append(span, t1);
     		},
 
-    		p: function update(changed, ctx) {
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
     			if ((changed.activeChannels) && t0_value !== (t0_value = ctx.c.channel)) {
     				set_data(t0, t0_value);
     			}
@@ -7787,23 +8322,31 @@ var app = (function () {
     			if (detaching) {
     				detach(span);
     			}
+
+    			dispose();
     		}
     	};
     }
 
-    // (19:16)     <div class="loading" />  {:then data}
+    // (49:18)     <div class="loading" />    <p>This is a complex query, it might take a while...</p>  {:then data}
     function create_pending_block$1(ctx) {
-    	var div;
+    	var div, t, p;
 
     	return {
     		c: function create() {
     			div = element("div");
+    			t = space();
+    			p = element("p");
+    			p.textContent = "This is a complex query, it might take a while...";
     			div.className = "loading";
-    			add_location(div, file$h, 19, 2, 464);
+    			add_location(div, file$h, 49, 2, 1200);
+    			add_location(p, file$h, 50, 2, 1227);
     		},
 
     		m: function mount(target, anchor) {
     			insert(target, div, anchor);
+    			insert(target, t, anchor);
+    			insert(target, p, anchor);
     		},
 
     		p: noop,
@@ -7811,15 +8354,29 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) {
     				detach(div);
+    				detach(t);
+    				detach(p);
     			}
     		}
     	};
     }
 
     function create_fragment$h(ctx) {
-    	var h4, t_1, await_block_anchor, promise_1;
+    	var h40, t1, promise, t2, h41, t4, await_block1_anchor, promise_1;
 
     	let info = {
+    		ctx,
+    		current: null,
+    		pending: create_pending_block_1$1,
+    		then: create_then_block_1$1,
+    		catch: create_catch_block_1$1,
+    		value: 'data',
+    		error: 'err'
+    	};
+
+    	handle_promise(promise = ctx.scPromise, info);
+
+    	let info_1 = {
     		ctx,
     		current: null,
     		pending: create_pending_block$1,
@@ -7829,17 +8386,25 @@ var app = (function () {
     		error: 'err'
     	};
 
-    	handle_promise(promise_1 = ctx.promise, info);
+    	handle_promise(promise_1 = ctx.acPromise, info_1);
 
     	return {
     		c: function create() {
-    			h4 = element("h4");
-    			h4.textContent = "Active Channels";
-    			t_1 = space();
-    			await_block_anchor = empty();
+    			h40 = element("h4");
+    			h40.textContent = "Subscribed Channels";
+    			t1 = space();
 
     			info.block.c();
-    			add_location(h4, file$h, 17, 0, 418);
+
+    			t2 = space();
+    			h41 = element("h4");
+    			h41.textContent = "Active Channels";
+    			t4 = space();
+    			await_block1_anchor = empty();
+
+    			info_1.block.c();
+    			add_location(h40, file$h, 31, 0, 728);
+    			add_location(h41, file$h, 47, 0, 1152);
     		},
 
     		l: function claim(nodes) {
@@ -7847,21 +8412,35 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, h4, anchor);
-    			insert(target, t_1, anchor);
-    			insert(target, await_block_anchor, anchor);
+    			insert(target, h40, anchor);
+    			insert(target, t1, anchor);
 
     			info.block.m(target, info.anchor = anchor);
-    			info.mount = () => await_block_anchor.parentNode;
-    			info.anchor = await_block_anchor;
+    			info.mount = () => t2.parentNode;
+    			info.anchor = t2;
+
+    			insert(target, t2, anchor);
+    			insert(target, h41, anchor);
+    			insert(target, t4, anchor);
+    			insert(target, await_block1_anchor, anchor);
+
+    			info_1.block.m(target, info_1.anchor = anchor);
+    			info_1.mount = () => await_block1_anchor.parentNode;
+    			info_1.anchor = await_block1_anchor;
     		},
 
     		p: function update(changed, new_ctx) {
     			ctx = new_ctx;
     			info.ctx = ctx;
 
-    			if (promise_1 !== (promise_1 = ctx.promise) && handle_promise(promise_1, info)) ; else {
+    			if (promise !== (promise = ctx.scPromise) && handle_promise(promise, info)) ; else {
     				info.block.p(changed, assign(assign({}, ctx), info.resolved));
+    			}
+
+    			info_1.ctx = ctx;
+
+    			if (promise_1 !== (promise_1 = ctx.acPromise) && handle_promise(promise_1, info_1)) ; else {
+    				info_1.block.p(changed, assign(assign({}, ctx), info_1.resolved));
     			}
     		},
 
@@ -7870,34 +8449,63 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(h4);
-    				detach(t_1);
-    				detach(await_block_anchor);
+    				detach(h40);
+    				detach(t1);
     			}
 
     			info.block.d(detaching);
     			info = null;
+
+    			if (detaching) {
+    				detach(t2);
+    				detach(h41);
+    				detach(t4);
+    				detach(await_block1_anchor);
+    			}
+
+    			info_1.block.d(detaching);
+    			info_1 = null;
     		}
     	};
     }
 
     function instance$g($$self, $$props, $$invalidate) {
-    	// NOTICE: 
-      // I've removed this view from the navigation.
-      //
-      // it is too slow, it takes about 60 seconds to query.
-      // 
-      let activeChannels = [];
+    	let activeChannels = [];
+      let subscribedChannels = [];
+
       console.time("channels");
-      let promise = ssb
+      let acPromise = ssb
         .channels()
         .then(channels => {
           console.timeEnd("channels", channels);
           $$invalidate('activeChannels', activeChannels = channels);
-          })
+        })
         .catch(n => navigate("/error", { error: n }));
 
-    	return { activeChannels, promise };
+      let scPromise = ssb
+        .subscribedChannels()
+        .then(channels => {
+          console.log("channels for feed", channels);
+          $$invalidate('subscribedChannels', subscribedChannels = channels);
+        })
+        .catch(n => navigate("/error", { error: n }));
+
+    	function click_handler({ c }) {
+    		return navigate('/channel', { channel: c.channel });
+    	}
+
+    	function click_handler_1({ c }) {
+    		return navigate('/channel', { channel: c.channel });
+    	}
+
+    	return {
+    		activeChannels,
+    		subscribedChannels,
+    		acPromise,
+    		scPromise,
+    		click_handler,
+    		click_handler_1
+    	};
     }
 
     class Channels extends SvelteComponentDev {
@@ -8382,7 +8990,7 @@ var app = (function () {
     	}
 
     	function click_handler_1() {
-    		return navigate$1('/channel', {
+    		return navigate('/channel', {
     	            channel,
     	            lt: msgs[msgs.length - 1].rts,
     	            limit: opts.limit,
@@ -8453,7 +9061,7 @@ var app = (function () {
     const routeParams = derived(route, $route => $route.data);
     const routeLocation = derived(route, $route => $route.location);
 
-    const navigate$1 = (location, data) => {
+    const navigate = (location, data) => {
       data = data || {};
       route.set({ location, data });
       let dataAsQuery = queryString.stringify(data);
@@ -8582,7 +9190,7 @@ var app = (function () {
     			i1 = element("i");
     			t2 = space();
     			a2 = element("a");
-    			a2.textContent = "New";
+    			a2.textContent = "Compose";
     			t4 = space();
     			a3 = element("a");
     			a3.textContent = "Public";
@@ -8650,68 +9258,68 @@ var app = (function () {
     			add_location(a2, file$j, 75, 4, 1887);
     			a3.href = "#/public";
     			a3.className = "btn btn-link";
-    			add_location(a3, file$j, 81, 4, 2028);
+    			add_location(a3, file$j, 81, 4, 2032);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$j, 87, 4, 2170);
+    			add_location(a4, file$j, 93, 4, 2333);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$j, 88, 4, 2252);
+    			add_location(a5, file$j, 94, 4, 2415);
     			section0.className = "navbar-section hide-sm";
     			add_location(section0, file$j, 65, 2, 1459);
     			i2.className = "icon icon-back";
-    			add_location(i2, file$j, 92, 6, 2455);
+    			add_location(i2, file$j, 98, 6, 2618);
     			button.className = "btn btn-link";
-    			add_location(button, file$j, 91, 4, 2386);
+    			add_location(button, file$j, 97, 4, 2549);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$j, 96, 8, 2589);
+    			add_location(img1, file$j, 102, 8, 2752);
     			i3.className = i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
-    			add_location(i3, file$j, 97, 8, 2627);
+    			add_location(i3, file$j, 103, 8, 2790);
     			figure1.className = "avatar";
-    			add_location(figure1, file$j, 95, 6, 2556);
+    			add_location(figure1, file$j, 101, 6, 2719);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$j, 94, 4, 2504);
+    			add_location(a6, file$j, 100, 4, 2667);
     			i4.className = "icon icon-caret";
-    			add_location(i4, file$j, 107, 8, 2940);
+    			add_location(i4, file$j, 113, 8, 3103);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$j, 101, 6, 2767);
+    			add_location(a7, file$j, 107, 6, 2930);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$j, 112, 10, 3081);
+    			add_location(a8, file$j, 118, 10, 3244);
     			li0.className = "menu-item";
-    			add_location(li0, file$j, 111, 8, 3047);
+    			add_location(li0, file$j, 117, 8, 3210);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$j, 120, 10, 3305);
+    			add_location(a9, file$j, 126, 10, 3468);
     			li1.className = "menu-item";
-    			add_location(li1, file$j, 119, 8, 3271);
+    			add_location(li1, file$j, 125, 8, 3434);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$j, 128, 10, 3530);
+    			add_location(a10, file$j, 134, 10, 3693);
     			li2.className = "menu-item";
-    			add_location(li2, file$j, 127, 8, 3496);
+    			add_location(li2, file$j, 133, 8, 3659);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$j, 133, 10, 3691);
+    			add_location(a11, file$j, 139, 10, 3854);
     			li3.className = "menu-item";
-    			add_location(li3, file$j, 132, 8, 3657);
+    			add_location(li3, file$j, 138, 8, 3820);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$j, 136, 10, 3806);
+    			add_location(a12, file$j, 142, 10, 3969);
     			li4.className = "menu-item";
-    			add_location(li4, file$j, 135, 8, 3772);
+    			add_location(li4, file$j, 141, 8, 3935);
     			ul.className = "menu";
-    			add_location(ul, file$j, 110, 6, 3020);
+    			add_location(ul, file$j, 116, 6, 3183);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$j, 100, 4, 2725);
+    			add_location(div0, file$j, 106, 4, 2888);
     			section1.className = "navbar-section show-sm bg-gray above svelte-14egiim";
-    			add_location(section1, file$j, 90, 2, 2326);
+    			add_location(section1, file$j, 96, 2, 2489);
     			div1.className = "blocker show-sm svelte-14egiim";
-    			add_location(div1, file$j, 143, 2, 3972);
+    			add_location(div1, file$j, 149, 2, 4135);
     			header.className = "navbar";
     			add_location(header, file$j, 64, 0, 1432);
 
@@ -8835,8 +9443,8 @@ var app = (function () {
         browser.runtime.openOptionsPage();
       };
 
-      const goCompose = () => navigate$1("/compose");
-      const goPublic = () => navigate$1("/public");
+      const goCompose = () => navigate("/compose");
+      const goPublic = () => navigate("/public");
 
       const openSidebar = async ev => {
         let loc = window.location.href;
@@ -8857,7 +9465,7 @@ var app = (function () {
         ev.preventDefault();
 
         if (ssb.feed) {
-          navigate$1("/profile", { feed: ssb.feed });
+          navigate("/profile", { feed: ssb.feed });
         }
       };
 
@@ -9027,7 +9635,7 @@ var app = (function () {
                 reconnect().catch(n => {
                   console.error("can't reconnect");
                   clearInterval(interval);
-                  navigate$1("/error", { error: n });
+                  navigate("/error", { error: n });
                 });
               }
             });
@@ -9047,7 +9655,7 @@ var app = (function () {
 
       const handleUncaughtException = event => {
         console.error("Uncaught exception", event);
-        navigate$1("/error", { error: event.message });
+        navigate("/error", { error: event.message });
       };
 
       const hashChange = event => {

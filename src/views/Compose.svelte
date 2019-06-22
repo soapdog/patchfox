@@ -15,13 +15,13 @@
   let channel = $routeParams.channel || "";
   let content = $routeParams.content || "";
   let replyfeed = $routeParams.replyfeed || false;
+  let fork = $routeParams.fork;
   let fileOnTop = false;
   let pull = hermiebox.modules.pullStream;
   let fileReader = hermiebox.modules.pullFileReader;
   let sbot = hermiebox.sbot;
 
-  document.title = `Patchfox - compose` 
-
+  document.title = `Patchfox - compose`;
 
   onMount(() => {
     error = false;
@@ -88,7 +88,7 @@
       }
 
       try {
-        msg = await ssb.newPost({ text: content, channel, root, branch });
+        msg = await ssb.newPost({ text: content, channel, root, branch, fork });
         posting = false;
         console.log("posted", msg);
         window.scrollTo(0, 0);
@@ -176,6 +176,9 @@
 <div class="container">
   <div class="columns">
     <div class="column">
+      {#if fork}
+        <div class="toast toast-warning">You are forking: {fork}</div>
+      {/if}
       {#if msg}
         {#if error}
           <div class="toast toast-error">{msg}</div>
