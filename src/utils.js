@@ -10,7 +10,9 @@ import Profile from "./views/Profile.svelte";
 import ErrorView from "./views/ErrorView.svelte";
 import Channels from "./views/Channels.svelte"
 import Channel from "./views/Channel.svelte"
+import Settings from "./views/Settings.svelte"
 
+let preferences = {}
 
 export const parseLocation = () => {
   let data = queryString.parse(window.location.search)
@@ -42,6 +44,7 @@ const routes = {
   "/error": ErrorView,
   "/channels": Channels,
   "/channel": Channel,
+  "/settings": Settings,
   "*": Default
 };
 
@@ -65,8 +68,6 @@ export const currentView = derived([connected, route], ([$connected, $route]) =>
 
 const configurationIsOK = savedData => {
   return (
-    savedData.hasOwnProperty("keys") ||
-    savedData.hasOwnProperty("keys") ||
     savedData.hasOwnProperty("keys")
   );
 };
@@ -87,6 +88,7 @@ const connectAndLaunch = savedData => {
 };
 
 const configurationPresent = savedData => {
+  preferences = savedData.hasOwnProperty("preferences") ? savedData.preferences : {}
   if (!configurationIsOK(savedData)) {
     configurationMissing();
   } else {
@@ -132,4 +134,20 @@ export const reconnect = () => {
       .get()
       .then(tryConnect, reject);
   })
+}
+
+
+
+export const getPref = (key, defaultValue) => {
+  if (preferences.hasOwnProperty("key")) {
+    return preferences["key"]
+  } else {
+    return defaultValue
+  }
+}
+
+export const setPref = (key, value) => {
+  preferences["key"] = value
+
+  browser.storage.local.set("preferences", preferences)
 }
