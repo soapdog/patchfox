@@ -6,34 +6,12 @@
     navigate,
     currentView,
     connect,
-    reconnect
+    reconnect,
+    getPref
   } from "./utils.js";
   import Navigation from "./Navigation.svelte";
 
-  window.ssb = false;
-
-  let interval;
-
-  onMount(() => {
-    connect();
-
-    interval = setInterval(() => {
-      if (hermiebox.sbot) {
-        hermiebox.sbot.whoami((err, v) => {
-          if (err) {
-            console.error("can't call whoami", err);
-            reconnect().catch(n => {
-              console.error("can't reconnect");
-              clearInterval(interval);
-              navigate("/error", { error: n });
-            });
-          }
-        });
-      }
-    }, 5000);
-  });
-
-  onDestroy(() => clearInterval(interval));
+  let useShortColumn = getPref("columnSize", "short") == "short";
 
   const popState = event => {
     if (event.state !== null) {
@@ -52,11 +30,12 @@
     console.dir("hash change", event);
   };
 </script>
+
 <style>
-.reduced-line-length {
-  max-width: 840px;
-  margin: auto;
-}
+  .reduced-line-length {
+    max-width: 840px;
+    margin: auto;
+  }
 </style>
 
 <svelte:window
@@ -65,7 +44,7 @@
   on:hashchange={hashChange} />
 <div class="container bg-gray">
   <div class="columns">
-    <div class="column reduced-line-length">
+    <div class="column" class:reduced-line-length={useShortColumn}>
       <Navigation />
       <svelte:component this={$currentView} />
     </div>

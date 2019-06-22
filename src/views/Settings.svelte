@@ -1,10 +1,16 @@
 <script>
   import { onMount } from "svelte";
-  import { getPref, setPref } from "../utils.js";
+  import {
+    getPref,
+    setPref,
+    setConnectionConfiguration,
+    navigate
+  } from "../utils.js";
 
   let keys = {};
   let remote = "";
   let limit = getPref("limit", 10);
+  let columnSize = getPref("columnSize", "short");
 
   document.title = "Patchfox - Settings";
 
@@ -19,24 +25,10 @@
   let showTypePub = getPref("showTypePub", true);
   let showTypeVote = getPref("showTypeVote", true);
 
-  const saveConfigurationRequest = ev => {
-    keys = JSON.parse(secretInput.value);
-    remote = remoteInput.value;
-    storeSettings(keys, remote, manifest);
-    browser.tabs.create({
-      url: browser.extension.getURL("/index.html#/public")
-    });
-  };
-
-  /*
-Store the currently selected settings using browser.storage.local.
-*/
-  const storeSettings = (keys, remote, manifest) => {
-    browser.storage.local.set({
-      keys,
-      remote,
-      manifest
-    });
+  const saveConfiguration = ev => {
+    setConnectionConfiguration({ remote, keys: JSON.parse(keys), manifest });
+    navigate("/public");
+    location.reload();
   };
 
   const selectedFile = ev => {
@@ -60,8 +52,12 @@ Store the currently selected settings using browser.storage.local.
 
   const updateUI = savedData => {
     console.log("saved data from settings", savedData);
-    remote = savedData.remote;
-    keys = JSON.stringify(savedData.keys, null, 2);
+    remote = savedData.remote || "";
+    if (savedData.keys) {
+      keys = JSON.stringify(savedData.keys, null, 2);
+    } else {
+      keys = "";
+    }
   };
 
   const onError = error => {
@@ -74,6 +70,27 @@ Store the currently selected settings using browser.storage.local.
 </script>
 
 <h1>Settings</h1>
+<p>
+  Settings changes are saved as you make them except for identity and connection
+  changes, those require a full page reload and thus you need to press a save
+  button. The reason behind this is that Patchfox needs to disconnect and
+  reconnect to the
+  <i>ssb-server</i>
+  using the new info.
+</p>
+<p>
+  <b>
+    You can't use Patchfox until you fill your
+    <i>Connection & Identity</i>
+    information.
+    <a
+      href="/docs/index.html#/troubleshooting/no-configuration"
+      target="_blank">
+      If you want more help regarding connection and configuration click here
+    </a>
+    .
+  </b>
+</p>
 
 <h4>Connection & Identity</h4>
 
@@ -104,11 +121,13 @@ Store the currently selected settings using browser.storage.local.
   <textarea
     class="form-input"
     id="secret"
-    placeholder="remote"
+    placeholder="Your secret"
     rows="8"
     bind:value={keys} />
   <br />
-  <button class="btn btn-primary float-right">Save Identity & Remote</button>
+  <button class="btn btn-primary float-right" on:click={saveConfiguration}>
+    Save Identity & Remote
+  </button>
   <p>Saving identity and remote will cause a full page refresh.</p>
 </form>
 
@@ -228,4 +247,33 @@ Store the currently selected settings using browser.storage.local.
     <b>Unknown</b>
     (Show messages Patchfox doesn't understand as their raw content)
   </label>
+  <br />
+  <label class="form-label">
+    Feed column size. There is research that says that a short column size makes
+    for a more pleasant reading experience, still some users prefer to use the
+    full screen space. Your choice is between reading through long text lines or
+    short ones.
+  </label>
+  <label class="form-radio">
+    <input
+      type="radio"
+      name="column-size"
+      bind:group={columnSize}
+      on:change={() => setPref('columnSize', columnSize)}
+      value="short" />
+    <i class="form-icon" />
+    Short column
+  </label>
+  <label class="form-radio">
+    <input
+      type="radio"
+      name="column-size"
+      bind:group={columnSize}
+      on:change={() => setPref('columnSize', columnSize)}
+      value="long" />
+    <i class="form-icon" />
+    Long column
+  </label>
 </form>
+<br />
+<br />

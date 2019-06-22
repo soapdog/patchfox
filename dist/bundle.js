@@ -1,4 +1,4 @@
-var app = (function () {
+(function () {
     'use strict';
 
     function noop() { }
@@ -220,9 +220,6 @@ var app = (function () {
     }
     function onMount(fn) {
         get_current_component().$$.on_mount.push(fn);
-    }
-    function onDestroy(fn) {
-        get_current_component().$$.on_destroy.push(fn);
     }
     function createEventDispatcher() {
         const component = current_component;
@@ -9052,268 +9049,339 @@ var app = (function () {
     const file$j = "src\\views\\Settings.svelte";
 
     function create_fragment$j(ctx) {
-    	var h1, t1, h40, t3, form0, label0, t4, i0, t6, i1, t8, code, t10, t11, input0, t12, label1, t14, input1, t15, label2, t17, textarea, t18, br0, t19, button, t21, p, t23, h41, t25, form1, label3, t27, input2, t28, br1, t29, span, t30, a, t31, i2, t33, label4, input3, t34, i3, t35, b0, t37, t38, label5, input4, t39, i4, t40, b1, t42, t43, label6, input5, t44, i5, t45, b2, t47, t48, label7, input6, t49, i6, t50, b3, t52, t53, label8, input7, t54, i7, t55, b4, t57, t58, label9, input8, t59, i8, t60, b5, t62, t63, label10, input9, t64, i9, t65, b6, t67, t68, label11, input10, t69, i10, t70, b7, t72, t73, div, t74, label12, input11, t75, i11, t76, b8, t78, dispose;
+    	var h1, t1, p0, t2, i0, t4, t5, p1, b0, t6, i1, t8, a0, t10, t11, h40, t13, form0, label0, t14, i2, t16, i3, t18, code, t20, t21, input0, t22, label1, t24, input1, t25, label2, t27, textarea, t28, br0, t29, button, t31, p2, t33, h41, t35, form1, label3, t37, input2, t38, br1, t39, span, t40, a1, t41, i4, t43, label4, input3, t44, i5, t45, b1, t47, t48, label5, input4, t49, i6, t50, b2, t52, t53, label6, input5, t54, i7, t55, b3, t57, t58, label7, input6, t59, i8, t60, b4, t62, t63, label8, input7, t64, i9, t65, b5, t67, t68, label9, input8, t69, i10, t70, b6, t72, t73, label10, input9, t74, i11, t75, b7, t77, t78, label11, input10, t79, i12, t80, b8, t82, t83, div, t84, label12, input11, t85, i13, t86, b9, t88, t89, br2, t90, label13, t92, label14, input12, t93, i14, t94, t95, label15, input13, t96, i15, t97, t98, br3, t99, br4, dispose;
 
     	return {
     		c: function create() {
     			h1 = element("h1");
     			h1.textContent = "Settings";
     			t1 = space();
+    			p0 = element("p");
+    			t2 = text("Settings changes are saved as you make them except for identity and connection\r\n  changes, those require a full page reload and thus you need to press a save\r\n  button. The reason behind this is that Patchfox needs to disconnect and\r\n  reconnect to the\r\n  ");
+    			i0 = element("i");
+    			i0.textContent = "ssb-server";
+    			t4 = text("\r\n  using the new info.");
+    			t5 = space();
+    			p1 = element("p");
+    			b0 = element("b");
+    			t6 = text("You can't use Patchfox until you fill your\r\n    ");
+    			i1 = element("i");
+    			i1.textContent = "Connection & Identity";
+    			t8 = text("\r\n    information.\r\n    ");
+    			a0 = element("a");
+    			a0.textContent = "If you want more help regarding connection and configuration click here";
+    			t10 = text("\r\n    .");
+    			t11 = space();
     			h40 = element("h4");
     			h40.textContent = "Connection & Identity";
-    			t3 = space();
+    			t13 = space();
     			form0 = element("form");
     			label0 = element("label");
-    			t4 = text("Patchfox can infer the values for both\r\n    ");
-    			i0 = element("i");
-    			i0.textContent = "remote";
-    			t6 = text("\r\n    and\r\n    ");
-    			i1 = element("i");
-    			i1.textContent = "secret";
-    			t8 = text("\r\n    from your\r\n    ");
+    			t14 = text("Patchfox can infer the values for both\r\n    ");
+    			i2 = element("i");
+    			i2.textContent = "remote";
+    			t16 = text("\r\n    and\r\n    ");
+    			i3 = element("i");
+    			i3.textContent = "secret";
+    			t18 = text("\r\n    from your\r\n    ");
     			code = element("code");
     			code.textContent = "~/.ssb/secret";
-    			t10 = text("\r\n    file. You can use the button below to browse for it.");
-    			t11 = space();
+    			t20 = text("\r\n    file. You can use the button below to browse for it.");
+    			t21 = space();
     			input0 = element("input");
-    			t12 = space();
+    			t22 = space();
     			label1 = element("label");
     			label1.textContent = "Remote";
-    			t14 = space();
+    			t24 = space();
     			input1 = element("input");
-    			t15 = space();
+    			t25 = space();
     			label2 = element("label");
     			label2.textContent = "Secret";
-    			t17 = space();
+    			t27 = space();
     			textarea = element("textarea");
-    			t18 = space();
+    			t28 = space();
     			br0 = element("br");
-    			t19 = space();
+    			t29 = space();
     			button = element("button");
     			button.textContent = "Save Identity & Remote";
-    			t21 = space();
-    			p = element("p");
-    			p.textContent = "Saving identity and remote will cause a full page refresh.";
-    			t23 = space();
+    			t31 = space();
+    			p2 = element("p");
+    			p2.textContent = "Saving identity and remote will cause a full page refresh.";
+    			t33 = space();
     			h41 = element("h4");
     			h41.textContent = "Vieweing Experience";
-    			t25 = space();
+    			t35 = space();
     			form1 = element("form");
     			label3 = element("label");
     			label3.textContent = "Messages per page";
-    			t27 = space();
+    			t37 = space();
     			input2 = element("input");
-    			t28 = space();
+    			t38 = space();
     			br1 = element("br");
-    			t29 = space();
+    			t39 = space();
     			span = element("span");
-    			t30 = text("Which message types you want to see?\r\n    ");
-    			a = element("a");
-    			t31 = text("Click here for more information about\r\n      ");
-    			i2 = element("i");
-    			i2.textContent = "Message Types";
-    			t33 = space();
+    			t40 = text("Which message types you want to see?\r\n    ");
+    			a1 = element("a");
+    			t41 = text("Click here for more information about\r\n      ");
+    			i4 = element("i");
+    			i4.textContent = "Message Types";
+    			t43 = space();
     			label4 = element("label");
     			input3 = element("input");
-    			t34 = space();
-    			i3 = element("i");
-    			t35 = space();
-    			b0 = element("b");
-    			b0.textContent = "About";
-    			t37 = text("\r\n    (aka people setting avatars and descriptions; gatherings)");
-    			t38 = space();
-    			label5 = element("label");
-    			input4 = element("input");
-    			t39 = space();
-    			i4 = element("i");
-    			t40 = space();
-    			b1 = element("b");
-    			b1.textContent = "Blog";
-    			t42 = text("\r\n    (Longform text posts)");
-    			t43 = space();
-    			label6 = element("label");
-    			input5 = element("input");
     			t44 = space();
     			i5 = element("i");
     			t45 = space();
-    			b2 = element("b");
-    			b2.textContent = "Channel";
-    			t47 = text("\r\n    (People subscribing to channels)");
+    			b1 = element("b");
+    			b1.textContent = "About";
+    			t47 = text("\r\n    (aka people setting avatars and descriptions; gatherings)");
     			t48 = space();
-    			label7 = element("label");
-    			input6 = element("input");
+    			label5 = element("label");
+    			input4 = element("input");
     			t49 = space();
     			i6 = element("i");
     			t50 = space();
-    			b3 = element("b");
-    			b3.textContent = "Contact";
-    			t52 = text("\r\n    (People following each other)");
+    			b2 = element("b");
+    			b2.textContent = "Blog";
+    			t52 = text("\r\n    (Longform text posts)");
     			t53 = space();
-    			label8 = element("label");
-    			input7 = element("input");
+    			label6 = element("label");
+    			input5 = element("input");
     			t54 = space();
     			i7 = element("i");
     			t55 = space();
-    			b4 = element("b");
-    			b4.textContent = "Posts";
-    			t57 = text("\r\n    (Common content post, leave this on or it is not that fun)");
+    			b3 = element("b");
+    			b3.textContent = "Channel";
+    			t57 = text("\r\n    (People subscribing to channels)");
     			t58 = space();
-    			label9 = element("label");
-    			input8 = element("input");
+    			label7 = element("label");
+    			input6 = element("input");
     			t59 = space();
     			i8 = element("i");
     			t60 = space();
-    			b5 = element("b");
-    			b5.textContent = "Pub";
-    			t62 = text("\r\n    (Pub servers announcements)");
+    			b4 = element("b");
+    			b4.textContent = "Contact";
+    			t62 = text("\r\n    (People following each other)");
     			t63 = space();
-    			label10 = element("label");
-    			input9 = element("input");
+    			label8 = element("label");
+    			input7 = element("input");
     			t64 = space();
     			i9 = element("i");
     			t65 = space();
-    			b6 = element("b");
-    			b6.textContent = "Private";
-    			t67 = text("\r\n    (Private messages; You won't be able to read them, but you'll see their\r\n    encrypted content passing by)");
+    			b5 = element("b");
+    			b5.textContent = "Posts";
+    			t67 = text("\r\n    (Common content post, leave this on or it is not that fun)");
     			t68 = space();
-    			label11 = element("label");
-    			input10 = element("input");
+    			label9 = element("label");
+    			input8 = element("input");
     			t69 = space();
     			i10 = element("i");
     			t70 = space();
-    			b7 = element("b");
-    			b7.textContent = "Vote";
-    			t72 = text("\r\n    (People liking/digging stuff)");
+    			b6 = element("b");
+    			b6.textContent = "Pub";
+    			t72 = text("\r\n    (Pub servers announcements)");
     			t73 = space();
-    			div = element("div");
+    			label10 = element("label");
+    			input9 = element("input");
     			t74 = space();
+    			i11 = element("i");
+    			t75 = space();
+    			b7 = element("b");
+    			b7.textContent = "Private";
+    			t77 = text("\r\n    (Private messages; You won't be able to read them, but you'll see their\r\n    encrypted content passing by)");
+    			t78 = space();
+    			label11 = element("label");
+    			input10 = element("input");
+    			t79 = space();
+    			i12 = element("i");
+    			t80 = space();
+    			b8 = element("b");
+    			b8.textContent = "Vote";
+    			t82 = text("\r\n    (People liking/digging stuff)");
+    			t83 = space();
+    			div = element("div");
+    			t84 = space();
     			label12 = element("label");
     			input11 = element("input");
-    			t75 = space();
-    			i11 = element("i");
-    			t76 = space();
-    			b8 = element("b");
-    			b8.textContent = "Unknown";
-    			t78 = text("\r\n    (Show messages Patchfox doesn't understand as their raw content)");
-    			add_location(h1, file$j, 73, 0, 2195);
-    			add_location(h40, file$j, 75, 0, 2216);
-    			add_location(i0, file$j, 80, 4, 2373);
-    			add_location(i1, file$j, 82, 4, 2401);
-    			add_location(code, file$j, 84, 4, 2435);
+    			t85 = space();
+    			i13 = element("i");
+    			t86 = space();
+    			b9 = element("b");
+    			b9.textContent = "Unknown";
+    			t88 = text("\r\n    (Show messages Patchfox doesn't understand as their raw content)");
+    			t89 = space();
+    			br2 = element("br");
+    			t90 = space();
+    			label13 = element("label");
+    			label13.textContent = "Feed column size. There is research that says that a short column size makes\r\n    for a more pleasant reading experience, still some users prefer to use the\r\n    full screen space. Your choice is between reading through long text lines or\r\n    short ones.";
+    			t92 = space();
+    			label14 = element("label");
+    			input12 = element("input");
+    			t93 = space();
+    			i14 = element("i");
+    			t94 = text("\r\n    Short column");
+    			t95 = space();
+    			label15 = element("label");
+    			input13 = element("input");
+    			t96 = space();
+    			i15 = element("i");
+    			t97 = text("\r\n    Long column");
+    			t98 = space();
+    			br3 = element("br");
+    			t99 = space();
+    			br4 = element("br");
+    			add_location(h1, file$j, 71, 0, 2106);
+    			add_location(i0, file$j, 77, 2, 2388);
+    			add_location(p0, file$j, 72, 0, 2125);
+    			add_location(i1, file$j, 83, 4, 2500);
+    			a0.href = "/docs/index.html#/troubleshooting/no-configuration";
+    			a0.target = "_blank";
+    			add_location(a0, file$j, 85, 4, 2552);
+    			add_location(b0, file$j, 81, 2, 2443);
+    			add_location(p1, file$j, 80, 0, 2436);
+    			add_location(h40, file$j, 94, 0, 2757);
+    			add_location(i2, file$j, 99, 4, 2914);
+    			add_location(i3, file$j, 101, 4, 2942);
+    			add_location(code, file$j, 103, 4, 2976);
     			label0.className = "form-label";
     			label0.htmlFor = "secret-file";
-    			add_location(label0, file$j, 78, 2, 2279);
+    			add_location(label0, file$j, 97, 2, 2820);
     			attr(input0, "type", "file");
     			input0.className = "form-input";
     			input0.id = "secret-file";
-    			add_location(input0, file$j, 87, 2, 2535);
+    			add_location(input0, file$j, 106, 2, 3076);
     			label1.className = "form-label";
     			label1.htmlFor = "remote";
-    			add_location(label1, file$j, 92, 2, 2641);
+    			add_location(label1, file$j, 111, 2, 3182);
     			input1.className = "form-input";
     			attr(input1, "type", "text");
     			input1.id = "remote";
     			input1.placeholder = "remote";
-    			add_location(input1, file$j, 93, 2, 2698);
+    			add_location(input1, file$j, 112, 2, 3239);
     			label2.className = "form-label";
     			label2.htmlFor = "secret";
-    			add_location(label2, file$j, 100, 2, 2822);
+    			add_location(label2, file$j, 119, 2, 3363);
     			textarea.className = "form-input";
     			textarea.id = "secret";
-    			textarea.placeholder = "remote";
+    			textarea.placeholder = "Your secret";
     			textarea.rows = "8";
-    			add_location(textarea, file$j, 101, 2, 2879);
-    			add_location(br0, file$j, 107, 2, 2999);
+    			add_location(textarea, file$j, 120, 2, 3420);
+    			add_location(br0, file$j, 126, 2, 3545);
     			button.className = "btn btn-primary float-right";
-    			add_location(button, file$j, 108, 2, 3009);
-    			add_location(p, file$j, 109, 2, 3088);
+    			add_location(button, file$j, 127, 2, 3555);
+    			add_location(p2, file$j, 130, 2, 3673);
     			form0.className = "form-group";
-    			add_location(form0, file$j, 77, 0, 2250);
-    			add_location(h41, file$j, 112, 0, 3166);
+    			add_location(form0, file$j, 96, 0, 2791);
+    			add_location(h41, file$j, 133, 0, 3751);
     			label3.className = "form-label";
     			label3.htmlFor = "limit";
-    			add_location(label3, file$j, 114, 2, 3225);
+    			add_location(label3, file$j, 135, 2, 3810);
     			input2.className = "form-input";
     			attr(input2, "type", "number");
-    			add_location(input2, file$j, 115, 2, 3292);
-    			add_location(br1, file$j, 117, 2, 3359);
-    			add_location(i2, file$j, 122, 6, 3535);
-    			a.target = "_blank";
-    			a.href = "/docs/index.html#/message_types/";
-    			add_location(a, file$j, 120, 4, 3423);
-    			add_location(span, file$j, 118, 2, 3369);
+    			add_location(input2, file$j, 136, 2, 3877);
+    			add_location(br1, file$j, 138, 2, 3944);
+    			add_location(i4, file$j, 143, 6, 4120);
+    			a1.target = "_blank";
+    			a1.href = "/docs/index.html#/message_types/";
+    			add_location(a1, file$j, 141, 4, 4008);
+    			add_location(span, file$j, 139, 2, 3954);
     			attr(input3, "type", "checkbox");
-    			add_location(input3, file$j, 126, 4, 3613);
-    			i3.className = "form-icon";
-    			add_location(i3, file$j, 132, 4, 3773);
-    			add_location(b0, file$j, 133, 4, 3802);
-    			label4.className = "form-switch";
-    			add_location(label4, file$j, 125, 2, 3580);
-    			attr(input4, "type", "checkbox");
-    			add_location(input4, file$j, 137, 4, 3926);
-    			i4.className = "form-icon";
-    			add_location(i4, file$j, 143, 4, 4083);
-    			add_location(b1, file$j, 144, 4, 4112);
-    			label5.className = "form-switch";
-    			add_location(label5, file$j, 136, 2, 3893);
-    			attr(input5, "type", "checkbox");
-    			add_location(input5, file$j, 148, 4, 4199);
+    			add_location(input3, file$j, 147, 4, 4198);
     			i5.className = "form-icon";
-    			add_location(i5, file$j, 154, 4, 4365);
-    			add_location(b2, file$j, 155, 4, 4394);
-    			label6.className = "form-switch";
-    			add_location(label6, file$j, 147, 2, 4166);
-    			attr(input6, "type", "checkbox");
-    			add_location(input6, file$j, 159, 4, 4495);
+    			add_location(i5, file$j, 153, 4, 4358);
+    			add_location(b1, file$j, 154, 4, 4387);
+    			label4.className = "form-switch";
+    			add_location(label4, file$j, 146, 2, 4165);
+    			attr(input4, "type", "checkbox");
+    			add_location(input4, file$j, 158, 4, 4511);
     			i6.className = "form-icon";
-    			add_location(i6, file$j, 165, 4, 4661);
-    			add_location(b3, file$j, 166, 4, 4690);
-    			label7.className = "form-switch";
-    			add_location(label7, file$j, 158, 2, 4462);
-    			attr(input7, "type", "checkbox");
-    			add_location(input7, file$j, 170, 4, 4788);
+    			add_location(i6, file$j, 164, 4, 4668);
+    			add_location(b2, file$j, 165, 4, 4697);
+    			label5.className = "form-switch";
+    			add_location(label5, file$j, 157, 2, 4478);
+    			attr(input5, "type", "checkbox");
+    			add_location(input5, file$j, 169, 4, 4784);
     			i7.className = "form-icon";
-    			add_location(i7, file$j, 176, 4, 4945);
-    			add_location(b4, file$j, 177, 4, 4974);
-    			label8.className = "form-switch";
-    			add_location(label8, file$j, 169, 2, 4755);
-    			attr(input8, "type", "checkbox");
-    			add_location(input8, file$j, 181, 4, 5099);
+    			add_location(i7, file$j, 175, 4, 4950);
+    			add_location(b3, file$j, 176, 4, 4979);
+    			label6.className = "form-switch";
+    			add_location(label6, file$j, 168, 2, 4751);
+    			attr(input6, "type", "checkbox");
+    			add_location(input6, file$j, 180, 4, 5080);
     			i8.className = "form-icon";
-    			add_location(i8, file$j, 187, 4, 5265);
-    			add_location(b5, file$j, 188, 4, 5294);
-    			label9.className = "form-switch";
-    			add_location(label9, file$j, 180, 2, 5066);
-    			attr(input9, "type", "checkbox");
-    			add_location(input9, file$j, 193, 4, 5388);
+    			add_location(i8, file$j, 186, 4, 5246);
+    			add_location(b4, file$j, 187, 4, 5275);
+    			label7.className = "form-switch";
+    			add_location(label7, file$j, 179, 2, 5047);
+    			attr(input7, "type", "checkbox");
+    			add_location(input7, file$j, 191, 4, 5373);
     			i9.className = "form-icon";
-    			add_location(i9, file$j, 199, 4, 5554);
-    			add_location(b6, file$j, 200, 4, 5583);
-    			label10.className = "form-switch";
-    			add_location(label10, file$j, 192, 2, 5355);
-    			attr(input10, "type", "checkbox");
-    			add_location(input10, file$j, 206, 4, 5760);
+    			add_location(i9, file$j, 197, 4, 5530);
+    			add_location(b5, file$j, 198, 4, 5559);
+    			label8.className = "form-switch";
+    			add_location(label8, file$j, 190, 2, 5340);
+    			attr(input8, "type", "checkbox");
+    			add_location(input8, file$j, 202, 4, 5684);
     			i10.className = "form-icon";
-    			add_location(i10, file$j, 212, 4, 5917);
-    			add_location(b7, file$j, 213, 4, 5946);
-    			label11.className = "form-switch";
-    			add_location(label11, file$j, 205, 2, 5727);
-    			div.className = "divider";
-    			add_location(div, file$j, 216, 2, 6008);
-    			attr(input11, "type", "checkbox");
-    			add_location(input11, file$j, 218, 4, 6068);
+    			add_location(i10, file$j, 208, 4, 5850);
+    			add_location(b6, file$j, 209, 4, 5879);
+    			label9.className = "form-switch";
+    			add_location(label9, file$j, 201, 2, 5651);
+    			attr(input9, "type", "checkbox");
+    			add_location(input9, file$j, 214, 4, 5973);
     			i11.className = "form-icon";
-    			add_location(i11, file$j, 224, 4, 6234);
-    			add_location(b8, file$j, 225, 4, 6263);
+    			add_location(i11, file$j, 220, 4, 6139);
+    			add_location(b7, file$j, 221, 4, 6168);
+    			label10.className = "form-switch";
+    			add_location(label10, file$j, 213, 2, 5940);
+    			attr(input10, "type", "checkbox");
+    			add_location(input10, file$j, 227, 4, 6345);
+    			i12.className = "form-icon";
+    			add_location(i12, file$j, 233, 4, 6502);
+    			add_location(b8, file$j, 234, 4, 6531);
+    			label11.className = "form-switch";
+    			add_location(label11, file$j, 226, 2, 6312);
+    			div.className = "divider";
+    			add_location(div, file$j, 237, 2, 6593);
+    			attr(input11, "type", "checkbox");
+    			add_location(input11, file$j, 239, 4, 6653);
+    			i13.className = "form-icon";
+    			add_location(i13, file$j, 245, 4, 6819);
+    			add_location(b9, file$j, 246, 4, 6848);
     			label12.className = "form-switch";
-    			add_location(label12, file$j, 217, 2, 6035);
+    			add_location(label12, file$j, 238, 2, 6620);
+    			add_location(br2, file$j, 249, 2, 6948);
+    			label13.className = "form-label";
+    			add_location(label13, file$j, 250, 2, 6958);
+    			ctx.$$binding_groups[0].push(input12);
+    			attr(input12, "type", "radio");
+    			input12.name = "column-size";
+    			input12.__value = "short";
+    			input12.value = input12.__value;
+    			add_location(input12, file$j, 257, 4, 7293);
+    			i14.className = "form-icon";
+    			add_location(i14, file$j, 263, 4, 7465);
+    			label14.className = "form-radio";
+    			add_location(label14, file$j, 256, 2, 7261);
+    			ctx.$$binding_groups[0].push(input13);
+    			attr(input13, "type", "radio");
+    			input13.name = "column-size";
+    			input13.__value = "long";
+    			input13.value = input13.__value;
+    			add_location(input13, file$j, 267, 4, 7554);
+    			i15.className = "form-icon";
+    			add_location(i15, file$j, 273, 4, 7725);
+    			label15.className = "form-radio";
+    			add_location(label15, file$j, 266, 2, 7522);
     			form1.className = "form-group";
-    			add_location(form1, file$j, 113, 0, 3196);
+    			add_location(form1, file$j, 134, 0, 3781);
+    			add_location(br3, file$j, 277, 0, 7788);
+    			add_location(br4, file$j, 278, 0, 7796);
 
     			dispose = [
     				listen(input0, "change", ctx.selectedFile),
     				listen(input1, "input", ctx.input1_input_handler),
     				listen(textarea, "input", ctx.textarea_input_handler),
+    				listen(button, "click", ctx.saveConfiguration),
     				listen(input2, "input", ctx.input2_input_handler),
     				listen(input3, "change", ctx.input3_change_handler),
     				listen(input3, "change", ctx.change_handler),
@@ -9332,7 +9400,11 @@ var app = (function () {
     				listen(input10, "change", ctx.input10_change_handler),
     				listen(input10, "change", ctx.change_handler_7),
     				listen(input11, "change", ctx.input11_change_handler),
-    				listen(input11, "change", ctx.change_handler_8)
+    				listen(input11, "change", ctx.change_handler_8),
+    				listen(input12, "change", ctx.input12_change_handler),
+    				listen(input12, "change", ctx.change_handler_9),
+    				listen(input13, "change", ctx.input13_change_handler),
+    				listen(input13, "change", ctx.change_handler_10)
     			];
     		},
 
@@ -9343,158 +9415,197 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert(target, h1, anchor);
     			insert(target, t1, anchor);
+    			insert(target, p0, anchor);
+    			append(p0, t2);
+    			append(p0, i0);
+    			append(p0, t4);
+    			insert(target, t5, anchor);
+    			insert(target, p1, anchor);
+    			append(p1, b0);
+    			append(b0, t6);
+    			append(b0, i1);
+    			append(b0, t8);
+    			append(b0, a0);
+    			append(b0, t10);
+    			insert(target, t11, anchor);
     			insert(target, h40, anchor);
-    			insert(target, t3, anchor);
+    			insert(target, t13, anchor);
     			insert(target, form0, anchor);
     			append(form0, label0);
-    			append(label0, t4);
-    			append(label0, i0);
-    			append(label0, t6);
-    			append(label0, i1);
-    			append(label0, t8);
+    			append(label0, t14);
+    			append(label0, i2);
+    			append(label0, t16);
+    			append(label0, i3);
+    			append(label0, t18);
     			append(label0, code);
-    			append(label0, t10);
-    			append(form0, t11);
+    			append(label0, t20);
+    			append(form0, t21);
     			append(form0, input0);
-    			append(form0, t12);
+    			append(form0, t22);
     			append(form0, label1);
-    			append(form0, t14);
+    			append(form0, t24);
     			append(form0, input1);
 
     			input1.value = ctx.remote;
 
-    			append(form0, t15);
+    			append(form0, t25);
     			append(form0, label2);
-    			append(form0, t17);
+    			append(form0, t27);
     			append(form0, textarea);
 
     			textarea.value = ctx.keys;
 
-    			append(form0, t18);
+    			append(form0, t28);
     			append(form0, br0);
-    			append(form0, t19);
+    			append(form0, t29);
     			append(form0, button);
-    			append(form0, t21);
-    			append(form0, p);
-    			insert(target, t23, anchor);
+    			append(form0, t31);
+    			append(form0, p2);
+    			insert(target, t33, anchor);
     			insert(target, h41, anchor);
-    			insert(target, t25, anchor);
+    			insert(target, t35, anchor);
     			insert(target, form1, anchor);
     			append(form1, label3);
-    			append(form1, t27);
+    			append(form1, t37);
     			append(form1, input2);
 
     			input2.value = ctx.limit;
 
-    			append(form1, t28);
+    			append(form1, t38);
     			append(form1, br1);
-    			append(form1, t29);
+    			append(form1, t39);
     			append(form1, span);
-    			append(span, t30);
-    			append(span, a);
-    			append(a, t31);
-    			append(a, i2);
-    			append(form1, t33);
+    			append(span, t40);
+    			append(span, a1);
+    			append(a1, t41);
+    			append(a1, i4);
+    			append(form1, t43);
     			append(form1, label4);
     			append(label4, input3);
 
     			input3.checked = ctx.showTypeAbout;
 
-    			append(label4, t34);
-    			append(label4, i3);
-    			append(label4, t35);
-    			append(label4, b0);
-    			append(label4, t37);
-    			append(form1, t38);
+    			append(label4, t44);
+    			append(label4, i5);
+    			append(label4, t45);
+    			append(label4, b1);
+    			append(label4, t47);
+    			append(form1, t48);
     			append(form1, label5);
     			append(label5, input4);
 
     			input4.checked = ctx.showTypeBlog;
 
-    			append(label5, t39);
-    			append(label5, i4);
-    			append(label5, t40);
-    			append(label5, b1);
-    			append(label5, t42);
-    			append(form1, t43);
+    			append(label5, t49);
+    			append(label5, i6);
+    			append(label5, t50);
+    			append(label5, b2);
+    			append(label5, t52);
+    			append(form1, t53);
     			append(form1, label6);
     			append(label6, input5);
 
     			input5.checked = ctx.showTypeChannel;
 
-    			append(label6, t44);
-    			append(label6, i5);
-    			append(label6, t45);
-    			append(label6, b2);
-    			append(label6, t47);
-    			append(form1, t48);
+    			append(label6, t54);
+    			append(label6, i7);
+    			append(label6, t55);
+    			append(label6, b3);
+    			append(label6, t57);
+    			append(form1, t58);
     			append(form1, label7);
     			append(label7, input6);
 
     			input6.checked = ctx.showTypeContact;
 
-    			append(label7, t49);
-    			append(label7, i6);
-    			append(label7, t50);
-    			append(label7, b3);
-    			append(label7, t52);
-    			append(form1, t53);
+    			append(label7, t59);
+    			append(label7, i8);
+    			append(label7, t60);
+    			append(label7, b4);
+    			append(label7, t62);
+    			append(form1, t63);
     			append(form1, label8);
     			append(label8, input7);
 
     			input7.checked = ctx.showTypePost;
 
-    			append(label8, t54);
-    			append(label8, i7);
-    			append(label8, t55);
-    			append(label8, b4);
-    			append(label8, t57);
-    			append(form1, t58);
+    			append(label8, t64);
+    			append(label8, i9);
+    			append(label8, t65);
+    			append(label8, b5);
+    			append(label8, t67);
+    			append(form1, t68);
     			append(form1, label9);
     			append(label9, input8);
 
     			input8.checked = ctx.showTypePrivate;
 
-    			append(label9, t59);
-    			append(label9, i8);
-    			append(label9, t60);
-    			append(label9, b5);
-    			append(label9, t62);
-    			append(form1, t63);
+    			append(label9, t69);
+    			append(label9, i10);
+    			append(label9, t70);
+    			append(label9, b6);
+    			append(label9, t72);
+    			append(form1, t73);
     			append(form1, label10);
     			append(label10, input9);
 
     			input9.checked = ctx.showTypePrivate;
 
-    			append(label10, t64);
-    			append(label10, i9);
-    			append(label10, t65);
-    			append(label10, b6);
-    			append(label10, t67);
-    			append(form1, t68);
+    			append(label10, t74);
+    			append(label10, i11);
+    			append(label10, t75);
+    			append(label10, b7);
+    			append(label10, t77);
+    			append(form1, t78);
     			append(form1, label11);
     			append(label11, input10);
 
     			input10.checked = ctx.showTypeVote;
 
-    			append(label11, t69);
-    			append(label11, i10);
-    			append(label11, t70);
-    			append(label11, b7);
-    			append(label11, t72);
-    			append(form1, t73);
+    			append(label11, t79);
+    			append(label11, i12);
+    			append(label11, t80);
+    			append(label11, b8);
+    			append(label11, t82);
+    			append(form1, t83);
     			append(form1, div);
-    			append(form1, t74);
+    			append(form1, t84);
     			append(form1, label12);
     			append(label12, input11);
 
     			input11.checked = ctx.showTypeUnknown;
 
-    			append(label12, t75);
-    			append(label12, i11);
-    			append(label12, t76);
-    			append(label12, b8);
-    			append(label12, t78);
+    			append(label12, t85);
+    			append(label12, i13);
+    			append(label12, t86);
+    			append(label12, b9);
+    			append(label12, t88);
+    			append(form1, t89);
+    			append(form1, br2);
+    			append(form1, t90);
+    			append(form1, label13);
+    			append(form1, t92);
+    			append(form1, label14);
+    			append(label14, input12);
+
+    			input12.checked = input12.__value === ctx.columnSize;
+
+    			append(label14, t93);
+    			append(label14, i14);
+    			append(label14, t94);
+    			append(form1, t95);
+    			append(form1, label15);
+    			append(label15, input13);
+
+    			input13.checked = input13.__value === ctx.columnSize;
+
+    			append(label15, t96);
+    			append(label15, i15);
+    			append(label15, t97);
+    			insert(target, t98, anchor);
+    			insert(target, br3, anchor);
+    			insert(target, t99, anchor);
+    			insert(target, br4, anchor);
     		},
 
     		p: function update(changed, ctx) {
@@ -9510,6 +9621,8 @@ var app = (function () {
     			if (changed.showTypePrivate) input9.checked = ctx.showTypePrivate;
     			if (changed.showTypeVote) input10.checked = ctx.showTypeVote;
     			if (changed.showTypeUnknown) input11.checked = ctx.showTypeUnknown;
+    			if (changed.columnSize) input12.checked = input12.__value === ctx.columnSize;
+    			if (changed.columnSize) input13.checked = input13.__value === ctx.columnSize;
     		},
 
     		i: noop,
@@ -9519,13 +9632,27 @@ var app = (function () {
     			if (detaching) {
     				detach(h1);
     				detach(t1);
+    				detach(p0);
+    				detach(t5);
+    				detach(p1);
+    				detach(t11);
     				detach(h40);
-    				detach(t3);
+    				detach(t13);
     				detach(form0);
-    				detach(t23);
+    				detach(t33);
     				detach(h41);
-    				detach(t25);
+    				detach(t35);
     				detach(form1);
+    			}
+
+    			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input12), 1);
+    			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input13), 1);
+
+    			if (detaching) {
+    				detach(t98);
+    				detach(br3);
+    				detach(t99);
+    				detach(br4);
     			}
 
     			run_all(dispose);
@@ -9539,6 +9666,9 @@ var app = (function () {
       let keys = {};
       let remote = "";
       let limit = getPref("limit", 10);
+      let columnSize = getPref("columnSize", "short");
+
+      document.title = "Patchfox - Settings";
 
       // message type filters
       let showTypeUnknown = getPref("showTypeUnknown", true);
@@ -9550,6 +9680,12 @@ var app = (function () {
       let showTypePrivate = getPref("showTypePrivate", true);
       let showTypePub = getPref("showTypePub", true);
       let showTypeVote = getPref("showTypeVote", true);
+
+      const saveConfiguration = ev => {
+        setConnectionConfiguration({ remote, keys: JSON.parse(keys), manifest });
+        navigate("/public");
+        location.reload();
+      };
 
       const selectedFile = ev => {
         const secretFile = ev.target.files[0];
@@ -9572,8 +9708,12 @@ var app = (function () {
 
       const updateUI = savedData => {
         console.log("saved data from settings", savedData);
-        $$invalidate('remote', remote = savedData.remote);
-        $$invalidate('keys', keys = JSON.stringify(savedData.keys, null, 2));
+        $$invalidate('remote', remote = savedData.remote || "");
+        if (savedData.keys) {
+          $$invalidate('keys', keys = JSON.stringify(savedData.keys, null, 2));
+        } else {
+          $$invalidate('keys', keys = "");
+        }
       };
 
       const onError = error => {
@@ -9583,6 +9723,8 @@ var app = (function () {
       const gettingStoredSettings = browser.storage.local
         .get()
         .then(updateUI, onError);
+
+    	const $$binding_groups = [[]];
 
     	function input1_input_handler() {
     		remote = this.value;
@@ -9680,10 +9822,29 @@ var app = (function () {
     	        setPref('showTypeUnknown', showTypeUnknown);
     	      }
 
+    	function input12_change_handler() {
+    		columnSize = this.__value;
+    		$$invalidate('columnSize', columnSize);
+    	}
+
+    	function change_handler_9() {
+    		return setPref('columnSize', columnSize);
+    	}
+
+    	function input13_change_handler() {
+    		columnSize = this.__value;
+    		$$invalidate('columnSize', columnSize);
+    	}
+
+    	function change_handler_10() {
+    		return setPref('columnSize', columnSize);
+    	}
+
     	return {
     		keys,
     		remote,
     		limit,
+    		columnSize,
     		showTypeUnknown,
     		showTypeAbout,
     		showTypeBlog,
@@ -9692,6 +9853,7 @@ var app = (function () {
     		showTypePost,
     		showTypePrivate,
     		showTypeVote,
+    		saveConfiguration,
     		selectedFile,
     		input1_input_handler,
     		textarea_input_handler,
@@ -9713,7 +9875,12 @@ var app = (function () {
     		input10_change_handler,
     		change_handler_7,
     		input11_change_handler,
-    		change_handler_8
+    		change_handler_8,
+    		input12_change_handler,
+    		change_handler_9,
+    		input13_change_handler,
+    		change_handler_10,
+    		$$binding_groups
     	};
     }
 
@@ -9724,7 +9891,7 @@ var app = (function () {
     	}
     }
 
-    let preferences = {};
+    let savedData = {};
 
     const parseLocation = () => {
       let data = queryString.parse(window.location.search);
@@ -9761,6 +9928,7 @@ var app = (function () {
     };
 
 
+
     const currentView = derived([connected, route], ([$connected, $route]) => {
       let r = $route.location;
       if ($connected) {
@@ -9771,66 +9939,54 @@ var app = (function () {
           return routes["*"];
         }
       } else {
-        return routes["*"]
+        if (r === "/settings") {
+          return Settings
+        } else {
+          return routes["*"];
+        }
       }
+
+
     });
-
-
-    /// connection stuff
-
-    const configurationIsOK = savedData => {
-      return (
-        savedData.hasOwnProperty("keys")
-      );
-    };
-
-    const connectAndLaunch = savedData => {
-      window.ssb = new DriverHermiebox();
-
-      ssb
-        .connect(savedData.keys)
-        .then(data => {
-          console.log("connected");
-          connected.set(true);
-        })
-        .catch(err => {
-          console.error("can't connect", err);
-          cantConnect();
-        });
-    };
-
-    const configurationPresent = savedData => {
-      preferences = savedData.hasOwnProperty("preferences") ? savedData.preferences : {};
-      if (!configurationIsOK(savedData)) {
-        configurationMissing();
-      } else {
-        connectAndLaunch(savedData);
-      }
-    };
-
-    const configurationMissing = () => {
-      console.log("config missing");
-      window.location = "/docs/index.html#/troubleshooting/no-configuration";
-    };
 
     const cantConnect = () => {
       console.log("config missing");
       window.location = "/docs/index.html#/troubleshooting/no-connection";
     };
 
-    const connect = () => {
-      browser.storage.local
-        .get()
-        .then(configurationPresent, configurationMissing);
+    const loadConfiguration = async () => {
+      try {
+        let data = await browser.storage.local.get();
+
+        if (data.hasOwnProperty("keys")) {
+          savedData = data;
+        } else {
+          throw "Configuration is missing"
+        }
+      } catch (n) {
+        throw "Configuration is missing"
+      }
+    };
+
+    const connect = async () => {
+      window.ssb = new DriverHermiebox();
+
+      try {
+        await ssb.connect(savedData.keys);
+        connected.set(true);
+      } catch (err) {
+        console.error("can't connect", err);
+        cantConnect();
+      }
     };
 
     const reconnect = () => {
       return new Promise((resolve, reject) => {
-        const tryConnect = (savedData) => {
+        const tryConnect = (data) => {
           window.ssb = new DriverHermiebox();
 
           ssb
-            .connect(savedData.keys)
+            .connect(data.keys)
             .then(data => {
               console.log("connected");
               connected.set(true);
@@ -9848,20 +10004,34 @@ var app = (function () {
       })
     };
 
-
+    // Preferences
 
     const getPref = (key, defaultValue) => {
-      if (preferences.hasOwnProperty("key")) {
-        return preferences["key"]
-      } else {
-        return defaultValue
+      if (savedData.hasOwnProperty("preferences")) {
+        let preferences = savedData.preferences;
+        if (preferences.hasOwnProperty(key)) {
+          console.log(`getPref - ${key}`, preferences[key]);
+          return preferences[key]
+        }
       }
+      return defaultValue
+    };
+
+    const setConnectionConfiguration = ({keys, remote, manifest}) => {
+      savedData.keys = keys;
+      savedData.remote = remote; 
+      savedData.manifest = manifest;
+
+      browser.storage.local.set(savedData);
+
     };
 
     const setPref = (key, value) => {
-      preferences["key"] = value;
+      console.log(`setPref - ${key}`, value);
+      savedData.preferences = savedData.preferences || {};
+      savedData.preferences[key] = value;
 
-      browser.storage.local.set("preferences", preferences);
+      browser.storage.local.set(savedData);
     };
 
     /* src\Navigation.svelte generated by Svelte v3.4.4 */
@@ -9934,89 +10104,89 @@ var app = (function () {
     			t25 = space();
     			div1 = element("div");
     			i0.className = "icon icon-minus text-black";
-    			add_location(i0, file$k, 67, 6, 1577);
+    			add_location(i0, file$k, 64, 6, 1550);
     			a0.href = "#/sidebar";
     			a0.className = "btn btn-link";
-    			add_location(a0, file$k, 66, 4, 1505);
+    			add_location(a0, file$k, 63, 4, 1478);
     			img0.src = ctx.avatar;
     			img0.alt = "L";
-    			add_location(img0, file$k, 71, 8, 1751);
+    			add_location(img0, file$k, 68, 8, 1724);
     			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
-    			add_location(i1, file$k, 72, 8, 1789);
+    			add_location(i1, file$k, 69, 8, 1762);
     			figure0.className = "avatar avatar-lg";
-    			add_location(figure0, file$k, 70, 6, 1708);
+    			add_location(figure0, file$k, 67, 6, 1681);
     			a1.href = "#";
     			a1.className = "navbar-brand mr-2 p-1";
-    			add_location(a1, file$k, 69, 4, 1633);
+    			add_location(a1, file$k, 66, 4, 1606);
     			a2.href = "#/compose";
     			a2.className = "btn btn-link";
-    			add_location(a2, file$k, 75, 4, 1887);
+    			add_location(a2, file$k, 72, 4, 1860);
     			a3.href = "#/public";
     			a3.className = "btn btn-link";
-    			add_location(a3, file$k, 81, 4, 2032);
+    			add_location(a3, file$k, 78, 4, 2005);
     			a4.href = "#/settings";
     			a4.className = "btn btn-link";
-    			add_location(a4, file$k, 93, 4, 2333);
+    			add_location(a4, file$k, 90, 4, 2305);
     			a5.href = "/docs/index.html";
     			a5.className = "btn btn-link";
-    			add_location(a5, file$k, 94, 4, 2415);
+    			add_location(a5, file$k, 91, 4, 2387);
     			section0.className = "navbar-section hide-sm";
-    			add_location(section0, file$k, 65, 2, 1459);
+    			add_location(section0, file$k, 62, 2, 1432);
     			i2.className = "icon icon-back";
-    			add_location(i2, file$k, 98, 6, 2618);
+    			add_location(i2, file$k, 95, 6, 2590);
     			button.className = "btn btn-link";
-    			add_location(button, file$k, 97, 4, 2549);
+    			add_location(button, file$k, 94, 4, 2521);
     			img1.src = ctx.avatar;
     			img1.alt = "L";
-    			add_location(img1, file$k, 102, 8, 2752);
+    			add_location(img1, file$k, 99, 8, 2724);
     			i3.className = i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
-    			add_location(i3, file$k, 103, 8, 2790);
+    			add_location(i3, file$k, 100, 8, 2762);
     			figure1.className = "avatar";
-    			add_location(figure1, file$k, 101, 6, 2719);
+    			add_location(figure1, file$k, 98, 6, 2691);
     			a6.href = "...";
     			a6.className = "navbar-brand mr-2 p-1";
-    			add_location(a6, file$k, 100, 4, 2667);
+    			add_location(a6, file$k, 97, 4, 2639);
     			i4.className = "icon icon-caret";
-    			add_location(i4, file$k, 113, 8, 3103);
+    			add_location(i4, file$k, 110, 8, 3075);
     			a7.href = "?";
     			a7.className = "btn btn-link dropdown-toggle";
     			a7.tabIndex = "0";
-    			add_location(a7, file$k, 107, 6, 2930);
+    			add_location(a7, file$k, 104, 6, 2902);
     			a8.href = "#/compose";
     			a8.className = "btn btn-link";
-    			add_location(a8, file$k, 118, 10, 3244);
+    			add_location(a8, file$k, 115, 10, 3216);
     			li0.className = "menu-item";
-    			add_location(li0, file$k, 117, 8, 3210);
+    			add_location(li0, file$k, 114, 8, 3182);
     			a9.href = "#/public";
     			a9.className = "btn btn-link";
-    			add_location(a9, file$k, 126, 10, 3468);
+    			add_location(a9, file$k, 123, 10, 3440);
     			li1.className = "menu-item";
-    			add_location(li1, file$k, 125, 8, 3434);
+    			add_location(li1, file$k, 122, 8, 3406);
     			a10.href = "#/settings";
     			a10.className = "btn btn-link";
-    			add_location(a10, file$k, 134, 10, 3693);
+    			add_location(a10, file$k, 131, 10, 3665);
     			li2.className = "menu-item";
-    			add_location(li2, file$k, 133, 8, 3659);
+    			add_location(li2, file$k, 130, 8, 3631);
     			a11.href = "/docs/index.html";
     			a11.className = "btn btn-link";
-    			add_location(a11, file$k, 139, 10, 3854);
+    			add_location(a11, file$k, 136, 10, 3826);
     			li3.className = "menu-item";
-    			add_location(li3, file$k, 138, 8, 3820);
+    			add_location(li3, file$k, 135, 8, 3792);
     			a12.href = "#/sidebar";
     			a12.className = "btn btn-link";
-    			add_location(a12, file$k, 142, 10, 3969);
+    			add_location(a12, file$k, 139, 10, 3941);
     			li4.className = "menu-item";
-    			add_location(li4, file$k, 141, 8, 3935);
+    			add_location(li4, file$k, 138, 8, 3907);
     			ul.className = "menu";
-    			add_location(ul, file$k, 116, 6, 3183);
+    			add_location(ul, file$k, 113, 6, 3155);
     			div0.className = "dropdown float-right";
-    			add_location(div0, file$k, 106, 4, 2888);
+    			add_location(div0, file$k, 103, 4, 2860);
     			section1.className = "navbar-section show-sm bg-gray above svelte-14egiim";
-    			add_location(section1, file$k, 96, 2, 2489);
+    			add_location(section1, file$k, 93, 2, 2461);
     			div1.className = "blocker show-sm svelte-14egiim";
-    			add_location(div1, file$k, 149, 2, 4135);
+    			add_location(div1, file$k, 146, 2, 4107);
     			header.className = "navbar";
-    			add_location(header, file$k, 64, 0, 1432);
+    			add_location(header, file$k, 61, 0, 1405);
 
     			dispose = [
     				listen(a0, "click", ctx.openSidebar),
@@ -10134,10 +10304,7 @@ var app = (function () {
 
     	let avatar = "/images/icon.png";
 
-      const goSettings = ev => {
-        browser.runtime.openOptionsPage();
-      };
-
+      const goSettings = ev => navigate("/settings");
       const goCompose = () => navigate("/compose");
       const goPublic = () => navigate("/public");
 
@@ -10223,12 +10390,13 @@ var app = (function () {
     			navigation.$$.fragment.c();
     			t = space();
     			if (switch_instance) switch_instance.$$.fragment.c();
-    			div0.className = "column reduced-line-length svelte-1cq18i8";
-    			add_location(div0, file$l, 67, 4, 1508);
+    			div0.className = "column svelte-64hhw0";
+    			toggle_class(div0, "reduced-line-length", ctx.useShortColumn);
+    			add_location(div0, file$l, 46, 4, 1035);
     			div1.className = "columns";
-    			add_location(div1, file$l, 66, 2, 1481);
+    			add_location(div1, file$l, 45, 2, 1008);
     			div2.className = "container bg-gray";
-    			add_location(div2, file$l, 65, 0, 1446);
+    			add_location(div2, file$l, 44, 0, 973);
 
     			dispose = [
     				listen(window, "popstate", ctx.popState),
@@ -10277,6 +10445,10 @@ var app = (function () {
     					switch_instance = null;
     				}
     			}
+
+    			if (changed.useShortColumn) {
+    				toggle_class(div0, "reduced-line-length", ctx.useShortColumn);
+    			}
     		},
 
     		i: function intro(local) {
@@ -10315,30 +10487,7 @@ var app = (function () {
 
     	
 
-      window.ssb = false;
-
-      let interval;
-
-      onMount(() => {
-        connect();
-
-        interval = setInterval(() => {
-          if (hermiebox.sbot) {
-            hermiebox.sbot.whoami((err, v) => {
-              if (err) {
-                console.error("can't call whoami", err);
-                reconnect().catch(n => {
-                  console.error("can't reconnect");
-                  clearInterval(interval);
-                  navigate("/error", { error: n });
-                });
-              }
-            });
-          }
-        }, 5000);
-      });
-
-      onDestroy(() => clearInterval(interval));
+      let useShortColumn = getPref("columnSize", "short") == "short";
 
       const popState = event => {
         if (event.state !== null) {
@@ -10358,6 +10507,7 @@ var app = (function () {
       };
 
     	return {
+    		useShortColumn,
     		popState,
     		handleUncaughtException,
     		hashChange,
@@ -10372,11 +10522,40 @@ var app = (function () {
     	}
     }
 
-    const patchfox = new Patchfox({
-        target: document.body
-    });
+    const main = async () => {
+        window.ssb = false;
 
-    return patchfox;
+        try {
+            await loadConfiguration();
+            await connect();
+
+            let interval = setInterval(() => {
+                if (hermiebox.sbot) {
+                    hermiebox.sbot.whoami((err, v) => {
+                        if (err) {
+                            console.error("can't call whoami", err);
+                            reconnect().catch(n => {
+                                console.error("can't reconnect");
+                                clearInterval(interval);
+                                navigate("/error", { error: n });
+                            });
+                        }
+                    });
+                }
+            }, 5000);
+        } catch (n) {
+            if (n === "Configuration is missing") {
+                navigate("/settings");
+            }
+        }
+
+        const patchfox = new Patchfox({
+            target: document.body
+        });
+
+    };
+
+    main();
 
 }());
 //# sourceMappingURL=bundle.js.map

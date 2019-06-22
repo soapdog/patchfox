@@ -9,10 +9,7 @@
     });
   }
 
-  const goSettings = ev => {
-    browser.runtime.openOptionsPage();
-  };
-
+  const goSettings = ev => navigate("/settings");
   const goCompose = () => navigate("/compose");
   const goPublic = () => navigate("/public");
   const goChannels = () => navigate("/channels");
@@ -85,7 +82,7 @@
       on:click|stopPropagation|preventDefault={goPublic}>
       Public
     </a>
-     <!-- <a
+    <!-- <a
       href="#/channels" 
       class="btn btn-link"
       on:click|stopPropagation|preventDefault={goChannels}>

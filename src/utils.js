@@ -12,7 +12,7 @@ import Channels from "./views/Channels.svelte"
 import Channel from "./views/Channel.svelte"
 import Settings from "./views/Settings.svelte"
 
-let preferences = {}
+let savedData = {}
 
 export const parseLocation = () => {
   let data = queryString.parse(window.location.search)
@@ -49,6 +49,7 @@ const routes = {
 };
 
 
+
 export const currentView = derived([connected, route], ([$connected, $route]) => {
   let r = $route.location
   if ($connected) {
@@ -59,8 +60,14 @@ export const currentView = derived([connected, route], ([$connected, $route]) =>
       return routes["*"];
     }
   } else {
-    return routes["*"]
+    if (r === "/settings") {
+      return Settings
+    } else {
+      return routes["*"];
+    }
   }
+
+
 });
 
 
@@ -72,11 +79,11 @@ const configurationIsOK = savedData => {
   );
 };
 
-const connectAndLaunch = savedData => {
+const connectAndLaunch = data => {
   window.ssb = new DriverHermiebox();
 
   ssb
-    .connect(savedData.keys)
+    .connect(data.keys)
     .then(data => {
       console.log("connected");
       connected.set(true);
@@ -87,12 +94,12 @@ const connectAndLaunch = savedData => {
     });
 };
 
-const configurationPresent = savedData => {
-  preferences = savedData.hasOwnProperty("preferences") ? savedData.preferences : {}
-  if (!configurationIsOK(savedData)) {
+const configurationPresent = data => {
+  savedData = data || {}
+  if (!configurationIsOK(data)) {
     configurationMissing();
   } else {
-    connectAndLaunch(savedData);
+    connectAndLaunch(data);
   }
 };
 
@@ -106,19 +113,39 @@ const cantConnect = () => {
   window.location = "/docs/index.html#/troubleshooting/no-connection";
 };
 
-export const connect = () => {
-  browser.storage.local
-    .get()
-    .then(configurationPresent, configurationMissing);
+export const loadConfiguration = async () => {
+  try {
+    let data = await browser.storage.local.get()
+
+    if (data.hasOwnProperty("keys")) {
+      savedData = data
+    } else {
+      throw "Configuration is missing"
+    }
+  } catch (n) {
+    throw "Configuration is missing"
+  }
+}
+
+export const connect = async () => {
+  window.ssb = new DriverHermiebox();
+
+  try {
+    await ssb.connect(savedData.keys)
+    connected.set(true);
+  } catch (err) {
+    console.error("can't connect", err);
+    cantConnect();
+  }
 }
 
 export const reconnect = () => {
   return new Promise((resolve, reject) => {
-    const tryConnect = (savedData) => {
+    const tryConnect = (data) => {
       window.ssb = new DriverHermiebox();
 
       ssb
-        .connect(savedData.keys)
+        .connect(data.keys)
         .then(data => {
           console.log("connected");
           connected.set(true);
@@ -136,18 +163,32 @@ export const reconnect = () => {
   })
 }
 
-
+// Preferences
 
 export const getPref = (key, defaultValue) => {
-  if (preferences.hasOwnProperty("key")) {
-    return preferences["key"]
-  } else {
-    return defaultValue
+  if (savedData.hasOwnProperty("preferences")) {
+    let preferences = savedData.preferences
+    if (preferences.hasOwnProperty(key)) {
+      console.log(`getPref - ${key}`, preferences[key])
+      return preferences[key]
+    }
   }
+  return defaultValue
+}
+
+export const setConnectionConfiguration = ({keys, remote, manifest}) => {
+  savedData.keys = keys
+  savedData.remote = remote 
+  savedData.manifest = manifest
+
+  browser.storage.local.set(savedData)
+
 }
 
 export const setPref = (key, value) => {
-  preferences["key"] = value
+  console.log(`setPref - ${key}`, value)
+  savedData.preferences = savedData.preferences || {}
+  savedData.preferences[key] = value
 
-  browser.storage.local.set("preferences", preferences)
+  browser.storage.local.set(savedData)
 }
