@@ -9278,104 +9278,104 @@
     			input2.className = "form-input";
     			attr(input2, "type", "number");
     			add_location(input2, file$j, 136, 2, 3877);
-    			add_location(br1, file$j, 138, 2, 3944);
-    			add_location(i4, file$j, 143, 6, 4120);
+    			add_location(br1, file$j, 142, 2, 4006);
+    			add_location(i4, file$j, 147, 6, 4182);
     			a1.target = "_blank";
     			a1.href = "/docs/index.html#/message_types/";
-    			add_location(a1, file$j, 141, 4, 4008);
-    			add_location(span, file$j, 139, 2, 3954);
+    			add_location(a1, file$j, 145, 4, 4070);
+    			add_location(span, file$j, 143, 2, 4016);
     			attr(input3, "type", "checkbox");
-    			add_location(input3, file$j, 147, 4, 4198);
+    			add_location(input3, file$j, 151, 4, 4260);
     			i5.className = "form-icon";
-    			add_location(i5, file$j, 153, 4, 4358);
-    			add_location(b1, file$j, 154, 4, 4387);
+    			add_location(i5, file$j, 157, 4, 4420);
+    			add_location(b1, file$j, 158, 4, 4449);
     			label4.className = "form-switch";
-    			add_location(label4, file$j, 146, 2, 4165);
+    			add_location(label4, file$j, 150, 2, 4227);
     			attr(input4, "type", "checkbox");
-    			add_location(input4, file$j, 158, 4, 4511);
+    			add_location(input4, file$j, 162, 4, 4573);
     			i6.className = "form-icon";
-    			add_location(i6, file$j, 164, 4, 4668);
-    			add_location(b2, file$j, 165, 4, 4697);
+    			add_location(i6, file$j, 168, 4, 4730);
+    			add_location(b2, file$j, 169, 4, 4759);
     			label5.className = "form-switch";
-    			add_location(label5, file$j, 157, 2, 4478);
+    			add_location(label5, file$j, 161, 2, 4540);
     			attr(input5, "type", "checkbox");
-    			add_location(input5, file$j, 169, 4, 4784);
+    			add_location(input5, file$j, 173, 4, 4846);
     			i7.className = "form-icon";
-    			add_location(i7, file$j, 175, 4, 4950);
-    			add_location(b3, file$j, 176, 4, 4979);
+    			add_location(i7, file$j, 179, 4, 5012);
+    			add_location(b3, file$j, 180, 4, 5041);
     			label6.className = "form-switch";
-    			add_location(label6, file$j, 168, 2, 4751);
+    			add_location(label6, file$j, 172, 2, 4813);
     			attr(input6, "type", "checkbox");
-    			add_location(input6, file$j, 180, 4, 5080);
+    			add_location(input6, file$j, 184, 4, 5142);
     			i8.className = "form-icon";
-    			add_location(i8, file$j, 186, 4, 5246);
-    			add_location(b4, file$j, 187, 4, 5275);
+    			add_location(i8, file$j, 190, 4, 5308);
+    			add_location(b4, file$j, 191, 4, 5337);
     			label7.className = "form-switch";
-    			add_location(label7, file$j, 179, 2, 5047);
+    			add_location(label7, file$j, 183, 2, 5109);
     			attr(input7, "type", "checkbox");
-    			add_location(input7, file$j, 191, 4, 5373);
+    			add_location(input7, file$j, 195, 4, 5435);
     			i9.className = "form-icon";
-    			add_location(i9, file$j, 197, 4, 5530);
-    			add_location(b5, file$j, 198, 4, 5559);
+    			add_location(i9, file$j, 201, 4, 5592);
+    			add_location(b5, file$j, 202, 4, 5621);
     			label8.className = "form-switch";
-    			add_location(label8, file$j, 190, 2, 5340);
+    			add_location(label8, file$j, 194, 2, 5402);
     			attr(input8, "type", "checkbox");
-    			add_location(input8, file$j, 202, 4, 5684);
+    			add_location(input8, file$j, 206, 4, 5746);
     			i10.className = "form-icon";
-    			add_location(i10, file$j, 208, 4, 5850);
-    			add_location(b6, file$j, 209, 4, 5879);
+    			add_location(i10, file$j, 212, 4, 5900);
+    			add_location(b6, file$j, 213, 4, 5929);
     			label9.className = "form-switch";
-    			add_location(label9, file$j, 201, 2, 5651);
+    			add_location(label9, file$j, 205, 2, 5713);
     			attr(input9, "type", "checkbox");
-    			add_location(input9, file$j, 214, 4, 5973);
+    			add_location(input9, file$j, 218, 4, 6023);
     			i11.className = "form-icon";
-    			add_location(i11, file$j, 220, 4, 6139);
-    			add_location(b7, file$j, 221, 4, 6168);
+    			add_location(i11, file$j, 224, 4, 6189);
+    			add_location(b7, file$j, 225, 4, 6218);
     			label10.className = "form-switch";
-    			add_location(label10, file$j, 213, 2, 5940);
+    			add_location(label10, file$j, 217, 2, 5990);
     			attr(input10, "type", "checkbox");
-    			add_location(input10, file$j, 227, 4, 6345);
+    			add_location(input10, file$j, 231, 4, 6395);
     			i12.className = "form-icon";
-    			add_location(i12, file$j, 233, 4, 6502);
-    			add_location(b8, file$j, 234, 4, 6531);
+    			add_location(i12, file$j, 237, 4, 6552);
+    			add_location(b8, file$j, 238, 4, 6581);
     			label11.className = "form-switch";
-    			add_location(label11, file$j, 226, 2, 6312);
+    			add_location(label11, file$j, 230, 2, 6362);
     			div.className = "divider";
-    			add_location(div, file$j, 237, 2, 6593);
+    			add_location(div, file$j, 241, 2, 6643);
     			attr(input11, "type", "checkbox");
-    			add_location(input11, file$j, 239, 4, 6653);
+    			add_location(input11, file$j, 243, 4, 6703);
     			i13.className = "form-icon";
-    			add_location(i13, file$j, 245, 4, 6819);
-    			add_location(b9, file$j, 246, 4, 6848);
+    			add_location(i13, file$j, 249, 4, 6869);
+    			add_location(b9, file$j, 250, 4, 6898);
     			label12.className = "form-switch";
-    			add_location(label12, file$j, 238, 2, 6620);
-    			add_location(br2, file$j, 249, 2, 6948);
+    			add_location(label12, file$j, 242, 2, 6670);
+    			add_location(br2, file$j, 253, 2, 6998);
     			label13.className = "form-label";
-    			add_location(label13, file$j, 250, 2, 6958);
+    			add_location(label13, file$j, 254, 2, 7008);
     			ctx.$$binding_groups[0].push(input12);
     			attr(input12, "type", "radio");
     			input12.name = "column-size";
     			input12.__value = "short";
     			input12.value = input12.__value;
-    			add_location(input12, file$j, 257, 4, 7293);
+    			add_location(input12, file$j, 261, 4, 7343);
     			i14.className = "form-icon";
-    			add_location(i14, file$j, 263, 4, 7465);
+    			add_location(i14, file$j, 267, 4, 7515);
     			label14.className = "form-radio";
-    			add_location(label14, file$j, 256, 2, 7261);
+    			add_location(label14, file$j, 260, 2, 7311);
     			ctx.$$binding_groups[0].push(input13);
     			attr(input13, "type", "radio");
     			input13.name = "column-size";
     			input13.__value = "long";
     			input13.value = input13.__value;
-    			add_location(input13, file$j, 267, 4, 7554);
+    			add_location(input13, file$j, 271, 4, 7604);
     			i15.className = "form-icon";
-    			add_location(i15, file$j, 273, 4, 7725);
+    			add_location(i15, file$j, 277, 4, 7775);
     			label15.className = "form-radio";
-    			add_location(label15, file$j, 266, 2, 7522);
+    			add_location(label15, file$j, 270, 2, 7572);
     			form1.className = "form-group";
     			add_location(form1, file$j, 134, 0, 3781);
-    			add_location(br3, file$j, 277, 0, 7788);
-    			add_location(br4, file$j, 278, 0, 7796);
+    			add_location(br3, file$j, 281, 0, 7838);
+    			add_location(br4, file$j, 282, 0, 7846);
 
     			dispose = [
     				listen(input0, "change", ctx.selectedFile),
@@ -9383,28 +9383,29 @@
     				listen(textarea, "input", ctx.textarea_input_handler),
     				listen(button, "click", ctx.saveConfiguration),
     				listen(input2, "input", ctx.input2_input_handler),
+    				listen(input2, "change", ctx.change_handler),
     				listen(input3, "change", ctx.input3_change_handler),
-    				listen(input3, "change", ctx.change_handler),
+    				listen(input3, "change", ctx.change_handler_1),
     				listen(input4, "change", ctx.input4_change_handler),
-    				listen(input4, "change", ctx.change_handler_1),
+    				listen(input4, "change", ctx.change_handler_2),
     				listen(input5, "change", ctx.input5_change_handler),
-    				listen(input5, "change", ctx.change_handler_2),
+    				listen(input5, "change", ctx.change_handler_3),
     				listen(input6, "change", ctx.input6_change_handler),
-    				listen(input6, "change", ctx.change_handler_3),
+    				listen(input6, "change", ctx.change_handler_4),
     				listen(input7, "change", ctx.input7_change_handler),
-    				listen(input7, "change", ctx.change_handler_4),
+    				listen(input7, "change", ctx.change_handler_5),
     				listen(input8, "change", ctx.input8_change_handler),
-    				listen(input8, "change", ctx.change_handler_5),
+    				listen(input8, "change", ctx.change_handler_6),
     				listen(input9, "change", ctx.input9_change_handler),
-    				listen(input9, "change", ctx.change_handler_6),
+    				listen(input9, "change", ctx.change_handler_7),
     				listen(input10, "change", ctx.input10_change_handler),
-    				listen(input10, "change", ctx.change_handler_7),
+    				listen(input10, "change", ctx.change_handler_8),
     				listen(input11, "change", ctx.input11_change_handler),
-    				listen(input11, "change", ctx.change_handler_8),
+    				listen(input11, "change", ctx.change_handler_9),
     				listen(input12, "change", ctx.input12_change_handler),
-    				listen(input12, "change", ctx.change_handler_9),
+    				listen(input12, "change", ctx.change_handler_10),
     				listen(input13, "change", ctx.input13_change_handler),
-    				listen(input13, "change", ctx.change_handler_10)
+    				listen(input13, "change", ctx.change_handler_11)
     			];
     		},
 
@@ -9538,7 +9539,7 @@
     			append(form1, label9);
     			append(label9, input8);
 
-    			input8.checked = ctx.showTypePrivate;
+    			input8.checked = ctx.showTypePub;
 
     			append(label9, t69);
     			append(label9, i10);
@@ -9617,7 +9618,7 @@
     			if (changed.showTypeChannel) input5.checked = ctx.showTypeChannel;
     			if (changed.showTypeContact) input6.checked = ctx.showTypeContact;
     			if (changed.showTypePost) input7.checked = ctx.showTypePost;
-    			if (changed.showTypePrivate) input8.checked = ctx.showTypePrivate;
+    			if (changed.showTypePub) input8.checked = ctx.showTypePub;
     			if (changed.showTypePrivate) input9.checked = ctx.showTypePrivate;
     			if (changed.showTypeVote) input10.checked = ctx.showTypeVote;
     			if (changed.showTypeUnknown) input11.checked = ctx.showTypeUnknown;
@@ -9741,12 +9742,16 @@
     		$$invalidate('limit', limit);
     	}
 
+    	function change_handler() {
+    		return setPref('limit', limit);
+    	}
+
     	function input3_change_handler() {
     		showTypeAbout = this.checked;
     		$$invalidate('showTypeAbout', showTypeAbout);
     	}
 
-    	function change_handler(ev) {
+    	function change_handler_1(ev) {
     	        setPref('showTypeAbout', showTypeAbout);
     	      }
 
@@ -9755,7 +9760,7 @@
     		$$invalidate('showTypeBlog', showTypeBlog);
     	}
 
-    	function change_handler_1(ev) {
+    	function change_handler_2(ev) {
     	        setPref('showTypeBlog', showTypeBlog);
     	      }
 
@@ -9764,7 +9769,7 @@
     		$$invalidate('showTypeChannel', showTypeChannel);
     	}
 
-    	function change_handler_2(ev) {
+    	function change_handler_3(ev) {
     	        setPref('showTypeChannel', showTypeChannel);
     	      }
 
@@ -9773,7 +9778,7 @@
     		$$invalidate('showTypeContact', showTypeContact);
     	}
 
-    	function change_handler_3(ev) {
+    	function change_handler_4(ev) {
     	        setPref('showTypeContact', showTypeContact);
     	      }
 
@@ -9782,17 +9787,17 @@
     		$$invalidate('showTypePost', showTypePost);
     	}
 
-    	function change_handler_4(ev) {
+    	function change_handler_5(ev) {
     	        setPref('showTypePost', showTypePost);
     	      }
 
     	function input8_change_handler() {
-    		showTypePrivate = this.checked;
-    		$$invalidate('showTypePrivate', showTypePrivate);
+    		showTypePub = this.checked;
+    		$$invalidate('showTypePub', showTypePub);
     	}
 
-    	function change_handler_5(ev) {
-    	        setPref('showTypePrivate', showTypePrivate);
+    	function change_handler_6(ev) {
+    	        setPref('showTypePub', showTypePub);
     	      }
 
     	function input9_change_handler() {
@@ -9800,7 +9805,7 @@
     		$$invalidate('showTypePrivate', showTypePrivate);
     	}
 
-    	function change_handler_6(ev) {
+    	function change_handler_7(ev) {
     	        setPref('showTypePrivate', showTypePrivate);
     	      }
 
@@ -9809,7 +9814,7 @@
     		$$invalidate('showTypeVote', showTypeVote);
     	}
 
-    	function change_handler_7(ev) {
+    	function change_handler_8(ev) {
     	        setPref('showTypeVote', showTypeVote);
     	      }
 
@@ -9818,7 +9823,7 @@
     		$$invalidate('showTypeUnknown', showTypeUnknown);
     	}
 
-    	function change_handler_8(ev) {
+    	function change_handler_9(ev) {
     	        setPref('showTypeUnknown', showTypeUnknown);
     	      }
 
@@ -9827,7 +9832,7 @@
     		$$invalidate('columnSize', columnSize);
     	}
 
-    	function change_handler_9() {
+    	function change_handler_10() {
     		return setPref('columnSize', columnSize);
     	}
 
@@ -9836,7 +9841,7 @@
     		$$invalidate('columnSize', columnSize);
     	}
 
-    	function change_handler_10() {
+    	function change_handler_11() {
     		return setPref('columnSize', columnSize);
     	}
 
@@ -9852,34 +9857,36 @@
     		showTypeContact,
     		showTypePost,
     		showTypePrivate,
+    		showTypePub,
     		showTypeVote,
     		saveConfiguration,
     		selectedFile,
     		input1_input_handler,
     		textarea_input_handler,
     		input2_input_handler,
-    		input3_change_handler,
     		change_handler,
-    		input4_change_handler,
+    		input3_change_handler,
     		change_handler_1,
-    		input5_change_handler,
+    		input4_change_handler,
     		change_handler_2,
-    		input6_change_handler,
+    		input5_change_handler,
     		change_handler_3,
-    		input7_change_handler,
+    		input6_change_handler,
     		change_handler_4,
-    		input8_change_handler,
+    		input7_change_handler,
     		change_handler_5,
-    		input9_change_handler,
+    		input8_change_handler,
     		change_handler_6,
-    		input10_change_handler,
+    		input9_change_handler,
     		change_handler_7,
-    		input11_change_handler,
+    		input10_change_handler,
     		change_handler_8,
-    		input12_change_handler,
+    		input11_change_handler,
     		change_handler_9,
-    		input13_change_handler,
+    		input12_change_handler,
     		change_handler_10,
+    		input13_change_handler,
+    		change_handler_11,
     		$$binding_groups
     	};
     }
@@ -9949,12 +9956,8 @@
 
     });
 
-    const cantConnect = () => {
-      console.log("config missing");
-      window.location = "/docs/index.html#/troubleshooting/no-connection";
-    };
-
     const loadConfiguration = async () => {
+      console.log("Loading configuration...");
       try {
         let data = await browser.storage.local.get();
 
@@ -9969,6 +9972,7 @@
     };
 
     const connect = async () => {
+      console.log("Connecting to sbot...");
       window.ssb = new DriverHermiebox();
 
       try {
@@ -9976,7 +9980,8 @@
         connected.set(true);
       } catch (err) {
         console.error("can't connect", err);
-        cantConnect();
+        connected.set(false);
+        throw "Can't connect to sbot"
       }
     };
 
@@ -10004,6 +10009,23 @@
       })
     };
 
+    const keepPinging = () => {
+      let interval = setInterval(() => {
+        if (hermiebox.sbot) {
+          hermiebox.sbot.whoami((err, v) => {
+            if (err) {
+              console.error("can't call whoami", err);
+              reconnect().catch(n => {
+                console.error("can't reconnect");
+                clearInterval(interval);
+                navigate("/error", { error: n });
+              });
+            }
+          });
+        }
+      }, 5000);
+    };
+
     // Preferences
 
     const getPref = (key, defaultValue) => {
@@ -10017,9 +10039,9 @@
       return defaultValue
     };
 
-    const setConnectionConfiguration = ({keys, remote, manifest}) => {
+    const setConnectionConfiguration = ({ keys, remote, manifest }) => {
       savedData.keys = keys;
-      savedData.remote = remote; 
+      savedData.remote = remote;
       savedData.manifest = manifest;
 
       browser.storage.local.set(savedData);
@@ -10392,11 +10414,11 @@
     			if (switch_instance) switch_instance.$$.fragment.c();
     			div0.className = "column svelte-64hhw0";
     			toggle_class(div0, "reduced-line-length", ctx.useShortColumn);
-    			add_location(div0, file$l, 46, 4, 1035);
+    			add_location(div0, file$l, 70, 4, 1650);
     			div1.className = "columns";
-    			add_location(div1, file$l, 45, 2, 1008);
+    			add_location(div1, file$l, 69, 2, 1623);
     			div2.className = "container bg-gray";
-    			add_location(div2, file$l, 44, 0, 973);
+    			add_location(div2, file$l, 68, 0, 1588);
 
     			dispose = [
     				listen(window, "popstate", ctx.popState),
@@ -10480,14 +10502,38 @@
     }
 
     function instance$k($$self, $$props, $$invalidate) {
-    	let $currentView;
+    	let $routeLocation, $currentView;
 
+    	validate_store(routeLocation, 'routeLocation');
+    	subscribe($$self, routeLocation, $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
     	validate_store(currentView, 'currentView');
     	subscribe($$self, currentView, $$value => { $currentView = $$value; $$invalidate('$currentView', $currentView); });
 
     	
 
       let useShortColumn = getPref("columnSize", "short") == "short";
+
+      onMount(async () => {
+        try {
+          await connect();
+
+          keepPinging();
+        } catch (n) {
+          console.error("connect error", n);
+          switch (n) {
+            case "Can't connect to sbot":
+              // need to be able to go to settings even though no connection is
+              // established.
+              if ($routeLocation !== "/settings") {
+                window.location = "/docs/index.html#/troubleshooting/no-connection";
+              }
+              break;
+            default:
+              navigate("/error", { error: n });
+              break;
+          }
+        }
+      });
 
       const popState = event => {
         if (event.state !== null) {
@@ -10527,26 +10573,18 @@
 
         try {
             await loadConfiguration();
-            await connect();
 
-            let interval = setInterval(() => {
-                if (hermiebox.sbot) {
-                    hermiebox.sbot.whoami((err, v) => {
-                        if (err) {
-                            console.error("can't call whoami", err);
-                            reconnect().catch(n => {
-                                console.error("can't reconnect");
-                                clearInterval(interval);
-                                navigate("/error", { error: n });
-                            });
-                        }
-                    });
-                }
-            }, 5000);
         } catch (n) {
-            if (n === "Configuration is missing") {
-                navigate("/settings");
+            console.error("initialization error", n);
+            switch (n) {
+                case "Configuration is missing":
+                    navigate("/settings");
+                    break
+                default:
+                    navigate("/error", { error: n });
+                    break
             }
+
         }
 
         const patchfox = new Patchfox({

@@ -7,11 +7,35 @@
     currentView,
     connect,
     reconnect,
-    getPref
+    getPref,
+    routeLocation,
+    keepPinging 
   } from "./utils.js";
   import Navigation from "./Navigation.svelte";
 
   let useShortColumn = getPref("columnSize", "short") == "short";
+
+  onMount(async () => {
+    try {
+      await connect();
+
+      keepPinging();
+    } catch (n) {
+      console.error("connect error", n);
+      switch (n) {
+        case "Can't connect to sbot":
+          // need to be able to go to settings even though no connection is
+          // established.
+          if ($routeLocation !== "/settings") {
+            window.location = "/docs/index.html#/troubleshooting/no-connection";
+          }
+          break;
+        default:
+          navigate("/error", { error: n });
+          break;
+      }
+    }
+  });
 
   const popState = event => {
     if (event.state !== null) {

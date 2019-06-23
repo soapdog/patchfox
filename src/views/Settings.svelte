@@ -134,7 +134,11 @@
 <h4>Vieweing Experience</h4>
 <form class="form-group">
   <label class="form-label" for="limit">Messages per page</label>
-  <input class="form-input" type="number" bind:value={limit} />
+  <input
+    class="form-input"
+    type="number"
+    bind:value={limit}
+    on:change={() => setPref('limit', limit)} />
 
   <br />
   <span>
@@ -202,9 +206,9 @@
   <label class="form-switch">
     <input
       type="checkbox"
-      bind:checked={showTypePrivate}
+      bind:checked={showTypePub}
       on:change={ev => {
-        setPref('showTypePrivate', showTypePrivate);
+        setPref('showTypePub', showTypePub);
       }} />
     <i class="form-icon" />
     <b>Pub</b>

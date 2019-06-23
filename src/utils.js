@@ -73,36 +73,6 @@ export const currentView = derived([connected, route], ([$connected, $route]) =>
 
 /// connection stuff
 
-const configurationIsOK = savedData => {
-  return (
-    savedData.hasOwnProperty("keys")
-  );
-};
-
-const connectAndLaunch = data => {
-  window.ssb = new DriverHermiebox();
-
-  ssb
-    .connect(data.keys)
-    .then(data => {
-      console.log("connected");
-      connected.set(true);
-    })
-    .catch(err => {
-      console.error("can't connect", err);
-      cantConnect();
-    });
-};
-
-const configurationPresent = data => {
-  savedData = data || {}
-  if (!configurationIsOK(data)) {
-    configurationMissing();
-  } else {
-    connectAndLaunch(data);
-  }
-};
-
 const configurationMissing = () => {
   console.log("config missing");
   window.location = "/docs/index.html#/troubleshooting/no-configuration";
@@ -114,6 +84,7 @@ const cantConnect = () => {
 };
 
 export const loadConfiguration = async () => {
+  console.log("Loading configuration...")
   try {
     let data = await browser.storage.local.get()
 
@@ -128,6 +99,7 @@ export const loadConfiguration = async () => {
 }
 
 export const connect = async () => {
+  console.log("Connecting to sbot...")
   window.ssb = new DriverHermiebox();
 
   try {
@@ -135,7 +107,8 @@ export const connect = async () => {
     connected.set(true);
   } catch (err) {
     console.error("can't connect", err);
-    cantConnect();
+    connected.set(false)
+    throw "Can't connect to sbot"
   }
 }
 
@@ -163,6 +136,23 @@ export const reconnect = () => {
   })
 }
 
+export const keepPinging = () => {
+  let interval = setInterval(() => {
+    if (hermiebox.sbot) {
+      hermiebox.sbot.whoami((err, v) => {
+        if (err) {
+          console.error("can't call whoami", err);
+          reconnect().catch(n => {
+            console.error("can't reconnect");
+            clearInterval(interval);
+            navigate("/error", { error: n });
+          });
+        }
+      });
+    }
+  }, 5000);
+}
+
 // Preferences
 
 export const getPref = (key, defaultValue) => {
@@ -176,9 +166,9 @@ export const getPref = (key, defaultValue) => {
   return defaultValue
 }
 
-export const setConnectionConfiguration = ({keys, remote, manifest}) => {
+export const setConnectionConfiguration = ({ keys, remote, manifest }) => {
   savedData.keys = keys
-  savedData.remote = remote 
+  savedData.remote = remote
   savedData.manifest = manifest
 
   browser.storage.local.set(savedData)

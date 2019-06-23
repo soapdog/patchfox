@@ -1,10 +1,7 @@
 import Patchfox from "./Patchfox.svelte";
 import {
-    connected,
-    loadConfiguration,
-    connect,
-    reconnect,
-    navigate
+    loadConfiguration,  
+    navigate,
 } from "./utils.js";
 
 const main = async () => {
@@ -12,26 +9,18 @@ const main = async () => {
 
     try {
         await loadConfiguration()
-        await connect()
 
-        let interval = setInterval(() => {
-            if (hermiebox.sbot) {
-                hermiebox.sbot.whoami((err, v) => {
-                    if (err) {
-                        console.error("can't call whoami", err);
-                        reconnect().catch(n => {
-                            console.error("can't reconnect");
-                            clearInterval(interval);
-                            navigate("/error", { error: n });
-                        });
-                    }
-                });
-            }
-        }, 5000);
     } catch (n) {
-        if (n === "Configuration is missing") {
-            navigate("/settings")
+        console.error("initialization error", n)
+        switch (n) {
+            case "Configuration is missing":
+                navigate("/settings")
+                break
+            default:
+                navigate("/error", { error: n })
+                break
         }
+
     }
 
     const patchfox = new Patchfox({
