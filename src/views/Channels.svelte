@@ -7,57 +7,71 @@
 
   import { navigate } from "../utils.js";
 
-
   let activeChannels = [];
   let subscribedChannels = [];
 
-  console.time("channels");
-  let acPromise = ssb
-    .channels()
-    .then(channels => {
-      console.timeEnd("channels", channels);
-      activeChannels = channels;
-    })
-    .catch(n => navigate("/error", { error: n }));
+  let loading = true;
 
-  let scPromise = ssb
-    .subscribedChannels()
-    .then(channels => {
-      console.log("channels for feed", channels);
-      subscribedChannels = channels;
-    })
-    .catch(n => navigate("/error", { error: n }));
+  let pull = hermiebox.modules.pullStream;
+  let sbot = hermiebox.sbot;
+
+  const loadSubscribedChannels = () => {
+    let query = {
+      $filter: {
+        value: {
+          author: sbot.id,
+          content: {
+            type: "channel"
+          }
+        }
+      },
+      $sort: [["value", "timestamp"]]
+    };
+    pull(
+      sbot.query.read({
+        query: [query],
+        live: true,
+        reverse: true,
+        limit: 500
+      }),
+      //pull.filter(c => {
+      //  !subscribedChannels.some(sc => sc.channel == c.channel);
+      //}),
+      pull.drain(c => {
+        if (c.sync) {
+          console.log("finished loading");
+          loading = false;
+        } else {
+          if (c.value.content.subscribed) {
+            subscribedChannels.push(c.value.content.channel);
+            subscribedChannels = subscribedChannels;
+          }
+        }
+      })
+    );
+  };
+
+  loadSubscribedChannels();
 </script>
 
+<style>
+  .channel {
+    cursor: pointer;
+  }
+</style>
+
 <h4>Subscribed Channels</h4>
-{#await scPromise}
+
+{#if subscribedChannels.length == 0}
   <div class="loading" />
-  <p>This is a complex query, it might take a while...</p>
-{:then data}
+
+  <p>This is a complex query, it might take a while... Channels will appear as we find them</p>
+{:else}
   {#each subscribedChannels as c}
     <span
-      class="label label-rounded badge m-2"
-      data-badge={c.count}
-      on:click={() => navigate('/channel', { channel: c.channel })}>
-       {c.channel}
+      class="channel label label-secondary m-1"
+      on:click={() => navigate('/channel', { channel: c })}>
+       #{c}
     </span>
   {/each}
-{:catch err}
-  <p>{err}</p>
-{/await}
-<h4>Active Channels</h4>
-{#await acPromise}
-  <div class="loading" />
-  <p>This is a complex query, it might take a while...</p>
-{:then data}
-  {#each activeChannels as c}
-    <span
-      class="label label-rounded badge m-2"
-      data-badge={c.count}
-      on:click={() => navigate('/channel', { channel: c.channel })}>
-       {c.channel}
-    </span>
-  {/each}
-{:catch err}
-  <p>{err}</p>
-{/await}
+{/if}

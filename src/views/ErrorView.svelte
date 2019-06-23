@@ -1,13 +1,19 @@
 <script>
   import { navigate, routeParams, reconnect } from "../utils.js";
 
+  document.title = `Patchfox - Error`;
+
   let error = $routeParams.error;
+  let errorObj = {}
   let toastClass = "";
   let toast = false;
   let msg;
   let cta = false;
 
-  document.title = `Patchfox - Error`;
+  if (typeof error == "object") {
+    errorObj = error
+    error = errorObj.message
+  }
 
   const tryReconnect = () => {
     toast = true;

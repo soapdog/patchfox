@@ -11,6 +11,7 @@ import ErrorView from "./views/ErrorView.svelte";
 import Channels from "./views/Channels.svelte"
 import Channel from "./views/Channel.svelte"
 import Settings from "./views/Settings.svelte"
+import Mentions from "./views/Mentions.svelte"
 
 let savedData = {}
 
@@ -33,6 +34,7 @@ export const navigate = (location, data) => {
   route.set({ location, data });
   let dataAsQuery = queryString.stringify(data);
   history.pushState({ location, data }, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);
+  console.log(`Navigate ${location}`, data);
 };
 
 
@@ -45,6 +47,7 @@ const routes = {
   "/channels": Channels,
   "/channel": Channel,
   "/settings": Settings,
+  "/mentions": Mentions,
   "*": Default
 };
 

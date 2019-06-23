@@ -13,6 +13,7 @@
   const goCompose = () => navigate("/compose");
   const goPublic = () => navigate("/public");
   const goChannels = () => navigate("/channels");
+  const goMentions = () => navigate("/mentions");
 
   const openSidebar = async ev => {
     let loc = window.location.href;
@@ -82,12 +83,18 @@
       on:click|stopPropagation|preventDefault={goPublic}>
       Public
     </a>
-    <!-- <a
+    <a
+      href="#/mentions"
+      class="btn btn-link"
+      on:click|stopPropagation|preventDefault={goMentions}>
+      Mentions
+    </a>
+    <a
       href="#/channels" 
       class="btn btn-link"
       on:click|stopPropagation|preventDefault={goChannels}>
       Channels
-    </a> -->
+    </a>
     <a href="#/settings" class="btn btn-link" on:click={goSettings}>Settings</a>
     <a href="/docs/index.html" class="btn btn-link">Help</a>
   </section>
