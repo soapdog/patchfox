@@ -31,16 +31,17 @@
   };
 
   const reply = ev => {
-    let rootId = msg.value.content.root || msg.key;
+    let root = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
-    navigate("/compose", { root: rootId, branch: msg.key, channel, replyfeed });
+    navigate("/compose", { root, branch: msg.key, channel, replyfeed });
   };
 
   const fork = ev => {
+    let originalRoot = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
-    navigate("/compose", { fork: msg.key, channel, replyfeed });
+    navigate("/compose", { root: msg.key, branch: msg.key, fork: originalRoot, channel, replyfeed });
   };
 
   const goRoot = ev => {

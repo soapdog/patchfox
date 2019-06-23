@@ -1940,7 +1940,7 @@
 
     const file = "src\\messageTypes\\PostMsg.svelte";
 
-    // (78:6) {#if msg.value.content.root}
+    // (79:6) {#if msg.value.content.root}
     function create_if_block_1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1950,8 +1950,8 @@
     			a = element("a");
     			t = text("(root)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
-    			add_location(a, file, 79, 10, 1979);
-    			add_location(span, file, 78, 8, 1961);
+    			add_location(a, file, 80, 10, 2065);
+    			add_location(span, file, 79, 8, 2047);
     			dispose = listen(a, "click", prevent_default(ctx.goRoot));
     		},
 
@@ -1977,7 +1977,7 @@
     	};
     }
 
-    // (87:6) {#if msg.value.content.branch}
+    // (88:6) {#if msg.value.content.branch}
     function create_if_block(ctx) {
     	var span, a, t, a_href_value, dispose;
 
@@ -1987,8 +1987,8 @@
     			a = element("a");
     			t = text("(in reply to)");
     			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
-    			add_location(a, file, 88, 10, 2241);
-    			add_location(span, file, 87, 8, 2223);
+    			add_location(a, file, 89, 10, 2327);
+    			add_location(span, file, 88, 8, 2309);
     			dispose = listen(a, "click", prevent_default(ctx.goBranch));
     		},
 
@@ -2045,26 +2045,26 @@
     			button1 = element("button");
     			button1.textContent = "Reply";
     			div0.className = "card-body svelte-1ftdgav";
-    			add_location(div0, file, 66, 0, 1587);
+    			add_location(div0, file, 67, 0, 1673);
     			attr(input, "type", "checkbox");
     			input.checked = ctx.liked;
-    			add_location(input, file, 73, 8, 1787);
+    			add_location(input, file, 74, 8, 1873);
     			i.className = "form-icon";
-    			add_location(i, file, 74, 8, 1862);
+    			add_location(i, file, 75, 8, 1948);
     			label.className = "form-switch d-inline";
-    			add_location(label, file, 72, 6, 1741);
+    			add_location(label, file, 73, 6, 1827);
     			div1.className = "column col-6";
-    			add_location(div1, file, 71, 4, 1707);
+    			add_location(div1, file, 72, 4, 1793);
     			button0.className = "btn";
-    			add_location(button0, file, 98, 6, 2513);
+    			add_location(button0, file, 99, 6, 2599);
     			button1.className = "btn";
-    			add_location(button1, file, 100, 6, 2572);
+    			add_location(button1, file, 101, 6, 2658);
     			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 97, 4, 2468);
+    			add_location(div2, file, 98, 4, 2554);
     			div3.className = "columns col-gapless";
-    			add_location(div3, file, 70, 2, 1668);
+    			add_location(div3, file, 71, 2, 1754);
     			div4.className = "card-footer";
-    			add_location(div4, file, 69, 0, 1639);
+    			add_location(div4, file, 70, 0, 1725);
 
     			dispose = [
     				listen(input, "change", ctx.likeChanged),
@@ -2180,16 +2180,17 @@
       };
 
       const reply = ev => {
-        let rootId = msg.value.content.root || msg.key;
+        let root = msg.value.content.root || msg.key;
         let channel = msg.value.content.channel;
         let replyfeed = msg.value.author;
-        navigate("/compose", { root: rootId, branch: msg.key, channel, replyfeed });
+        navigate("/compose", { root, branch: msg.key, channel, replyfeed });
       };
 
       const fork = ev => {
+        let originalRoot = msg.value.content.root || msg.key;
         let channel = msg.value.content.channel;
         let replyfeed = msg.value.author;
-        navigate("/compose", { fork: msg.key, channel, replyfeed });
+        navigate("/compose", { root: msg.key, branch: msg.key, fork: originalRoot, channel, replyfeed });
       };
 
       const goRoot = ev => {
