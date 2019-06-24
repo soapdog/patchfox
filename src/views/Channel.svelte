@@ -1,6 +1,8 @@
 <script>
   import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
-  import { navigate, routeParams } from "../utils.js";
+  import { navigate, routeParams, getPref } from "../utils.js";
+  import { onMount, onDestroy } from "svelte";
+
   let msgs = false;
   let error = $routeParams.error || false;
   let channel = $routeParams.channel || false;
@@ -12,18 +14,17 @@
   }
 
   let opts = {
-    limit: $routeParams.limit || 10,
+    limit: $routeParams.limit || getPref("limit",10),
     reverse: true
   };
 
-  ssb.channelSubscribed(channel)
-    .then(s => subscribed = s)
+  ssb.channelSubscribed(channel).then(s => (subscribed = s));
 
   // todo: move back into using stores.
   $: {
     Object.assign(opts, $routeParams);
 
-    document.title = `Patchfox - #${channel}` 
+    document.title = `Patchfox - #${channel}`;
 
     if (opts.hasOwnProperty("lt")) {
       opts.lt = parseInt(opts.lt);
@@ -50,15 +51,35 @@
   const subscriptionChanged = ev => {
     let v = ev.target.checked;
     if (v) {
-      ssb
-        .channelSubscribe(channel)
-        .catch(() => (subscribed = false));
+      ssb.channelSubscribe(channel).catch(() => (subscribed = false));
     } else {
-      ssb
-        .channelUnsubscribe(channel)
-        .catch(() => (subscribed = true));
+      ssb.channelUnsubscribe(channel).catch(() => (subscribed = true));
     }
   };
+
+  const goNext = () => {
+    navigate("/channel", {
+      channel,
+      lt: msgs[msgs.length - 1].rts
+    });
+  };
+  const goPrevious = () => {
+    history.back();
+  };
+
+  let previousShortcutUnbind = keymage("p", () => {
+    goPrevious();
+    return false;
+  });
+  let nextShortcutUnbind = keymage("n", () => {
+    goNext();
+    return false;
+  });
+
+  onDestroy(() => {
+    previousShortcutUnbind();
+    nextShortcutUnbind();
+  });
 </script>
 
 <style>
@@ -74,7 +95,10 @@
     <h4 class="column">Channel: #{channel}</h4>
     <div class="column">
       <label class="form-switch float-right">
-        <input type="checkbox" on:change={subscriptionChanged} bind:checked={subscribed} />
+        <input
+          type="checkbox"
+          on:change={subscriptionChanged}
+          bind:checked={subscribed} />
         <i class="form-icon" />
         Subscribe
       </label>
@@ -94,21 +118,12 @@
   {/each}
   <ul class="pagination">
     <li class="page-item page-previous">
-      <a
-        href="#/public"
-        on:click|stopPropagation|preventDefault={() => history.back()}>
+      <a href="#/public" on:click|stopPropagation|preventDefault={goPrevious}>
         <div class="page-item-subtitle">Previous</div>
       </a>
     </li>
     <li class="page-item page-next">
-      <a
-        href="#/public"
-        on:click|stopPropagation|preventDefault={() => navigate('/channel', {
-            channel,
-            lt: msgs[msgs.length - 1].rts,
-            limit: opts.limit,
-            onlyRoots: opts.onlyRoots
-          })}>
+      <a href="#/public" on:click|stopPropagation|preventDefault={goNext}>
         <div class="page-item-subtitle">Next</div>
       </a>
     </li>

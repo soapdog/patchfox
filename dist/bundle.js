@@ -8245,7 +8245,7 @@
     	return child_ctx;
     }
 
-    // (84:0) {#if error}
+    // (108:0) {#if error}
     function create_if_block_1$8(ctx) {
     	var div, t0, t1;
 
@@ -8255,7 +8255,7 @@
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$i, 84, 2, 1980);
+    			add_location(div, file$i, 108, 2, 2505);
     		},
 
     		m: function mount(target, anchor) {
@@ -8274,7 +8274,7 @@
     	};
     }
 
-    // (89:0) {:else}
+    // (113:0) {:else}
     function create_else_block$8(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -8311,23 +8311,23 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$i, 99, 8, 2396);
+    			add_location(div0, file$i, 121, 8, 2893);
     			a0.href = "#/public";
-    			add_location(a0, file$i, 96, 6, 2286);
+    			add_location(a0, file$i, 120, 6, 2811);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$i, 95, 4, 2242);
+    			add_location(li0, file$i, 119, 4, 2767);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$i, 111, 8, 2780);
+    			add_location(div1, file$i, 126, 8, 3086);
     			a1.href = "#/public";
-    			add_location(a1, file$i, 103, 6, 2511);
+    			add_location(a1, file$i, 125, 6, 3008);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$i, 102, 4, 2471);
+    			add_location(li1, file$i, 124, 4, 2968);
     			ul.className = "pagination";
-    			add_location(ul, file$i, 94, 2, 2213);
+    			add_location(ul, file$i, 118, 2, 2738);
 
     			dispose = [
-    				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
-    				listen(a1, "click", stop_propagation(prevent_default(ctx.click_handler_1)))
+    				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
+    				listen(a1, "click", stop_propagation(prevent_default(ctx.goNext)))
     			];
     		},
 
@@ -8397,7 +8397,7 @@
     	};
     }
 
-    // (87:0) {#if !msgs}
+    // (111:0) {#if !msgs}
     function create_if_block$b(ctx) {
     	var div;
 
@@ -8405,7 +8405,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$i, 87, 2, 2055);
+    			add_location(div, file$i, 111, 2, 2580);
     		},
 
     		m: function mount(target, anchor) {
@@ -8424,7 +8424,7 @@
     	};
     }
 
-    // (92:2) {:else}
+    // (116:2) {:else}
     function create_else_block_1$4(ctx) {
     	var p;
 
@@ -8432,7 +8432,7 @@
     		c: function create() {
     			p = element("p");
     			p.textContent = "No messages.";
-    			add_location(p, file$i, 92, 4, 2179);
+    			add_location(p, file$i, 116, 4, 2704);
     		},
 
     		m: function mount(target, anchor) {
@@ -8447,7 +8447,7 @@
     	};
     }
 
-    // (90:2) {#each msgs as msg (msg.key)}
+    // (114:2) {#each msgs as msg (msg.key)}
     function create_each_block$4(key_1, ctx) {
     	var first, current;
 
@@ -8541,19 +8541,19 @@
     			if_block1.c();
     			if_block1_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$i, 73, 4, 1656);
+    			add_location(h4, file$i, 94, 4, 2148);
     			attr(input, "type", "checkbox");
-    			add_location(input, file$i, 76, 8, 1782);
+    			add_location(input, file$i, 97, 8, 2274);
     			i.className = "form-icon";
-    			add_location(i, file$i, 77, 8, 1875);
+    			add_location(i, file$i, 101, 8, 2400);
     			label.className = "form-switch float-right";
-    			add_location(label, file$i, 75, 6, 1733);
+    			add_location(label, file$i, 96, 6, 2225);
     			div0.className = "column";
-    			add_location(div0, file$i, 74, 4, 1705);
+    			add_location(div0, file$i, 95, 4, 2197);
     			div1.className = "columns";
-    			add_location(div1, file$i, 72, 2, 1629);
+    			add_location(div1, file$i, 93, 2, 2121);
     			div2.className = "container";
-    			add_location(div2, file$i, 71, 0, 1602);
+    			add_location(div2, file$i, 92, 0, 2094);
 
     			dispose = [
     				listen(input, "change", ctx.input_change_handler),
@@ -8669,6 +8669,7 @@
     	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
     	
+
       let msgs = false;
       let error = $routeParams.error || false;
       let channel = $routeParams.channel || false;
@@ -8680,49 +8681,55 @@
       }
 
       let opts = {
-        limit: $routeParams.limit || 10,
+        limit: $routeParams.limit || getPref("limit",10),
         reverse: true
       };
 
-      ssb.channelSubscribed(channel)
-        .then(s => { const $$result = subscribed = s; $$invalidate('subscribed', subscribed); return $$result; });
+      ssb.channelSubscribed(channel).then(s => { const $$result = (subscribed = s); $$invalidate('subscribed', subscribed); return $$result; });
 
       const subscriptionChanged = ev => {
         let v = ev.target.checked;
         if (v) {
-          ssb
-            .channelSubscribe(channel)
-            .catch(() => { const $$result = (subscribed = false); $$invalidate('subscribed', subscribed); return $$result; });
+          ssb.channelSubscribe(channel).catch(() => { const $$result = (subscribed = false); $$invalidate('subscribed', subscribed); return $$result; });
         } else {
-          ssb
-            .channelUnsubscribe(channel)
-            .catch(() => { const $$result = (subscribed = true); $$invalidate('subscribed', subscribed); return $$result; });
+          ssb.channelUnsubscribe(channel).catch(() => { const $$result = (subscribed = true); $$invalidate('subscribed', subscribed); return $$result; });
         }
       };
+
+      const goNext = () => {
+        navigate("/channel", {
+          channel,
+          lt: msgs[msgs.length - 1].rts
+        });
+      };
+      const goPrevious = () => {
+        history.back();
+      };
+
+      let previousShortcutUnbind = keymage("p", () => {
+        goPrevious();
+        return false;
+      });
+      let nextShortcutUnbind = keymage("n", () => {
+        goNext();
+        return false;
+      });
+
+      onDestroy(() => {
+        previousShortcutUnbind();
+        nextShortcutUnbind();
+      });
 
     	function input_change_handler() {
     		subscribed = this.checked;
     		$$invalidate('subscribed', subscribed);
     	}
 
-    	function click_handler() {
-    		return history.back();
-    	}
-
-    	function click_handler_1() {
-    		return navigate('/channel', {
-    	            channel,
-    	            lt: msgs[msgs.length - 1].rts,
-    	            limit: opts.limit,
-    	            onlyRoots: opts.onlyRoots
-    	          });
-    	}
-
     	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, channel: 1, error: 1 }) => {
     		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.channel || $$dirty.error) { {
             Object.assign(opts, $routeParams);
         
-            document.title = `Patchfox - #${channel}`; 
+            document.title = `Patchfox - #${channel}`;
         
             if (opts.hasOwnProperty("lt")) {
               opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('channel', channel), $$invalidate('error', error);
@@ -8752,11 +8759,10 @@
     		error,
     		channel,
     		subscribed,
-    		opts,
     		subscriptionChanged,
-    		input_change_handler,
-    		click_handler,
-    		click_handler_1
+    		goNext,
+    		goPrevious,
+    		input_change_handler
     	};
     }
 
