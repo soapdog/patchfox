@@ -840,8 +840,8 @@
         this.feed = server.id;
       }
 
-      async public(opts, nonStandard) {
-        var msgs = await hermiebox.api.pullPublic(opts, nonStandard);
+      async public(opts) {
+        var msgs = await hermiebox.api.pullPublic(opts,{});
         return msgs
       }
 
@@ -5013,7 +5013,7 @@
     	return child_ctx;
     }
 
-    // (89:0) {#if error}
+    // (80:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -5023,7 +5023,7 @@
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 89, 2, 2225);
+    			add_location(div, file$b, 80, 2, 1656);
     		},
 
     		m: function mount(target, anchor) {
@@ -5042,7 +5042,7 @@
     	};
     }
 
-    // (94:0) {:else}
+    // (85:0) {:else}
     function create_else_block$4(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -5072,23 +5072,23 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$b, 102, 8, 2605);
+    			add_location(div0, file$b, 91, 8, 2008);
     			a0.href = "#/public";
-    			add_location(a0, file$b, 99, 6, 2495);
+    			add_location(a0, file$b, 90, 6, 1926);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$b, 98, 4, 2451);
+    			add_location(li0, file$b, 89, 4, 1882);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$b, 113, 8, 2966);
+    			add_location(div1, file$b, 96, 8, 2201);
     			a1.href = "#/public";
-    			add_location(a1, file$b, 106, 6, 2720);
+    			add_location(a1, file$b, 95, 6, 2123);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$b, 105, 4, 2680);
+    			add_location(li1, file$b, 94, 4, 2083);
     			ul.className = "pagination";
-    			add_location(ul, file$b, 97, 2, 2422);
+    			add_location(ul, file$b, 88, 2, 1853);
 
     			dispose = [
-    				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler_1))),
-    				listen(a1, "click", stop_propagation(prevent_default(ctx.click_handler_2)))
+    				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
+    				listen(a1, "click", stop_propagation(prevent_default(ctx.goNext)))
     			];
     		},
 
@@ -5141,7 +5141,7 @@
     	};
     }
 
-    // (92:0) {#if !msgs}
+    // (83:0) {#if !msgs}
     function create_if_block$5(ctx) {
     	var div;
 
@@ -5149,7 +5149,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$b, 92, 2, 2300);
+    			add_location(div, file$b, 83, 2, 1731);
     		},
 
     		m: function mount(target, anchor) {
@@ -5168,7 +5168,7 @@
     	};
     }
 
-    // (95:2) {#each msgs as msg (msg.key)}
+    // (86:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -5223,7 +5223,7 @@
     }
 
     function create_fragment$b(ctx) {
-    	var div3, div2, h4, t1, div1, div0, span, i0, t2, ul, li0, label0, input0, t3, i1, t4, t5, li1, label1, t6, t7_value = ctx.opts.limit, t7, t8, t9, input1, t10, t11, current_block_type_index, if_block1, if_block1_anchor, current, dispose;
+    	var div2, div1, h4, t1, div0, t2, t3, current_block_type_index, if_block1, if_block1_anchor, current;
 
     	var if_block0 = (ctx.error) && create_if_block_1$4(ctx);
 
@@ -5244,80 +5244,25 @@
 
     	return {
     		c: function create() {
-    			div3 = element("div");
     			div2 = element("div");
+    			div1 = element("div");
     			h4 = element("h4");
     			h4.textContent = "Public Feed";
     			t1 = space();
-    			div1 = element("div");
     			div0 = element("div");
-    			span = element("span");
-    			i0 = element("i");
     			t2 = space();
-    			ul = element("ul");
-    			li0 = element("li");
-    			label0 = element("label");
-    			input0 = element("input");
-    			t3 = space();
-    			i1 = element("i");
-    			t4 = text("\r\n              Show Only Roots");
-    			t5 = space();
-    			li1 = element("li");
-    			label1 = element("label");
-    			t6 = text("Fetch ");
-    			t7 = text(t7_value);
-    			t8 = text(" messages");
-    			t9 = space();
-    			input1 = element("input");
-    			t10 = space();
     			if (if_block0) if_block0.c();
-    			t11 = space();
+    			t3 = space();
     			if_block1.c();
     			if_block1_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$b, 52, 4, 1108);
-    			i0.className = "icon icon-more-horiz text-gray";
-    			add_location(i0, file$b, 60, 10, 1415);
-    			span.className = "btn btn-link dropdown-toggle";
-    			span.tabIndex = "0";
-    			toggle_class(span, "active", ctx.dropdownActive);
-    			add_location(span, file$b, 55, 8, 1221);
-    			attr(input0, "type", "checkbox");
-    			add_location(input0, file$b, 65, 14, 1607);
-    			i1.className = "form-icon";
-    			add_location(i1, file$b, 66, 14, 1673);
-    			label0.className = "form-checkbox";
-    			add_location(label0, file$b, 64, 12, 1562);
-    			li0.className = "menu-item";
-    			add_location(li0, file$b, 63, 10, 1526);
-    			label1.className = "form-label";
-    			label1.htmlFor = "input-example-1";
-    			add_location(label1, file$b, 71, 12, 1814);
-    			input1.className = "slider tooltip";
-    			attr(input1, "type", "range");
-    			input1.min = "10";
-    			input1.max = "100";
-    			input1.value = "50";
-    			add_location(input1, file$b, 74, 12, 1941);
-    			li1.className = "menu-item";
-    			add_location(li1, file$b, 70, 10, 1778);
-    			ul.className = "menu menu-right svelte-kdiu44";
-    			add_location(ul, file$b, 62, 8, 1486);
-    			div0.className = "dropdown float-right";
-    			add_location(div0, file$b, 54, 6, 1177);
-    			div1.className = "column";
-    			add_location(div1, file$b, 53, 4, 1149);
-    			div2.className = "columns";
-    			add_location(div2, file$b, 51, 2, 1081);
-    			div3.className = "container";
-    			add_location(div3, file$b, 50, 0, 1054);
-
-    			dispose = [
-    				listen(span, "click", ctx.click_handler),
-    				listen(input0, "change", ctx.input0_change_handler),
-    				listen(input1, "change", ctx.input1_change_input_handler),
-    				listen(input1, "input", ctx.input1_change_input_handler)
-    			];
+    			add_location(h4, file$b, 75, 4, 1558);
+    			div0.className = "column";
+    			add_location(div0, file$b, 76, 4, 1599);
+    			div1.className = "columns";
+    			add_location(div1, file$b, 74, 2, 1531);
+    			div2.className = "container";
+    			add_location(div2, file$b, 73, 0, 1504);
     		},
 
     		l: function claim(nodes) {
@@ -5325,64 +5270,27 @@
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div3, anchor);
-    			append(div3, div2);
-    			append(div2, h4);
-    			append(div2, t1);
+    			insert(target, div2, anchor);
     			append(div2, div1);
+    			append(div1, h4);
+    			append(div1, t1);
     			append(div1, div0);
-    			append(div0, span);
-    			append(span, i0);
-    			append(div0, t2);
-    			append(div0, ul);
-    			append(ul, li0);
-    			append(li0, label0);
-    			append(label0, input0);
-
-    			input0.checked = ctx.onlyRoots;
-
-    			append(label0, t3);
-    			append(label0, i1);
-    			append(label0, t4);
-    			append(ul, t5);
-    			append(ul, li1);
-    			append(li1, label1);
-    			append(label1, t6);
-    			append(label1, t7);
-    			append(label1, t8);
-    			append(li1, t9);
-    			append(li1, input1);
-
-    			input1.value = ctx.opts.limit;
-
-    			insert(target, t10, anchor);
+    			insert(target, t2, anchor);
     			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t11, anchor);
+    			insert(target, t3, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
     			insert(target, if_block1_anchor, anchor);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
-    			if (changed.dropdownActive) {
-    				toggle_class(span, "active", ctx.dropdownActive);
-    			}
-
-    			if (changed.onlyRoots) input0.checked = ctx.onlyRoots;
-
-    			if ((!current || changed.opts) && t7_value !== (t7_value = ctx.opts.limit)) {
-    				set_data(t7, t7_value);
-    			}
-
-    			if (changed.opts) input1.value = ctx.opts.limit;
-
     			if (ctx.error) {
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
     					if_block0 = create_if_block_1$4(ctx);
     					if_block0.c();
-    					if_block0.m(t11.parentNode, t11);
+    					if_block0.m(t3.parentNode, t3);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -5425,14 +5333,14 @@
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div3);
-    				detach(t10);
+    				detach(div2);
+    				detach(t2);
     			}
 
     			if (if_block0) if_block0.d(detaching);
 
     			if (detaching) {
-    				detach(t11);
+    				detach(t3);
     			}
 
     			if_blocks[current_block_type_index].d(detaching);
@@ -5440,8 +5348,6 @@
     			if (detaching) {
     				detach(if_block1_anchor);
     			}
-
-    			run_all(dispose);
     		}
     	};
     }
@@ -5453,61 +5359,54 @@
     	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
     	
+
       let msgs = false;
       let error = $routeParams.error || false;
-      let dropdownActive = false;
 
       let opts = {
-        limit: $routeParams.limit || 10,
+        limit: $routeParams.limit || getPref("limit", 10),
         reverse: true
       };
 
-      let onlyRoots = $routeParams.onlyRoots || false;
+      const goNext = () => {
+        navigate("/public", {
+          lt: msgs[msgs.length - 1].rts
+        });
+      };
+      const goPrevious = () => {
+        history.back();
+      };
 
-    	function click_handler() {
-    		const $$result = (dropdownActive = !dropdownActive);
-    		$$invalidate('dropdownActive', dropdownActive);
-    		return $$result;
-    	}
+      let previousShortcutUnbind = keymage("p", () => {
+        goPrevious();
+        return false;
+      });
+      let nextShortcutUnbind = keymage("n", () => {
+        goNext();
+        return false;
+      });
 
-    	function input0_change_handler() {
-    		onlyRoots = this.checked;
-    		$$invalidate('onlyRoots', onlyRoots);
-    	}
+      onDestroy(() => {
+        previousShortcutUnbind();
+        nextShortcutUnbind();
+      });
 
-    	function input1_change_input_handler() {
-    		opts.limit = to_number(this.value);
-    		$$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
-    	}
-
-    	function click_handler_1() {
-    		return history.back();
-    	}
-
-    	function click_handler_2() {
-    		return navigate('/public', {
-    	            lt: msgs[msgs.length - 1].rts,
-    	            limit: opts.limit,
-    	            onlyRoots: opts.onlyRoots
-    	          });
-    	}
-
-    	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, onlyRoots: 1, error: 1 }) => {
-    		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.onlyRoots || $$dirty.error) { {
+    	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, error: 1 }) => {
+    		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.error) { {
             Object.assign(opts, $routeParams);
         
             document.title = `Patchfox - Public`;
         
             if (opts.hasOwnProperty("lt")) {
-              opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
+              opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('error', error);
             }
         
             if (opts.hasOwnProperty("limit")) {
-              opts.limit = parseInt(opts.limit); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('onlyRoots', onlyRoots), $$invalidate('error', error);
+              opts.limit = parseInt(opts.limit); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('error', error);
             }
         
             let promise = ssb
-              .public(opts, { onlyRoots })
+              .public(opts)
               .then(ms => {
                 $$invalidate('msgs', msgs = ms);
                 window.scrollTo(0, 0);
@@ -5520,18 +5419,7 @@
           } }
     	};
 
-    	return {
-    		msgs,
-    		error,
-    		dropdownActive,
-    		opts,
-    		onlyRoots,
-    		click_handler,
-    		input0_change_handler,
-    		input1_change_input_handler,
-    		click_handler_1,
-    		click_handler_2
-    	};
+    	return { msgs, error, goNext, goPrevious };
     }
 
     class Public extends SvelteComponentDev {
@@ -6726,7 +6614,7 @@
     	return child_ctx;
     }
 
-    // (35:0) {#if error}
+    // (36:0) {#if error}
     function create_if_block_1$6(ctx) {
     	var div, t0, a, t1, a_href_value, t2, t3;
 
@@ -6739,9 +6627,9 @@
     			t2 = text("\r\n    : ");
     			t3 = text(ctx.error);
     			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
-    			add_location(a, file$e, 37, 4, 842);
+    			add_location(a, file$e, 38, 4, 844);
     			div.className = "toast toast-error";
-    			add_location(div, file$e, 35, 2, 780);
+    			add_location(div, file$e, 36, 2, 782);
     		},
 
     		m: function mount(target, anchor) {
@@ -6775,7 +6663,7 @@
     	};
     }
 
-    // (44:0) {:else}
+    // (45:0) {:else}
     function create_else_block$6(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), each_1_anchor, current;
 
@@ -6834,7 +6722,7 @@
     	};
     }
 
-    // (42:0) {#if !msgs && !error}
+    // (43:0) {#if !msgs && !error}
     function create_if_block$7(ctx) {
     	var div;
 
@@ -6842,7 +6730,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$e, 42, 2, 946);
+    			add_location(div, file$e, 43, 2, 948);
     		},
 
     		m: function mount(target, anchor) {
@@ -6861,7 +6749,7 @@
     	};
     }
 
-    // (45:2) {#each msgs as msg (msg.key)}
+    // (46:2) {#each msgs as msg (msg.key)}
     function create_each_block$1(key_1, ctx) {
     	var first, current;
 
@@ -6948,10 +6836,10 @@
     			if_block1.c();
     			if_block1_anchor = empty();
     			small.className = "label hide-sm";
-    			add_location(small, file$e, 31, 4, 702);
-    			add_location(h4, file$e, 29, 2, 680);
+    			add_location(small, file$e, 32, 4, 704);
+    			add_location(h4, file$e, 30, 2, 682);
     			div.className = "container";
-    			add_location(div, file$e, 28, 0, 653);
+    			add_location(div, file$e, 29, 0, 655);
     		},
 
     		l: function claim(nodes) {
