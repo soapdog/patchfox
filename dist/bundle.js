@@ -978,7 +978,7 @@
           const text = data.text;
           const root = data.hasOwnProperty("root") ? data.root : undefined;
           const branch = data.hasOwnProperty("branch") ? data.branch : undefined;
-          const mentions = data.hasOwnProperty("mentions") ? data.mentions : undefined;
+          const mentions = hermiebox.modules.ssbMentions(data.text);
           const recps = data.hasOwnProperty("recps") ? data.recps : undefined;
           const channel = data.hasOwnProperty("channel") ? data.channel : undefined;
           const fork = data.hasOwnProperty("fork") ? data.fork : undefined;
@@ -990,6 +990,8 @@
             // TODO: ssb-msg-schemas doesn't have a fork param
             msgToPost.fork = fork;
           }
+
+          console.log("posting", msgToPost);
 
           if (sbot) {
             sbot.publish(msgToPost, function (err, msg) {
@@ -4258,7 +4260,31 @@
 
     const file$a = "src\\messageTypes\\MessageRenderer.svelte";
 
-    // (139:8) {#if msg.value.content.channel}
+    // (141:4) {#if privateMsgForYou}
+    function create_if_block_3$1(ctx) {
+    	var span;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			span.textContent = "PRIVATE";
+    			span.className = "label";
+    			add_location(span, file$a, 141, 4, 3274);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+    		}
+    	};
+    }
+
+    // (150:8) {#if msg.value.content.channel}
     function create_if_block_2$2(ctx) {
     	var t0, t1_value = ctx.msg.value.content.channel, t1;
 
@@ -4288,7 +4314,7 @@
     	};
     }
 
-    // (175:44) {:else}
+    // (186:44) {:else}
     function create_else_block_1$2(ctx) {
     	var t;
 
@@ -4309,7 +4335,7 @@
     	};
     }
 
-    // (175:14) {#if !showRaw}
+    // (186:14) {#if !showRaw}
     function create_if_block_1$3(ctx) {
     	var t;
 
@@ -4330,7 +4356,7 @@
     	};
     }
 
-    // (184:2) {:else}
+    // (195:2) {:else}
     function create_else_block$3(ctx) {
     	var div3, div2, div0, pre, code, t0, t1, div1, p0, t2, em, t3, t4, t5, p1, t6, a, t7, t8, a_href_value, t9;
 
@@ -4356,23 +4382,23 @@
     			t7 = text("the documentation about messages with type ");
     			t8 = text(ctx.type);
     			t9 = text("\n            .");
-    			add_location(code, file$a, 188, 12, 4924);
+    			add_location(code, file$a, 199, 12, 5173);
     			pre.className = "code";
-    			add_location(pre, file$a, 187, 10, 4893);
+    			add_location(pre, file$a, 198, 10, 5142);
     			div0.className = "column col-9";
-    			add_location(div0, file$a, 186, 8, 4856);
-    			add_location(em, file$a, 194, 12, 5081);
-    			add_location(p0, file$a, 192, 10, 5027);
+    			add_location(div0, file$a, 197, 8, 5105);
+    			add_location(em, file$a, 205, 12, 5330);
+    			add_location(p0, file$a, 203, 10, 5276);
     			a.target = "_blank";
     			a.href = a_href_value = "/docs/index.html#/message_types/" + ctx.type;
-    			add_location(a, file$a, 199, 12, 5194);
-    			add_location(p1, file$a, 197, 10, 5136);
+    			add_location(a, file$a, 210, 12, 5443);
+    			add_location(p1, file$a, 208, 10, 5385);
     			div1.className = "column col-3";
-    			add_location(div1, file$a, 191, 8, 4990);
+    			add_location(div1, file$a, 202, 8, 5239);
     			div2.className = "columns";
-    			add_location(div2, file$a, 185, 6, 4826);
+    			add_location(div2, file$a, 196, 6, 5075);
     			div3.className = "card-body";
-    			add_location(div3, file$a, 184, 4, 4796);
+    			add_location(div3, file$a, 195, 4, 5045);
     		},
 
     		m: function mount(target, anchor) {
@@ -4420,7 +4446,7 @@
     	};
     }
 
-    // (182:2) {#if !showRaw}
+    // (193:2) {#if !showRaw}
     function create_if_block$4(ctx) {
     	var switch_instance_anchor, current;
 
@@ -4506,9 +4532,11 @@
     }
 
     function create_fragment$a(ctx) {
-    	var div10, div9, div6, div5, div4, div1, div0, img, t0, div3, div2, t1, t2, small, t3_value = timestamp(ctx.msg.value.timestamp), t3, t4, div8, span0, t5, div7, span1, i0, t6, ul, li0, a0, i1, t7, a0_href_value, t8, li1, a1, i2, t9, t10, li2, a2, i3, t11, t12, li3, t13, li4, a3, i4, t14, t15, current_block_type_index, if_block2, current, dispose;
+    	var div10, div9, div6, div5, div4, div1, div0, img, t0, div3, div2, t1, t2, small, t3_value = timestamp(ctx.msg.value.timestamp), t3, t4, t5, div8, span0, t6, div7, span1, i0, t7, ul, li0, a0, i1, t8, a0_href_value, t9, li1, a1, i2, t10, t11, li2, a2, i3, t12, t13, li3, t14, li4, a3, i4, t15, t16, current_block_type_index, if_block3, current, dispose;
 
-    	var if_block0 = (ctx.msg.value.content.channel) && create_if_block_2$2(ctx);
+    	var if_block0 = (ctx.privateMsgForYou) && create_if_block_3$1(ctx);
+
+    	var if_block1 = (ctx.msg.value.content.channel) && create_if_block_2$2(ctx);
 
     	function select_block_type(ctx) {
     		if (!ctx.showRaw) return create_if_block_1$3;
@@ -4516,7 +4544,7 @@
     	}
 
     	var current_block_type = select_block_type(ctx);
-    	var if_block1 = current_block_type(ctx);
+    	var if_block2 = current_block_type(ctx);
 
     	var if_block_creators = [
     		create_if_block$4,
@@ -4531,7 +4559,7 @@
     	}
 
     	current_block_type_index = select_block_type_1(ctx);
-    	if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	return {
     		c: function create() {
@@ -4551,105 +4579,108 @@
     			small = element("small");
     			t3 = text(t3_value);
     			t4 = space();
-    			div8 = element("div");
-    			span0 = element("span");
     			if (if_block0) if_block0.c();
     			t5 = space();
+    			div8 = element("div");
+    			span0 = element("span");
+    			if (if_block1) if_block1.c();
+    			t6 = space();
     			div7 = element("div");
     			span1 = element("span");
     			i0 = element("i");
-    			t6 = space();
+    			t7 = space();
     			ul = element("ul");
     			li0 = element("li");
     			a0 = element("a");
     			i1 = element("i");
-    			t7 = text("\n              Open in new tab");
-    			t8 = space();
+    			t8 = text("\n              Open in new tab");
+    			t9 = space();
     			li1 = element("li");
     			a1 = element("a");
     			i2 = element("i");
-    			t9 = text("\n              Copy permalink to clipboard");
-    			t10 = space();
+    			t10 = text("\n              Copy permalink to clipboard");
+    			t11 = space();
     			li2 = element("li");
     			a2 = element("a");
     			i3 = element("i");
-    			t11 = text("\n              Copy message id to clipboard");
-    			t12 = space();
-    			li3 = element("li");
+    			t12 = text("\n              Copy message id to clipboard");
     			t13 = space();
+    			li3 = element("li");
+    			t14 = space();
     			li4 = element("li");
     			a3 = element("a");
     			i4 = element("i");
-    			t14 = space();
-    			if_block1.c();
     			t15 = space();
     			if_block2.c();
+    			t16 = space();
+    			if_block3.c();
     			img.src = ctx.image;
     			img.className = "avatar avatar-lg";
     			img.alt = ctx.feed;
-    			add_location(img, file$a, 119, 14, 2714);
+    			add_location(img, file$a, 128, 14, 2888);
     			div0.className = "example-tile-icon";
-    			add_location(div0, file$a, 118, 12, 2668);
+    			add_location(div0, file$a, 127, 12, 2842);
     			div1.className = "tile-icon";
-    			add_location(div1, file$a, 117, 10, 2632);
+    			add_location(div1, file$a, 126, 10, 2806);
     			div2.className = "tile-title";
-    			add_location(div2, file$a, 123, 12, 2855);
+    			add_location(div2, file$a, 132, 12, 3029);
     			small.className = "tile-subtitle text-gray";
-    			add_location(small, file$a, 124, 12, 2904);
+    			add_location(small, file$a, 133, 12, 3078);
     			div3.className = "tile-content";
-    			add_location(div3, file$a, 122, 10, 2816);
-    			div4.className = "tile tile-centered feed-display svelte-17ozi8u";
-    			add_location(div4, file$a, 114, 8, 2535);
+    			add_location(div3, file$a, 131, 10, 2990);
+    			div4.className = "tile tile-centered feed-display svelte-m5ll6n";
+    			add_location(div4, file$a, 123, 8, 2709);
     			div5.className = "card-title";
-    			add_location(div5, file$a, 113, 6, 2502);
+    			add_location(div5, file$a, 122, 6, 2676);
     			div6.className = "float-left";
-    			add_location(div6, file$a, 112, 4, 2471);
-    			span0.className = "text-gray channel-display svelte-17ozi8u";
-    			add_location(span0, file$a, 133, 6, 3106);
+    			add_location(div6, file$a, 121, 4, 2645);
+    			span0.className = "text-gray channel-display svelte-m5ll6n";
+    			add_location(span0, file$a, 144, 6, 3355);
     			i0.className = "icon icon-more-vert";
-    			add_location(i0, file$a, 146, 10, 3576);
+    			add_location(i0, file$a, 157, 10, 3825);
     			span1.className = "btn btn-link dropdown-toggle";
     			span1.tabIndex = "0";
     			toggle_class(span1, "active", ctx.dropdownActive);
-    			add_location(span1, file$a, 141, 8, 3387);
+    			add_location(span1, file$a, 152, 8, 3636);
     			i1.className = "icon icon-share";
-    			add_location(i1, file$a, 154, 14, 3824);
+    			add_location(i1, file$a, 165, 14, 4073);
     			a0.href = a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
     			a0.target = "_blank";
-    			add_location(a0, file$a, 151, 12, 3709);
+    			add_location(a0, file$a, 162, 12, 3958);
     			li0.className = "menu-item";
-    			add_location(li0, file$a, 149, 10, 3673);
+    			add_location(li0, file$a, 160, 10, 3922);
     			i2.className = "icon icon-copy";
-    			add_location(i2, file$a, 160, 14, 4029);
+    			add_location(i2, file$a, 171, 14, 4278);
     			a1.href = "#";
-    			add_location(a1, file$a, 159, 12, 3962);
+    			add_location(a1, file$a, 170, 12, 4211);
     			li1.className = "menu-item";
-    			add_location(li1, file$a, 158, 10, 3927);
+    			add_location(li1, file$a, 169, 10, 4176);
     			i3.className = "icon icon-copy";
-    			add_location(i3, file$a, 166, 14, 4240);
+    			add_location(i3, file$a, 177, 14, 4489);
     			a2.href = "#";
-    			add_location(a2, file$a, 165, 12, 4178);
+    			add_location(a2, file$a, 176, 12, 4427);
     			li2.className = "menu-item";
-    			add_location(li2, file$a, 164, 10, 4143);
+    			add_location(li2, file$a, 175, 10, 4392);
     			li3.className = "divider";
     			li3.dataset.content = "FOR THE CURIOUS";
-    			add_location(li3, file$a, 170, 10, 4355);
+    			add_location(li3, file$a, 181, 10, 4604);
     			i4.className = "icon icon-message";
-    			add_location(i4, file$a, 173, 14, 4524);
+    			add_location(i4, file$a, 184, 14, 4773);
     			a3.href = "#";
-    			add_location(a3, file$a, 172, 12, 4454);
+    			add_location(a3, file$a, 183, 12, 4703);
     			li4.className = "menu-item";
-    			add_location(li4, file$a, 171, 10, 4419);
-    			ul.className = "menu menu-right svelte-17ozi8u";
-    			add_location(ul, file$a, 148, 8, 3634);
+    			add_location(li4, file$a, 182, 10, 4668);
+    			ul.className = "menu menu-right svelte-m5ll6n";
+    			add_location(ul, file$a, 159, 8, 3883);
     			div7.className = "dropdown";
-    			add_location(div7, file$a, 140, 6, 3356);
+    			add_location(div7, file$a, 151, 6, 3605);
     			div8.className = "float-right";
-    			add_location(div8, file$a, 131, 4, 3073);
+    			add_location(div8, file$a, 143, 4, 3323);
     			div9.className = "card-header";
-    			add_location(div9, file$a, 111, 2, 2441);
-    			div10.className = "card m-2";
-    			add_location(div10, file$a, 110, 0, 2416);
+    			add_location(div9, file$a, 120, 2, 2615);
+    			div10.className = "card m-2 svelte-m5ll6n";
+    			toggle_class(div10, "private", ctx.privateMsgForYou);
+    			add_location(div10, file$a, 119, 0, 2557);
 
     			dispose = [
     				listen(div4, "click", ctx.goProfile),
@@ -4682,38 +4713,40 @@
     			append(div3, small);
     			append(small, t3);
     			append(div9, t4);
+    			if (if_block0) if_block0.m(div9, null);
+    			append(div9, t5);
     			append(div9, div8);
     			append(div8, span0);
-    			if (if_block0) if_block0.m(span0, null);
-    			append(div8, t5);
+    			if (if_block1) if_block1.m(span0, null);
+    			append(div8, t6);
     			append(div8, div7);
     			append(div7, span1);
     			append(span1, i0);
-    			append(div7, t6);
+    			append(div7, t7);
     			append(div7, ul);
     			append(ul, li0);
     			append(li0, a0);
     			append(a0, i1);
-    			append(a0, t7);
-    			append(ul, t8);
+    			append(a0, t8);
+    			append(ul, t9);
     			append(ul, li1);
     			append(li1, a1);
     			append(a1, i2);
-    			append(a1, t9);
-    			append(ul, t10);
+    			append(a1, t10);
+    			append(ul, t11);
     			append(ul, li2);
     			append(li2, a2);
     			append(a2, i3);
-    			append(a2, t11);
-    			append(ul, t12);
-    			append(ul, li3);
+    			append(a2, t12);
     			append(ul, t13);
+    			append(ul, li3);
+    			append(ul, t14);
     			append(ul, li4);
     			append(li4, a3);
     			append(a3, i4);
-    			append(a3, t14);
-    			if_block1.m(a3, null);
-    			append(div10, t15);
+    			append(a3, t15);
+    			if_block2.m(a3, null);
+    			append(div10, t16);
     			if_blocks[current_block_type_index].m(div10, null);
     			current = true;
     		},
@@ -4731,17 +4764,28 @@
     				set_data(t3, t3_value);
     			}
 
-    			if (ctx.msg.value.content.channel) {
-    				if (if_block0) {
-    					if_block0.p(changed, ctx);
-    				} else {
-    					if_block0 = create_if_block_2$2(ctx);
+    			if (ctx.privateMsgForYou) {
+    				if (!if_block0) {
+    					if_block0 = create_if_block_3$1(ctx);
     					if_block0.c();
-    					if_block0.m(span0, null);
+    					if_block0.m(div9, t5);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
     				if_block0 = null;
+    			}
+
+    			if (ctx.msg.value.content.channel) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_2$2(ctx);
+    					if_block1.c();
+    					if_block1.m(span0, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			if (changed.dropdownActive) {
@@ -4753,11 +4797,11 @@
     			}
 
     			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
-    				if_block1.d(1);
-    				if_block1 = current_block_type(ctx);
-    				if (if_block1) {
-    					if_block1.c();
-    					if_block1.m(a3, null);
+    				if_block2.d(1);
+    				if_block2 = current_block_type(ctx);
+    				if (if_block2) {
+    					if_block2.c();
+    					if_block2.m(a3, null);
     				}
     			}
 
@@ -4771,27 +4815,31 @@
     					if_blocks[previous_block_index].d(1);
     					if_blocks[previous_block_index] = null;
     				});
-    				if_block2.o(1);
+    				if_block3.o(1);
     				check_outros();
 
-    				if_block2 = if_blocks[current_block_type_index];
-    				if (!if_block2) {
-    					if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block2.c();
+    				if_block3 = if_blocks[current_block_type_index];
+    				if (!if_block3) {
+    					if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block3.c();
     				}
-    				if_block2.i(1);
-    				if_block2.m(div10, null);
+    				if_block3.i(1);
+    				if_block3.m(div10, null);
+    			}
+
+    			if (changed.privateMsgForYou) {
+    				toggle_class(div10, "private", ctx.privateMsgForYou);
     			}
     		},
 
     		i: function intro(local) {
     			if (current) return;
-    			if (if_block2) if_block2.i();
+    			if (if_block3) if_block3.i();
     			current = true;
     		},
 
     		o: function outro(local) {
-    			if (if_block2) if_block2.o();
+    			if (if_block3) if_block3.o();
     			current = false;
     		},
 
@@ -4801,7 +4849,8 @@
     			}
 
     			if (if_block0) if_block0.d();
-    			if_block1.d();
+    			if (if_block1) if_block1.d();
+    			if_block2.d();
     			if_blocks[current_block_type_index].d();
     			run_all(dispose);
     		}
@@ -4818,6 +4867,7 @@
       let showRaw = false;
       let rawContent = JSON.stringify(msg, null, 2);
       let dropdownActive = false;
+      let privateMsgForYou = false;
 
       let messageTypes = {
         "*": GenericMsg,
@@ -4837,6 +4887,10 @@
         $$invalidate('type', type = "private");
       } else {
         $$invalidate('type', type = msg.value.content.type);
+      }
+
+      if (msg.value.private) {
+        $$invalidate('privateMsgForYou', privateMsgForYou = true);
       }
 
       if (messageTypes.hasOwnProperty(type)) {
@@ -4914,6 +4968,7 @@
     		showRaw,
     		rawContent,
     		dropdownActive,
+    		privateMsgForYou,
     		selectedRenderer,
     		image,
     		name,
@@ -5730,7 +5785,7 @@
     function create_else_block$5(ctx) {
     	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
 
-    	var if_block = (ctx.channel || ctx.root || ctx.branch) && create_if_block_3$1(ctx);
+    	var if_block = (ctx.channel || ctx.root || ctx.branch) && create_if_block_3$2(ctx);
 
     	return {
     		c: function create() {
@@ -5808,7 +5863,7 @@
     				if (if_block) {
     					if_block.p(changed, ctx);
     				} else {
-    					if_block = create_if_block_3$1(ctx);
+    					if_block = create_if_block_3$2(ctx);
     					if_block.c();
     					if_block.m(div4, t2);
     				}
@@ -6031,7 +6086,7 @@
     }
 
     // (244:10) {#if channel || root || branch}
-    function create_if_block_3$1(ctx) {
+    function create_if_block_3$2(ctx) {
     	var blockquote, t0, t1;
 
     	var if_block0 = (ctx.channel) && create_if_block_6$1(ctx);

@@ -19,6 +19,7 @@
   let showRaw = false;
   let rawContent = JSON.stringify(msg, null, 2);
   let dropdownActive = false;
+  let privateMsgForYou = false;
 
   let messageTypes = {
     "*": GenericMsg,
@@ -38,6 +39,10 @@
     type = "private";
   } else {
     type = msg.value.content.type;
+  }
+
+  if (msg.value.private) {
+    privateMsgForYou = true;
   }
 
   if (messageTypes.hasOwnProperty(type)) {
@@ -106,9 +111,13 @@
     left: unset;
     min-width: 300px;
   }
+
+  .private {
+    border: solid 2px orange;
+  }
 </style>
 
-<div class="card m-2">
+<div class="card m-2" class:private={privateMsgForYou}>
   <div class="card-header">
     <div class="float-left">
       <div class="card-title">
@@ -129,8 +138,10 @@
         </div>
       </div>
     </div>
+    {#if privateMsgForYou}
+    <span class="label">PRIVATE</span>
+    {/if}
     <div class="float-right">
-
       <span
         class="text-gray channel-display"
         on:click={() => navigate('/channel', {

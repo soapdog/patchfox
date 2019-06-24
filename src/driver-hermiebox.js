@@ -181,7 +181,7 @@ export class DriverHermiebox {
       const text = data.text
       const root = data.hasOwnProperty("root") ? data.root : undefined
       const branch = data.hasOwnProperty("branch") ? data.branch : undefined
-      const mentions = data.hasOwnProperty("mentions") ? data.mentions : undefined
+      const mentions = hermiebox.modules.ssbMentions(data.text)
       const recps = data.hasOwnProperty("recps") ? data.recps : undefined
       const channel = data.hasOwnProperty("channel") ? data.channel : undefined
       const fork = data.hasOwnProperty("fork") ? data.fork : undefined
@@ -193,6 +193,8 @@ export class DriverHermiebox {
         // TODO: ssb-msg-schemas doesn't have a fork param
         msgToPost.fork = fork
       }
+
+      console.log("posting", msgToPost)
 
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
