@@ -187,6 +187,10 @@ export class DriverHermiebox {
       const fork = data.hasOwnProperty("fork") ? data.fork : undefined
       const sbot = hermiebox.sbot || false
 
+      if (mentions.length == 0) {
+        mentions = undefined
+      }
+
       const msgToPost = schemas.post(text, root, branch, mentions, recps, channel)
 
       if (fork) {
