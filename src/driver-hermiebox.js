@@ -44,7 +44,7 @@ export class DriverHermiebox {
   }
 
   async public(opts) {
-    var msgs = await hermiebox.api.pullPublic(opts,{})
+    var msgs = await hermiebox.api.pullPublic(opts, {})
     return msgs
   }
 
@@ -176,29 +176,27 @@ export class DriverHermiebox {
 
   newPost(data) {
     return new Promise((resolve, reject) => {
-      const schemas = hermiebox.modules.ssbMsgSchemas
+      let msgToPost = {type: "post", text: data.text}
 
-      const text = data.text
-      const root = data.hasOwnProperty("root") ? data.root : undefined
-      const branch = data.hasOwnProperty("branch") ? data.branch : undefined
-      const mentions = hermiebox.modules.ssbMentions(data.text)
-      const recps = data.hasOwnProperty("recps") ? data.recps : undefined
-      const channel = data.hasOwnProperty("channel") ? data.channel : undefined
-      const fork = data.hasOwnProperty("fork") ? data.fork : undefined
+      const commonFields = [
+        "root",
+        "branch",
+        "channel",
+        "fork"
+      ]
+
+      commonFields.forEach(f => {
+        if (typeof data[f] !== "undefined") {
+          msgToPost[f] = data[f]
+        }
+      })
+      
+      msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || []
+      msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
+
       const sbot = hermiebox.sbot || false
-
-      if (mentions.length == 0) {
-        mentions = undefined
-      }
-
-      const msgToPost = schemas.post(text, root, branch, mentions, recps, channel)
-
-      if (fork) {
-        // TODO: ssb-msg-schemas doesn't have a fork param
-        msgToPost.fork = fork
-      }
-
-      console.log("posting", msgToPost)
+      
+      console.log("post", msgToPost)
 
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
