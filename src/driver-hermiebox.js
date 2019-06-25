@@ -195,7 +195,7 @@ export class DriverHermiebox {
       msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
 
       const sbot = hermiebox.sbot || false
-      
+
       console.log("post", msgToPost)
 
       if (sbot) {
@@ -206,6 +206,8 @@ export class DriverHermiebox {
             resolve(msg)
           }
         })
+      } else {
+        reject("There is no sbot connection")
       }
     })
   }
