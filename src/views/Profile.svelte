@@ -118,6 +118,7 @@
       </div>
       <div class="column col-6">
         <h1>{name}</h1>
+        <pre>{feed}</pre>
         {#if feed !== ssb.feed}
           <div class="container">
             <div class="divider" />

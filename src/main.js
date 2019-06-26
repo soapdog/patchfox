@@ -1,12 +1,16 @@
 import Patchfox from "./Patchfox.svelte";
+
 import {
     loadConfiguration,  
     navigate,
+    intercept,
 } from "./utils.js";
 
 const main = async () => {
     window.ssb = false;
 
+    intercept()
+    
     try {
         await loadConfiguration()
 

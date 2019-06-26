@@ -26,7 +26,6 @@
     return sbot.backlinks.read({
       query: [filterQuery],
       index: "DTA", // use asserted timestamps
-      live: true,
       reverse: true,
       limit: getPref("limit", "10")
     });
@@ -63,17 +62,14 @@
 
   const loadMentions = () => {
     console.log("Loading mentions...", lt);
-    window.scrollTo(0,0)
-    msgs = []
+    window.scrollTo(0, 0);
+    msgs = [];
     pull(
       createBacklinkStream(sbot.id),
-      pull.filter(msg => !msg.sync),
-      // note the 'live' style streams emit { sync: true } when they're up to date!
-      uniqueRoots(),
-      mentionUser(),
-      pull.drain(msg => {
-        msgs.push(msg);
-        msgs = msgs;
+      // uniqueRoots(),
+      // mentionUser(),
+      pull.collect((err, ms) => {
+        msgs = ms;
       })
     );
   };
@@ -84,14 +80,14 @@
 
   onMount(() => {
     unsub = routeParams.subscribe(params => {
-      console.log("params changed.", lt, params.lt)
+      console.log("params changed.", lt, params.lt);
       if (params.lt) {
         let newlt = parseInt(params.lt);
         if (newlt !== lt) {
           lt = newlt;
         }
       } else {
-        lt = false
+        lt = false;
       }
       loadMentions();
     });
@@ -130,7 +126,7 @@
       <a
         href="#/public"
         on:click|stopPropagation|preventDefault={() => {
-          navigate('/mentions', { lt:  msgs[msgs.length - 1].rts });
+          navigate('/mentions', { lt: msgs[msgs.length - 1].rts });
         }}>
         <div class="page-item-subtitle">Next</div>
       </a>
