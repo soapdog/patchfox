@@ -39,7 +39,7 @@
     {
       "protocol": "ssb",
       "name": "Secure Scuttlebutt",
-      "uriTemplate": "/index.html?thread=%s#/thread"
+      "uriTemplate": "/index.html?query=%s#/intercept"
     }
   ],
   "omnibox": { "keyword" : "ssb" },

@@ -19,8 +19,6 @@
     let loc = window.location.href;
     browser.sidebarAction.setPanel({ panel: loc });
     browser.sidebarAction.open();
-    let tab = await browser.tabs.getCurrent();
-    await browser.tabs.remove(tab.id);
   };
 
   const closeSidebar = async ev => {

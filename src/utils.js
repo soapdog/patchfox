@@ -21,6 +21,25 @@ export const parseLocation = () => {
   return { data, location: loc }
 };
 
+export const intercept = () => {
+  let r = parseLocation()
+  if (r.location == "/intercept" && r.data.query) {
+    let hash = r.data.query.replace("ssb:", "")
+    let sigil = hash[0]
+    switch (sigil) {
+      case "%":
+        window.location = `/index.html?thread=${encodeURIComponent(hash)}#/thread`
+        break
+      case "&":
+        window.location = `http://localhost:8989/blobs/get/${hash}`
+        break
+      case "@":
+        window.location = `/index.html?feed=${encodeURIComponent(hash)}#/profile`
+        break
+    }
+  }
+}
+
 export const connected = writable(false);
 
 // maybe in the future, migrate routing system to:
