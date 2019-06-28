@@ -12,67 +12,14 @@
 
   const pull = hermiebox.modules.pullStream;
   const sbot = hermiebox.sbot;
-  const createBacklinkStream = id => {
-    var filterQuery = {
-      $filter: {
-        dest: id
-      }
-    };
-
-    if (lt) {
-      filterQuery.$filter.value = { timestamp: { $lt: lt } };
-    }
-
-    return sbot.backlinks.read({
-      query: [filterQuery],
-      index: "DTA", // use asserted timestamps
-      reverse: true,
-      limit: getPref("limit", "10")
-    });
-  };
-
-  const uniqueRoots = msg => {
-    return pull.filter(msg => {
-      let msgKey = msg.key;
-      if (msg.value.content.type !== "post") {
-        return true;
-      }
-      let rootKey = msg.value.content.root || false;
-      if (rootKey) {
-        if (msgs.some(m => m.value.content.root === rootKey)) {
-          return false;
-        }
-      }
-      return true;
-    });
-  };
-
-  const mentionUser = msg => {
-    return pull.filter(msg => {
-      if (msg.value.content.type !== "post") {
-        return true;
-      }
-      let mentions = msg.value.content.mentions || [];
-      if (mentions.some(m => m.link == sbot.id)) {
-        return true;
-      }
-      return false;
-    });
-  };
+  
 
   const loadMentions = () => {
     console.log("Loading mentions...", lt);
     window.scrollTo(0, 0);
     msgs = [];
-    pull(
-      createBacklinkStream(sbot.id),
-      // uniqueRoots(),
-      // mentionUser(),
-      pull.collect((err, ms) => {
-        msgs = ms;
-      })
-    );
-  };
+    ssb.mentions(ssb.feed, lt).then(ms => msgs = ms)
+  }; 
 
   onDestroy(() => {
     unsub();

@@ -935,6 +935,41 @@
         })
       }
 
+      mentions(feed, lt) {
+        return new Promise((resolve, reject) => {
+          const createBacklinkStream = id => {
+            var filterQuery = {
+              $filter: {
+                dest: id
+              }
+            };
+        
+            if (lt) {
+              filterQuery.$filter.value = { timestamp: { $lt: lt } };
+            }
+        
+            return sbot.backlinks.read({
+              query: [filterQuery],
+              index: "DTA", // use asserted timestamps
+              reverse: true,
+            });
+          };
+
+          pull(
+            createBacklinkStream(sbot.id),
+            this.filterTypes(),
+            this.filterLimit(),
+            pull.collect((err, msgs) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msgs);
+              }
+            })
+          );
+        })
+      }
+
       async profile(feedid) {
         try {
           var user = await hermiebox.api.profile(feedid);
@@ -2032,7 +2067,7 @@
     const file = "src\\messageTypes\\PostMsg.svelte";
 
     // (79:6) {#if msg.value.content.root}
-    function create_if_block_1(ctx) {
+    function create_if_block_2(ctx) {
     	var span, a, t, a_href_value, dispose;
 
     	return {
@@ -2069,7 +2104,7 @@
     }
 
     // (88:6) {#if msg.value.content.branch}
-    function create_if_block(ctx) {
+    function create_if_block_1(ctx) {
     	var span, a, t, a_href_value, dispose;
 
     	return {
@@ -2105,19 +2140,65 @@
     	};
     }
 
+    // (99:4) {#if !msg.value.private}
+    function create_if_block(ctx) {
+    	var div, button0, t_1, button1, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			button0 = element("button");
+    			button0.textContent = "Fork";
+    			t_1 = space();
+    			button1 = element("button");
+    			button1.textContent = "Reply";
+    			button0.className = "btn";
+    			add_location(button0, file, 100, 6, 2629);
+    			button1.className = "btn";
+    			add_location(button1, file, 102, 6, 2688);
+    			div.className = "column col-6 text-right";
+    			add_location(div, file, 99, 4, 2584);
+
+    			dispose = [
+    				listen(button0, "click", ctx.fork),
+    				listen(button1, "click", ctx.reply)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, button0);
+    			append(div, t_1);
+    			append(div, button1);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
     function create_fragment(ctx) {
-    	var div0, t0, div4, div3, div1, label, input, t1, i, t2, t3, t4, t5, div2, button0, t7, button1, dispose;
+    	var div0, t0, div3, div2, div1, label, input, t1, i, t2, t3, t4, t5, dispose;
 
-    	var if_block0 = (ctx.msg.value.content.root) && create_if_block_1(ctx);
+    	var if_block0 = (ctx.msg.value.content.root) && create_if_block_2(ctx);
 
-    	var if_block1 = (ctx.msg.value.content.branch) && create_if_block(ctx);
+    	var if_block1 = (ctx.msg.value.content.branch) && create_if_block_1(ctx);
+
+    	var if_block2 = (!ctx.msg.value.private) && create_if_block(ctx);
 
     	return {
     		c: function create() {
     			div0 = element("div");
     			t0 = space();
-    			div4 = element("div");
     			div3 = element("div");
+    			div2 = element("div");
     			div1 = element("div");
     			label = element("label");
     			input = element("input");
@@ -2129,12 +2210,7 @@
     			t4 = space();
     			if (if_block1) if_block1.c();
     			t5 = space();
-    			div2 = element("div");
-    			button0 = element("button");
-    			button0.textContent = "Fork";
-    			t7 = space();
-    			button1 = element("button");
-    			button1.textContent = "Reply";
+    			if (if_block2) if_block2.c();
     			div0.className = "card-body svelte-1ftdgav";
     			add_location(div0, file, 67, 0, 1673);
     			attr(input, "type", "checkbox");
@@ -2146,22 +2222,11 @@
     			add_location(label, file, 73, 6, 1827);
     			div1.className = "column col-6";
     			add_location(div1, file, 72, 4, 1793);
-    			button0.className = "btn";
-    			add_location(button0, file, 99, 6, 2599);
-    			button1.className = "btn";
-    			add_location(button1, file, 101, 6, 2658);
-    			div2.className = "column col-6 text-right";
-    			add_location(div2, file, 98, 4, 2554);
-    			div3.className = "columns col-gapless";
-    			add_location(div3, file, 71, 2, 1754);
-    			div4.className = "card-footer";
-    			add_location(div4, file, 70, 0, 1725);
-
-    			dispose = [
-    				listen(input, "change", ctx.likeChanged),
-    				listen(button0, "click", ctx.fork),
-    				listen(button1, "click", ctx.reply)
-    			];
+    			div2.className = "columns col-gapless";
+    			add_location(div2, file, 71, 2, 1754);
+    			div3.className = "card-footer";
+    			add_location(div3, file, 70, 0, 1725);
+    			dispose = listen(input, "change", ctx.likeChanged);
     		},
 
     		l: function claim(nodes) {
@@ -2172,9 +2237,9 @@
     			insert(target, div0, anchor);
     			div0.innerHTML = ctx.content;
     			insert(target, t0, anchor);
-    			insert(target, div4, anchor);
-    			append(div4, div3);
-    			append(div3, div1);
+    			insert(target, div3, anchor);
+    			append(div3, div2);
+    			append(div2, div1);
     			append(div1, label);
     			append(label, input);
     			append(label, t1);
@@ -2184,11 +2249,8 @@
     			if (if_block0) if_block0.m(div1, null);
     			append(div1, t4);
     			if (if_block1) if_block1.m(div1, null);
-    			append(div3, t5);
-    			append(div3, div2);
-    			append(div2, button0);
-    			append(div2, t7);
-    			append(div2, button1);
+    			append(div2, t5);
+    			if (if_block2) if_block2.m(div2, null);
     		},
 
     		p: function update(changed, ctx) {
@@ -2200,7 +2262,7 @@
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
-    					if_block0 = create_if_block_1(ctx);
+    					if_block0 = create_if_block_2(ctx);
     					if_block0.c();
     					if_block0.m(div1, t4);
     				}
@@ -2213,13 +2275,26 @@
     				if (if_block1) {
     					if_block1.p(changed, ctx);
     				} else {
-    					if_block1 = create_if_block(ctx);
+    					if_block1 = create_if_block_1(ctx);
     					if_block1.c();
     					if_block1.m(div1, null);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
     				if_block1 = null;
+    			}
+
+    			if (!ctx.msg.value.private) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    				} else {
+    					if_block2 = create_if_block(ctx);
+    					if_block2.c();
+    					if_block2.m(div2, null);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
     			}
     		},
 
@@ -2230,12 +2305,13 @@
     			if (detaching) {
     				detach(div0);
     				detach(t0);
-    				detach(div4);
+    				detach(div3);
     			}
 
     			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
-    			run_all(dispose);
+    			if (if_block2) if_block2.d();
+    			dispose();
     		}
     	};
     }
@@ -2894,7 +2970,7 @@
     	var t0, t1, t2, t3, a, a_href_value, t4, if_block1_anchor;
 
     	function select_block_type_1(ctx) {
-    		if (ctx.image) return create_if_block_2;
+    		if (ctx.image) return create_if_block_2$1;
     		return create_else_block;
     	}
 
@@ -3020,7 +3096,7 @@
     }
 
     // (38:6) {#if image}
-    function create_if_block_2(ctx) {
+    function create_if_block_2$1(ctx) {
     	var div, img, t0, t1;
 
     	return {
@@ -3486,7 +3562,7 @@
     }
 
     // (117:6) {#if msg.value.content.root}
-    function create_if_block_2$1(ctx) {
+    function create_if_block_2$2(ctx) {
     	var span, a, t, a_href_value, dispose;
 
     	return {
@@ -3644,7 +3720,7 @@
     	var current_block_type = select_block_type(ctx);
     	var if_block3 = current_block_type(ctx);
 
-    	var if_block4 = (ctx.msg.value.content.root) && create_if_block_2$1(ctx);
+    	var if_block4 = (ctx.msg.value.content.root) && create_if_block_2$2(ctx);
 
     	var if_block5 = (ctx.msg.value.content.branch) && create_if_block_1$2(ctx);
 
@@ -3803,7 +3879,7 @@
     				if (if_block4) {
     					if_block4.p(changed, ctx);
     				} else {
-    					if_block4 = create_if_block_2$1(ctx);
+    					if_block4 = create_if_block_2$2(ctx);
     					if_block4.c();
     					if_block4.m(div1, t7);
     				}
@@ -4374,7 +4450,7 @@
     }
 
     // (150:8) {#if msg.value.content.channel}
-    function create_if_block_2$2(ctx) {
+    function create_if_block_2$3(ctx) {
     	var t0, t1_value = ctx.msg.value.content.channel, t1;
 
     	return {
@@ -4625,7 +4701,7 @@
 
     	var if_block0 = (ctx.privateMsgForYou) && create_if_block_3$1(ctx);
 
-    	var if_block1 = (ctx.msg.value.content.channel) && create_if_block_2$2(ctx);
+    	var if_block1 = (ctx.msg.value.content.channel) && create_if_block_2$3(ctx);
 
     	function select_block_type(ctx) {
     		if (!ctx.showRaw) return create_if_block_1$3;
@@ -4868,7 +4944,7 @@
     				if (if_block1) {
     					if_block1.p(changed, ctx);
     				} else {
-    					if_block1 = create_if_block_2$2(ctx);
+    					if_block1 = create_if_block_2$3(ctx);
     					if_block1.c();
     					if_block1.m(span0, null);
     				}
@@ -5877,7 +5953,7 @@
     function create_if_block$6(ctx) {
     	var div, label0, t1, input0, t2, t3, t4, label1, t6, textarea, t7, br, t8, input1, t9, button0, t11, button1, div_intro, div_outro, current, dispose;
 
-    	var if_block0 = (ctx.branch) && create_if_block_2$3(ctx);
+    	var if_block0 = (ctx.branch) && create_if_block_2$4(ctx);
 
     	var if_block1 = (ctx.replyfeed) && create_if_block_1$5(ctx);
 
@@ -5984,7 +6060,7 @@
     				if (if_block0) {
     					if_block0.p(changed, ctx);
     				} else {
-    					if_block0 = create_if_block_2$3(ctx);
+    					if_block0 = create_if_block_2$4(ctx);
     					if_block0.c();
     					if_block0.m(div, t3);
     				}
@@ -6250,7 +6326,7 @@
     }
 
     // (206:10) {#if branch}
-    function create_if_block_2$3(ctx) {
+    function create_if_block_2$4(ctx) {
     	var label, t_1, input, dispose;
 
     	return {
@@ -9738,7 +9814,7 @@
     	return child_ctx;
     }
 
-    // (113:0) {:else}
+    // (60:0) {:else}
     function create_else_block$9(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -9768,19 +9844,19 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$k, 121, 8, 2746);
+    			add_location(div0, file$k, 68, 8, 1524);
     			a0.href = "#/public";
-    			add_location(a0, file$k, 118, 6, 2636);
+    			add_location(a0, file$k, 65, 6, 1414);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$k, 117, 4, 2592);
+    			add_location(li0, file$k, 64, 4, 1370);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$k, 130, 8, 3038);
+    			add_location(div1, file$k, 77, 8, 1816);
     			a1.href = "#/public";
-    			add_location(a1, file$k, 125, 6, 2861);
+    			add_location(a1, file$k, 72, 6, 1639);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$k, 124, 4, 2821);
+    			add_location(li1, file$k, 71, 4, 1599);
     			ul.className = "pagination";
-    			add_location(ul, file$k, 116, 2, 2563);
+    			add_location(ul, file$k, 63, 2, 1341);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
@@ -9837,7 +9913,7 @@
     	};
     }
 
-    // (111:0) {#if msgs.length === 0}
+    // (58:0) {#if msgs.length === 0}
     function create_if_block$c(ctx) {
     	var div;
 
@@ -9845,7 +9921,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$k, 111, 2, 2441);
+    			add_location(div, file$k, 58, 2, 1219);
     		},
 
     		m: function mount(target, anchor) {
@@ -9864,7 +9940,7 @@
     	};
     }
 
-    // (114:2) {#each msgs as msg (msg.key)}
+    // (61:2) {#each msgs as msg (msg.key)}
     function create_each_block$5(key_1, ctx) {
     	var first, current;
 
@@ -9948,13 +10024,13 @@
     			if_block.c();
     			if_block_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$k, 106, 4, 2334);
+    			add_location(h4, file$k, 53, 4, 1112);
     			div0.className = "column";
-    			add_location(div0, file$k, 107, 4, 2372);
+    			add_location(div0, file$k, 54, 4, 1150);
     			div1.className = "columns";
-    			add_location(div1, file$k, 105, 2, 2307);
+    			add_location(div1, file$k, 52, 2, 1085);
     			div2.className = "container";
-    			add_location(div2, file$k, 104, 0, 2280);
+    			add_location(div2, file$k, 51, 0, 1058);
     		},
 
     		l: function claim(nodes) {
@@ -10035,38 +10111,14 @@
 
       const pull = hermiebox.modules.pullStream;
       const sbot = hermiebox.sbot;
-      const createBacklinkStream = id => {
-        var filterQuery = {
-          $filter: {
-            dest: id
-          }
-        };
-
-        if (lt) {
-          filterQuery.$filter.value = { timestamp: { $lt: lt } };
-        }
-
-        return sbot.backlinks.read({
-          query: [filterQuery],
-          index: "DTA", // use asserted timestamps
-          reverse: true,
-          limit: getPref("limit", "10")
-        });
-      };
+      
 
       const loadMentions = () => {
         console.log("Loading mentions...", lt);
         window.scrollTo(0, 0);
         $$invalidate('msgs', msgs = []);
-        pull(
-          createBacklinkStream(sbot.id),
-          // uniqueRoots(),
-          // mentionUser(),
-          pull.collect((err, ms) => {
-            $$invalidate('msgs', msgs = ms);
-          })
-        );
-      };
+        ssb.mentions(ssb.feed, lt).then(ms => { const $$result = msgs = ms; $$invalidate('msgs', msgs); return $$result; });
+      }; 
 
       onDestroy(() => {
         unsub();

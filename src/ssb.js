@@ -140,6 +140,70 @@ export class SSB {
     })
   }
 
+  mentions(feed, lt) {
+    return new Promise((resolve, reject) => {
+      const createBacklinkStream = id => {
+        var filterQuery = {
+          $filter: {
+            dest: id
+          }
+        };
+    
+        if (lt) {
+          filterQuery.$filter.value = { timestamp: { $lt: lt } };
+        }
+    
+        return sbot.backlinks.read({
+          query: [filterQuery],
+          index: "DTA", // use asserted timestamps
+          reverse: true,
+        });
+      };
+    
+      const uniqueRoots = msg => {
+        return pull.filter(msg => {
+          let msgKey = msg.key;
+          if (msg.value.content.type !== "post") {
+            return true;
+          }
+          let rootKey = msg.value.content.root || false;
+          if (rootKey) {
+            if (msgs.some(m => m.value.content.root === rootKey)) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+    
+      const mentionUser = msg => {
+        return pull.filter(msg => {
+          if (msg.value.content.type !== "post") {
+            return true;
+          }
+          let mentions = msg.value.content.mentions || [];
+          if (mentions.some(m => m.link == sbot.id)) {
+            return true;
+          }
+          return false;
+        });
+      };
+
+      pull(
+        createBacklinkStream(sbot.id),
+        this.filterTypes(),
+        this.filterLimit(),
+        pull.collect((err, msgs) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msgs)
+          }
+        })
+      );
+    })
+  }
+
   async profile(feedid) {
     try {
       var user = await hermiebox.api.profile(feedid)

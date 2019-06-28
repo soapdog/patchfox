@@ -96,11 +96,13 @@
       {/if}
     </div>
 
+    {#if !msg.value.private}
     <div class="column col-6 text-right">
       <button class="btn" on:click={fork}>Fork</button>
 
       <button class="btn" on:click={reply}>Reply</button>
     </div>
+    {/if}
   </div>
 
 </div>
