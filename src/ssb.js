@@ -866,9 +866,6 @@ export class SSB {
 
   query(filter, limit, reverse, map, reduce) {
     return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
-
       if (sbot) {
 
         let query = {
@@ -887,16 +884,16 @@ export class SSB {
           reverse = true
         }
 
-        console.log(`query call with limit: ${limit} and reverse: ${reverse}`, query)
         pull(
           sbot.query.read({
             query: [
               query
             ],
-            reverse: reverse,
-            limit: limit
+            reverse: reverse
           }),
-          pull.collect(function (err, data) {
+          this.filterTypes(),
+          this.filterLimit(),
+          pull.collect( (err, data) => {
             if (err) {
               reject(err)
             } else {
