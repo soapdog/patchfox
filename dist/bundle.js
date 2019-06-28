@@ -826,6 +826,8 @@
      */
 
     const pull = hermiebox.modules.pullStream;
+    const sort = hermiebox.modules.ssbSort;
+
     let sbot = false;
 
     class SSB {
@@ -856,10 +858,10 @@
           "channel": "showTypeChannel"
         };
 
-        let showUnknown = getPref("showTypeUnknown",false);
+        let showUnknown = getPref("showTypeUnknown", false);
 
         if (showUnknown) {
-          return pull.filter(() =>true);
+          return pull.filter(() => true);
         }
 
         return pull.filter(msg => {
@@ -874,7 +876,7 @@
       }
 
       public(opts) {
-        return new Promise( (resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
           opts = opts || {};
           opts.reverse = opts.reverse || true;
@@ -895,9 +897,42 @@
         })
       }
 
-      async thread(msgid) {
-        var msgs = await hermiebox.api.thread(msgid);
-        return msgs
+      thread(id) {
+        return new Promise((resolve, reject) => {
+          sbot.get(id, (err, value) => {
+            if (err) return cb(err)
+            var rootMsg = { key: id, value: value };
+            pull(
+              sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
+                query: [
+                  {
+                    $filter: {
+                      dest: id,
+                      value: {
+                        content: {
+
+                          root: id
+                        }
+                      }
+                    }
+                  }
+                ]
+              }) : pull(
+                sbot.links({ dest: id, values: true, rel: 'root' }),
+                pull.filter(function (msg) {
+                  var c = msg && msg.value && msg.value.content;
+                  return c && c.type === 'post' && c.root === id
+                }),
+                pull.unique('key')
+              ),
+              this.filterTypes(),
+              pull.collect((err, msgs) => {
+                if (err) reject(err);
+                resolve(sort([rootMsg].concat(msgs)));
+              })
+            );
+          });
+        })
       }
 
       async profile(feedid) {
