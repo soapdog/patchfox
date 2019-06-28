@@ -3,6 +3,6 @@ window.$docsify = {
   repo: "soapdog/patchfox",
   basePath: typeof browser !== "undefined" ? "/docs/" : "",
   loadSidebar: true,
-  coverpage: true,
+  coverpage: typeof browser !== "undefined" ? false : true,
   subMaxLevel: 2
 }

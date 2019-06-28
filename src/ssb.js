@@ -49,7 +49,7 @@ export class SSB {
   }
 
   filterLimit() {
-    return pull.take(getPref("limit", "10"))
+    return pull.take(getPref("limit", 10))
   }
 
   filterTypes() {

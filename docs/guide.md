@@ -25,4 +25,4 @@ Once patchfox is running, it needs to learn your _remote_ and _secret_, you can 
 After saving Patchfox will then verify the configuration, if you're not running scuttle-shell, it will ask you if you want to run it. You can open the <a href="#" id="options-trigger">settings screen by clicking here</a>.
 
 
-<script src="help.js">
+<script src="/docs/help.js">

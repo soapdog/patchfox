@@ -21,6 +21,21 @@ function goProfile() {
 }
 
 
+function goMentions() {
+  browser.tabs.create({
+    url: "/index.html#/mentions"
+  });
+  window.close();
+}
+
+
+function goChannels() {
+  browser.tabs.create({
+    url: "/index.html#/chanels"
+  });
+  window.close();
+}
+
 function goSettings() {
   browser.runtime.openOptionsPage();
   window.close();
@@ -28,6 +43,16 @@ function goSettings() {
 
 function goHelp() {
   const url = browser.extension.getURL("docs/index.html");
+  browser.tabs.create({
+    url: `${url}#/?id=readme`
+  });
+  window.close();
+}
+
+
+function goReleaseNotes() {
+  const version = browser.runtime.getManifest().version;
+  const url = browser.extension.getURL("/docs/index.html#/release_notes/2019.6.2");
   browser.tabs.create({
     url: `${url}#/?id=readme`
   });
@@ -66,8 +91,33 @@ document.getElementById("go-to-help").addEventListener("click", (ev) => {
   goHelp();
 });
 
+
+document.getElementById("go-to-release-notes").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goReleaseNotes();
+});
+
+
+document.getElementById("go-to-mentions").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goMentions();
+});
+
+
+document.getElementById("go-to-channels").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goReleaseNotes();
+});
+
 keymage("p", goPublic);
 keymage("s", goSettings);
 keymage("c", goCompose);
+keymage("n", goChannels);
+keymage("m", goMentions);
+
+
 
 

@@ -122,7 +122,7 @@
             href="#/compose"
             class="btn btn-link"
             on:click|stopPropagation|preventDefault={goCompose}>
-            New
+            Compose
           </a>
         </li>
         <li class="menu-item">
@@ -131,6 +131,22 @@
             class="btn btn-link"
             on:click|stopPropagation|preventDefault={goPublic}>
             Public
+          </a>
+        </li>
+        <li class="menu-item">
+          <a
+            href="#/channels"
+            class="btn btn-link"
+            on:click|stopPropagation|preventDefault={goChannels}>
+            Channels
+          </a>
+        </li>
+        <li class="menu-item">
+          <a
+            href="#/mentions"
+            class="btn btn-link"
+            on:click|stopPropagation|preventDefault={goMentions}>
+            Mentions
           </a>
         </li>
         <li class="menu-item">
