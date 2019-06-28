@@ -1,5 +1,5 @@
 import { writable, derived } from "svelte/store";
-import { DriverHermiebox } from "./driver-hermiebox.js";
+import { SSB } from "./ssb.js";
 
 import queryString from "query-string";
 import Public from "./views/Public.svelte";
@@ -122,7 +122,7 @@ export const loadConfiguration = async () => {
 
 export const connect = async () => {
   console.log("Connecting to sbot...")
-  window.ssb = new DriverHermiebox();
+  window.ssb = new SSB();
 
   try {
     await ssb.connect(savedData.keys)
@@ -181,7 +181,6 @@ export const getPref = (key, defaultValue) => {
   if (savedData.hasOwnProperty("preferences")) {
     let preferences = savedData.preferences
     if (preferences.hasOwnProperty(key)) {
-      console.log(`getPref - ${key}`, preferences[key])
       return preferences[key]
     }
   }

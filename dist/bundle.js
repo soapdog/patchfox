@@ -796,7 +796,7 @@
     }
 
     /**
-     * Hermiebox Driver
+     * SSB
      *
      * TL;DR: SSB API for Patchfox using Hermiebox.
      *
@@ -825,24 +825,74 @@
      * TODO: Refactor to use `ssb-query`
      */
 
-    class DriverHermiebox {
-      constructor() {
-        this.name = "Driver for Hermiebox";
-      }
+    const pull = hermiebox.modules.pullStream;
+    let sbot = false;
+
+    class SSB {
 
       log(pMsg, pVal = "") {
-        console.log(`[Driver Hermiebox] - ${pMsg}`, pVal);
+        console.log(`[SSB API] - ${pMsg}`, pVal);
       }
 
       async connect(pKeys) {
         var server = await hermiebox.api.connect(pKeys);
         this.log("you are", server.id);
         this.feed = server.id;
+        sbot = server;
       }
 
-      async public(opts) {
-        var msgs = await hermiebox.api.pullPublic(opts, {});
-        return msgs
+      filterLimit() {
+        return pull.take(getPref("limit", "10"))
+      }
+
+      filterTypes() {
+        let knownMessageTypes = {
+          "post": "showTypePost",
+          "about": "showTypeAbout",
+          "vote": "showTypeVote",
+          "contact": "showTypeContent",
+          "pub": "showTypePost",
+          "blog": "showTypeBlog",
+          "channel": "showTypeChannel"
+        };
+
+        let showUnknown = getPref("showTypeUnknown",false);
+
+        if (showUnknown) {
+          return pull.filter(() =>true);
+        }
+
+        return pull.filter(msg => {
+          let type = msg.value.content.type;
+
+          if (typeof type == "string" && knownMessageTypes.hasOwnProperty(type)) {
+            return getPref(knownMessageTypes[type], true)
+          }
+          return getPref("showTypeUnknown", false)
+        })
+
+      }
+
+      public(opts) {
+        return new Promise( (resolve, reject) => {
+
+          opts = opts || {};
+          opts.reverse = opts.reverse || true;
+
+          pull(
+            sbot.createFeedStream(opts),
+            pull.filter(msg => msg && msg.value && msg.value.content),
+            this.filterTypes(),
+            this.filterLimit(),
+            pull.collect((err, msgs) => {
+              if (err) {
+                reject(err);
+              }
+
+              resolve(msgs);
+            })
+          );
+        })
       }
 
       async thread(msgid) {
@@ -973,7 +1023,7 @@
 
       newPost(data) {
         return new Promise((resolve, reject) => {
-          let msgToPost = {type: "post", text: data.text};
+          let msgToPost = { type: "post", text: data.text };
 
           const commonFields = [
             "root",
@@ -987,7 +1037,7 @@
               msgToPost[f] = data[f];
             }
           });
-          
+
           msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || [];
           msgToPost.mentions = msgToPost.mentions.filter(n => n); // prevent null elements...
 
@@ -6998,7 +7048,7 @@
     			p = element("p");
     			t0 = text("Error: ");
     			t1 = text(t1_value);
-    			add_location(p, file$f, 177, 4, 4235);
+    			add_location(p, file$f, 177, 4, 4412);
     		},
 
     		m: function mount(target, anchor) {
@@ -7062,19 +7112,19 @@
     			img.className = "img-responsive";
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
     			img.alt = ctx.feed;
-    			add_location(img, file$f, 112, 10, 2413);
+    			add_location(img, file$f, 112, 10, 2525);
     			div0.className = "container";
-    			add_location(div0, file$f, 111, 8, 2379);
+    			add_location(div0, file$f, 111, 8, 2490);
     			div1.className = "column col-6";
-    			add_location(div1, file$f, 110, 6, 2344);
-    			add_location(h1, file$f, 119, 8, 2606);
-    			add_location(pre, file$f, 120, 8, 2630);
-    			add_location(p, file$f, 145, 8, 3464);
+    			add_location(div1, file$f, 110, 6, 2454);
+    			add_location(h1, file$f, 119, 8, 2725);
+    			add_location(pre, file$f, 120, 8, 2750);
+    			add_location(p, file$f, 145, 8, 3609);
     			div2.className = "column col-6";
-    			add_location(div2, file$f, 118, 6, 2571);
+    			add_location(div2, file$f, 118, 6, 2689);
     			div3.className = "columns";
-    			add_location(div3, file$f, 108, 4, 2315);
-    			add_location(div4, file$f, 151, 4, 3554);
+    			add_location(div3, file$f, 108, 4, 2423);
+    			add_location(div4, file$f, 151, 4, 3705);
     		},
 
     		m: function mount(target, anchor) {
@@ -7193,35 +7243,35 @@
     			input0 = element("input");
     			t1 = space();
     			i0 = element("i");
-    			t2 = text("\n                following");
+    			t2 = text("\r\n                following");
     			t3 = space();
     			label1 = element("label");
     			input1 = element("input");
     			t4 = space();
     			i1 = element("i");
-    			t5 = text("\n                blocking");
+    			t5 = text("\r\n                blocking");
     			t6 = space();
     			div2 = element("div");
     			div0.className = "divider";
-    			add_location(div0, file$f, 123, 12, 2726);
+    			add_location(div0, file$f, 123, 12, 2849);
     			attr(input0, "type", "checkbox");
-    			add_location(input0, file$f, 126, 16, 2857);
+    			add_location(input0, file$f, 126, 16, 2983);
     			i0.className = "form-icon";
-    			add_location(i0, file$f, 130, 16, 3007);
+    			add_location(i0, file$f, 130, 16, 3137);
     			label0.className = "form-switch form-inline";
-    			add_location(label0, file$f, 125, 14, 2801);
+    			add_location(label0, file$f, 125, 14, 2926);
     			attr(input1, "type", "checkbox");
-    			add_location(input1, file$f, 134, 16, 3150);
+    			add_location(input1, file$f, 134, 16, 3284);
     			i1.className = "form-icon";
-    			add_location(i1, file$f, 138, 16, 3298);
+    			add_location(i1, file$f, 138, 16, 3436);
     			label1.className = "form-switch form-inline";
-    			add_location(label1, file$f, 133, 14, 3094);
+    			add_location(label1, file$f, 133, 14, 3227);
     			div1.className = "form-group";
-    			add_location(div1, file$f, 124, 12, 2762);
+    			add_location(div1, file$f, 124, 12, 2886);
     			div2.className = "divider";
-    			add_location(div2, file$f, 142, 12, 3401);
+    			add_location(div2, file$f, 142, 12, 3543);
     			div3.className = "container";
-    			add_location(div3, file$f, 122, 10, 2690);
+    			add_location(div3, file$f, 122, 10, 2812);
 
     			dispose = [
     				listen(input0, "change", ctx.input0_change_handler),
@@ -7281,7 +7331,7 @@
     			p = element("p");
     			t0 = text("Error fetching messages: ");
     			t1 = text(t1_value);
-    			add_location(p, file$f, 171, 8, 4146);
+    			add_location(p, file$f, 171, 8, 4317);
     		},
 
     		m: function mount(target, anchor) {
@@ -7332,13 +7382,13 @@
     			div = element("div");
     			div.textContent = "Load More";
     			div.className = "page-item-subtitle";
-    			add_location(div, file$f, 166, 14, 4026);
+    			add_location(div, file$f, 166, 14, 4192);
     			a.href = "#/public";
-    			add_location(a, file$f, 161, 12, 3823);
+    			add_location(a, file$f, 161, 12, 3984);
     			li.className = "page-item page-next";
-    			add_location(li, file$f, 160, 10, 3778);
+    			add_location(li, file$f, 160, 10, 3938);
     			ul.className = "pagination";
-    			add_location(ul, file$f, 158, 8, 3743);
+    			add_location(ul, file$f, 158, 8, 3901);
     			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.click_handler)));
     		},
 
@@ -7441,7 +7491,7 @@
     	};
     }
 
-    // (153:29)          <div class="loading" />       {:then data}
+    // (153:29)           <div class="loading" />        {:then data}
     function create_pending_block_1(ctx) {
     	var div;
 
@@ -7449,7 +7499,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading";
-    			add_location(div, file$f, 153, 8, 3598);
+    			add_location(div, file$f, 153, 8, 3751);
     		},
 
     		m: function mount(target, anchor) {
@@ -7468,7 +7518,7 @@
     	};
     }
 
-    // (106:40)      <div class="loading loading-lg" />   {:then}
+    // (106:40)       <div class="loading loading-lg" />    {:then}
     function create_pending_block(ctx) {
     	var div;
 
@@ -7476,7 +7526,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$f, 106, 4, 2266);
+    			add_location(div, file$f, 106, 4, 2372);
     		},
 
     		m: function mount(target, anchor) {
@@ -7517,7 +7567,7 @@
 
     			info.block.c();
     			div.className = "container";
-    			add_location(div, file$f, 104, 0, 2197);
+    			add_location(div, file$f, 104, 0, 2301);
     		},
 
     		l: function claim(nodes) {
@@ -7721,7 +7771,7 @@
 
     const file$g = "src\\views\\ErrorView.svelte";
 
-    // (50:2) {#if toast}
+    // (51:2) {#if toast}
     function create_if_block_1$7(ctx) {
     	var div, t, div_class_value;
 
@@ -7730,7 +7780,7 @@
     			div = element("div");
     			t = text(ctx.msg);
     			div.className = div_class_value = "toast " + ctx.toastClass;
-    			add_location(div, file$g, 50, 4, 1182);
+    			add_location(div, file$g, 51, 4, 1208);
     		},
 
     		m: function mount(target, anchor) {
@@ -7756,7 +7806,7 @@
     	};
     }
 
-    // (59:4) {#if cta}
+    // (60:4) {#if cta}
     function create_if_block$9(ctx) {
     	var li, a, t_value = ctx.cta.label, t, dispose;
 
@@ -7766,8 +7816,8 @@
     			a = element("a");
     			t = text(t_value);
     			a.href = "#";
-    			add_location(a, file$g, 60, 8, 1408);
-    			add_location(li, file$g, 59, 6, 1394);
+    			add_location(a, file$g, 61, 8, 1434);
+    			add_location(li, file$g, 60, 6, 1420);
     			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.cta.action)));
     		},
 
@@ -7829,23 +7879,23 @@
     			a1 = element("a");
     			a1.textContent = "Add an issue";
     			t13 = text("\r\n      to the Patchfox repository.");
-    			add_location(h1, file$g, 48, 2, 1118);
-    			add_location(h4, file$g, 52, 2, 1238);
-    			add_location(code, file$g, 54, 4, 1304);
+    			add_location(h1, file$g, 49, 2, 1144);
+    			add_location(h4, file$g, 53, 2, 1264);
+    			add_location(code, file$g, 55, 4, 1330);
     			pre.className = "code";
-    			add_location(pre, file$g, 53, 2, 1280);
-    			add_location(p, file$g, 56, 2, 1338);
+    			add_location(pre, file$g, 54, 2, 1306);
+    			add_location(p, file$g, 57, 2, 1364);
     			a0.href = "/docs/index.html#/troubleshooting/";
     			a0.target = "_blank";
-    			add_location(a0, file$g, 66, 6, 1553);
-    			add_location(li0, file$g, 65, 4, 1541);
+    			add_location(a0, file$g, 67, 6, 1579);
+    			add_location(li0, file$g, 66, 4, 1567);
     			a1.href = "https://github.com/soapdog/patchfox/issues";
     			a1.target = "_blank";
-    			add_location(a1, file$g, 71, 6, 1704);
-    			add_location(li1, file$g, 70, 4, 1692);
-    			add_location(ul, file$g, 57, 2, 1367);
+    			add_location(a1, file$g, 72, 6, 1730);
+    			add_location(li1, file$g, 71, 4, 1718);
+    			add_location(ul, file$g, 58, 2, 1393);
     			div.className = "container";
-    			add_location(div, file$g, 47, 0, 1091);
+    			add_location(div, file$g, 48, 0, 1117);
     		},
 
     		l: function claim(nodes) {
@@ -7938,6 +7988,7 @@
       let msg;
       let cta = false;
 
+      console.dir(error);
       if (typeof error == "object") {
         errorObj = error;
         $$invalidate('error', error = errorObj.message);
@@ -8973,153 +9024,153 @@
     			br3 = element("br");
     			t99 = space();
     			br4 = element("br");
-    			add_location(h1, file$j, 71, 0, 2106);
-    			add_location(i0, file$j, 77, 2, 2388);
-    			add_location(p0, file$j, 72, 0, 2125);
-    			add_location(i1, file$j, 83, 4, 2500);
+    			add_location(h1, file$j, 71, 0, 2107);
+    			add_location(i0, file$j, 77, 2, 2389);
+    			add_location(p0, file$j, 72, 0, 2126);
+    			add_location(i1, file$j, 83, 4, 2501);
     			a0.href = "/docs/index.html#/troubleshooting/no-configuration";
     			a0.target = "_blank";
-    			add_location(a0, file$j, 85, 4, 2552);
-    			add_location(b0, file$j, 81, 2, 2443);
-    			add_location(p1, file$j, 80, 0, 2436);
-    			add_location(h40, file$j, 94, 0, 2757);
-    			add_location(i2, file$j, 99, 4, 2914);
-    			add_location(i3, file$j, 101, 4, 2942);
-    			add_location(code, file$j, 103, 4, 2976);
+    			add_location(a0, file$j, 85, 4, 2553);
+    			add_location(b0, file$j, 81, 2, 2444);
+    			add_location(p1, file$j, 80, 0, 2437);
+    			add_location(h40, file$j, 94, 0, 2758);
+    			add_location(i2, file$j, 99, 4, 2915);
+    			add_location(i3, file$j, 101, 4, 2943);
+    			add_location(code, file$j, 103, 4, 2977);
     			label0.className = "form-label";
     			label0.htmlFor = "secret-file";
-    			add_location(label0, file$j, 97, 2, 2820);
+    			add_location(label0, file$j, 97, 2, 2821);
     			attr(input0, "type", "file");
     			input0.className = "form-input";
     			input0.id = "secret-file";
-    			add_location(input0, file$j, 106, 2, 3076);
+    			add_location(input0, file$j, 106, 2, 3077);
     			label1.className = "form-label";
     			label1.htmlFor = "remote";
-    			add_location(label1, file$j, 111, 2, 3182);
+    			add_location(label1, file$j, 111, 2, 3183);
     			input1.className = "form-input";
     			attr(input1, "type", "text");
     			input1.id = "remote";
     			input1.placeholder = "remote";
-    			add_location(input1, file$j, 112, 2, 3239);
+    			add_location(input1, file$j, 112, 2, 3240);
     			label2.className = "form-label";
     			label2.htmlFor = "secret";
-    			add_location(label2, file$j, 119, 2, 3363);
+    			add_location(label2, file$j, 119, 2, 3364);
     			textarea.className = "form-input";
     			textarea.id = "secret";
     			textarea.placeholder = "Your secret";
     			textarea.rows = "8";
-    			add_location(textarea, file$j, 120, 2, 3420);
-    			add_location(br0, file$j, 126, 2, 3545);
+    			add_location(textarea, file$j, 120, 2, 3421);
+    			add_location(br0, file$j, 126, 2, 3546);
     			button.className = "btn btn-primary float-right";
-    			add_location(button, file$j, 127, 2, 3555);
-    			add_location(p2, file$j, 130, 2, 3673);
+    			add_location(button, file$j, 127, 2, 3556);
+    			add_location(p2, file$j, 130, 2, 3674);
     			form0.className = "form-group";
-    			add_location(form0, file$j, 96, 0, 2791);
-    			add_location(h41, file$j, 133, 0, 3751);
+    			add_location(form0, file$j, 96, 0, 2792);
+    			add_location(h41, file$j, 133, 0, 3752);
     			label3.className = "form-label";
     			label3.htmlFor = "limit";
-    			add_location(label3, file$j, 135, 2, 3810);
+    			add_location(label3, file$j, 135, 2, 3811);
     			input2.className = "form-input";
     			attr(input2, "type", "number");
-    			add_location(input2, file$j, 136, 2, 3877);
-    			add_location(br1, file$j, 142, 2, 4006);
-    			add_location(i4, file$j, 147, 6, 4182);
+    			add_location(input2, file$j, 136, 2, 3878);
+    			add_location(br1, file$j, 142, 2, 4007);
+    			add_location(i4, file$j, 147, 6, 4183);
     			a1.target = "_blank";
     			a1.href = "/docs/index.html#/message_types/";
-    			add_location(a1, file$j, 145, 4, 4070);
-    			add_location(span, file$j, 143, 2, 4016);
+    			add_location(a1, file$j, 145, 4, 4071);
+    			add_location(span, file$j, 143, 2, 4017);
     			attr(input3, "type", "checkbox");
-    			add_location(input3, file$j, 151, 4, 4260);
+    			add_location(input3, file$j, 151, 4, 4261);
     			i5.className = "form-icon";
-    			add_location(i5, file$j, 157, 4, 4420);
-    			add_location(b1, file$j, 158, 4, 4449);
+    			add_location(i5, file$j, 157, 4, 4421);
+    			add_location(b1, file$j, 158, 4, 4450);
     			label4.className = "form-switch";
-    			add_location(label4, file$j, 150, 2, 4227);
+    			add_location(label4, file$j, 150, 2, 4228);
     			attr(input4, "type", "checkbox");
-    			add_location(input4, file$j, 162, 4, 4573);
+    			add_location(input4, file$j, 162, 4, 4574);
     			i6.className = "form-icon";
-    			add_location(i6, file$j, 168, 4, 4730);
-    			add_location(b2, file$j, 169, 4, 4759);
+    			add_location(i6, file$j, 168, 4, 4731);
+    			add_location(b2, file$j, 169, 4, 4760);
     			label5.className = "form-switch";
-    			add_location(label5, file$j, 161, 2, 4540);
+    			add_location(label5, file$j, 161, 2, 4541);
     			attr(input5, "type", "checkbox");
-    			add_location(input5, file$j, 173, 4, 4846);
+    			add_location(input5, file$j, 173, 4, 4847);
     			i7.className = "form-icon";
-    			add_location(i7, file$j, 179, 4, 5012);
-    			add_location(b3, file$j, 180, 4, 5041);
+    			add_location(i7, file$j, 179, 4, 5013);
+    			add_location(b3, file$j, 180, 4, 5042);
     			label6.className = "form-switch";
-    			add_location(label6, file$j, 172, 2, 4813);
+    			add_location(label6, file$j, 172, 2, 4814);
     			attr(input6, "type", "checkbox");
-    			add_location(input6, file$j, 184, 4, 5142);
+    			add_location(input6, file$j, 184, 4, 5143);
     			i8.className = "form-icon";
-    			add_location(i8, file$j, 190, 4, 5308);
-    			add_location(b4, file$j, 191, 4, 5337);
+    			add_location(i8, file$j, 190, 4, 5309);
+    			add_location(b4, file$j, 191, 4, 5338);
     			label7.className = "form-switch";
-    			add_location(label7, file$j, 183, 2, 5109);
+    			add_location(label7, file$j, 183, 2, 5110);
     			attr(input7, "type", "checkbox");
-    			add_location(input7, file$j, 195, 4, 5435);
+    			add_location(input7, file$j, 195, 4, 5436);
     			i9.className = "form-icon";
-    			add_location(i9, file$j, 201, 4, 5592);
-    			add_location(b5, file$j, 202, 4, 5621);
+    			add_location(i9, file$j, 201, 4, 5593);
+    			add_location(b5, file$j, 202, 4, 5622);
     			label8.className = "form-switch";
-    			add_location(label8, file$j, 194, 2, 5402);
+    			add_location(label8, file$j, 194, 2, 5403);
     			attr(input8, "type", "checkbox");
-    			add_location(input8, file$j, 206, 4, 5746);
+    			add_location(input8, file$j, 206, 4, 5747);
     			i10.className = "form-icon";
-    			add_location(i10, file$j, 212, 4, 5900);
-    			add_location(b6, file$j, 213, 4, 5929);
+    			add_location(i10, file$j, 212, 4, 5901);
+    			add_location(b6, file$j, 213, 4, 5930);
     			label9.className = "form-switch";
-    			add_location(label9, file$j, 205, 2, 5713);
+    			add_location(label9, file$j, 205, 2, 5714);
     			attr(input9, "type", "checkbox");
-    			add_location(input9, file$j, 218, 4, 6023);
+    			add_location(input9, file$j, 218, 4, 6024);
     			i11.className = "form-icon";
-    			add_location(i11, file$j, 224, 4, 6189);
-    			add_location(b7, file$j, 225, 4, 6218);
+    			add_location(i11, file$j, 224, 4, 6190);
+    			add_location(b7, file$j, 225, 4, 6219);
     			label10.className = "form-switch";
-    			add_location(label10, file$j, 217, 2, 5990);
+    			add_location(label10, file$j, 217, 2, 5991);
     			attr(input10, "type", "checkbox");
-    			add_location(input10, file$j, 231, 4, 6395);
+    			add_location(input10, file$j, 231, 4, 6396);
     			i12.className = "form-icon";
-    			add_location(i12, file$j, 237, 4, 6552);
-    			add_location(b8, file$j, 238, 4, 6581);
+    			add_location(i12, file$j, 237, 4, 6553);
+    			add_location(b8, file$j, 238, 4, 6582);
     			label11.className = "form-switch";
-    			add_location(label11, file$j, 230, 2, 6362);
+    			add_location(label11, file$j, 230, 2, 6363);
     			div.className = "divider";
-    			add_location(div, file$j, 241, 2, 6643);
+    			add_location(div, file$j, 241, 2, 6644);
     			attr(input11, "type", "checkbox");
-    			add_location(input11, file$j, 243, 4, 6703);
+    			add_location(input11, file$j, 243, 4, 6704);
     			i13.className = "form-icon";
-    			add_location(i13, file$j, 249, 4, 6869);
-    			add_location(b9, file$j, 250, 4, 6898);
+    			add_location(i13, file$j, 249, 4, 6870);
+    			add_location(b9, file$j, 250, 4, 6899);
     			label12.className = "form-switch";
-    			add_location(label12, file$j, 242, 2, 6670);
-    			add_location(br2, file$j, 253, 2, 6998);
+    			add_location(label12, file$j, 242, 2, 6671);
+    			add_location(br2, file$j, 253, 2, 6999);
     			label13.className = "form-label";
-    			add_location(label13, file$j, 254, 2, 7008);
+    			add_location(label13, file$j, 254, 2, 7009);
     			ctx.$$binding_groups[0].push(input12);
     			attr(input12, "type", "radio");
     			input12.name = "column-size";
     			input12.__value = "short";
     			input12.value = input12.__value;
-    			add_location(input12, file$j, 261, 4, 7343);
+    			add_location(input12, file$j, 261, 4, 7344);
     			i14.className = "form-icon";
-    			add_location(i14, file$j, 267, 4, 7515);
+    			add_location(i14, file$j, 267, 4, 7516);
     			label14.className = "form-radio";
-    			add_location(label14, file$j, 260, 2, 7311);
+    			add_location(label14, file$j, 260, 2, 7312);
     			ctx.$$binding_groups[0].push(input13);
     			attr(input13, "type", "radio");
     			input13.name = "column-size";
     			input13.__value = "long";
     			input13.value = input13.__value;
-    			add_location(input13, file$j, 271, 4, 7604);
+    			add_location(input13, file$j, 271, 4, 7605);
     			i15.className = "form-icon";
-    			add_location(i15, file$j, 277, 4, 7775);
+    			add_location(i15, file$j, 277, 4, 7776);
     			label15.className = "form-radio";
-    			add_location(label15, file$j, 270, 2, 7572);
+    			add_location(label15, file$j, 270, 2, 7573);
     			form1.className = "form-group";
-    			add_location(form1, file$j, 134, 0, 3781);
-    			add_location(br3, file$j, 281, 0, 7838);
-    			add_location(br4, file$j, 282, 0, 7846);
+    			add_location(form1, file$j, 134, 0, 3782);
+    			add_location(br3, file$j, 281, 0, 7839);
+    			add_location(br4, file$j, 282, 0, 7847);
 
     			dispose = [
     				listen(input0, "change", ctx.selectedFile),
@@ -9416,7 +9467,7 @@
       document.title = "Patchfox - Settings";
 
       // message type filters
-      let showTypeUnknown = getPref("showTypeUnknown", true);
+      let showTypeUnknown = getPref("showTypeUnknown", false);
       let showTypeAbout = getPref("showTypeAbout", true);
       let showTypeBlog = getPref("showTypeBlog", true);
       let showTypeChannel = getPref("showTypeChannel", true);
@@ -10115,7 +10166,7 @@
 
     const connect = async () => {
       console.log("Connecting to sbot...");
-      window.ssb = new DriverHermiebox();
+      window.ssb = new SSB();
 
       try {
         await ssb.connect(savedData.keys);
@@ -10174,7 +10225,6 @@
       if (savedData.hasOwnProperty("preferences")) {
         let preferences = savedData.preferences;
         if (preferences.hasOwnProperty(key)) {
-          console.log(`getPref - ${key}`, preferences[key]);
           return preferences[key]
         }
       }

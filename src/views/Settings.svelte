@@ -15,7 +15,7 @@
   document.title = "Patchfox - Settings";
 
   // message type filters
-  let showTypeUnknown = getPref("showTypeUnknown", true);
+  let showTypeUnknown = getPref("showTypeUnknown", false);
   let showTypeAbout = getPref("showTypeAbout", true);
   let showTypeBlog = getPref("showTypeBlog", true);
   let showTypeChannel = getPref("showTypeChannel", true);

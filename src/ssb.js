@@ -1,5 +1,5 @@
 /**
- * Hermiebox Driver
+ * SSB
  *
  * TL;DR: SSB API for Patchfox using Hermiebox.
  *
@@ -28,24 +28,76 @@
  * TODO: Refactor to use `ssb-query`
  */
 
-export class DriverHermiebox {
-  constructor() {
-    this.name = "Driver for Hermiebox"
-  }
+import { getPref } from "./utils.js"
+
+const pull = hermiebox.modules.pullStream
+let sbot = false
+
+export class SSB {
 
   log(pMsg, pVal = "") {
-    console.log(`[Driver Hermiebox] - ${pMsg}`, pVal)
+    console.log(`[SSB API] - ${pMsg}`, pVal)
   }
 
   async connect(pKeys) {
     var server = await hermiebox.api.connect(pKeys)
     this.log("you are", server.id)
     this.feed = server.id
+    sbot = server
   }
 
-  async public(opts) {
-    var msgs = await hermiebox.api.pullPublic(opts, {})
-    return msgs
+  filterLimit() {
+    return pull.take(getPref("limit", "10"))
+  }
+
+  filterTypes() {
+    let knownMessageTypes = {
+      "post": "showTypePost",
+      "about": "showTypeAbout",
+      "vote": "showTypeVote",
+      "contact": "showTypeContent",
+      "pub": "showTypePost",
+      "blog": "showTypeBlog",
+      "channel": "showTypeChannel"
+    }
+
+    let showUnknown = getPref("showTypeUnknown",false)
+
+    if (showUnknown) {
+      return pull.filter(() =>true);
+    }
+
+    return pull.filter(msg => {
+      let type = msg.value.content.type
+
+      if (typeof type == "string" && knownMessageTypes.hasOwnProperty(type)) {
+        return getPref(knownMessageTypes[type], true)
+      }
+      return getPref("showTypeUnknown", false)
+    })
+
+  }
+
+  public(opts) {
+    return new Promise( (resolve, reject) => {
+
+      opts = opts || {}
+      opts.reverse = opts.reverse || true
+
+      pull(
+        sbot.createFeedStream(opts),
+        pull.filter(msg => msg && msg.value && msg.value.content),
+        this.filterTypes(),
+        this.filterLimit(),
+        pull.collect((err, msgs) => {
+          if (err) {
+            reject(err)
+          }
+
+          resolve(msgs)
+        })
+      )
+    })
   }
 
   async thread(msgid) {
@@ -176,7 +228,7 @@ export class DriverHermiebox {
 
   newPost(data) {
     return new Promise((resolve, reject) => {
-      let msgToPost = {type: "post", text: data.text}
+      let msgToPost = { type: "post", text: data.text }
 
       const commonFields = [
         "root",
@@ -190,7 +242,7 @@ export class DriverHermiebox {
           msgToPost[f] = data[f]
         }
       })
-      
+
       msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || []
       msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
 

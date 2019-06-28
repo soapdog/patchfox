@@ -4,15 +4,16 @@
   document.title = `Patchfox - Error`;
 
   let error = $routeParams.error;
-  let errorObj = {}
+  let errorObj = {};
   let toastClass = "";
   let toast = false;
   let msg;
   let cta = false;
 
+  console.dir(error);
   if (typeof error == "object") {
-    errorObj = error
-    error = errorObj.message
+    errorObj = error;
+    error = errorObj.message;
   }
 
   const tryReconnect = () => {
