@@ -6,6 +6,7 @@
     setConnectionConfiguration,
     navigate
   } from "../utils.js";
+  import { getFilters, setFilter, deleteFilter } from "../abusePrevention.js";
 
   let keys = {};
   let remote = "";
@@ -24,6 +25,14 @@
   let showTypePrivate = getPref("showTypePrivate", true);
   let showTypePub = getPref("showTypePub", true);
   let showTypeVote = getPref("showTypeVote", true);
+
+  // Abuse Prevention - filters
+  let currentFilters = getFilters();
+  let filterFeed = "";
+  let filterChannel = "";
+  let filterKeywords = "";
+  let filterExpiry = "";
+  let filterAction = "";
 
   const saveConfiguration = ev => {
     setConnectionConfiguration({ remote, keys: JSON.parse(keys), manifest });
@@ -279,5 +288,85 @@
     Long column
   </label>
 </form>
+<h4>Abuse Prevention</h4>
+<p>
+  Use the features from this section to tailor your Patchfox experience to suit
+  your needs.
+</p>
+{#each currentFilters as filter}
+  <div class="tile">
+    <div class="tile-content">
+      <p class="tile-title">{filter.action}</p>
+      <p class="tile-subtitle">
+         {filter.action}
+        {#if filter.feed}from {filter.feed}{/if}
+        {#if filter.channel}on channel #{filter.channel}{/if}
+        {#if filter.keywords}
+          containing
+          <i>{JSON.stringify(filter.keywords)}</i>
+        {/if}
+        {#if filter.expires}expiring in {filter.expires}{/if}
+      </p>
+    </div>
+    <div class="tile-action">
+      <button
+        class="btn"
+        on:click={() => {
+          deleteFilter(filter);
+        }}>
+        Delete
+      </button>
+    </div>
+  </div>
+{:else}
+  <span class="label">You don't have any filter yet.</span>
+{/each}
+<h5>New Filter</h5>
+<form-group>
+<label class="form-radio">
+    <input
+      type="radio"
+      name="filter-action"
+      bind:group={filterAction}
+      value="Hide Message" />
+    <i class="form-icon" />
+    Hide Message
+  </label>
+  <label class="form-radio">
+    <input
+      type="radio"
+      name="filter-action"
+      bind:group={filterAction}
+      value="Blur Images" />
+    <i class="form-icon" />
+    Blur Images
+  </label>
+  <label class="form-label" for="remote">Channel</label>
+  <input
+    class="form-input"
+    type="text"
+    placeholder="Channel"
+    bind:value={filterChannel} />
+  <label class="form-label" for="remote">Feed</label>
+  <input
+    class="form-input"
+    type="text"
+    placeholder="Feed"
+    bind:value={filterFeed} />
+  <label class="form-label" for="remote">Keywords</label>
+  <input
+    class="form-input"
+    type="text"
+    placeholder="Keywords separated by commas"
+    bind:value={filterKeywords} />
+  <label class="form-label" for="remote">Expiration Date</label>
+  <input
+    class="form-input"
+    type="date"
+    placeholder="When should this filter expiry"
+    bind:value={filterExpiry} />
+</form-group>
+<br>
+<button class="btn btn-primary">Add Filter</button>
 <br />
 <br />
