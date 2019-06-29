@@ -1,2 +1,11020 @@
-!function(){"use strict";function e(){}const t=e=>e;function n(e,t){for(const n in t)e[n]=t[n];return e}function o(e){return e()}function r(){return Object.create(null)}function a(e){e.forEach(o)}function s(e){return"function"==typeof e}function c(e,t){return e!=e?t==t:e!==t||e&&"object"==typeof e||"function"==typeof e}function i(e,t,n){const o=t.subscribe(n);e.$$.on_destroy.push(o.unsubscribe?()=>o.unsubscribe():o)}const l="undefined"!=typeof window;let u=l?()=>window.performance.now():()=>Date.now(),m=l?requestAnimationFrame:e;const d=new Set;let h,p=!1;function g(){d.forEach(e=>{e[0](u())||(d.delete(e),e[1]())}),(p=d.size>0)&&m(g)}function f(e){let t;return p||(p=!0,m(g)),{promise:new Promise(n=>{d.add(t=[e,n])}),abort(){d.delete(t)}}}function b(e,t){e.appendChild(t)}function v(e,t,n){e.insertBefore(t,n||null)}function y(e){e.parentNode.removeChild(e)}function k(e,t){for(;e.nextSibling&&e.nextSibling!==t;)e.parentNode.removeChild(e.nextSibling)}function w(e){return document.createElement(e)}function $(e){return document.createTextNode(e)}function x(){return $(" ")}function N(){return $("")}function C(e,t,n,o){return e.addEventListener(t,n,o),()=>e.removeEventListener(t,n,o)}function _(e){return function(t){return t.preventDefault(),e.call(this,t)}}function T(e){return function(t){return t.stopPropagation(),e.call(this,t)}}function P(e,t,n){null==n?e.removeAttribute(t):e.setAttribute(t,n)}function M(e,t){t=""+t,e.data!==t&&(e.data=t)}function R(e,t,n){e.classList[n?"add":"remove"](t)}let S,I=0,U={};function L(e,t,n,o,r,a,s,c=0){const i=16.666/o;let l="{\n";for(let e=0;e<=1;e+=i){const o=t+(n-t)*a(e);l+=100*e+`%{${s(o,1-o)}}\n`}const u=l+`100% {${s(n,1-n)}}\n}`,m=`__svelte_${function(e){let t=5381,n=e.length;for(;n--;)t=(t<<5)-t^e.charCodeAt(n);return t>>>0}(u)}_${c}`;if(!U[m]){if(!h){const e=w("style");document.head.appendChild(e),h=e.sheet}U[m]=!0,h.insertRule(`@keyframes ${m} ${u}`,h.cssRules.length)}const d=e.style.animation||"";return e.style.animation=`${d?`${d}, `:""}${m} ${o}ms linear ${r}ms 1 both`,I+=1,m}function O(e,t){e.style.animation=(e.style.animation||"").split(", ").filter(t?e=>e.indexOf(t)<0:e=>-1===e.indexOf("__svelte")).join(", "),t&&!--I&&m(()=>{if(I)return;let e=h.cssRules.length;for(;e--;)h.deleteRule(e);U={}})}function A(e){S=e}function F(){if(!S)throw new Error("Function called outside component initialization");return S}function E(e){F().$$.on_mount.push(e)}function H(e){F().$$.on_destroy.push(e)}function j(){const e=S;return(t,n)=>{const o=e.$$.callbacks[t];if(o){const r=function(e,t){const n=document.createEvent("CustomEvent");return n.initCustomEvent(e,!1,!1,t),n}(t,n);o.slice().forEach(t=>{t.call(e,r)})}}}const B=[],q=Promise.resolve();let D=!1;const z=[],Y=[],V=[];function W(e){Y.push(e)}function J(){const e=new Set;do{for(;B.length;){const e=B.shift();A(e),K(e.$$)}for(;z.length;)z.shift()();for(;Y.length;){const t=Y.pop();e.has(t)||(t(),e.add(t))}}while(B.length);for(;V.length;)V.pop()();D=!1}function K(e){e.fragment&&(e.update(e.dirty),a(e.before_render),e.fragment.p(e.dirty,e.ctx),e.dirty=null,e.after_render.forEach(W))}let G,Q;function X(){return G||(G=Promise.resolve()).then(()=>{G=null}),G}function Z(){Q={remaining:0,callbacks:[]}}function ee(){Q.remaining||a(Q.callbacks)}function te(e){Q.callbacks.push(e)}function ne(e,t){const o=t.token={};function r(e,r,a,s){if(t.token!==o)return;t.resolved=a&&{[a]:s};const c=n(n({},t.ctx),t.resolved),i=e&&(t.current=e)(c);t.block&&(t.blocks?t.blocks.forEach((e,n)=>{n!==r&&e&&(Z(),te(()=>{e.d(1),t.blocks[n]=null}),e.o(1),ee())}):t.block.d(1),i.c(),i.i&&i.i(1),i.m(t.mount(),t.anchor),J()),t.block=i,t.blocks&&(t.blocks[r]=i)}if((a=e)&&"function"==typeof a.then){if(e.then(e=>{r(t.then,1,t.value,e)},e=>{r(t.catch,2,t.error,e)}),t.current!==t.pending)return r(t.pending,0),!0}else{if(t.current!==t.then)return r(t.then,1,t.value,e),!0;t.resolved={[t.value]:e}}var a}function oe(e,t){te(()=>{!function(e,t){e.d(1),t.delete(e.key)}(e,t)}),e.o(1)}function re(e,t,n,o,r,a,s,c,i,l,u,m){let d=e.length,h=a.length,p=d;const g={};for(;p--;)g[e[p].key]=p;const f=[],b=new Map,v=new Map;for(p=h;p--;){const e=m(r,a,p),c=n(e);let i=s.get(c);i?o&&i.p(t,e):(i=l(c,e)).c(),b.set(c,f[p]=i),c in g&&v.set(c,Math.abs(p-g[c]))}const y=new Set,k=new Set;function w(e){e.i&&e.i(1),e.m(c,u),s.set(e.key,e),u=e.first,h--}for(;d&&h;){const t=f[h-1],n=e[d-1],o=t.key,r=n.key;t===n?(u=t.first,d--,h--):b.has(r)?!s.has(o)||y.has(o)?w(t):k.has(r)?d--:v.get(o)>v.get(r)?(k.add(o),w(t)):(y.add(r),d--):(i(n,s),d--)}for(;d--;){const t=e[d];b.has(t.key)||i(t,s)}for(;h;)w(f[h-1]);return f}function ae(e,t,n){const{fragment:r,on_mount:c,on_destroy:i,after_render:l}=e.$$;r.m(t,n),W(()=>{const t=c.map(o).filter(s);i?i.push(...t):a(t),e.$$.on_mount=[]}),l.forEach(W)}function se(e,t){e.$$.dirty||(B.push(e),D||(D=!0,q.then(J)),e.$$.dirty=r()),e.$$.dirty[t]=!0}function ce(t,n,o,s,c,i){const l=S;A(t);const u=n.props||{},m=t.$$={fragment:null,ctx:null,props:i,update:e,not_equal:c,bound:r(),on_mount:[],on_destroy:[],before_render:[],after_render:[],context:new Map(l?l.$$.context:[]),callbacks:r(),dirty:null};let d=!1;var h;m.ctx=o?o(t,u,(e,n)=>{m.ctx&&c(m.ctx[e],m.ctx[e]=n)&&(m.bound[e]&&m.bound[e](n),d&&se(t,e))}):u,m.update(),d=!0,a(m.before_render),m.fragment=s(m.ctx),n.target&&(n.hydrate?m.fragment.l((h=n.target,Array.from(h.childNodes))):m.fragment.c(),n.intro&&t.$$.fragment.i&&t.$$.fragment.i(),ae(t,n.target,n.anchor),J()),A(l)}class ie{$destroy(){var t,n;n=!0,(t=this).$$&&(a(t.$$.on_destroy),t.$$.fragment.d(n),t.$$.on_destroy=t.$$.fragment=null,t.$$.ctx={}),this.$destroy=e}$on(e,t){const n=this.$$.callbacks[e]||(this.$$.callbacks[e]=[]);return n.push(t),()=>{const e=n.indexOf(t);-1!==e&&n.splice(e,1)}}$set(){}}function le(t,n=e){let o;const r=[];function a(e){if(c(t,e)){if(t=e,!o)return;r.forEach(e=>e[1]()),r.forEach(e=>e[0](t))}}return{set:a,update:function(e){a(e(t))},subscribe:function(s,c=e){const i=[s,c];return r.push(i),1===r.length&&(o=n(a)||e),s(t),()=>{const e=r.indexOf(i);-1!==e&&r.splice(e,1),0===r.length&&o()}}}}function ue(t,n,o){const r=!Array.isArray(t),c=r?[t]:t,i=n.length<2;return{subscribe:le(o,t=>{let o=!1;const l=[];let u=0,m=e;const d=()=>{if(u)return;m();const o=n(r?l[0]:l,t);i?t(o):m=s(o)?o:e},h=c.map((e,t)=>e.subscribe(e=>{l[t]=e,u&=~(1<<t),o&&d()},()=>{u|=1<<t}));return o=!0,d(),function(){a(h),m()}}).subscribe}}const me=hermiebox.modules.pullStream,de=hermiebox.modules.ssbSort;let he=!1;class pe{log(e,t=""){console.log(`[SSB API] - ${e}`,t)}async connect(e){var t=await hermiebox.api.connect(e);this.log("you are",t.id),this.feed=t.id,he=t}filterLimit(){return me.take(mo("limit",10))}filterTypes(){let e={post:"showTypePost",about:"showTypeAbout",vote:"showTypeVote",contact:"showTypeContent",pub:"showTypePost",blog:"showTypeBlog",channel:"showTypeChannel"};return mo("showTypeUnknown",!1)?me.filter(()=>!0):me.filter(t=>{let n=t.value.content.type;return"string"==typeof n&&e.hasOwnProperty(n)?mo(e[n],!0):mo("showTypeUnknown",!1)})}public(e){return new Promise((t,n)=>{(e=e||{}).reverse=e.reverse||!0,me(he.createFeedStream(e),me.filter(e=>e&&e.value&&e.value.content),this.filterTypes(),this.filterLimit(),me.collect((e,o)=>{e&&n(e),t(o)}))})}thread(e){return new Promise((t,n)=>{he.get(e,(o,r)=>{if(o)return cb(o);var a={key:e,value:r};me(he.backlinks&&he.backlinks.read?he.backlinks.read({query:[{$filter:{dest:e,value:{content:{root:e}}}}]}):me(he.links({dest:e,values:!0,rel:"root"}),me.filter(function(t){var n=t&&t.value&&t.value.content;return n&&"post"===n.type&&n.root===e}),me.unique("key")),this.filterTypes(),me.collect((e,o)=>{e&&n(e),t(de([a].concat(o)))}))})})}mentions(e,t){return new Promise((e,n)=>{me((e=>{var n={$filter:{dest:e}};return t&&(n.$filter.value={timestamp:{$lt:t}}),he.backlinks.read({query:[n],index:"DTA",reverse:!0})})(he.id),this.filterTypes(),this.filterLimit(),me.collect((t,o)=>{t?n(t):e(o)}))})}async profile(e){try{return await hermiebox.api.profile(e)}catch(e){return console.error(e),!1}}async get(e){return await hermiebox.api.get(e)}async setAvatarCache(e,t){let n={};return n[`avatar-${e}`]=t,browser.storage.local.set(n)}async getCachedAvatar(e){return browser.storage.local.get(`avatar-${e}`)}async avatar(e){try{let t=await hermiebox.api.avatar(e);return await this.setAvatarCache(e,t),t}catch(e){throw e}}async blurbFromMsg(e,t){let n=e;try{let o=await ssb.get(e);return"post"==o.content.type&&(n=this.plainTextFromMarkdown(o.content.text.slice(0,t)+"...")),n}catch(e){return n}}plainTextFromMarkdown(e){let t=this.markdown(e),n=document.createElement("div");return n.innerHTML=t,n.innerText}markdown(e){let t=hermiebox.modules.ssbMarkdown.block(e);return t=t.replace("<pre>",'<pre class="code">').replace(/<a href="#([^"]*)/gi,function(e,t,n,o){return`<a class="channel-link" href="?channel=${encodeURIComponent(t)}#/channel`}).replace(/<a href="@([^"]*)/gi,function(e,t,n,o){return'<a class="profile-link" href="?feed='+encodeURIComponent(`@${t}`)+"#/profile"}).replace(/target="_blank"/gi,"").replace(/<a href="%([^"]*)/gi,function(e,t,n,o){return`<a class="thread-link" href="?thread=${encodeURIComponent(`%${t}`)}#/thread`}).replace(/<img src="&([^"]*)/gi,function(e,t,n,o){return'<img class="is-image-from-blob" src="http://localhost:8989/blobs/get/&'+encodeURIComponent(t)}).replace(/<a href="&([^"]*)/gi,function(e,t,n,o){return'<a class="image-link" target="_blank" href="http://localhost:8989/blobs/get/&'+encodeURIComponent(t)})}ref(){return hermiebox.modules.ssbRef}getTimestamp(e){const t=e.timestamp,n=e.value.timestamp;return Math.min(t,n)}getRootMsgId(e){if(e&&e.value&&e.value.content){const t=e.value.content.root;if(hermiebox.modules.ssbRef.isMsgId(t))return t}}newPost(e){return new Promise((t,n)=>{let o={type:"post",text:e.text};["root","branch","channel","fork"].forEach(t=>{void 0!==e[t]&&(o[t]=e[t])}),o.mentions=hermiebox.modules.ssbMentions(o.text)||[],o.mentions=o.mentions.filter(e=>e);const r=hermiebox.sbot||!1;console.log("post",o),r?r.publish(o,function(e,o){e?n(e):t(o)}):n("There is no sbot connection")})}follow(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1;o&&o.publish({type:"contact",contact:e,following:!0},(e,o)=>{e?n(e):t(o)})})}getBlob(e){return hermiebox.api.getBlob(e)}votes(e){return new Promise((t,n)=>{let o=hermiebox.modules.pullStream,r=hermiebox.sbot;r&&o(r.links({dest:e,rel:"vote",values:!0}),o.collect((e,o)=>{e?n(e):t(o)}))})}like(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"vote",vote:{link:e,value:1,expression:"Like"}};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}unlike(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"vote",vote:{link:e,value:0,expression:"Unlike"}};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}channels(){return new Promise((e,t)=>{let n=hermiebox.modules.pullStream,o=hermiebox.sbot||!1;o?(console.log("querying channels"),n(o.query.read({query:[{$filter:{value:{content:{channel:{$is:"string"},type:"post"}}}},{$reduce:{channel:["value","content","channel"],count:{$count:!0},timestamp:{$max:["value","timestamp"]}}},{$sort:[["timestamp"],["count"]]}],limit:20}),n.collect(function(n,o){console.log("channels",o),n?t(n):e(o)}))):t("no sbot")})}channel(e,t){return new Promise((n,o)=>{let r=hermiebox.modules.pullStream,a=hermiebox.sbot||!1,s={$filter:{value:{content:{channel:e}}}};t.lt&&(s.$filter.value.timestamp={$lt:t.lt}),console.dir(s),a?r(a.query.read({query:[s],limit:t.limit,reverse:!0}),r.collect(function(e,t){e?o(e):n(t)})):o("no sbot")})}channelSubscribe(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"channel",channel:e,subscribed:!0};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}channelUnsubscribe(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"channel",channel:e,subscribed:!1};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}channelSubscribed(e,t){return new Promise((n,o)=>{let r=hermiebox.modules.pullStream,a=hermiebox.sbot||!1;if(a){t||(t=a.id);let s={$filter:{value:{author:t,content:{type:"channel",channel:e}}}};r(a.query.read({query:[s],reverse:!0}),r.collect(function(e,t){e?o(e):t.length>0?n(t[0].value.content.subscribed||!1):n(!1)}))}else o("no sbot")})}subscribedChannels(e,t){return new Promise((e,n)=>{let o=hermiebox.modules.pullStream,r=hermiebox.sbot||!1;if(r){t||(t=r.id);let a={$filter:{value:{author:t,content:{type:"channel"}}},$map:{channel:["value","content","channel"],subscribed:["value","content","subscribed"]},$sort:[["value","timestamp"]]};o(r.query.read({query:[a],reverse:!0}),o.collect(function(t,o){t?n(t):e(o)}))}else n("no sbot")})}follow(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"contact",contact:e,following:!0};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}unfollow(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"contact",contact:e,following:!1};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}block(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"contact",contact:e,blocking:!0};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}unblock(e){return new Promise((t,n)=>{const o=hermiebox.sbot||!1,r={type:"contact",contact:e,blocking:!1};o&&o.publish(r,function(e,o){e?n(e):t(o)})})}following(e,t){return new Promise((n,o)=>{let r=hermiebox.modules.pullStream,a=hermiebox.sbot||!1;if(a){t||(t=a.id);let s={$filter:{value:{author:t,content:{type:"contact",contact:e,following:{$is:"boolean"}}}}};r(a.query.read({query:[s],reverse:!0}),r.collect(function(e,t){e?o(e):t.length>0?n(t[0].value.content.following||!1):n(!1)}))}else o("no sbot")})}blocking(e,t){return new Promise((n,o)=>{let r=hermiebox.modules.pullStream,a=hermiebox.sbot||!1;if(a){t||(t=a.id);let s={$filter:{value:{author:t,content:{type:"contact",contact:e,blocking:{$is:"boolean"}}}}};r(a.query.read({query:[s],reverse:!0}),r.collect(function(e,t){e?o(e):t.length>0?n(t[0].value.content.blocking||!1):n(!1)}))}else o("no sbot")})}query(e,t,n,o,r){return new Promise((t,a)=>{if(he){let s={$filter:e};o&&(s.$map=o),r&&(s.$reduce=r),void 0===n&&(n=!0),me(he.query.read({query:[s],reverse:n}),this.filterTypes(),this.filterLimit(),me.collect((e,n)=>{e?a(e):t(n)}))}else a("no sbot")})}}var ge=e=>encodeURIComponent(e).replace(/[!'()*]/g,e=>`%${e.charCodeAt(0).toString(16).toUpperCase()}`),fe=new RegExp("%[a-f0-9]{2}","gi"),be=new RegExp("(%[a-f0-9]{2})+","gi");function ve(e,t){try{return decodeURIComponent(e.join(""))}catch(e){}if(1===e.length)return e;t=t||1;var n=e.slice(0,t),o=e.slice(t);return Array.prototype.concat.call([],ve(n),ve(o))}function ye(e){try{return decodeURIComponent(e)}catch(o){for(var t=e.match(fe),n=1;n<t.length;n++)t=(e=ve(t,n).join("")).match(fe);return e}}var ke=function(e){if("string"!=typeof e)throw new TypeError("Expected `encodedURI` to be of type `string`, got `"+typeof e+"`");try{return e=e.replace(/\+/g," "),decodeURIComponent(e)}catch(t){return function(e){for(var t={"%FE%FF":"��","%FF%FE":"��"},n=be.exec(e);n;){try{t[n[0]]=decodeURIComponent(n[0])}catch(e){var o=ye(n[0]);o!==n[0]&&(t[n[0]]=o)}n=be.exec(e)}t["%C2"]="�";for(var r=Object.keys(t),a=0;a<r.length;a++){var s=r[a];e=e.replace(new RegExp(s,"g"),t[s])}return e}(e)}},we=(e,t)=>{if("string"!=typeof e||"string"!=typeof t)throw new TypeError("Expected the arguments to be of type `string`");if(""===t)return[e];const n=e.indexOf(t);return-1===n?[e]:[e.slice(0,n),e.slice(n+t.length)]};function $e(e,t){return t.encode?t.strict?ge(e):encodeURIComponent(e):e}function xe(e,t){return t.decode?ke(e):e}function Ne(e){const t=e.indexOf("#");return-1!==t&&(e=e.slice(0,t)),e}function Ce(e){const t=(e=Ne(e)).indexOf("?");return-1===t?"":e.slice(t+1)}function _e(e,t){const n=function(e){let t;switch(e.arrayFormat){case"index":return(e,n,o)=>{t=/\[(\d*)\]$/.exec(e),e=e.replace(/\[\d*\]$/,""),t?(void 0===o[e]&&(o[e]={}),o[e][t[1]]=n):o[e]=n};case"bracket":return(e,n,o)=>{t=/(\[\])$/.exec(e),e=e.replace(/\[\]$/,""),t?void 0!==o[e]?o[e]=[].concat(o[e],n):o[e]=[n]:o[e]=n};case"comma":return(e,t,n)=>{const o="string"==typeof t&&t.split("").indexOf(",")>-1?t.split(","):t;n[e]=o};default:return(e,t,n)=>{void 0!==n[e]?n[e]=[].concat(n[e],t):n[e]=t}}}(t=Object.assign({decode:!0,arrayFormat:"none"},t)),o=Object.create(null);if("string"!=typeof e)return o;if(!(e=e.trim().replace(/^[?#&]/,"")))return o;for(const r of e.split("&")){let[e,a]=we(r.replace(/\+/g," "),"=");a=void 0===a?null:xe(a,t),n(xe(e,t),a,o)}return Object.keys(o).sort().reduce((e,t)=>{const n=o[t];return Boolean(n)&&"object"==typeof n&&!Array.isArray(n)?e[t]=function e(t){return Array.isArray(t)?t.sort():"object"==typeof t?e(Object.keys(t)).sort((e,t)=>Number(e)-Number(t)).map(e=>t[e]):t}(n):e[t]=n,e},Object.create(null))}var Te={extract:Ce,parse:_e,stringify:(e,t)=>{if(!e)return"";const n=function(e){switch(e.arrayFormat){case"index":return t=>(n,o)=>{const r=n.length;return void 0===o?n:null===o?[...n,[$e(t,e),"[",r,"]"].join("")]:[...n,[$e(t,e),"[",$e(r,e),"]=",$e(o,e)].join("")]};case"bracket":return t=>(n,o)=>void 0===o?n:null===o?[...n,[$e(t,e),"[]"].join("")]:[...n,[$e(t,e),"[]=",$e(o,e)].join("")];case"comma":return t=>(n,o,r)=>null==o||0===o.length?n:0===r?[[$e(t,e),"=",$e(o,e)].join("")]:[[n,$e(o,e)].join(",")];default:return t=>(n,o)=>void 0===o?n:null===o?[...n,$e(t,e)]:[...n,[$e(t,e),"=",$e(o,e)].join("")]}}(t=Object.assign({encode:!0,strict:!0,arrayFormat:"none"},t)),o=Object.keys(e);return!1!==t.sort&&o.sort(t.sort),o.map(o=>{const r=e[o];return void 0===r?"":null===r?$e(o,t):Array.isArray(r)?r.reduce(n(o),[]).join("&"):$e(o,t)+"="+$e(r,t)}).filter(e=>e.length>0).join("&")},parseUrl:(e,t)=>({url:Ne(e).split("?")[0]||"",query:_e(Ce(e),t)})};function Pe(e){var t,n,o,r,a;return{c(){t=w("span"),n=w("a"),o=$("(root)"),n.href=r="?thread="+encodeURIComponent(e.msg.value.content.root)+"#/thread",a=C(n,"click",_(e.goRoot))},m(e,r){v(e,t,r),b(t,n),b(n,o)},p(e,t){e.msg&&r!==(r="?thread="+encodeURIComponent(t.msg.value.content.root)+"#/thread")&&(n.href=r)},d(e){e&&y(t),a()}}}function Me(e){var t,n,o,r,a;return{c(){t=w("span"),n=w("a"),o=$("(in reply to)"),n.href=r="?thread="+encodeURIComponent(e.msg.value.content.branch)+"#/thread",a=C(n,"click",_(e.goBranch))},m(e,r){v(e,t,r),b(t,n),b(n,o)},p(e,t){e.msg&&r!==(r="?thread="+encodeURIComponent(t.msg.value.content.branch)+"#/thread")&&(n.href=r)},d(e){e&&y(t),a()}}}function Re(t){var n,o,r,s,c;return{c(){n=w("div"),(o=w("button")).textContent="Fork",r=x(),(s=w("button")).textContent="Reply",o.className="btn",s.className="btn",n.className="column col-6 text-right",c=[C(o,"click",t.fork),C(s,"click",t.reply)]},m(e,t){v(e,n,t),b(n,o),b(n,r),b(n,s)},p:e,d(e){e&&y(n),a(c)}}}function Se(t){var n,o,r,a,s,c,i,l,u,m,d,h,p,g,f=t.msg.value.content.root&&Pe(t),k=t.msg.value.content.branch&&Me(t),N=!t.msg.value.private&&Re(t);return{c(){n=w("div"),o=x(),r=w("div"),a=w("div"),s=w("div"),c=w("label"),i=w("input"),l=x(),u=w("i"),m=$("\r\n        Like"),d=x(),f&&f.c(),h=x(),k&&k.c(),p=x(),N&&N.c(),n.className="card-body svelte-1ftdgav",P(i,"type","checkbox"),i.checked=t.liked,u.className="form-icon",c.className="form-switch d-inline",s.className="column col-6",a.className="columns col-gapless",r.className="card-footer",g=C(i,"change",t.likeChanged)},m(e,g){v(e,n,g),n.innerHTML=t.content,v(e,o,g),v(e,r,g),b(r,a),b(a,s),b(s,c),b(c,i),b(c,l),b(c,u),b(c,m),b(s,d),f&&f.m(s,null),b(s,h),k&&k.m(s,null),b(a,p),N&&N.m(a,null)},p(e,t){e.liked&&(i.checked=t.liked),t.msg.value.content.root?f?f.p(e,t):((f=Pe(t)).c(),f.m(s,h)):f&&(f.d(1),f=null),t.msg.value.content.branch?k?k.p(e,t):((k=Me(t)).c(),k.m(s,null)):k&&(k.d(1),k=null),t.msg.value.private?N&&(N.d(1),N=null):N?N.p(e,t):((N=Re(t)).c(),N.m(a,null))},i:e,o:e,d(e){e&&(y(n),y(o),y(r)),f&&f.d(),k&&k.d(),N&&N.d(),g()}}}function Ie(e,t,n){let{msg:o}=t,r=ssb.markdown(o.value.content.text),a=!1;ssb.votes(o.key).then(e=>{e.forEach(e=>{e.value.author===ssb.feed&&1===e.value.content.vote.value&&n("liked",a=!0)})});return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,content:r,liked:a,likeChanged:e=>{e.target.checked?ssb.like(o.key).then(()=>console.log("liked",o.key)).catch(()=>{const e=a=!1;return n("liked",a),e}):ssb.unlike(o.key).then(()=>console.log("unliked",o.key)).catch(()=>{const e=a=!0;return n("liked",a),e})},reply:e=>{let t=o.value.content.root||o.key,n=o.value.content.channel,r=o.value.author;ao("/compose",{root:t,branch:o.key,channel:n,replyfeed:r})},fork:e=>{let t=o.value.content.root||o.key,n=o.value.content.channel,r=o.value.author;ao("/compose",{root:o.key,branch:o.key,fork:t,channel:n,replyfeed:r})},goRoot:e=>{let t=o.value.content.root||o.key;ao("/thread",{thread:t})},goBranch:e=>{let t=o.value.content.branch||o.key;ao("/thread",{thread:t})}}}class Ue extends ie{constructor(e){super(),ce(this,e,Ie,Se,c,["msg"])}}function Le(t){var n,o,r,a;return{c(){n=w("div"),o=w("pre"),r=w("code"),a=$(t.rawContent),o.className="code svelte-1c3kv1x",n.className="card-body"},m(e,t){v(e,n,t),b(n,o),b(o,r),b(r,a)},p:e,i:e,o:e,d(e){e&&y(n)}}}function Oe(e,t,n){let{msg:o}=t,r=JSON.stringify(o,null,2);return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,rawContent:r}}class Ae extends ie{constructor(e){super(),ce(this,e,Oe,Le,c,["msg"])}}function Fe(t){var n,o,r,a,s,c,i,l;return{c(){n=w("div"),o=$(t.person),r=x(),a=$(t.expression),s=x(),c=w("a"),i=$(t.label),c.href="/index.html?thread="+t.encodedid+"#/thread",n.className="card-body",l=C(c,"click",t.goThread)},m(e,t){v(e,n,t),b(n,o),b(n,r),b(n,a),b(n,s),b(n,c),b(c,i)},p(e,t){e.person&&M(o,t.person),e.label&&M(i,t.label)},i:e,o:e,d(e){e&&y(n),l()}}}function Ee(e,t,n){let{msg:o}=t,r=o.value.content.vote.expression,a=o.value.content.vote.link,s=encodeURIComponent(a),c=a,i=o.value.author;ssb.blurbFromMsg(a,100).then(e=>{n("label",c=e)}),ssb.avatar(o.value.author).then(e=>{const t=i=e.name;return n("person",i),t});return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,expression:r,encodedid:s,label:c,person:i,goThread:e=>{e.stopPropagation(),e.preventDefault(),e.ctrlKey?window.open(`?thread=${encodeURIComponent(a)}#/thread`):ao("/thread",{thread:a})}}}class He extends ie{constructor(e){super(),ce(this,e,Ee,Fe,c,["msg"])}}function je(t){var n;return{c(){(n=w("div")).innerHTML="<p>🔒 PRIVATE</p>",n.className="card-body"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function Be(e,t,n){let{msg:o}=t;return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o}}class qe extends ie{constructor(e){super(),ce(this,e,Be,je,c,["msg"])}}function De(t){var n,o,r,a,s,c,i,l;return{c(){n=w("div"),o=$(t.person),r=x(),a=$(t.verb),s=x(),c=w("a"),i=$(t.otherPersonName),c.href="?feed="+t.otherPersonFeed+"#/profile",n.className="card-body",l=C(c,"click",t.goProfile)},m(e,t){v(e,n,t),b(n,o),b(n,r),b(n,a),b(n,s),b(n,c),b(c,i)},p(e,t){e.person&&M(o,t.person),e.verb&&M(a,t.verb),e.otherPersonName&&M(i,t.otherPersonName)},i:e,o:e,d(e){e&&y(n),l()}}}function ze(e,t,n){let{msg:o}=t,r=o.value.author,a=encodeURIComponent(o.value.content.contact),s=a,c=o.value.content.following?"followed":"unfollowed";o.value.content.blocking&&n("verb",c="blocked"),ssb.avatar(o.value.author).then(e=>{const t=r=e.name;return n("person",r),t}),ssb.avatar(o.value.content.contact).then(e=>{n("otherPersonName",s=e.name)}).catch(e=>console.log(e));return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,person:r,otherPersonFeed:a,otherPersonName:s,verb:c,goProfile:e=>{e.stopPropagation(),e.preventDefault(),ao("/profile",{feed:o.value.content.contact})}}}class Ye extends ie{constructor(e){super(),ce(this,e,ze,De,c,["msg"])}}function Ve(t){var n,o,r,a,s,c,i,l,u;return{c(){n=w("div"),o=$(t.person),r=x(),a=$(t.verb),s=x(),c=w("a"),i=$("#"),l=$(t.channel),c.href="?channel="+t.channel+"#/channel",n.className="card-body",u=C(c,"click",t.goChannel)},m(e,t){v(e,n,t),b(n,o),b(n,r),b(n,a),b(n,s),b(n,c),b(c,i),b(c,l)},p(e,t){e.person&&M(o,t.person)},i:e,o:e,d(e){e&&y(n),u()}}}function We(e,t,n){let{msg:o}=t,r=o.value.author,a=o.value.content.subscribed?"subscribed":"unsubscribed",s=encodeURIComponent(o.value.content.channel);ssb.avatar(o.value.author).then(e=>{const t=r=e.name;return n("person",r),t});return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,person:r,verb:a,channel:s,goChannel:e=>{e.stopPropagation(),e.preventDefault(),ao("/channel",{channel:o.value.content.channel})}}}class Je extends ie{constructor(e){super(),ce(this,e,We,Ve,c,["msg"])}}function Ke(e){var t,n,o;return{c(){t=w("div"),n=$(e.person),o=$(" is doing something related to a gathering but gatherings are not\r\n      supported yet, sorry."),t.className="toast"},m(e,r){v(e,t,r),b(t,n),b(t,o)},p(e,t){e.person&&M(n,t.person)},d(e){e&&y(t)}}}function Ge(e){var t,n,o,r,a,s,c;function i(e){return e.image?Xe:Qe}var l=i(e),u=l(e),m=e.msg.value.content.description&&Ze(e);return{c(){t=$(e.person),n=x(),o=$(e.verb),r=x(),a=w("a"),u.c(),s=x(),m&&m.c(),c=N(),a.href="?feed="+e.otherLink+"#/profile"},m(e,i){v(e,t,i),v(e,n,i),v(e,o,i),v(e,r,i),v(e,a,i),u.m(a,null),v(e,s,i),m&&m.m(e,i),v(e,c,i)},p(e,n){e.person&&M(t,n.person),e.verb&&M(o,n.verb),l===(l=i(n))&&u?u.p(e,n):(u.d(1),(u=l(n))&&(u.c(),u.m(a,null))),n.msg.value.content.description?m?m.p(e,n):((m=Ze(n)).c(),m.m(c.parentNode,c)):m&&(m.d(1),m=null)},d(e){e&&(y(t),y(n),y(o),y(r),y(a)),u.d(),e&&y(s),m&&m.d(e),e&&y(c)}}}function Qe(e){var t,n;return{c(){t=w("span"),n=$(e.otherName),t.className="chip"},m(e,o){v(e,t,o),b(t,n)},p(e,t){e.otherName&&M(n,t.otherName)},d(e){e&&y(t)}}}function Xe(e){var t,n,o,r;return{c(){t=w("div"),n=w("img"),o=x(),r=$(e.otherName),n.src=e.image,n.className="avatar avatar-sm",n.alt=e.otherName,t.className="chip"},m(e,a){v(e,t,a),b(t,n),b(t,o),b(t,r)},p(e,t){e.otherName&&(n.alt=t.otherName,M(r,t.otherName))},d(e){e&&y(t)}}}function Ze(e){var t,n=e.ssb.markdown(e.msg.value.content.description);return{c(){t=w("blockquote")},m(e,o){v(e,t,o),t.innerHTML=n},p(e,o){e.msg&&n!==(n=o.ssb.markdown(o.msg.value.content.description))&&(t.innerHTML=n)},d(e){e&&y(t)}}}function et(t){var n;function o(e){return e.isThisAboutFeeds?Ge:Ke}var r=o(t),a=r(t);return{c(){n=w("div"),a.c(),n.className="card-body"},m(e,t){v(e,n,t),a.m(n,null)},p(e,t){r===(r=o(t))&&a?a.p(e,t):(a.d(1),(a=r(t))&&(a.c(),a.m(n,null)))},i:e,o:e,d(e){e&&y(n),a.d()}}}function tt(e,t,n){let{msg:o}=t,r=o.value.author,a=encodeURIComponent(o.value.content.about),s=o.value.content.name||o.value.content.about,c=!0,i=o.value.content.about===o.value.author?"self-identifies":"identifies";ssb.avatar(o.value.author).then(e=>{const t=r=e.name;return n("person",r),t}),s===o.value.content.about&&ssb.avatar(o.value.content.about).then(e=>{const t=s=e.name;return n("otherName",s),t});let l=!!o.value.content.image&&`http://localhost:8989/blobs/get/${encodeURIComponent(o.value.content.image)}`;return o.value.content.description&&n("verb",i+=" with description"),o.value.content.about.startsWith("%")&&n("isThisAboutFeeds",c=!1),e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,person:r,otherLink:a,otherName:s,isThisAboutFeeds:c,verb:i,image:l,ssb:ssb}}class nt extends ie{constructor(e){super(),ce(this,e,tt,et,c,["msg"])}}function ot(t){var n,o,r,a,s,c,i,l;return{c(){n=w("div"),o=$(t.person),r=$(" announced pub\r\n  "),a=w("a"),s=$(t.host),c=$(":"),i=$(t.port),a.href="/index.html?feed="+t.encodedid+"#/profile",n.className="card-body",l=C(a,"click",t.goProfile)},m(e,t){v(e,n,t),b(n,o),b(n,r),b(n,a),b(a,s),b(a,c),b(a,i)},p(e,t){e.person&&M(o,t.person)},i:e,o:e,d(e){e&&y(n),l()}}}function rt(e,t,n){let{msg:o}=t,r=encodeURIComponent(o.value.content.address.key),a=o.value.author,s=o.value.content.address.host,c=o.value.content.address.port;ssb.avatar(o.value.author).then(e=>{const t=a=e.name;return n("person",a),t});return e.$set=(e=>{"msg"in e&&n("msg",o=e.msg)}),{msg:o,encodedid:r,person:a,host:s,port:c,goProfile:e=>{e.stopPropagation(),e.preventDefault(),ao("/profile",{feed:o.value.content.address.key})}}}class at extends ie{constructor(e){super(),ce(this,e,rt,ot,c,["msg"])}}function st(t){var n,o;return{c(){n=w("div"),(o=w("img")).src="http://localhost:8989/blobs/get/"+encodeURIComponent(t.thumbnail),o.className="img-responsive",o.alt=t.title,n.className="card-image"},m(e,t){v(e,n,t),b(n,o)},p:e,d(e){e&&y(n)}}}function ct(t){var n,o;return{c(){n=w("h1"),o=$(t.title),n.className="card-title h5"},m(e,t){v(e,n,t),b(n,o)},p:e,d(e){e&&y(n)}}}function it(e){var t,n,o;return{c(){t=w("div"),n=$("Can't load blogpost: "),o=$(e.toastMsg),t.className="toast toast-error"},m(e,r){v(e,t,r),b(t,n),b(t,o)},p(e,t){e.toastMsg&&M(o,t.toastMsg)},d(e){e&&y(t)}}}function lt(t){var n,o;return{c(){n=w("noscript"),o=w("noscript")},m(e,r){v(e,n,r),n.insertAdjacentHTML("afterend",t.summary),v(e,o,r)},p:e,d(e){e&&(k(n,o),y(n),y(o))}}}function ut(e){var t,n;return{c(){t=w("noscript"),n=w("noscript")},m(o,r){v(o,t,r),t.insertAdjacentHTML("afterend",e.post),v(o,n,r)},p(e,o){e.post&&(k(t,n),t.insertAdjacentHTML("afterend",o.post))},d(e){e&&(k(t,n),y(t),y(n))}}}function mt(e){var t,n,o,r,a;return{c(){t=w("span"),n=w("a"),o=$("(root)"),n.href=r="?thread="+encodeURIComponent(e.msg.value.content.root)+"#/thread",a=C(n,"click",_(e.goRoot))},m(e,r){v(e,t,r),b(t,n),b(n,o)},p(e,t){e.msg&&r!==(r="?thread="+encodeURIComponent(t.msg.value.content.root)+"#/thread")&&(n.href=r)},d(e){e&&y(t),a()}}}function dt(e){var t,n,o,r,a;return{c(){t=w("span"),n=w("a"),o=$("(in reply to)"),n.href=r="?thread="+encodeURIComponent(e.msg.value.content.branch)+"#/thread",a=C(n,"click",_(e.goBranch))},m(e,r){v(e,t,r),b(t,n),b(n,o)},p(e,t){e.msg&&r!==(r="?thread="+encodeURIComponent(t.msg.value.content.branch)+"#/thread")&&(n.href=r)},d(e){e&&y(t),a()}}}function ht(e){var t,n;return{c(){(t=w("button")).textContent="Close Blogpost",t.className="btn btn-primary",R(t,"locating",e.loading),n=C(t,"click",e.click_handler)},m(e,n){v(e,t,n)},p(e,n){e.loading&&R(t,"locating",n.loading)},d(e){e&&y(t),n()}}}function pt(e){var t,n;return{c(){(t=w("button")).textContent="Read Blogpost",t.className="btn btn-primary",R(t,"locating",e.loading),n=C(t,"click",e.displayBlogPost)},m(e,n){v(e,t,n)},p(e,n){e.loading&&R(t,"locating",n.loading)},d(e){e&&y(t),n()}}}function gt(t){var n,o,r,s,c,i,l,u,m,d,h,p,g,f,k,N,_,T,M,R,S=t.thumbnail&&st(t),I=t.title&&ct(t),U=t.toast&&it(t);function L(e){return e.showBlogpost?ut:lt}var O=L(t),A=O(t),F=t.msg.value.content.root&&mt(t),E=t.msg.value.content.branch&&dt(t);function H(e){return e.showBlogpost?ht:pt}var j=H(t),B=j(t);return{c(){S&&S.c(),n=x(),o=w("div"),I&&I.c(),r=x(),U&&U.c(),s=x(),A.c(),c=x(),i=w("div"),l=w("div"),u=w("div"),m=w("label"),d=w("input"),h=x(),p=w("i"),g=$("\n        Like"),f=x(),F&&F.c(),k=x(),E&&E.c(),N=x(),_=w("div"),(T=w("button")).textContent="Reply",M=x(),B.c(),o.className="card-body",P(d,"type","checkbox"),d.checked=t.liked,p.className="form-icon",m.className="form-switch d-inline",u.className="column col-6",T.className="btn",_.className="column col-6 text-right",l.className="columns col-gapless",i.className="card-footer",R=[C(d,"change",t.likeChanged),C(T,"click",t.reply)]},m(e,t){S&&S.m(e,t),v(e,n,t),v(e,o,t),I&&I.m(o,null),b(o,r),U&&U.m(o,null),b(o,s),A.m(o,null),v(e,c,t),v(e,i,t),b(i,l),b(l,u),b(u,m),b(m,d),b(m,h),b(m,p),b(m,g),b(u,f),F&&F.m(u,null),b(u,k),E&&E.m(u,null),b(l,N),b(l,_),b(_,T),b(_,M),B.m(_,null)},p(e,t){t.thumbnail?S?S.p(e,t):((S=st(t)).c(),S.m(n.parentNode,n)):S&&(S.d(1),S=null),t.title?I?I.p(e,t):((I=ct(t)).c(),I.m(o,r)):I&&(I.d(1),I=null),t.toast?U?U.p(e,t):((U=it(t)).c(),U.m(o,s)):U&&(U.d(1),U=null),O===(O=L(t))&&A?A.p(e,t):(A.d(1),(A=O(t))&&(A.c(),A.m(o,null))),e.liked&&(d.checked=t.liked),t.msg.value.content.root?F?F.p(e,t):((F=mt(t)).c(),F.m(u,k)):F&&(F.d(1),F=null),t.msg.value.content.branch?E?E.p(e,t):((E=dt(t)).c(),E.m(u,null)):E&&(E.d(1),E=null),j===(j=H(t))&&B?B.p(e,t):(B.d(1),(B=j(t))&&(B.c(),B.m(_,null)))},i:e,o:e,d(e){S&&S.d(e),e&&(y(n),y(o)),I&&I.d(),U&&U.d(),A.d(),e&&(y(c),y(i)),F&&F.d(),E&&E.d(),B.d(),a(R)}}}function ft(e,t,n){let o;i(e,ro,e=>{n("$routeLocation",o=e)});let{msg:r}=t,a=r.value.content,s=ssb.markdown(a.summary),c=a.thumbnail||!1,l=a.title||!1,u=!1,m=!1,d=!1,h="",p=s,g=!1;ssb.votes(r.key).then(e=>{e.forEach(e=>{e.value.author===ssb.feed&&1===e.value.content.vote.value&&n("liked",g=!0)})});const f=e=>{n("loading",m=!0),console.log("loading blogpost",a.blog),ssb.getBlob(a.blog).then(e=>{n("post",p=ssb.markdown(e)),n("showBlogpost",u=!0)}).catch(e=>{console.error("can't load blog post",e),n("toast",d=!0),n("toastMsg",h=e)})};return"/thread"==o&&setTimeout(f,100),e.$set=(e=>{"msg"in e&&n("msg",r=e.msg)}),{msg:r,summary:s,thumbnail:c,title:l,showBlogpost:u,loading:m,toast:d,toastMsg:h,post:p,liked:g,likeChanged:e=>{e.target.checked?ssb.like(r.key).then(()=>console.log("liked",r.key)).catch(()=>{const e=g=!1;return n("liked",g),e}):ssb.unlike(r.key).then(()=>console.log("unliked",r.key)).catch(()=>{const e=g=!0;return n("liked",g),e})},displayBlogPost:f,reply:e=>{let t=r.value.content.root||r.key,n=r.value.content.channel;ao("/compose",{root:t,branch:r.key,channel:n})},goRoot:e=>{let t=r.value.content.root||r.key;ao("/thread",{thread:t})},goBranch:e=>{let t=r.value.content.branch||r.key;ao("/thread",{thread:t})},click_handler:function(){const e=u=!1;return n("showBlogpost",u),e}}}class bt extends ie{constructor(e){super(),ce(this,e,ft,gt,c,["msg"])}}function vt(e){var t,n,o;return{c(){t=w("span"),n=$(e.name),t.className="chip",o=C(t,"click",e.avatarClick)},m(e,o){v(e,t,o),b(t,n)},p(e,t){e.name&&M(n,t.name)},d(e){e&&y(t),o()}}}function yt(e){var t,n,o,r,a;return{c(){t=w("div"),n=w("img"),o=x(),r=$(e.name),n.src=e.image,n.className="avatar avatar-sm",t.className="chip",a=C(t,"click",e.avatarClick)},m(e,a){v(e,t,a),b(t,n),b(t,o),b(t,r)},p(e,t){e.image&&(n.src=t.image),e.name&&M(r,t.name)},d(e){e&&y(t),a()}}}function kt(t){var n;function o(e){return e.image?yt:vt}var r=o(t),a=r(t);return{c(){a.c(),n=N()},m(e,t){a.m(e,t),v(e,n,t)},p(e,t){r===(r=o(t))&&a?a.p(e,t):(a.d(1),(a=r(t))&&(a.c(),a.m(n.parentNode,n)))},i:e,o:e,d(e){a.d(e),e&&y(n)}}}function wt(e,t,n){let{feed:o}=t,r=!1,a=o;const s=j();return ssb.avatar(o).then(e=>{null!==e.image&&n("image",r=`http://localhost:8989/blobs/get/${e.image}`),n("name",a=e.name)}),e.$set=(e=>{"feed"in e&&n("feed",o=e.feed)}),{feed:o,image:r,name:a,avatarClick:function(){s("avatarClick",{feed:o,name:a})}}}class $t extends ie{constructor(e){super(),ce(this,e,wt,kt,c,["feed"])}}var xt=function(){};xt.prototype.simple=function(e){var t=Date.now(),n=Date.parse(e);try{if(n!=n)throw"timeago-simple: Please check date and time format! Unable to parse the date & time: "+e}catch(t){return console.error(t),e}return n-t<0?function(e){var t=Date.now();e=Date.parse(e);var n=(t-e)/1e3,o=n/60,r=n/3600;if(n<60&&o<1)return 1===n?Math.round(n)+" second ago":Math.round(n)+" seconds ago";if(o<60&&r<1)return 1===o?Math.round(o)+" minute ago":Math.round(o)+" minutes ago";if(r>24){var a=r/24;if(a>30){var s=a/30;if(s>12){var c=s/12;if(c>0)return 1===c?Math.ceil(c)+" year ago":Math.ceil(c)+" years ago"}return Math.round(s)+" month ago"}return 1===a?Math.round(a)+" day ago":Math.round(a)+" days ago"}return 1===r?Math.round(r)+" hour ago":Math.round(r)+" hours ago"}(e):function(e){var t=Date.now(),n=((e=Date.parse(e))-t)/1e3,o=n/60,r=n/3600;if(n<60&&o<1)return 1===n?"in "+Math.round(n)+" second":"in "+Math.round(n)+" seconds";if(o<60&&r<1)return 1===o?"in "+Math.round(o)+" minute":"in "+Math.round(o)+" minutes";if(r>24){var a=r/24;if(a>30){var s=a/30;if(s>12){var c=s/12;if(c>0)return 1===c?"in "+Math.ceil(c)+" year":"in "+Math.ceil(c)+" years"}return"in "+Math.round(s)+" month"}return 1===a?"in "+Math.round(a)+" day":"in "+Math.round(a)+" days"}return 1===r?"in "+Math.round(r)+" hour":"in "+Math.round(r)+" hours"}(e)},xt.prototype.future=function(e){console.warn("timeago-simple: .future function is depricated! Please use .simple for both past and future dates.");var t=Date.now();try{if(Date.parse(e)!=Date.parse(e))throw"timeago-simple: Please check date and time format! Unable to parse the date & time: "+e;if(Date.parse(e)-t<0)throw"timeago-simple: Looks like it's more relevant case for timeago.simple"}catch(t){return console.error(t),e}var n=((e=Date.parse(e))-t)/1e3,o=n/60,r=n/3600;if(n<60&&o<1)return 1===n?"in "+Math.round(n)+" second":"in "+Math.round(n)+" seconds";if(o<60&&r<1)return 1===o?"in "+Math.round(o)+" minute":"in "+Math.round(o)+" minutes";if(r>24){var a=r/24;if(a>30){var s=a/30;if(s>12){var c=s/12;if(c>0)return 1===c?"in "+Math.ceil(c)+" year":"in "+Math.ceil(c)+" years"}return"in "+Math.round(s)+" month"}return 1===a?"in "+Math.round(a)+" day":"in "+Math.round(a)+" days"}return 1===r?"in "+Math.round(r)+" hour":"in "+Math.round(r)+" hours"};var Nt=new xt;const Ct=e=>Nt.simple(new Date(e));function _t(e){var t;return{c(){(t=w("span")).textContent="PRIVATE",t.className="label"},m(e,n){v(e,t,n)},d(e){e&&y(t)}}}function Tt(e){var t,n,o=e.msg.value.content.channel;return{c(){t=$("#"),n=$(o)},m(e,o){v(e,t,o),v(e,n,o)},p(e,t){e.msg&&o!==(o=t.msg.value.content.channel)&&M(n,o)},d(e){e&&(y(t),y(n))}}}function Pt(e){var t;return{c(){t=$("Close raw message")},m(e,n){v(e,t,n)},d(e){e&&y(t)}}}function Mt(e){var t;return{c(){t=$("Show raw message")},m(e,n){v(e,t,n)},d(e){e&&y(t)}}}function Rt(t){var n,o,r,a,s,c,i,l,u,m,d,h,p,g,f,k,N,C,_,T,P;return{c(){n=w("div"),o=w("div"),r=w("div"),a=w("pre"),s=w("code"),c=$(t.rawContent),i=x(),l=w("div"),u=w("p"),m=$("This is a message of type\n            "),d=w("em"),h=$(t.type),p=$("\n            ."),g=x(),f=w("p"),k=$("To learn more about it, go to\n            "),N=w("a"),C=$("the documentation about messages with type "),_=$(t.type),P=$("\n            ."),a.className="code",r.className="column col-9",N.target="_blank",N.href=T="/docs/index.html#/message_types/"+t.type,l.className="column col-3",o.className="columns",n.className="card-body"},m(e,t){v(e,n,t),b(n,o),b(o,r),b(r,a),b(a,s),b(s,c),b(o,i),b(o,l),b(l,u),b(u,m),b(u,d),b(d,h),b(u,p),b(l,g),b(l,f),b(f,k),b(f,N),b(N,C),b(N,_),b(f,P)},p(e,t){e.type&&(M(h,t.type),M(_,t.type)),e.type&&T!==(T="/docs/index.html#/message_types/"+t.type)&&(N.href=T)},i:e,o:e,d(e){e&&y(n)}}}function St(e){var t,n,o=e.selectedRenderer;function r(e){return{props:{msg:e.msg}}}if(o)var a=new o(r(e));return{c(){a&&a.$$.fragment.c(),t=N()},m(e,o){a&&ae(a,e,o),v(e,t,o),n=!0},p(e,n){var s={};if(e.msg&&(s.msg=n.msg),o!==(o=n.selectedRenderer)){if(a){Z();const e=a;te(()=>{e.$destroy()}),e.$$.fragment.o(1),ee()}o?((a=new o(r(n))).$$.fragment.c(),a.$$.fragment.i(1),ae(a,t.parentNode,t)):a=null}else o&&a.$set(s)},i(e){n||(a&&a.$$.fragment.i(e),n=!0)},o(e){a&&a.$$.fragment.o(e),n=!1},d(e){e&&y(t),a&&a.$destroy(e)}}}function It(e){var t,n,o,r,s,c,i,l,u,m,d,h,p,g,f,k,N,T,P,S,I,U,L,O,A,F,E,H,j,B,q,D,z,Y,V,W,J,K,G,Q,X,ne,oe,re,ae,se,ce,ie=Ct(e.msg.value.timestamp),le=e.privateMsgForYou&&_t(),ue=e.msg.value.content.channel&&Tt(e);function me(e){return e.showRaw?Pt:Mt}var de=me(e),he=de(e),pe=[St,Rt],ge=[];function fe(e){return e.showRaw?1:0}return re=fe(e),ae=ge[re]=pe[re](e),{c(){t=w("div"),n=w("div"),o=w("div"),r=w("div"),s=w("div"),c=w("div"),i=w("div"),l=w("img"),u=x(),m=w("div"),d=w("div"),h=$(e.name),p=x(),g=w("small"),f=$(ie),k=x(),le&&le.c(),N=x(),T=w("div"),P=w("span"),ue&&ue.c(),S=x(),I=w("div"),(U=w("span")).innerHTML='<i class="icon icon-more-vert"></i>',L=x(),O=w("ul"),A=w("li"),F=w("a"),E=w("i"),H=$("\n              Open in new tab"),B=x(),q=w("li"),(D=w("a")).innerHTML='<i class="icon icon-copy"></i>\n\t\t\t              Copy permalink to clipboard\n\t\t\t            ',z=x(),Y=w("li"),(V=w("a")).innerHTML='<i class="icon icon-copy"></i>\n\t\t\t              Copy message id to clipboard\n\t\t\t            ',W=x(),J=w("li"),K=x(),G=w("li"),Q=w("a"),X=w("i"),ne=x(),he.c(),oe=x(),ae.c(),l.src=e.image,l.className="avatar avatar-lg",l.alt=e.feed,i.className="example-tile-icon",c.className="tile-icon",d.className="tile-title",g.className="tile-subtitle text-gray",m.className="tile-content",s.className="tile tile-centered feed-display svelte-m5ll6n",r.className="card-title",o.className="float-left",P.className="text-gray channel-display svelte-m5ll6n",U.className="btn btn-link dropdown-toggle",U.tabIndex="0",R(U,"active",e.dropdownActive),E.className="icon icon-share",F.href=j="?thread="+e.encodeURIComponent(e.msg.key)+"#/thread",F.target="_blank",A.className="menu-item",D.href="#",q.className="menu-item",V.href="#",Y.className="menu-item",J.className="divider",J.dataset.content="FOR THE CURIOUS",X.className="icon icon-message",Q.href="#",G.className="menu-item",O.className="menu menu-right svelte-m5ll6n",I.className="dropdown",T.className="float-right",n.className="card-header",t.className="card m-2 svelte-m5ll6n",R(t,"private",e.privateMsgForYou),ce=[C(s,"click",e.goProfile),C(P,"click",e.click_handler),C(U,"click",e.click_handler_1),C(D,"click",_(e.copyPermalink)),C(V,"click",_(e.copyHash)),C(Q,"click",_(e.toggleRawMessage))]},m(e,a){v(e,t,a),b(t,n),b(n,o),b(o,r),b(r,s),b(s,c),b(c,i),b(i,l),b(s,u),b(s,m),b(m,d),b(d,h),b(m,p),b(m,g),b(g,f),b(n,k),le&&le.m(n,null),b(n,N),b(n,T),b(T,P),ue&&ue.m(P,null),b(T,S),b(T,I),b(I,U),b(I,L),b(I,O),b(O,A),b(A,F),b(F,E),b(F,H),b(O,B),b(O,q),b(q,D),b(O,z),b(O,Y),b(Y,V),b(O,W),b(O,J),b(O,K),b(O,G),b(G,Q),b(Q,X),b(Q,ne),he.m(Q,null),b(t,oe),ge[re].m(t,null),se=!0},p(e,o){se&&!e.image||(l.src=o.image),se&&!e.name||M(h,o.name),se&&!e.msg||ie===(ie=Ct(o.msg.value.timestamp))||M(f,ie),o.privateMsgForYou?le||((le=_t()).c(),le.m(n,N)):le&&(le.d(1),le=null),o.msg.value.content.channel?ue?ue.p(e,o):((ue=Tt(o)).c(),ue.m(P,null)):ue&&(ue.d(1),ue=null),e.dropdownActive&&R(U,"active",o.dropdownActive),se&&!e.msg||j===(j="?thread="+o.encodeURIComponent(o.msg.key)+"#/thread")||(F.href=j),de!==(de=me(o))&&(he.d(1),(he=de(o))&&(he.c(),he.m(Q,null)));var r=re;(re=fe(o))===r?ge[re].p(e,o):(Z(),te(()=>{ge[r].d(1),ge[r]=null}),ae.o(1),ee(),(ae=ge[re])||(ae=ge[re]=pe[re](o)).c(),ae.i(1),ae.m(t,null)),e.privateMsgForYou&&R(t,"private",o.privateMsgForYou)},i(e){se||(ae&&ae.i(),se=!0)},o(e){ae&&ae.o(),se=!1},d(e){e&&y(t),le&&le.d(),ue&&ue.d(),he.d(),ge[re].d(),a(ce)}}}function Ut(e,t,n){let o,r,{msg:a}=t,s=a.value.author,c=!1,i=JSON.stringify(a,null,2),l=!1,u=!1,m={"*":Ae,post:Ue,vote:He,private:qe,contact:Ye,channel:Je,about:nt,pub:at,blog:bt};"string"==typeof a.value.content?n("type",o="private"):n("type",o=a.value.content.type),a.value.private&&n("privateMsgForYou",u=!0),m.hasOwnProperty(o)?n("selectedRenderer",r=m[o]):n("selectedRenderer",r=m["*"]);let d="images/icon.png",h=s;ssb.avatar(s).then(e=>{null!==e.image&&n("image",d=`http://localhost:8989/blobs/get/${e.image}`),n("name",h=e.name)});return e.$set=(e=>{"msg"in e&&n("msg",a=e.msg)}),{msg:a,type:o,feed:s,showRaw:c,rawContent:i,dropdownActive:l,privateMsgForYou:u,selectedRenderer:r,image:d,name:h,toggleRawMessage:()=>{n("showRaw",c=!c),n("dropdownActive",l=!1)},copyPermalink:()=>{navigator.clipboard.writeText(`ssb:${a.key}`).then(()=>console.log("permalink copied")).catch(e=>console.error("can't copy permalink",e)),n("dropdownActive",l=!1)},copyHash:()=>{navigator.clipboard.writeText(`${a.key}`).then(()=>console.log("hash copied")).catch(e=>console.error("can't copy hash",e)),n("dropdownActive",l=!1)},goProfile:e=>{e.ctrlKey?window.open(`?feed=${encodeURIComponent(s)}#/profile`):ao("/profile",{feed:s})},encodeURIComponent:encodeURIComponent,click_handler:function(){return ao("/channel",{channel:a.value.content.channel})},click_handler_1:function(){const e=l=!l;return n("dropdownActive",l),e}}}class Lt extends ie{constructor(e){super(),ce(this,e,Ut,It,c,["msg"])}}function Ot(e,t,n){const o=Object.create(e);return o.msg=t[n],o}function At(t){var n,o,r;return{c(){n=w("div"),o=$("Error: "),r=$(t.error),n.className="toast toast-error"},m(e,t){v(e,n,t),b(n,o),b(n,r)},p:e,d(e){e&&y(n)}}}function Ft(e){var t,n,o,r,s,c,i,l,u,m=[],d=new Map,h=e.msgs;const p=e=>e.msg.key;for(var g=0;g<h.length;g+=1){let t=Ot(e,h,g),n=p(t);d.set(n,m[g]=Ht(n,t))}return{c(){for(g=0;g<m.length;g+=1)m[g].c();t=x(),n=w("ul"),o=w("li"),(r=w("a")).innerHTML='<div class="page-item-subtitle">Previous</div>',s=x(),c=w("li"),(i=w("a")).innerHTML='<div class="page-item-subtitle">Next</div>',r.href="#/public",o.className="page-item page-previous",i.href="#/public",c.className="page-item page-next",n.className="pagination",u=[C(r,"click",T(_(e.goPrevious))),C(i,"click",T(_(e.goNext)))]},m(e,a){for(g=0;g<m.length;g+=1)m[g].m(e,a);v(e,t,a),v(e,n,a),b(n,o),b(o,r),b(n,s),b(n,c),b(c,i),l=!0},p(e,n){const o=n.msgs;Z(),m=re(m,e,p,1,n,o,d,t.parentNode,oe,Ht,t,Ot),ee()},i(e){if(!l){for(var t=0;t<h.length;t+=1)m[t].i();l=!0}},o(e){for(g=0;g<m.length;g+=1)m[g].o();l=!1},d(e){for(g=0;g<m.length;g+=1)m[g].d(e);e&&(y(t),y(n)),a(u)}}}function Et(t){var n;return{c(){(n=w("div")).className="loading loading-lg"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function Ht(e,t){var n,o,r=new Lt({props:{msg:t.msg}});return{key:e,first:null,c(){n=N(),r.$$.fragment.c(),this.first=n},m(e,t){v(e,n,t),ae(r,e,t),o=!0},p(e,t){var n={};e.msgs&&(n.msg=t.msg),r.$set(n)},i(e){o||(r.$$.fragment.i(e),o=!0)},o(e){r.$$.fragment.o(e),o=!1},d(e){e&&y(n),r.$destroy(e)}}}function jt(e){var t,n,o,r,a,s,c,i=e.error&&At(e),l=[Et,Ft],u=[];function m(e){return e.msgs?1:0}return r=m(e),a=u[r]=l[r](e),{c(){(t=w("div")).innerHTML='<div class="columns"><h4 class="column">Public Feed</h4>\n\t\t\t    <div class="column"></div></div>',n=x(),i&&i.c(),o=x(),a.c(),s=N(),t.className="container"},m(e,a){v(e,t,a),v(e,n,a),i&&i.m(e,a),v(e,o,a),u[r].m(e,a),v(e,s,a),c=!0},p(e,t){t.error?i?i.p(e,t):((i=At(t)).c(),i.m(o.parentNode,o)):i&&(i.d(1),i=null);var n=r;(r=m(t))===n?u[r].p(e,t):(Z(),te(()=>{u[n].d(1),u[n]=null}),a.o(1),ee(),(a=u[r])||(a=u[r]=l[r](t)).c(),a.i(1),a.m(s.parentNode,s))},i(e){c||(a&&a.i(),c=!0)},o(e){a&&a.o(),c=!1},d(e){e&&(y(t),y(n)),i&&i.d(e),e&&y(o),u[r].d(e),e&&y(s)}}}function Bt(e,t,n){let o;i(e,oo,e=>{n("$routeParams",o=e)});let r=!1,a=o.error||!1,s={limit:o.limit||mo("limit",10),reverse:!0};const c=()=>{ao("/public",{lt:r[r.length-1].rts})},l=()=>{history.back()};let u=keymage("p",()=>(l(),!1)),m=keymage("n",()=>(c(),!1));return H(()=>{u(),m()}),e.$$.update=((e={opts:1,$routeParams:1,error:1})=>{if(e.opts||e.$routeParams||e.error){Object.assign(s,o),document.title="Patchfox - Public",s.hasOwnProperty("lt")&&(s.lt=parseInt(s.lt),n("opts",s),n("$routeParams",o),n("error",a)),s.hasOwnProperty("limit")&&(s.limit=parseInt(s.limit),n("opts",s),n("$routeParams",o),n("error",a));ssb.public(s).then(e=>{n("msgs",r=e),window.scrollTo(0,0)}).catch(e=>{a||console.error("errrrooooor",e)})}}),{msgs:r,error:a,goNext:c,goPrevious:l}}function qt(t){var n;return{c(){(n=w("div")).className="empty"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function Dt(e){return e.stopPropagation(),e.preventDefault(),!1}var zt=function(e,t){e.addEventListener("dragenter",Dt,!1),e.addEventListener("dragover",Dt,!1),e.addEventListener("drop",function(e,t){t.stopPropagation(),t.preventDefault(),e(Array.prototype.slice.call(t.dataTransfer.files))}.bind(void 0,t),!1)};function Yt(e){const t=e-1;return t*t*t+1}function Vt(e,{delay:t=0,duration:n=400,easing:o=Yt}){const r=getComputedStyle(e),a=+r.opacity,s=parseFloat(r.height),c=parseFloat(r.paddingTop),i=parseFloat(r.paddingBottom),l=parseFloat(r.marginTop),u=parseFloat(r.marginBottom),m=parseFloat(r.borderTopWidth),d=parseFloat(r.borderBottomWidth);return{delay:t,duration:n,easing:o,css:e=>"overflow: hidden;"+`opacity: ${Math.min(20*e,1)*a};`+`height: ${e*s}px;`+`padding-top: ${e*c}px;`+`padding-bottom: ${e*i}px;`+`margin-top: ${e*l}px;`+`margin-bottom: ${e*u}px;`+`border-top-width: ${e*m}px;`+`border-bottom-width: ${e*d}px;`}}function Wt(t){var n,o,r;return{c(){n=w("div"),o=$("You are forking: "),r=$(t.fork),n.className="toast toast-warning"},m(e,t){v(e,n,t),b(n,o),b(n,r)},p:e,d(e){e&&y(n)}}}function Jt(e){var t;function n(e){return e.error?Gt:Kt}var o=n(e),r=o(e);return{c(){r.c(),t=N()},m(e,n){r.m(e,n),v(e,t,n)},p(e,a){o===(o=n(a))&&r?r.p(e,a):(r.d(1),(r=o(a))&&(r.c(),r.m(t.parentNode,t)))},d(e){r.d(e),e&&y(t)}}}function Kt(e){var t,n,o,r,a;return{c(){t=w("div"),n=$("Your message has been posted. Do you want to\r\n            "),o=w("a"),r=$("Check it out?"),o.target="_blank",o.href=a="?thread="+e.encodeURIComponent(e.msg.key)+"#/thread",t.className="toast toast-success"},m(e,a){v(e,t,a),b(t,n),b(t,o),b(o,r)},p(e,t){e.msg&&a!==(a="?thread="+t.encodeURIComponent(t.msg.key)+"#/thread")&&(o.href=a)},d(e){e&&y(t)}}}function Gt(e){var t,n;return{c(){t=w("div"),n=$(e.msg),t.className="toast toast-error"},m(e,o){v(e,t,o),b(t,n)},p(e,t){e.msg&&M(n,t.msg)},d(e){e&&y(t)}}}function Qt(t){var n,o,r,s,c,i,l,u,m,d,h,p,g,f,$,N,_,T=t.ssb.markdown(t.content),P=(t.channel||t.root||t.branch)&&Zt(t);return{c(){n=w("div"),(o=w("h2")).textContent="Post preview",r=x(),P&&P.c(),s=x(),c=w("noscript"),i=w("noscript"),l=x(),u=w("div"),m=x(),d=w("div"),(h=w("div")).innerHTML='<span class="label label-warning">\n\t\t\t                This message will be public and can\'t be edited or deleted\n\t\t\t              </span>',p=x(),g=w("div"),(f=w("button")).textContent="Go Back",$=x(),(N=w("button")).textContent="Post",u.className="divider",h.className="column col-md-12 col-lg-10",f.className="btn",N.className="btn btn-primary",R(N,"loading",t.posting),g.className="column col-md-12 col-lg-2",d.className="columns",n.className="column col-md-12",_=[C(f,"click",t.click_handler),C(N,"click",t.post)]},m(e,t){v(e,n,t),b(n,o),b(n,r),P&&P.m(n,null),b(n,s),b(n,c),c.insertAdjacentHTML("afterend",T),b(n,i),b(n,l),b(n,u),b(n,m),b(n,d),b(d,h),b(d,p),b(d,g),b(g,f),b(g,$),b(g,N)},p(e,t){t.channel||t.root||t.branch?P?P.p(e,t):((P=Zt(t)).c(),P.m(n,s)):P&&(P.d(1),P=null),e.content&&T!==(T=t.ssb.markdown(t.content))&&(k(c,i),c.insertAdjacentHTML("afterend",T)),e.posting&&R(N,"loading",t.posting)},i:e,o:e,d(e){e&&y(n),P&&P.d(),a(_)}}}function Xt(n){var o,r,s,c,i,l,m,d,h,p,g,k,$,N,M,S,I,U,A,F,E,H,j=n.branch&&on(n),B=n.replyfeed&&rn(n);return{c(){o=w("div"),(r=w("label")).textContent="Channel",s=x(),c=w("input"),i=x(),j&&j.c(),l=x(),B&&B.c(),m=x(),(d=w("label")).textContent="Message",h=x(),p=w("textarea"),g=x(),k=w("br"),$=x(),N=w("input"),M=x(),(S=w("button")).textContent="Attach File",I=x(),(U=w("button")).textContent="Preview",r.className="form-label",r.htmlFor="channel",c.className="form-input",P(c,"type","text"),c.id="channel",c.placeholder="channel",d.className="form-label",d.htmlFor="content",p.className="form-input svelte-olsuyr",p.id="content",p.placeholder="Type in your post",p.rows="10",R(p,"file-on-top",n.fileOnTop),P(N,"type","file"),N.id="fileInput",N.className="svelte-olsuyr",S.className="btn",U.className="btn btn-primary float-right",o.className="form-group",H=[C(c,"input",n.input0_input_handler),C(p,"input",n.textarea_input_handler),C(p,"dragover",T(_(n.dragOver))),C(p,"dragleave",T(_(n.dragLeave))),C(N,"input",n.attachFile),C(S,"click",n.attachFileTrigger),C(U,"click",n.preview)]},m(e,t){v(e,o,t),b(o,r),b(o,s),b(o,c),c.value=n.channel,b(o,i),j&&j.m(o,null),b(o,l),B&&B.m(o,null),b(o,m),b(o,d),b(o,h),b(o,p),p.value=n.content,b(o,g),b(o,k),b(o,$),b(o,N),b(o,M),b(o,S),b(o,I),b(o,U),E=!0},p(e,t){e.channel&&c.value!==t.channel&&(c.value=t.channel),t.branch?j?j.p(e,t):((j=on(t)).c(),j.m(o,l)):j&&(j.d(1),j=null),t.replyfeed?B?(B.p(e,t),B.i(1)):((B=rn(t)).c(),B.i(1),B.m(o,m)):B&&(Z(),te(()=>{B.d(1),B=null}),B.o(1),ee()),e.content&&(p.value=t.content),e.fileOnTop&&R(p,"file-on-top",t.fileOnTop)},i(n){E||(B&&B.i(),W(()=>{F&&F.end(1),A||(A=function(n,o,r){let a,s,c=o(n,r),i=!1,l=0;function m(){a&&O(n,a)}function d(){const{delay:o=0,duration:r=300,easing:d=t,tick:h=e,css:p}=c;p&&(a=L(n,0,1,r,o,d,p,l++)),h(0,1);const g=u()+o,b=g+r;s&&s.abort(),i=!0,s=f(e=>{if(i){if(e>=b)return h(1,0),m(),i=!1;if(e>=g){const t=d((e-g)/r);h(t,1-t)}}return i})}let h=!1;return{start(){h||(O(n),"function"==typeof c?(c=c(),X().then(d)):d())},invalidate(){h=!1},end(){i&&(m(),i=!1)}}}(o,Vt,{})),A.start()}),E=!0)},o(n){B&&B.o(),A&&A.invalidate(),n&&(F=function(n,o,r){let s,c=o(n,r),i=!0;const l=Q;function m(){const{delay:o=0,duration:r=300,easing:m=t,tick:d=e,css:h}=c;h&&(s=L(n,1,0,r,o,m,h));const p=u()+o,g=p+r;f(e=>{if(i){if(e>=g)return d(0,1),--l.remaining||a(l.callbacks),!1;if(e>=p){const t=m((e-p)/r);d(1-t,t)}}return i})}return l.remaining+=1,"function"==typeof c?X().then(()=>{c=c(),m()}):m(),{end(e){e&&c.tick&&c.tick(1,0),i&&(s&&O(n,s),i=!1)}}}(o,Vt,{})),E=!1},d(e){e&&y(o),j&&j.d(),B&&B.d(),e&&F&&F.end(),a(H)}}}function Zt(e){var t,n,o,r=e.channel&&en(e),a=e.root&&tn(e),s=e.branch&&nn(e);return{c(){t=w("blockquote"),r&&r.c(),n=x(),a&&a.c(),o=x(),s&&s.c()},m(e,c){v(e,t,c),r&&r.m(t,null),b(t,n),a&&a.m(t,null),b(t,o),s&&s.m(t,null)},p(e,c){c.channel?r?r.p(e,c):((r=en(c)).c(),r.m(t,n)):r&&(r.d(1),r=null),c.root?a?a.p(e,c):((a=tn(c)).c(),a.m(t,o)):a&&(a.d(1),a=null),c.branch?s?s.p(e,c):((s=nn(c)).c(),s.m(t,null)):s&&(s.d(1),s=null)},d(e){e&&y(t),r&&r.d(),a&&a.d(),s&&s.d()}}}function en(e){var t,n,o,r,a=e.channel.startsWith("#")?e.channel.slice(1):e.channel;return{c(){t=w("p"),(n=w("b")).textContent="Channel:",o=x(),r=$(a)},m(e,a){v(e,t,a),b(t,n),b(t,o),b(t,r)},p(e,t){e.channel&&a!==(a=t.channel.startsWith("#")?t.channel.slice(1):t.channel)&&M(r,a)},d(e){e&&y(t)}}}function tn(t){var n,o,r,a;return{c(){n=w("p"),(o=w("b")).textContent="Root:",r=x(),a=$(t.root)},m(e,t){v(e,n,t),b(n,o),b(n,r),b(n,a)},p:e,d(e){e&&y(n)}}}function nn(e){var t,n,o,r;return{c(){t=w("p"),(n=w("b")).textContent="In Reply To:",o=x(),r=$(e.branch)},m(e,a){v(e,t,a),b(t,n),b(t,o),b(t,r)},p(e,t){e.branch&&M(r,t.branch)},d(e){e&&y(t)}}}function on(e){var t,n,o,r;return{c(){(t=w("label")).textContent="In reply to",n=x(),o=w("input"),t.className="form-label",t.htmlFor="reply-to",o.className="form-input",P(o,"type","text"),o.id="reply-to",o.placeholder="in reply to",r=C(o,"input",e.input_input_handler)},m(r,a){v(r,t,a),v(r,n,a),v(r,o,a),o.value=e.branch},p(e,t){e.branch&&o.value!==t.branch&&(o.value=t.branch)},d(e){e&&(y(t),y(n),y(o)),r()}}}function rn(e){var t,n,o,r,a=new $t({props:{feed:e.replyfeed}});return a.$on("avatarClick",e.avatarClick),{c(){t=w("div"),n=w("span"),o=$("Click the avatar to add a link to the message:\r\n                "),a.$$.fragment.c(),t.className="mt-2"},m(e,s){v(e,t,s),b(t,n),b(n,o),ae(a,n,null),r=!0},p(e,t){var n={};e.replyfeed&&(n.feed=t.replyfeed),a.$set(n)},i(e){r||(a.$$.fragment.i(e),r=!0)},o(e){a.$$.fragment.o(e),r=!1},d(e){e&&y(t),a.$destroy()}}}function an(e){var t,n,o,r,a,s,c,i,l=e.fork&&Wt(e),u=e.msg&&Jt(e),m=[Xt,Qt],d=[];function h(e){return e.showPreview?1:0}return s=h(e),c=d[s]=m[s](e),{c(){t=w("div"),n=w("div"),o=w("div"),l&&l.c(),r=x(),u&&u.c(),a=x(),c.c(),o.className="column",n.className="columns",t.className="container"},m(e,c){v(e,t,c),b(t,n),b(n,o),l&&l.m(o,null),b(o,r),u&&u.m(o,null),b(o,a),d[s].m(o,null),i=!0},p(e,t){t.fork?l?l.p(e,t):((l=Wt(t)).c(),l.m(o,r)):l&&(l.d(1),l=null),t.msg?u?u.p(e,t):((u=Jt(t)).c(),u.m(o,a)):u&&(u.d(1),u=null);var n=s;(s=h(t))===n?d[s].p(e,t):(Z(),te(()=>{d[n].d(1),d[n]=null}),c.o(1),ee(),(c=d[s])||(c=d[s]=m[s](t)).c(),c.i(1),c.m(o,null))},i(e){i||(c&&c.i(),i=!0)},o(e){c&&c.o(),i=!1},d(e){e&&y(t),l&&l.d(),u&&u.d(),d[s].d()}}}function sn(e,t,n){let o;i(e,oo,e=>{n("$routeParams",o=e)});let r=!1,a=!1,s=!1,c=!1,l=o.root,u=o.branch,m=o.channel||"",d=o.content||"",h=o.replyfeed||!1,p=o.fork,g=!1,f=hermiebox.modules.pullStream,b=hermiebox.modules.pullFileReader,v=hermiebox.sbot;document.title="Patchfox - compose",E(()=>{n("error",s=!1),n("msg",a=""),zt(document.getElementById("content"),e=>y(e))});const y=e=>{if(n("error",s=!1),n("msg",a=""),0==e.length)return n("fileOnTop",g=!1),console.log("this is not a file"),!1;var t=e[0];return console.log(t),t.type.startsWith("image")?t.size>=5e6?(n("error",s=!0),n("msg",a=`File too large: ${Math.floor(t.size/1048576,2)}mb when max size is 5mb`),!1):void f(b(t),v.blobs.add(function(e,o){e?(n("error",s=!0),n("msg",a="Couldn't attach file: "+e)):n("content",d+=` ![${t.name}](${o})`),n("fileOnTop",g=!1)})):(n("error",s=!0),n("msg",a=`You can only drag & drop image, this file is a ${t.type}`),!1)};return{showPreview:r,msg:a,error:s,posting:c,root:l,branch:u,channel:m,content:d,replyfeed:h,fork:p,fileOnTop:g,post:async e=>{if(e.stopPropagation(),e.preventDefault(),!c){n("posting",c=!0),m.startsWith("#")&&n("channel",m=m.slice(1));try{n("msg",a=await ssb.newPost({text:d,channel:m,root:l,branch:u,fork:p})),n("posting",c=!1),console.log("posted",a),window.scrollTo(0,0)}catch(e){n("error",s=!0),n("msg",a=`Couldn't post your message: ${e}`),window.scrollTo(0,0),"stream is closed"==a.message&&(n("msg",a+=". We lost connection to sbot. We'll try to restablish it..."),lo().then(()=>{n("showPreview",r=!1),n("posting",c=!1),n("error",s=!1),n("msg",a="Connection to sbot reestablished. Try posting again")}).catch(e=>{window.location.search=`?root=${encodeURIComponent(l)}&branch=${encodeURIComponent(u)}&content=${encodeURIComponent(d)}&channel=${encodeURIComponent(m)}`,n("msg",a=`Sorry, couldn't reconnect to sbot:${e}. Try reloading the page. Your content has been saved to the URL`)}))}}},preview:e=>{n("showPreview",r=!0)},avatarClick:e=>{let t=e.detail.feed,o=e.detail.name;d.length>0?n("content",d+=` [${o}](${t})`):n("content",d=`[${o}](${t})`)},dragOver:e=>{n("fileOnTop",g=!0)},dragLeave:e=>{n("fileOnTop",g=!1)},attachFileTrigger:()=>{document.getElementById("fileInput").click()},attachFile:e=>{const t=e.target.files;y(t)},ssb:ssb,encodeURIComponent:encodeURIComponent,input0_input_handler:function(){m=this.value,n("channel",m)},input_input_handler:function(){u=this.value,n("branch",u)},textarea_input_handler:function(){d=this.value,n("content",d)},click_handler:function(){const e=r=!1;return n("showPreview",r),e}}}function cn(e,t,n){const o=Object.create(e);return o.msg=t[n],o}function ln(e){var t,n,o,r,a,s,c;return{c(){t=w("div"),n=$("Couldn't load thead\r\n    "),o=w("a"),r=$(e.msgid),s=$("\r\n    : "),c=$(e.error),o.href=a="?thread="+e.msgid+"#/thread",t.className="toast toast-error"},m(e,a){v(e,t,a),b(t,n),b(t,o),b(o,r),b(t,s),b(t,c)},p(e,t){e.msgid&&M(r,t.msgid),e.msgid&&a!==(a="?thread="+t.msgid+"#/thread")&&(o.href=a),e.error&&M(c,t.error)},d(e){e&&y(t)}}}function un(e){var t,n,o=[],r=new Map,a=e.msgs;const s=e=>e.msg.key;for(var c=0;c<a.length;c+=1){let t=cn(e,a,c),n=s(t);r.set(n,o[c]=dn(n,t))}return{c(){for(c=0;c<o.length;c+=1)o[c].c();t=N()},m(e,r){for(c=0;c<o.length;c+=1)o[c].m(e,r);v(e,t,r),n=!0},p(e,n){const a=n.msgs;Z(),o=re(o,e,s,1,n,a,r,t.parentNode,oe,dn,t,cn),ee()},i(e){if(!n){for(var t=0;t<a.length;t+=1)o[t].i();n=!0}},o(e){for(c=0;c<o.length;c+=1)o[c].o();n=!1},d(e){for(c=0;c<o.length;c+=1)o[c].d(e);e&&y(t)}}}function mn(t){var n;return{c(){(n=w("div")).className="loading loading-lg"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function dn(e,t){var n,o,r=new Lt({props:{msg:t.msg}});return{key:e,first:null,c(){n=N(),r.$$.fragment.c(),this.first=n},m(e,t){v(e,n,t),ae(r,e,t),o=!0},p(e,t){var n={};e.msgs&&(n.msg=t.msg),r.$set(n)},i(e){o||(r.$$.fragment.i(e),o=!0)},o(e){r.$$.fragment.o(e),o=!1},d(e){e&&y(n),r.$destroy(e)}}}function hn(e){var t,n,o,r,a,s,c,i,l,u,m,d=e.error&&ln(e),h=[mn,un],p=[];function g(e){return e.msgs||e.error?1:0}return i=g(e),l=p[i]=h[i](e),{c(){t=w("div"),n=w("h4"),o=$("Thread\r\n    "),r=w("small"),a=$(e.msgid),s=x(),d&&d.c(),c=x(),l.c(),u=N(),r.className="label hide-sm",t.className="container"},m(e,l){v(e,t,l),b(t,n),b(n,o),b(n,r),b(r,a),v(e,s,l),d&&d.m(e,l),v(e,c,l),p[i].m(e,l),v(e,u,l),m=!0},p(e,t){m&&!e.msgid||M(a,t.msgid),t.error?d?d.p(e,t):((d=ln(t)).c(),d.m(c.parentNode,c)):d&&(d.d(1),d=null);var n=i;(i=g(t))===n?p[i].p(e,t):(Z(),te(()=>{p[n].d(1),p[n]=null}),l.o(1),ee(),(l=p[i])||(l=p[i]=h[i](t)).c(),l.i(1),l.m(u.parentNode,u))},i(e){m||(l&&l.i(),m=!0)},o(e){l&&l.o(),m=!1},d(e){e&&(y(t),y(s)),d&&d.d(e),e&&y(c),p[i].d(e),e&&y(u)}}}function pn(e,t,n){let o;i(e,oo,e=>{n("$routeParams",o=e)});let r,a=!1,s=!1;return e.$$.update=((e={$routeParams:1,msgid:1})=>{if(e.$routeParams||e.msgid){n("msgid",r=o.thread),r.startsWith("ssb:")&&n("msgid",r=r.replace("ssb:","")),document.title=`Patchfox - Thread: ${r}`;ssb.thread(r).then(e=>{n("msgs",a=e),window.scrollTo(0,0)}).catch(e=>{console.dir(e),n("error",s=e.message)})}}),{msgs:a,error:s,msgid:r}}function gn(e,t,n){const o=Object.create(e);return o.msg=t[n],o}function fn(t){var n,o,r,a=t.n.message;return{c(){n=w("p"),o=$("Error: "),r=$(a)},m(e,t){v(e,n,t),b(n,o),b(n,r)},p:e,i:e,o:e,d(e){e&&y(n)}}}function bn(e){var t,o,r,a,s,c,i,l,u,m,d,h,p,g,f,k,N,C,_,T=e.ssb.markdown(e.description),P=e.feed!==e.ssb.feed&&vn(e);let R={ctx:e,current:null,pending:$n,then:kn,catch:yn,value:"data",error:"n",blocks:Array(3)};return ne(C=e.messagePromise,R),{c(){t=w("div"),o=w("div"),r=w("div"),a=w("img"),c=x(),i=w("div"),l=w("h1"),u=$(e.name),m=x(),d=w("pre"),h=$(e.feed),p=x(),P&&P.c(),g=x(),f=w("p"),k=x(),N=w("div"),R.block.c(),a.className="img-responsive",a.src=s="http://localhost:8989/blobs/get/"+e.image,a.alt=e.feed,r.className="container",o.className="column col-6",i.className="column col-6",t.className="columns"},m(e,n){v(e,t,n),b(t,o),b(o,r),b(r,a),b(t,c),b(t,i),b(i,l),b(l,u),b(i,m),b(i,d),b(d,h),b(i,p),P&&P.m(i,null),b(i,g),b(i,f),f.innerHTML=T,v(e,k,n),v(e,N,n),R.block.m(N,R.anchor=null),R.mount=(()=>N),R.anchor=null,_=!0},p(t,o){e=o,_&&!t.image||s===(s="http://localhost:8989/blobs/get/"+e.image)||(a.src=s),_&&!t.feed||(a.alt=e.feed),_&&!t.name||M(u,e.name),_&&!t.feed||M(h,e.feed),e.feed!==e.ssb.feed?P?P.p(t,e):((P=vn(e)).c(),P.m(i,g)):P&&(P.d(1),P=null),_&&!t.description||T===(T=e.ssb.markdown(e.description))||(f.innerHTML=T),R.ctx=e,"messagePromise"in t&&C!==(C=e.messagePromise)&&ne(C,R)||R.block.p(t,n(n({},e),R.resolved))},i(e){_||(R.block.i(),_=!0)},o(e){for(let e=0;e<3;e+=1){const t=R.blocks[e];t&&t.o()}_=!1},d(e){e&&y(t),P&&P.d(),e&&(y(k),y(N)),R.block.d(),R=null}}}function vn(e){var t,n,o,r,s,c,i,l,u,m,d,h,p,g,f,k,N,_;return{c(){t=w("div"),n=w("div"),o=x(),r=w("div"),s=w("label"),c=w("input"),i=x(),l=w("i"),u=$("\r\n                following"),m=x(),d=w("label"),h=w("input"),p=x(),g=w("i"),f=$("\r\n                blocking"),k=x(),N=w("div"),n.className="divider",P(c,"type","checkbox"),l.className="form-icon",s.className="form-switch form-inline",P(h,"type","checkbox"),g.className="form-icon",d.className="form-switch form-inline",r.className="form-group",N.className="divider",t.className="container",_=[C(c,"change",e.input0_change_handler),C(c,"change",e.followingChanged),C(h,"change",e.input1_change_handler),C(h,"change",e.blockingChanged)]},m(a,y){v(a,t,y),b(t,n),b(t,o),b(t,r),b(r,s),b(s,c),c.checked=e.following,b(s,i),b(s,l),b(s,u),b(r,m),b(r,d),b(d,h),h.checked=e.blocking,b(d,p),b(d,g),b(d,f),b(t,k),b(t,N)},p(e,t){e.following&&(c.checked=t.following),e.blocking&&(h.checked=t.blocking)},d(e){e&&y(t),a(_)}}}function yn(t){var n,o,r,a=t.n.message;return{c(){n=w("p"),o=$("Error fetching messages: "),r=$(a)},m(e,t){v(e,n,t),b(n,o),b(n,r)},p(e,t){e.messagePromise&&a!==(a=t.n.message)&&M(r,a)},i:e,o:e,d(e){e&&y(n)}}}function kn(e){var t,n,o,r,a,s,c=[],i=new Map,l=e.lastMsgs;const u=e=>e.msg.key;for(var m=0;m<l.length;m+=1){let t=gn(e,l,m),n=u(t);i.set(n,c[m]=wn(n,t))}return{c(){for(m=0;m<c.length;m+=1)c[m].c();t=x(),n=w("ul"),o=w("li"),(r=w("a")).innerHTML='<div class="page-item-subtitle">Load More</div>',r.href="#/public",o.className="page-item page-next",n.className="pagination",s=C(r,"click",T(_(e.click_handler)))},m(e,s){for(m=0;m<c.length;m+=1)c[m].m(e,s);v(e,t,s),v(e,n,s),b(n,o),b(o,r),a=!0},p(e,n){const o=n.lastMsgs;Z(),c=re(c,e,u,1,n,o,i,t.parentNode,oe,wn,t,gn),ee()},i(e){if(!a){for(var t=0;t<l.length;t+=1)c[t].i();a=!0}},o(e){for(m=0;m<c.length;m+=1)c[m].o();a=!1},d(e){for(m=0;m<c.length;m+=1)c[m].d(e);e&&(y(t),y(n)),s()}}}function wn(e,t){var n,o,r=new Lt({props:{msg:t.msg}});return{key:e,first:null,c(){n=N(),r.$$.fragment.c(),this.first=n},m(e,t){v(e,n,t),ae(r,e,t),o=!0},p(e,t){var n={};e.lastMsgs&&(n.msg=t.msg),r.$set(n)},i(e){o||(r.$$.fragment.i(e),o=!0)},o(e){r.$$.fragment.o(e),o=!1},d(e){e&&y(n),r.$destroy(e)}}}function $n(t){var n;return{c(){(n=w("div")).className="loading"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function xn(t){var n;return{c(){(n=w("div")).className="loading loading-lg"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function Nn(e){var t,o,r;let a={ctx:e,current:null,pending:xn,then:bn,catch:fn,value:"null",error:"n",blocks:Array(3)};return ne(o=e.aboutPromise&&e.avatarPromise,a),{c(){t=w("div"),a.block.c(),t.className="container"},m(e,n){v(e,t,n),a.block.m(t,a.anchor=null),a.mount=(()=>t),a.anchor=null,r=!0},p(t,r){e=r,a.ctx=e,o!==(o=e.aboutPromise&&e.avatarPromise)&&ne(o,a)||a.block.p(t,n(n({},e),a.resolved))},i(e){r||(a.block.i(),r=!0)},o(e){for(let e=0;e<3;e+=1){const t=a.blocks[e];t&&t.o()}r=!1},d(e){e&&y(t),a.block.d(),a=null}}}function Cn(e,t,n){let o;i(e,oo,e=>{n("$routeParams",o=e)});let r,a,s,c=!1,l=!1,u=!1,m=[];n("feed",a=o.feed),a||n("feed",a=ssb.feed);let d=a;document.title=`Patchfox - Feed: ${a}`,console.log("fetching",a);let h=ssb.avatar(a).then(e=>{n("name",d=e.name),n("image",r=e.image),document.title=`Patchfox - Feed: ${d}`}),p=ssb.profile(a).then(e=>{s=e.about.reverse().find(e=>{return e.value.content.hasOwnProperty("description")});try{n("description",c=s.value.content.description)}catch(e){n("description",c="")}window.scrollTo(0,0)}),g=ssb.query({value:{author:a}},10).then(e=>{n("lastMsgs",m=e),window.scrollTo(0,0)});a!==ssb.feed&&(ssb.following(a).then(e=>{const t=l=e;return n("following",l),t}),ssb.blocking(a).then(e=>{const t=u=e;return n("blocking",u),t}));const f=e=>{n("messagePromise",g=ssb.query({value:{author:a,timestamp:{$lt:e}}},10).then(e=>{n("lastMsgs",m=e),window.scrollTo(0,0)}))};return{description:c,following:l,blocking:u,image:r,feed:a,lastMsgs:m,name:d,avatarPromise:h,aboutPromise:p,messagePromise:g,blockingChanged:e=>{e.target.checked?ssb.block(a).catch(()=>{const e=u=!1;return n("blocking",u),e}):ssb.unblock(a).catch(()=>{const e=u=!0;return n("blocking",u),e})},followingChanged:e=>{e.target.checked?ssb.follow(a).catch(()=>{const e=l=!1;return n("following",l),e}):ssb.unfollow(a).catch(()=>{const e=l=!0;return n("following",l),e})},loadMoreMessages:f,ssb:ssb,input0_change_handler:function(){l=this.checked,n("following",l)},input1_change_handler:function(){u=this.checked,n("blocking",u)},click_handler:function(){f(m[m.length-1].timestamp)}}}function _n(e){var t,n,o;return{c(){t=w("div"),n=$(e.msg),t.className=o="toast "+e.toastClass},m(e,o){v(e,t,o),b(t,n)},p(e,r){e.msg&&M(n,r.msg),e.toastClass&&o!==(o="toast "+r.toastClass)&&(t.className=o)},d(e){e&&y(t)}}}function Tn(e){var t,n,o,r,a=e.cta.label;return{c(){t=w("li"),n=w("a"),o=$(a),n.href="#",r=C(n,"click",T(_(e.cta.action)))},m(e,r){v(e,t,r),b(t,n),b(n,o)},p(e,t){e.cta&&a!==(a=t.cta.label)&&M(o,a)},d(e){e&&y(t),r()}}}function Pn(t){var n,o,r,a,s,c,i,l,u,m,d,h,p,g,f,k,N,C=t.toast&&_n(t),_=t.cta&&Tn(t);return{c(){n=w("div"),(o=w("h1")).textContent="😿 An Error Has Occurred, sorry 😭",r=x(),C&&C.c(),a=x(),(s=w("h4")).textContent="This is what we know about it",c=x(),i=w("pre"),l=w("code"),u=$(t.error),m=x(),(d=w("p")).textContent="You might want to:",h=x(),p=w("ul"),_&&_.c(),g=x(),(f=w("li")).innerHTML='<a href="/docs/index.html#/troubleshooting/" target="_blank">\n\t\t\t        Open our troubleshooting documentation.\n\t\t\t      </a>',k=x(),(N=w("li")).innerHTML='<a href="https://github.com/soapdog/patchfox/issues" target="_blank">\n\t\t\t        Add an issue\n\t\t\t      </a>\n\t\t\t      to the Patchfox repository.\n\t\t\t    ',i.className="code",n.className="container"},m(e,t){v(e,n,t),b(n,o),b(n,r),C&&C.m(n,null),b(n,a),b(n,s),b(n,c),b(n,i),b(i,l),b(l,u),b(n,m),b(n,d),b(n,h),b(n,p),_&&_.m(p,null),b(p,g),b(p,f),b(p,k),b(p,N)},p(e,t){t.toast?C?C.p(e,t):((C=_n(t)).c(),C.m(n,a)):C&&(C.d(1),C=null),e.error&&M(u,t.error),t.cta?_?_.p(e,t):((_=Tn(t)).c(),_.m(p,g)):_&&(_.d(1),_=null)},i:e,o:e,d(e){e&&y(n),C&&C.d(),_&&_.d()}}}function Mn(e,t,n){let o;i(e,oo,e=>{n("$routeParams",o=e)}),document.title="Patchfox - Error";let r,a=o.error,s={},c="",l=!1,u=!1;console.dir(a),"object"==typeof a&&n("error",a=(s=a).message);let m={"Error: stream is closed":{label:"Want to try to reconnect?",action:()=>{n("toast",l=!0),n("toastClass",c="toast-warning"),n("msg",r="Attempting to reconnect to sbot..."),lo().then(()=>{n("toastClass",c="toast-success"),n("toast",l=!0),n("msg",r="Connection to sbot reestablished. Try going to your public feed.")}).catch(e=>{n("toastClass",c="toast-error"),n("toast",l=!0),n("msg",r="Couldn't reconnect. Try reloading the page.")})}}};return m.hasOwnProperty(a)&&n("cta",u=m[a]),{error:a,toastClass:c,toast:l,msg:r,cta:u}}function Rn(e,t,n){const o=Object.create(e);return o.c=t[n],o}function Sn(e){for(var t,n=e.subscribedChannels,o=[],r=0;r<n.length;r+=1)o[r]=Un(Rn(e,n,r));return{c(){for(var e=0;e<o.length;e+=1)o[e].c();t=N()},m(e,n){for(var r=0;r<o.length;r+=1)o[r].m(e,n);v(e,t,n)},p(e,r){if(e.subscribedChannels){n=r.subscribedChannels;for(var a=0;a<n.length;a+=1){const s=Rn(r,n,a);o[a]?o[a].p(e,s):(o[a]=Un(s),o[a].c(),o[a].m(t.parentNode,t))}for(;a<o.length;a+=1)o[a].d(1);o.length=n.length}},d(e){!function(e,t){for(let n=0;n<e.length;n+=1)e[n]&&e[n].d(t)}(o,e),e&&y(t)}}}function In(t){var n,o,r;return{c(){n=w("div"),o=x(),(r=w("p")).textContent="This is a complex query, it might take a while... Channels will appear as we find them",n.className="loading"},m(e,t){v(e,n,t),v(e,o,t),v(e,r,t)},p:e,d(e){e&&(y(n),y(o),y(r))}}}function Un(e){var t,n,o,r,a,s=e.c;function c(){return e.click_handler(e)}return{c(){t=w("span"),n=$("#"),o=$(s),r=x(),t.className="channel label label-secondary m-1 svelte-1or0a5q",a=C(t,"click",c)},m(e,a){v(e,t,a),b(t,n),b(t,o),b(t,r)},p(t,n){e=n,t.subscribedChannels&&s!==(s=e.c)&&M(o,s)},d(e){e&&y(t),a()}}}function Ln(t){var n,o,r;function a(e){return 0==e.subscribedChannels.length?In:Sn}var s=a(t),c=s(t);return{c(){(n=w("h4")).textContent="Subscribed Channels",o=x(),c.c(),r=N()},m(e,t){v(e,n,t),v(e,o,t),c.m(e,t),v(e,r,t)},p(e,t){s===(s=a(t))&&c?c.p(e,t):(c.d(1),(c=s(t))&&(c.c(),c.m(r.parentNode,r)))},i:e,o:e,d(e){e&&(y(n),y(o)),c.d(e),e&&y(r)}}}function On(e,t,n){let o=[],r=hermiebox.modules.pullStream,a=hermiebox.sbot;return(()=>{let e={$filter:{value:{author:a.id,content:{type:"channel"}}},$sort:[["value","timestamp"]]};r(a.query.read({query:[e],live:!0,reverse:!0,limit:500}),r.drain(e=>{e.sync?console.log("finished loading"):e.value.content.subscribed&&(o.push(e.value.content.channel),n("subscribedChannels",o))}))})(),{subscribedChannels:o,click_handler:function({c:e}){return ao("/channel",{channel:e})}}}function An(e,t,n){const o=Object.create(e);return o.msg=t[n],o}function Fn(t){var n,o,r;return{c(){n=w("div"),o=$("Error: "),r=$(t.error),n.className="toast toast-error"},m(e,t){v(e,n,t),b(n,o),b(n,r)},p:e,d(e){e&&y(n)}}}function En(e){var t,n,o,r,s,c,i,l,u,m=[],d=new Map,h=e.msgs;const p=e=>e.msg.key;for(var g=0;g<h.length;g+=1){let t=An(e,h,g),n=p(t);d.set(n,m[g]=Bn(n,t))}var f=null;return h.length||(f=jn(e)).c(),{c(){for(g=0;g<m.length;g+=1)m[g].c();t=x(),n=w("ul"),o=w("li"),(r=w("a")).innerHTML='<div class="page-item-subtitle">Previous</div>',s=x(),c=w("li"),(i=w("a")).innerHTML='<div class="page-item-subtitle">Next</div>',r.href="#/public",o.className="page-item page-previous",i.href="#/public",c.className="page-item page-next",n.className="pagination",u=[C(r,"click",T(_(e.goPrevious))),C(i,"click",T(_(e.goNext)))]},m(e,a){for(g=0;g<m.length;g+=1)m[g].m(e,a);f&&f.m(e,null),v(e,t,a),v(e,n,a),b(n,o),b(o,r),b(n,s),b(n,c),b(c,i),l=!0},p(e,n){const o=n.msgs;Z(),m=re(m,e,p,1,n,o,d,t.parentNode,oe,Bn,t,An),ee(),o.length?f&&(f.d(1),f=null):f||((f=jn(n)).c(),f.m(t.parentNode,t))},i(e){if(!l){for(var t=0;t<h.length;t+=1)m[t].i();l=!0}},o(e){for(g=0;g<m.length;g+=1)m[g].o();l=!1},d(e){for(g=0;g<m.length;g+=1)m[g].d(e);f&&f.d(e),e&&(y(t),y(n)),a(u)}}}function Hn(t){var n;return{c(){(n=w("div")).className="loading loading-lg"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function jn(e){var t;return{c(){(t=w("p")).textContent="No messages."},m(e,n){v(e,t,n)},d(e){e&&y(t)}}}function Bn(e,t){var n,o,r=new Lt({props:{msg:t.msg}});return{key:e,first:null,c(){n=N(),r.$$.fragment.c(),this.first=n},m(e,t){v(e,n,t),ae(r,e,t),o=!0},p(e,t){var n={};e.msgs&&(n.msg=t.msg),r.$set(n)},i(e){o||(r.$$.fragment.i(e),o=!0)},o(e){r.$$.fragment.o(e),o=!1},d(e){e&&y(n),r.$destroy(e)}}}function qn(e){var t,n,o,r,s,c,i,l,u,m,d,h,p,g,f,k,_,T,M,R=e.error&&Fn(e),S=[Hn,En],I=[];function U(e){return e.msgs?1:0}return f=U(e),k=I[f]=S[f](e),{c(){t=w("div"),n=w("div"),o=w("h4"),r=$("Channel: #"),s=$(e.channel),c=x(),i=w("div"),l=w("label"),u=w("input"),m=x(),d=w("i"),h=$("\r\n        Subscribe"),p=x(),R&&R.c(),g=x(),k.c(),_=N(),o.className="column",P(u,"type","checkbox"),d.className="form-icon",l.className="form-switch float-right",i.className="column",n.className="columns",t.className="container",M=[C(u,"change",e.input_change_handler),C(u,"change",e.subscriptionChanged)]},m(a,y){v(a,t,y),b(t,n),b(n,o),b(o,r),b(o,s),b(n,c),b(n,i),b(i,l),b(l,u),u.checked=e.subscribed,b(l,m),b(l,d),b(l,h),v(a,p,y),R&&R.m(a,y),v(a,g,y),I[f].m(a,y),v(a,_,y),T=!0},p(e,t){e.subscribed&&(u.checked=t.subscribed),t.error?R?R.p(e,t):((R=Fn(t)).c(),R.m(g.parentNode,g)):R&&(R.d(1),R=null);var n=f;(f=U(t))===n?I[f].p(e,t):(Z(),te(()=>{I[n].d(1),I[n]=null}),k.o(1),ee(),(k=I[f])||(k=I[f]=S[f](t)).c(),k.i(1),k.m(_.parentNode,_))},i(e){T||(k&&k.i(),T=!0)},o(e){k&&k.o(),T=!1},d(e){e&&(y(t),y(p)),R&&R.d(e),e&&y(g),I[f].d(e),e&&y(_),a(M)}}}function Dn(e,t,n){let o;i(e,oo,e=>{n("$routeParams",o=e)});let r=!1,a=o.error||!1,s=o.channel||!1,c=!1;s||(console.log("can't navigate to unnamed channel, going back to public"),location="index.html#/public");let l={limit:o.limit||mo("limit",10),reverse:!0};ssb.channelSubscribed(s).then(e=>{const t=c=e;return n("subscribed",c),t});const u=()=>{ao("/channel",{channel:s,lt:r[r.length-1].rts})},m=()=>{history.back()};let d=keymage("p",()=>(m(),!1)),h=keymage("n",()=>(u(),!1));return H(()=>{d(),h()}),e.$$.update=((e={opts:1,$routeParams:1,channel:1,error:1})=>{if(e.opts||e.$routeParams||e.channel||e.error){Object.assign(l,o),document.title=`Patchfox - #${s}`,l.hasOwnProperty("lt")&&(l.lt=parseInt(l.lt),n("opts",l),n("$routeParams",o),n("channel",s),n("error",a)),l.hasOwnProperty("limit")&&(l.limit=parseInt(l.limit),n("opts",l),n("$routeParams",o),n("channel",s),n("error",a));ssb.channel(s,l).then(e=>{console.log("msg",e),n("msgs",r=e),window.scrollTo(0,0)}).catch(e=>{a||console.error("errrrooooor",e)})}}),{msgs:r,error:a,channel:s,subscribed:c,subscriptionChanged:e=>{e.target.checked?ssb.channelSubscribe(s).catch(()=>{const e=c=!1;return n("subscribed",c),e}):ssb.channelUnsubscribe(s).catch(()=>{const e=c=!0;return n("subscribed",c),e})},goNext:u,goPrevious:m,input_change_handler:function(){c=this.checked,n("subscribed",c)}}}function zn(t){var n,o,r,s,c,i,l,u,m,d,h,p,g,f,k,N,_,T,M,R,S,I,U,L,O,A,F,E,H,j,B,q,D,z,Y,V,W,J,K,G,Q,X,Z,ee,te,ne,oe,re,ae,se,ce,ie,le,ue,me,de,he,pe,ge,fe,be,ve,ye,ke,we,$e,xe,Ne,Ce,_e,Te,Pe,Me,Re,Se,Ie,Ue,Le,Oe,Ae,Fe,Ee,He,je,Be,qe,De,ze,Ye,Ve,We,Je,Ke,Ge,Qe,Xe,Ze,et,tt,nt,ot,rt,at,st,ct,it,lt,ut,mt,dt,ht,pt,gt,ft,bt,vt,yt,kt,wt,$t,xt,Nt,Ct,_t,Tt,Pt,Mt,Rt,St,It,Ut,Lt;return{c(){(n=w("h1")).textContent="Settings",o=x(),(r=w("p")).innerHTML="\n\t\t\t  Settings changes are saved as you make them except for identity and connection\n\t\t\t  changes, those require a full page reload and thus you need to press a save\n\t\t\t  button. The reason behind this is that Patchfox needs to disconnect and\n\t\t\t  reconnect to the\n\t\t\t  <i>ssb-server</i>\n\t\t\t  using the new info.\n\t\t\t",s=x(),(c=w("p")).innerHTML='<b>\n\t\t\t    You can\'t use Patchfox until you fill your\n\t\t\t    <i>Connection &amp; Identity</i>\n\t\t\t    information.\n\t\t\t    <a href="/docs/index.html#/troubleshooting/no-configuration" target="_blank">\n\t\t\t      If you want more help regarding connection and configuration click here\n\t\t\t    </a>\n\t\t\t    .\n\t\t\t  </b>',i=x(),(l=w("h4")).textContent="Connection & Identity",u=x(),m=w("form"),(d=w("label")).innerHTML="\n\t\t\t    Patchfox can infer the values for both\n\t\t\t    <i>remote</i>\n\t\t\t    and\n\t\t\t    <i>secret</i>\n\t\t\t    from your\n\t\t\t    <code>~/.ssb/secret</code>\n\t\t\t    file. You can use the button below to browse for it.\n\t\t\t  ",h=x(),p=w("input"),g=x(),(f=w("label")).textContent="Remote",k=x(),N=w("input"),_=x(),(T=w("label")).textContent="Secret",M=x(),R=w("textarea"),S=x(),I=w("br"),U=x(),(L=w("button")).textContent="Save Identity & Remote",O=x(),(A=w("p")).textContent="Saving identity and remote will cause a full page refresh.",F=x(),(E=w("h4")).textContent="Vieweing Experience",H=x(),j=w("form"),(B=w("label")).textContent="Messages per page",q=x(),D=w("input"),z=x(),Y=w("br"),V=x(),(W=w("span")).innerHTML='\n\t\t\t    Which message types you want to see?\n\t\t\t    <a target="_blank" href="/docs/index.html#/message_types/">\n\t\t\t      Click here for more information about\n\t\t\t      <i>Message Types</i></a>',J=x(),K=w("label"),G=w("input"),Q=x(),X=w("i"),Z=x(),(ee=w("b")).textContent="About",te=$("\r\n    (aka people setting avatars and descriptions; gatherings)"),ne=x(),oe=w("label"),re=w("input"),ae=x(),se=w("i"),ce=x(),(ie=w("b")).textContent="Blog",le=$("\r\n    (Longform text posts)"),ue=x(),me=w("label"),de=w("input"),he=x(),pe=w("i"),ge=x(),(fe=w("b")).textContent="Channel",be=$("\r\n    (People subscribing to channels)"),ve=x(),ye=w("label"),ke=w("input"),we=x(),$e=w("i"),xe=x(),(Ne=w("b")).textContent="Contact",Ce=$("\r\n    (People following each other)"),_e=x(),Te=w("label"),Pe=w("input"),Me=x(),Re=w("i"),Se=x(),(Ie=w("b")).textContent="Posts",Ue=$("\r\n    (Common content post, leave this on or it is not that fun)"),Le=x(),Oe=w("label"),Ae=w("input"),Fe=x(),Ee=w("i"),He=x(),(je=w("b")).textContent="Pub",Be=$("\r\n    (Pub servers announcements)"),qe=x(),De=w("label"),ze=w("input"),Ye=x(),Ve=w("i"),We=x(),(Je=w("b")).textContent="Private",Ke=$("\r\n    (Private messages; You won't be able to read them, but you'll see their\r\n    encrypted content passing by)"),Ge=x(),Qe=w("label"),Xe=w("input"),Ze=x(),et=w("i"),tt=x(),(nt=w("b")).textContent="Vote",ot=$("\r\n    (People liking/digging stuff)"),rt=x(),at=w("div"),st=x(),ct=w("label"),it=w("input"),lt=x(),ut=w("i"),mt=x(),(dt=w("b")).textContent="Unknown",ht=$("\r\n    (Show messages Patchfox doesn't understand as their raw content)"),pt=x(),gt=w("br"),ft=x(),(bt=w("label")).textContent="Feed column size. There is research that says that a short column size makes\r\n    for a more pleasant reading experience, still some users prefer to use the\r\n    full screen space. Your choice is between reading through long text lines or\r\n    short ones.",vt=x(),yt=w("label"),kt=w("input"),wt=x(),$t=w("i"),xt=$("\r\n    Short column"),Nt=x(),Ct=w("label"),_t=w("input"),Tt=x(),Pt=w("i"),Mt=$("\r\n    Long column"),Rt=x(),St=w("br"),It=x(),Ut=w("br"),d.className="form-label",d.htmlFor="secret-file",P(p,"type","file"),p.className="form-input",p.id="secret-file",f.className="form-label",f.htmlFor="remote",N.className="form-input",P(N,"type","text"),N.id="remote",N.placeholder="remote",T.className="form-label",T.htmlFor="secret",R.className="form-input",R.id="secret",R.placeholder="Your secret",R.rows="8",L.className="btn btn-primary float-right",m.className="form-group",B.className="form-label",B.htmlFor="limit",D.className="form-input",P(D,"type","number"),P(G,"type","checkbox"),X.className="form-icon",K.className="form-switch",P(re,"type","checkbox"),se.className="form-icon",oe.className="form-switch",P(de,"type","checkbox"),pe.className="form-icon",me.className="form-switch",P(ke,"type","checkbox"),$e.className="form-icon",ye.className="form-switch",P(Pe,"type","checkbox"),Re.className="form-icon",Te.className="form-switch",P(Ae,"type","checkbox"),Ee.className="form-icon",Oe.className="form-switch",P(ze,"type","checkbox"),Ve.className="form-icon",De.className="form-switch",P(Xe,"type","checkbox"),et.className="form-icon",Qe.className="form-switch",at.className="divider",P(it,"type","checkbox"),ut.className="form-icon",ct.className="form-switch",bt.className="form-label",t.$$binding_groups[0].push(kt),P(kt,"type","radio"),kt.name="column-size",kt.__value="short",kt.value=kt.__value,$t.className="form-icon",yt.className="form-radio",t.$$binding_groups[0].push(_t),P(_t,"type","radio"),_t.name="column-size",_t.__value="long",_t.value=_t.__value,Pt.className="form-icon",Ct.className="form-radio",j.className="form-group",Lt=[C(p,"change",t.selectedFile),C(N,"input",t.input1_input_handler),C(R,"input",t.textarea_input_handler),C(L,"click",t.saveConfiguration),C(D,"input",t.input2_input_handler),C(D,"change",t.change_handler),C(G,"change",t.input3_change_handler),C(G,"change",t.change_handler_1),C(re,"change",t.input4_change_handler),C(re,"change",t.change_handler_2),C(de,"change",t.input5_change_handler),C(de,"change",t.change_handler_3),C(ke,"change",t.input6_change_handler),C(ke,"change",t.change_handler_4),C(Pe,"change",t.input7_change_handler),C(Pe,"change",t.change_handler_5),C(Ae,"change",t.input8_change_handler),C(Ae,"change",t.change_handler_6),C(ze,"change",t.input9_change_handler),C(ze,"change",t.change_handler_7),C(Xe,"change",t.input10_change_handler),C(Xe,"change",t.change_handler_8),C(it,"change",t.input11_change_handler),C(it,"change",t.change_handler_9),C(kt,"change",t.input12_change_handler),C(kt,"change",t.change_handler_10),C(_t,"change",t.input13_change_handler),C(_t,"change",t.change_handler_11)]},m(e,a){v(e,n,a),v(e,o,a),v(e,r,a),v(e,s,a),v(e,c,a),v(e,i,a),v(e,l,a),v(e,u,a),v(e,m,a),b(m,d),b(m,h),b(m,p),b(m,g),b(m,f),b(m,k),b(m,N),N.value=t.remote,b(m,_),b(m,T),b(m,M),b(m,R),R.value=t.keys,b(m,S),b(m,I),b(m,U),b(m,L),b(m,O),b(m,A),v(e,F,a),v(e,E,a),v(e,H,a),v(e,j,a),b(j,B),b(j,q),b(j,D),D.value=t.limit,b(j,z),b(j,Y),b(j,V),b(j,W),b(j,J),b(j,K),b(K,G),G.checked=t.showTypeAbout,b(K,Q),b(K,X),b(K,Z),b(K,ee),b(K,te),b(j,ne),b(j,oe),b(oe,re),re.checked=t.showTypeBlog,b(oe,ae),b(oe,se),b(oe,ce),b(oe,ie),b(oe,le),b(j,ue),b(j,me),b(me,de),de.checked=t.showTypeChannel,b(me,he),b(me,pe),b(me,ge),b(me,fe),b(me,be),b(j,ve),b(j,ye),b(ye,ke),ke.checked=t.showTypeContact,b(ye,we),b(ye,$e),b(ye,xe),b(ye,Ne),b(ye,Ce),b(j,_e),b(j,Te),b(Te,Pe),Pe.checked=t.showTypePost,b(Te,Me),b(Te,Re),b(Te,Se),b(Te,Ie),b(Te,Ue),b(j,Le),b(j,Oe),b(Oe,Ae),Ae.checked=t.showTypePub,b(Oe,Fe),b(Oe,Ee),b(Oe,He),b(Oe,je),b(Oe,Be),b(j,qe),b(j,De),b(De,ze),ze.checked=t.showTypePrivate,b(De,Ye),b(De,Ve),b(De,We),b(De,Je),b(De,Ke),b(j,Ge),b(j,Qe),b(Qe,Xe),Xe.checked=t.showTypeVote,b(Qe,Ze),b(Qe,et),b(Qe,tt),b(Qe,nt),b(Qe,ot),b(j,rt),b(j,at),b(j,st),b(j,ct),b(ct,it),it.checked=t.showTypeUnknown,b(ct,lt),b(ct,ut),b(ct,mt),b(ct,dt),b(ct,ht),b(j,pt),b(j,gt),b(j,ft),b(j,bt),b(j,vt),b(j,yt),b(yt,kt),kt.checked=kt.__value===t.columnSize,b(yt,wt),b(yt,$t),b(yt,xt),b(j,Nt),b(j,Ct),b(Ct,_t),_t.checked=_t.__value===t.columnSize,b(Ct,Tt),b(Ct,Pt),b(Ct,Mt),v(e,Rt,a),v(e,St,a),v(e,It,a),v(e,Ut,a)},p(e,t){e.remote&&N.value!==t.remote&&(N.value=t.remote),e.keys&&(R.value=t.keys),e.limit&&(D.value=t.limit),e.showTypeAbout&&(G.checked=t.showTypeAbout),e.showTypeBlog&&(re.checked=t.showTypeBlog),e.showTypeChannel&&(de.checked=t.showTypeChannel),e.showTypeContact&&(ke.checked=t.showTypeContact),e.showTypePost&&(Pe.checked=t.showTypePost),e.showTypePub&&(Ae.checked=t.showTypePub),e.showTypePrivate&&(ze.checked=t.showTypePrivate),e.showTypeVote&&(Xe.checked=t.showTypeVote),e.showTypeUnknown&&(it.checked=t.showTypeUnknown),e.columnSize&&(kt.checked=kt.__value===t.columnSize),e.columnSize&&(_t.checked=_t.__value===t.columnSize)},i:e,o:e,d(e){e&&(y(n),y(o),y(r),y(s),y(c),y(i),y(l),y(u),y(m),y(F),y(E),y(H),y(j)),t.$$binding_groups[0].splice(t.$$binding_groups[0].indexOf(kt),1),t.$$binding_groups[0].splice(t.$$binding_groups[0].indexOf(_t),1),e&&(y(Rt),y(St),y(It),y(Ut)),a(Lt)}}}function Yn(e,t,n){let o={},r="",a=mo("limit",10),s=mo("columnSize","short");document.title="Patchfox - Settings";let c=mo("showTypeUnknown",!1),i=mo("showTypeAbout",!0),l=mo("showTypeBlog",!0),u=mo("showTypeChannel",!0),m=mo("showTypeContact",!0),d=mo("showTypePost",!0),h=mo("showTypePrivate",!0),p=mo("showTypePub",!0),g=mo("showTypeVote",!0);const f=e=>{console.log("saved data from settings",e),n("remote",r=e.remote||""),e.keys?n("keys",o=JSON.stringify(e.keys,null,2)):n("keys",o="")};browser.storage.local.get().then(f,e=>{console.error("error on settings",e)});return{keys:o,remote:r,limit:a,columnSize:s,showTypeUnknown:c,showTypeAbout:i,showTypeBlog:l,showTypeChannel:u,showTypeContact:m,showTypePost:d,showTypePrivate:h,showTypePub:p,showTypeVote:g,saveConfiguration:e=>{ho({remote:r,keys:JSON.parse(o),manifest:manifest}),ao("/public"),location.reload()},selectedFile:e=>{const t=e.target.files[0],o=new FileReader;o.onload=function(e){console.log(e.target.result);let t=e.target.result.split("\n").filter(function(e){return 0!=e.indexOf("#")});t=JSON.parse(t.join("\n")),n("remote",r=`ws://localhost:8989~shs:${t.id.slice(0,t.id.indexOf("=")+1)}`),f({keys:t,remote:r})},o.readAsText(t)},input1_input_handler:function(){r=this.value,n("remote",r)},textarea_input_handler:function(){o=this.value,n("keys",o)},input2_input_handler:function(){var e;e=this.value,n("limit",a=""===e?void 0:+e)},change_handler:function(){return po("limit",a)},input3_change_handler:function(){i=this.checked,n("showTypeAbout",i)},change_handler_1:function(e){po("showTypeAbout",i)},input4_change_handler:function(){l=this.checked,n("showTypeBlog",l)},change_handler_2:function(e){po("showTypeBlog",l)},input5_change_handler:function(){u=this.checked,n("showTypeChannel",u)},change_handler_3:function(e){po("showTypeChannel",u)},input6_change_handler:function(){m=this.checked,n("showTypeContact",m)},change_handler_4:function(e){po("showTypeContact",m)},input7_change_handler:function(){d=this.checked,n("showTypePost",d)},change_handler_5:function(e){po("showTypePost",d)},input8_change_handler:function(){p=this.checked,n("showTypePub",p)},change_handler_6:function(e){po("showTypePub",p)},input9_change_handler:function(){h=this.checked,n("showTypePrivate",h)},change_handler_7:function(e){po("showTypePrivate",h)},input10_change_handler:function(){g=this.checked,n("showTypeVote",g)},change_handler_8:function(e){po("showTypeVote",g)},input11_change_handler:function(){c=this.checked,n("showTypeUnknown",c)},change_handler_9:function(e){po("showTypeUnknown",c)},input12_change_handler:function(){s=this.__value,n("columnSize",s)},change_handler_10:function(){return po("columnSize",s)},input13_change_handler:function(){s=this.__value,n("columnSize",s)},change_handler_11:function(){return po("columnSize",s)},$$binding_groups:[[]]}}class Vn extends ie{constructor(e){super(),ce(this,e,Yn,zn,c,[])}}function Wn(e,t,n){const o=Object.create(e);return o.msg=t[n],o}function Jn(e){var t,n,o,r,s,c,i,l,u,m=[],d=new Map,h=e.msgs;const p=e=>e.msg.key;for(var g=0;g<h.length;g+=1){let t=Wn(e,h,g),n=p(t);d.set(n,m[g]=Gn(n,t))}return{c(){for(g=0;g<m.length;g+=1)m[g].c();t=x(),n=w("ul"),o=w("li"),(r=w("a")).innerHTML='<div class="page-item-subtitle">Previous</div>',s=x(),c=w("li"),(i=w("a")).innerHTML='<div class="page-item-subtitle">Next</div>',r.href="#/public",o.className="page-item page-previous",i.href="#/public",c.className="page-item page-next",n.className="pagination",u=[C(r,"click",T(_(e.click_handler))),C(i,"click",T(_(e.click_handler_1)))]},m(e,a){for(g=0;g<m.length;g+=1)m[g].m(e,a);v(e,t,a),v(e,n,a),b(n,o),b(o,r),b(n,s),b(n,c),b(c,i),l=!0},p(e,n){const o=n.msgs;Z(),m=re(m,e,p,1,n,o,d,t.parentNode,oe,Gn,t,Wn),ee()},i(e){if(!l){for(var t=0;t<h.length;t+=1)m[t].i();l=!0}},o(e){for(g=0;g<m.length;g+=1)m[g].o();l=!1},d(e){for(g=0;g<m.length;g+=1)m[g].d(e);e&&(y(t),y(n)),a(u)}}}function Kn(t){var n;return{c(){(n=w("div")).className="loading loading-lg"},m(e,t){v(e,n,t)},p:e,i:e,o:e,d(e){e&&y(n)}}}function Gn(e,t){var n,o,r=new Lt({props:{msg:t.msg}});return{key:e,first:null,c(){n=N(),r.$$.fragment.c(),this.first=n},m(e,t){v(e,n,t),ae(r,e,t),o=!0},p(e,t){var n={};e.msgs&&(n.msg=t.msg),r.$set(n)},i(e){o||(r.$$.fragment.i(e),o=!0)},o(e){r.$$.fragment.o(e),o=!1},d(e){e&&y(n),r.$destroy(e)}}}function Qn(e){var t,n,o,r,a,s,c=[Kn,Jn],i=[];function l(e){return 0===e.msgs.length?0:1}return o=l(e),r=i[o]=c[o](e),{c(){(t=w("div")).innerHTML='<div class="columns"><h4 class="column">Mentions</h4>\n\t\t\t    <div class="column"></div></div>',n=x(),r.c(),a=N(),t.className="container"},m(e,r){v(e,t,r),v(e,n,r),i[o].m(e,r),v(e,a,r),s=!0},p(e,t){var n=o;(o=l(t))===n?i[o].p(e,t):(Z(),te(()=>{i[n].d(1),i[n]=null}),r.o(1),ee(),(r=i[o])||(r=i[o]=c[o](t)).c(),r.i(1),r.m(a.parentNode,a))},i(e){s||(r&&r.i(),s=!0)},o(e){r&&r.o(),s=!1},d(e){e&&(y(t),y(n)),i[o].d(e),e&&y(a)}}}function Xn(e,t,n){let o,r=[];document.title="Patchfox - Mentions";let a=!1;hermiebox.modules.pullStream,hermiebox.sbot;return H(()=>{o()}),E(()=>{o=oo.subscribe(e=>{if(console.log("params changed.",a,e.lt),e.lt){let t=parseInt(e.lt);t!==a&&(a=t)}else a=!1;console.log("Loading mentions...",a),window.scrollTo(0,0),n("msgs",r=[]),ssb.mentions(ssb.feed,a).then(e=>{const t=r=e;return n("msgs",r),t})})}),{msgs:r,click_handler:function(){return history.back()},click_handler_1:function(){ao("/mentions",{lt:r[r.length-1].rts})}}}let Zn={};const eo=()=>{return{data:Te.parse(window.location.search),location:window.location.hash.slice(1).replace("?","")}},to=le(!1),no=le(eo()),oo=ue(no,e=>e.data),ro=ue(no,e=>e.location),ao=(e,t)=>{t=t||{},no.set({location:e,data:t});let n=Te.stringify(t);history.pushState({location:e,data:t},`Patchfox - ${e}`,`/index.html?${n}#${e}`),console.log(`Navigate ${e}`,t)},so={"/thread":class extends ie{constructor(e){super(),ce(this,e,pn,hn,c,[])}},"/public":class extends ie{constructor(e){super(),ce(this,e,Bt,jt,c,[])}},"/compose":class extends ie{constructor(e){super(),ce(this,e,sn,an,c,[])}},"/profile":class extends ie{constructor(e){super(),ce(this,e,Cn,Nn,c,[])}},"/error":class extends ie{constructor(e){super(),ce(this,e,Mn,Pn,c,[])}},"/channels":class extends ie{constructor(e){super(),ce(this,e,On,Ln,c,[])}},"/channel":class extends ie{constructor(e){super(),ce(this,e,Dn,qn,c,[])}},"/settings":Vn,"/mentions":class extends ie{constructor(e){super(),ce(this,e,Xn,Qn,c,[])}},"*":class extends ie{constructor(e){super(),ce(this,e,null,qt,c,[])}}},co=ue([to,no],([e,t])=>{let n=t.location;return e?so.hasOwnProperty(n)?so[n]:(console.log("didn't find",n),so["*"]):"/settings"===n?Vn:so["*"]}),io=async()=>{console.log("Connecting to sbot..."),window.ssb=new pe;try{await ssb.connect(Zn.keys),to.set(!0)}catch(e){throw console.error("can't connect",e),to.set(!1),"Can't connect to sbot"}},lo=()=>new Promise((e,t)=>{browser.storage.local.get().then(n=>{window.ssb=new DriverHermiebox,ssb.connect(n.keys).then(t=>{console.log("connected"),to.set(!0),e()}).catch(e=>{console.error("can't reconnect",e),t(e)})},t)}),uo=()=>{let e=setInterval(()=>{hermiebox.sbot&&hermiebox.sbot.whoami((t,n)=>{t&&(console.error("can't call whoami",t),lo().catch(t=>{console.error("can't reconnect"),clearInterval(e),ao("/error",{error:t})}))})},5e3)},mo=(e,t)=>{if(Zn.hasOwnProperty("preferences")){let t=Zn.preferences;if(t.hasOwnProperty(e))return t[e]}return t},ho=({keys:e,remote:t,manifest:n})=>{Zn.keys=e,Zn.remote=t,Zn.manifest=n,browser.storage.local.set(Zn)},po=(e,t)=>{console.log(`setPref - ${e}`,t),Zn.preferences=Zn.preferences||{},Zn.preferences[e]=t,browser.storage.local.set(Zn)};function go(t){var n,o,r,s,c,i,l,u,m,d,h,p,g,f,k,$,N,P,M,R,S,I,U,L,O,A,F,E,H,j,B,q,D,z,Y,V,W,J,K,G,Q,X,Z,ee,te,ne,oe,re,ae,se,ce,ie,le,ue,me,de,he,pe,ge;return{c(){n=w("header"),o=w("section"),(r=w("a")).innerHTML='<i class="icon icon-minus text-black"></i>',s=x(),c=w("a"),i=w("figure"),l=w("img"),u=x(),m=w("i"),h=x(),(p=w("a")).textContent="Compose",g=x(),(f=w("a")).textContent="Public",k=x(),($=w("a")).textContent="Mentions",N=x(),(P=w("a")).textContent="Channels",M=x(),(R=w("a")).textContent="Settings",S=x(),(I=w("a")).textContent="Help",U=x(),L=w("section"),(O=w("button")).innerHTML='<i class="icon icon-back"></i>',A=x(),F=w("a"),E=w("figure"),H=w("img"),j=x(),B=w("i"),D=x(),z=w("div"),(Y=w("a")).innerHTML='\n\t\t\t        Menu\n\t\t\t        <i class="icon icon-caret"></i>',V=x(),W=w("ul"),J=w("li"),(K=w("a")).textContent="Compose",G=x(),Q=w("li"),(X=w("a")).textContent="Public",Z=x(),ee=w("li"),(te=w("a")).textContent="Channels",ne=x(),oe=w("li"),(re=w("a")).textContent="Mentions",ae=x(),se=w("li"),(ce=w("a")).textContent="Settings",ie=x(),(le=w("li")).innerHTML='<a href="/docs/index.html" class="btn btn-link">Help</a>',ue=x(),me=w("li"),(de=w("a")).textContent="Open as a Tab",he=x(),pe=w("div"),r.href="#/sidebar",r.className="btn btn-link",l.src=t.avatar,l.alt="L",m.className=d="avatar-presence "+(t.$connected?"online":"offline")+" svelte-14egiim",i.className="avatar avatar-lg",c.href="#",c.className="navbar-brand mr-2 p-1",p.href="#/compose",p.className="btn btn-link",f.href="#/public",f.className="btn btn-link",$.href="#/mentions",$.className="btn btn-link",P.href="#/channels",P.className="btn btn-link",R.href="#/settings",R.className="btn btn-link",I.href="/docs/index.html",I.className="btn btn-link",o.className="navbar-section hide-sm",O.className="btn btn-link",H.src=t.avatar,H.alt="L",B.className=q="avatar-presence "+(t.$connected?"online":"offline")+" svelte-14egiim",E.className="avatar",F.href="...",F.className="navbar-brand mr-2 p-1",Y.href="?",Y.className="btn btn-link dropdown-toggle",Y.tabIndex="0",K.href="#/compose",K.className="btn btn-link",J.className="menu-item",X.href="#/public",X.className="btn btn-link",Q.className="menu-item",te.href="#/channels",te.className="btn btn-link",ee.className="menu-item",re.href="#/mentions",re.className="btn btn-link",oe.className="menu-item",ce.href="#/settings",ce.className="btn btn-link",se.className="menu-item",le.className="menu-item",de.href="#/sidebar",de.className="btn btn-link",me.className="menu-item",W.className="menu",z.className="dropdown float-right",L.className="navbar-section show-sm bg-gray above svelte-14egiim",pe.className="blocker show-sm svelte-14egiim",n.className="navbar",ge=[C(r,"click",t.openSidebar),C(c,"click",t.openMyProfile),C(p,"click",T(_(t.goCompose))),C(f,"click",T(_(t.goPublic))),C($,"click",T(_(t.goMentions))),C(P,"click",T(_(t.goChannels))),C(R,"click",t.goSettings),C(O,"click",t.click_handler),C(Y,"click",T(_(fo))),C(K,"click",T(_(t.goCompose))),C(X,"click",T(_(t.goPublic))),C(te,"click",T(_(t.goChannels))),C(re,"click",T(_(t.goMentions))),C(ce,"click",t.goSettings),C(de,"click",t.closeSidebar)]},m(e,t){v(e,n,t),b(n,o),b(o,r),b(o,s),b(o,c),b(c,i),b(i,l),b(i,u),b(i,m),b(o,h),b(o,p),b(o,g),b(o,f),b(o,k),b(o,$),b(o,N),b(o,P),b(o,M),b(o,R),b(o,S),b(o,I),b(n,U),b(n,L),b(L,O),b(L,A),b(L,F),b(F,E),b(E,H),b(E,j),b(E,B),b(L,D),b(L,z),b(z,Y),b(z,V),b(z,W),b(W,J),b(J,K),b(W,G),b(W,Q),b(Q,X),b(W,Z),b(W,ee),b(ee,te),b(W,ne),b(W,oe),b(oe,re),b(W,ae),b(W,se),b(se,ce),b(W,ie),b(W,le),b(W,ue),b(W,me),b(me,de),b(n,he),b(n,pe)},p(e,t){e.avatar&&(l.src=t.avatar),e.$connected&&d!==(d="avatar-presence "+(t.$connected?"online":"offline")+" svelte-14egiim")&&(m.className=d),e.avatar&&(H.src=t.avatar),e.$connected&&q!==(q="avatar-presence "+(t.$connected?"online":"offline")+" svelte-14egiim")&&(B.className=q)},i:e,o:e,d(e){e&&y(n),a(ge)}}}function fo(){return""}function bo(e,t,n){let o;i(e,to,e=>{n("$connected",o=e)});let r="/images/icon.png";return e.$$.update=((e={$connected:1})=>{e.$connected&&o&&ssb.avatar(ssb.feed).then(e=>{n("avatar",r=`http://localhost:8989/blobs/get/${e.image}`)})}),{avatar:r,goSettings:e=>ao("/settings"),goCompose:()=>ao("/compose"),goPublic:()=>ao("/public"),goChannels:()=>ao("/channels"),goMentions:()=>ao("/mentions"),openSidebar:async e=>{let t=window.location.href;browser.sidebarAction.setPanel({panel:t}),browser.sidebarAction.open()},closeSidebar:async e=>{let t=await browser.sidebarAction.getPanel({});await browser.tabs.create({url:t}),await browser.sidebarAction.close()},openMyProfile:e=>{e.stopPropagation(),e.preventDefault(),ssb.feed&&ao("/profile",{feed:ssb.feed})},$connected:o,click_handler:function(){return history.back()}}}class vo extends ie{constructor(e){super(),ce(this,e,bo,go,c,[])}}function yo(e){var t,n,o,r,s,c,i=new vo({}),l=e.$currentView;if(l)var u=new l({});return{c(){t=w("div"),n=w("div"),o=w("div"),i.$$.fragment.c(),r=x(),u&&u.$$.fragment.c(),o.className="column svelte-64hhw0",R(o,"reduced-line-length",e.useShortColumn),n.className="columns",t.className="container bg-gray",c=[C(window,"popstate",e.popState),C(window,"error",e.handleUncaughtException),C(window,"hashchange",e.hashChange)]},m(e,a){v(e,t,a),b(t,n),b(n,o),ae(i,o,null),b(o,r),u&&ae(u,o,null),s=!0},p(e,t){if(l!==(l=t.$currentView)){if(u){Z();const e=u;te(()=>{e.$destroy()}),e.$$.fragment.o(1),ee()}l?((u=new l({})).$$.fragment.c(),u.$$.fragment.i(1),ae(u,o,null)):u=null}e.useShortColumn&&R(o,"reduced-line-length",t.useShortColumn)},i(e){s||(i.$$.fragment.i(e),u&&u.$$.fragment.i(e),s=!0)},o(e){i.$$.fragment.o(e),u&&u.$$.fragment.o(e),s=!1},d(e){e&&y(t),i.$destroy(),u&&u.$destroy(),a(c)}}}function ko(e,t,n){let o,r;i(e,ro,e=>{n("$routeLocation",o=e)}),i(e,co,e=>{n("$currentView",r=e)});let a="short"==mo("columnSize","short");E(async()=>{try{await io(),uo()}catch(e){switch(console.error("connect error",e),e){case"Can't connect to sbot":"/settings"!==o&&(window.location="/docs/index.html#/troubleshooting/no-connection");break;default:ao("/error",{error:e})}}});return{useShortColumn:a,popState:e=>{if(null!==e.state){console.dir("pop",e.state);let{location:t,data:n}=e.state;no.set({location:t,data:n})}},handleUncaughtException:e=>{console.error("Uncaught exception",e),ao("/error",{error:e.message})},hashChange:e=>{console.dir("hash change",e)},$currentView:r}}class wo extends ie{constructor(e){super(),ce(this,e,ko,yo,c,[])}}(async()=>{window.ssb=!1,(()=>{let e=eo();if("/intercept"==e.location&&e.data.query){let t=e.data.query.replace("ssb:","");switch(t[0]){case"%":window.location=`/index.html?thread=${encodeURIComponent(t)}#/thread`;break;case"&":window.location=`http://localhost:8989/blobs/get/${t}`;break;case"@":window.location=`/index.html?feed=${encodeURIComponent(t)}#/profile`}}})();try{await(async()=>{console.log("Loading configuration...");try{let e=await browser.storage.local.get();if(!e.hasOwnProperty("keys"))throw"Configuration is missing";Zn=e}catch(e){throw"Configuration is missing"}})()}catch(e){switch(console.error("initialization error",e),e){case"Configuration is missing":ao("/settings");break;default:ao("/error",{error:e})}}new wo({target:document.body})})()}();
+(function () {
+    'use strict';
+
+    function noop() { }
+    const identity = x => x;
+    function assign(tar, src) {
+        for (const k in src)
+            tar[k] = src[k];
+        return tar;
+    }
+    function is_promise(value) {
+        return value && typeof value.then === 'function';
+    }
+    function add_location(element, file, line, column, char) {
+        element.__svelte_meta = {
+            loc: { file, line, column, char }
+        };
+    }
+    function run(fn) {
+        return fn();
+    }
+    function blank_object() {
+        return Object.create(null);
+    }
+    function run_all(fns) {
+        fns.forEach(run);
+    }
+    function is_function(thing) {
+        return typeof thing === 'function';
+    }
+    function safe_not_equal(a, b) {
+        return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
+    }
+    function validate_store(store, name) {
+        if (!store || typeof store.subscribe !== 'function') {
+            throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+        }
+    }
+    function subscribe(component, store, callback) {
+        const unsub = store.subscribe(callback);
+        component.$$.on_destroy.push(unsub.unsubscribe
+            ? () => unsub.unsubscribe()
+            : unsub);
+    }
+    const is_client = typeof window !== 'undefined';
+    let now = is_client
+        ? () => window.performance.now()
+        : () => Date.now();
+    let raf = is_client ? requestAnimationFrame : noop;
+
+    const tasks = new Set();
+    let running = false;
+    function run_tasks() {
+        tasks.forEach(task => {
+            if (!task[0](now())) {
+                tasks.delete(task);
+                task[1]();
+            }
+        });
+        running = tasks.size > 0;
+        if (running)
+            raf(run_tasks);
+    }
+    function loop(fn) {
+        let task;
+        if (!running) {
+            running = true;
+            raf(run_tasks);
+        }
+        return {
+            promise: new Promise(fulfil => {
+                tasks.add(task = [fn, fulfil]);
+            }),
+            abort() {
+                tasks.delete(task);
+            }
+        };
+    }
+
+    function append(target, node) {
+        target.appendChild(node);
+    }
+    function insert(target, node, anchor) {
+        target.insertBefore(node, anchor || null);
+    }
+    function detach(node) {
+        node.parentNode.removeChild(node);
+    }
+    function detach_between(before, after) {
+        while (before.nextSibling && before.nextSibling !== after) {
+            before.parentNode.removeChild(before.nextSibling);
+        }
+    }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
+    function element(name) {
+        return document.createElement(name);
+    }
+    function text(data) {
+        return document.createTextNode(data);
+    }
+    function space() {
+        return text(' ');
+    }
+    function empty() {
+        return text('');
+    }
+    function listen(node, event, handler, options) {
+        node.addEventListener(event, handler, options);
+        return () => node.removeEventListener(event, handler, options);
+    }
+    function prevent_default(fn) {
+        return function (event) {
+            event.preventDefault();
+            // @ts-ignore
+            return fn.call(this, event);
+        };
+    }
+    function stop_propagation(fn) {
+        return function (event) {
+            event.stopPropagation();
+            // @ts-ignore
+            return fn.call(this, event);
+        };
+    }
+    function attr(node, attribute, value) {
+        if (value == null)
+            node.removeAttribute(attribute);
+        else
+            node.setAttribute(attribute, value);
+    }
+    function to_number(value) {
+        return value === '' ? undefined : +value;
+    }
+    function children(element) {
+        return Array.from(element.childNodes);
+    }
+    function set_data(text, data) {
+        data = '' + data;
+        if (text.data !== data)
+            text.data = data;
+    }
+    function toggle_class(element, name, toggle) {
+        element.classList[toggle ? 'add' : 'remove'](name);
+    }
+    function custom_event(type, detail) {
+        const e = document.createEvent('CustomEvent');
+        e.initCustomEvent(type, false, false, detail);
+        return e;
+    }
+
+    let stylesheet;
+    let active = 0;
+    let current_rules = {};
+    // https://github.com/darkskyapp/string-hash/blob/master/index.js
+    function hash(str) {
+        let hash = 5381;
+        let i = str.length;
+        while (i--)
+            hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+        return hash >>> 0;
+    }
+    function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
+        const step = 16.666 / duration;
+        let keyframes = '{\n';
+        for (let p = 0; p <= 1; p += step) {
+            const t = a + (b - a) * ease(p);
+            keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
+        }
+        const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
+        const name = `__svelte_${hash(rule)}_${uid}`;
+        if (!current_rules[name]) {
+            if (!stylesheet) {
+                const style = element('style');
+                document.head.appendChild(style);
+                stylesheet = style.sheet;
+            }
+            current_rules[name] = true;
+            stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
+        }
+        const animation = node.style.animation || '';
+        node.style.animation = `${animation ? `${animation}, ` : ``}${name} ${duration}ms linear ${delay}ms 1 both`;
+        active += 1;
+        return name;
+    }
+    function delete_rule(node, name) {
+        node.style.animation = (node.style.animation || '')
+            .split(', ')
+            .filter(name
+            ? anim => anim.indexOf(name) < 0 // remove specific animation
+            : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
+        )
+            .join(', ');
+        if (name && !--active)
+            clear_rules();
+    }
+    function clear_rules() {
+        raf(() => {
+            if (active)
+                return;
+            let i = stylesheet.cssRules.length;
+            while (i--)
+                stylesheet.deleteRule(i);
+            current_rules = {};
+        });
+    }
+
+    let current_component;
+    function set_current_component(component) {
+        current_component = component;
+    }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error(`Function called outside component initialization`);
+        return current_component;
+    }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
+    }
+    function onDestroy(fn) {
+        get_current_component().$$.on_destroy.push(fn);
+    }
+    function createEventDispatcher() {
+        const component = current_component;
+        return (type, detail) => {
+            const callbacks = component.$$.callbacks[type];
+            if (callbacks) {
+                // TODO are there situations where events could be dispatched
+                // in a server (non-DOM) environment?
+                const event = custom_event(type, detail);
+                callbacks.slice().forEach(fn => {
+                    fn.call(component, event);
+                });
+            }
+        };
+    }
+
+    const dirty_components = [];
+    const resolved_promise = Promise.resolve();
+    let update_scheduled = false;
+    const binding_callbacks = [];
+    const render_callbacks = [];
+    const flush_callbacks = [];
+    function schedule_update() {
+        if (!update_scheduled) {
+            update_scheduled = true;
+            resolved_promise.then(flush);
+        }
+    }
+    function add_render_callback(fn) {
+        render_callbacks.push(fn);
+    }
+    function flush() {
+        const seen_callbacks = new Set();
+        do {
+            // first, call beforeUpdate functions
+            // and update components
+            while (dirty_components.length) {
+                const component = dirty_components.shift();
+                set_current_component(component);
+                update(component.$$);
+            }
+            while (binding_callbacks.length)
+                binding_callbacks.shift()();
+            // then, once components are updated, call
+            // afterUpdate functions. This may cause
+            // subsequent updates...
+            while (render_callbacks.length) {
+                const callback = render_callbacks.pop();
+                if (!seen_callbacks.has(callback)) {
+                    callback();
+                    // ...so guard against infinite loops
+                    seen_callbacks.add(callback);
+                }
+            }
+        } while (dirty_components.length);
+        while (flush_callbacks.length) {
+            flush_callbacks.pop()();
+        }
+        update_scheduled = false;
+    }
+    function update($$) {
+        if ($$.fragment) {
+            $$.update($$.dirty);
+            run_all($$.before_render);
+            $$.fragment.p($$.dirty, $$.ctx);
+            $$.dirty = null;
+            $$.after_render.forEach(add_render_callback);
+        }
+    }
+
+    let promise;
+    function wait() {
+        if (!promise) {
+            promise = Promise.resolve();
+            promise.then(() => {
+                promise = null;
+            });
+        }
+        return promise;
+    }
+    let outros;
+    function group_outros() {
+        outros = {
+            remaining: 0,
+            callbacks: []
+        };
+    }
+    function check_outros() {
+        if (!outros.remaining) {
+            run_all(outros.callbacks);
+        }
+    }
+    function on_outro(callback) {
+        outros.callbacks.push(callback);
+    }
+    function create_in_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = false;
+        let animation_name;
+        let task;
+        let uid = 0;
+        function cleanup() {
+            if (animation_name)
+                delete_rule(node, animation_name);
+        }
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+            if (css)
+                animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
+            tick$$1(0, 1);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            if (task)
+                task.abort();
+            running = true;
+            task = loop(now$$1 => {
+                if (running) {
+                    if (now$$1 >= end_time) {
+                        tick$$1(1, 0);
+                        cleanup();
+                        return running = false;
+                    }
+                    if (now$$1 >= start_time) {
+                        const t = easing((now$$1 - start_time) / duration);
+                        tick$$1(t, 1 - t);
+                    }
+                }
+                return running;
+            });
+        }
+        let started = false;
+        return {
+            start() {
+                if (started)
+                    return;
+                delete_rule(node);
+                if (typeof config === 'function') {
+                    config = config();
+                    wait().then(go);
+                }
+                else {
+                    go();
+                }
+            },
+            invalidate() {
+                started = false;
+            },
+            end() {
+                if (running) {
+                    cleanup();
+                    running = false;
+                }
+            }
+        };
+    }
+    function create_out_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = true;
+        let animation_name;
+        const group = outros;
+        group.remaining += 1;
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+            if (css)
+                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            loop(now$$1 => {
+                if (running) {
+                    if (now$$1 >= end_time) {
+                        tick$$1(0, 1);
+                        if (!--group.remaining) {
+                            // this will result in `end()` being called,
+                            // so we don't need to clean up here
+                            run_all(group.callbacks);
+                        }
+                        return false;
+                    }
+                    if (now$$1 >= start_time) {
+                        const t = easing((now$$1 - start_time) / duration);
+                        tick$$1(1 - t, t);
+                    }
+                }
+                return running;
+            });
+        }
+        if (typeof config === 'function') {
+            wait().then(() => {
+                config = config();
+                go();
+            });
+        }
+        else {
+            go();
+        }
+        return {
+            end(reset) {
+                if (reset && config.tick) {
+                    config.tick(1, 0);
+                }
+                if (running) {
+                    if (animation_name)
+                        delete_rule(node, animation_name);
+                    running = false;
+                }
+            }
+        };
+    }
+
+    function handle_promise(promise, info) {
+        const token = info.token = {};
+        function update(type, index, key, value) {
+            if (info.token !== token)
+                return;
+            info.resolved = key && { [key]: value };
+            const child_ctx = assign(assign({}, info.ctx), info.resolved);
+            const block = type && (info.current = type)(child_ctx);
+            if (info.block) {
+                if (info.blocks) {
+                    info.blocks.forEach((block, i) => {
+                        if (i !== index && block) {
+                            group_outros();
+                            on_outro(() => {
+                                block.d(1);
+                                info.blocks[i] = null;
+                            });
+                            block.o(1);
+                            check_outros();
+                        }
+                    });
+                }
+                else {
+                    info.block.d(1);
+                }
+                block.c();
+                if (block.i)
+                    block.i(1);
+                block.m(info.mount(), info.anchor);
+                flush();
+            }
+            info.block = block;
+            if (info.blocks)
+                info.blocks[index] = block;
+        }
+        if (is_promise(promise)) {
+            promise.then(value => {
+                update(info.then, 1, info.value, value);
+            }, error => {
+                update(info.catch, 2, info.error, error);
+            });
+            // if we previously had a then/catch block, destroy it
+            if (info.current !== info.pending) {
+                update(info.pending, 0);
+                return true;
+            }
+        }
+        else {
+            if (info.current !== info.then) {
+                update(info.then, 1, info.value, promise);
+                return true;
+            }
+            info.resolved = { [info.value]: promise };
+        }
+    }
+
+    function destroy_block(block, lookup) {
+        block.d(1);
+        lookup.delete(block.key);
+    }
+    function outro_and_destroy_block(block, lookup) {
+        on_outro(() => {
+            destroy_block(block, lookup);
+        });
+        block.o(1);
+    }
+    function update_keyed_each(old_blocks, changed, get_key, dynamic, ctx, list, lookup, node, destroy, create_each_block, next, get_context) {
+        let o = old_blocks.length;
+        let n = list.length;
+        let i = o;
+        const old_indexes = {};
+        while (i--)
+            old_indexes[old_blocks[i].key] = i;
+        const new_blocks = [];
+        const new_lookup = new Map();
+        const deltas = new Map();
+        i = n;
+        while (i--) {
+            const child_ctx = get_context(ctx, list, i);
+            const key = get_key(child_ctx);
+            let block = lookup.get(key);
+            if (!block) {
+                block = create_each_block(key, child_ctx);
+                block.c();
+            }
+            else if (dynamic) {
+                block.p(changed, child_ctx);
+            }
+            new_lookup.set(key, new_blocks[i] = block);
+            if (key in old_indexes)
+                deltas.set(key, Math.abs(i - old_indexes[key]));
+        }
+        const will_move = new Set();
+        const did_move = new Set();
+        function insert(block) {
+            if (block.i)
+                block.i(1);
+            block.m(node, next);
+            lookup.set(block.key, block);
+            next = block.first;
+            n--;
+        }
+        while (o && n) {
+            const new_block = new_blocks[n - 1];
+            const old_block = old_blocks[o - 1];
+            const new_key = new_block.key;
+            const old_key = old_block.key;
+            if (new_block === old_block) {
+                // do nothing
+                next = new_block.first;
+                o--;
+                n--;
+            }
+            else if (!new_lookup.has(old_key)) {
+                // remove old block
+                destroy(old_block, lookup);
+                o--;
+            }
+            else if (!lookup.has(new_key) || will_move.has(new_key)) {
+                insert(new_block);
+            }
+            else if (did_move.has(old_key)) {
+                o--;
+            }
+            else if (deltas.get(new_key) > deltas.get(old_key)) {
+                did_move.add(new_key);
+                insert(new_block);
+            }
+            else {
+                will_move.add(old_key);
+                o--;
+            }
+        }
+        while (o--) {
+            const old_block = old_blocks[o];
+            if (!new_lookup.has(old_block.key))
+                destroy(old_block, lookup);
+        }
+        while (n)
+            insert(new_blocks[n - 1]);
+        return new_blocks;
+    }
+    function mount_component(component, target, anchor) {
+        const { fragment, on_mount, on_destroy, after_render } = component.$$;
+        fragment.m(target, anchor);
+        // onMount happens after the initial afterUpdate. Because
+        // afterUpdate callbacks happen in reverse order (inner first)
+        // we schedule onMount callbacks before afterUpdate callbacks
+        add_render_callback(() => {
+            const new_on_destroy = on_mount.map(run).filter(is_function);
+            if (on_destroy) {
+                on_destroy.push(...new_on_destroy);
+            }
+            else {
+                // Edge case - component was destroyed immediately,
+                // most likely as a result of a binding initialising
+                run_all(new_on_destroy);
+            }
+            component.$$.on_mount = [];
+        });
+        after_render.forEach(add_render_callback);
+    }
+    function destroy(component, detaching) {
+        if (component.$$) {
+            run_all(component.$$.on_destroy);
+            component.$$.fragment.d(detaching);
+            // TODO null out other refs, including component.$$ (but need to
+            // preserve final state?)
+            component.$$.on_destroy = component.$$.fragment = null;
+            component.$$.ctx = {};
+        }
+    }
+    function make_dirty(component, key) {
+        if (!component.$$.dirty) {
+            dirty_components.push(component);
+            schedule_update();
+            component.$$.dirty = blank_object();
+        }
+        component.$$.dirty[key] = true;
+    }
+    function init(component, options, instance, create_fragment, not_equal$$1, prop_names) {
+        const parent_component = current_component;
+        set_current_component(component);
+        const props = options.props || {};
+        const $$ = component.$$ = {
+            fragment: null,
+            ctx: null,
+            // state
+            props: prop_names,
+            update: noop,
+            not_equal: not_equal$$1,
+            bound: blank_object(),
+            // lifecycle
+            on_mount: [],
+            on_destroy: [],
+            before_render: [],
+            after_render: [],
+            context: new Map(parent_component ? parent_component.$$.context : []),
+            // everything else
+            callbacks: blank_object(),
+            dirty: null
+        };
+        let ready = false;
+        $$.ctx = instance
+            ? instance(component, props, (key, value) => {
+                if ($$.ctx && not_equal$$1($$.ctx[key], $$.ctx[key] = value)) {
+                    if ($$.bound[key])
+                        $$.bound[key](value);
+                    if (ready)
+                        make_dirty(component, key);
+                }
+            })
+            : props;
+        $$.update();
+        ready = true;
+        run_all($$.before_render);
+        $$.fragment = create_fragment($$.ctx);
+        if (options.target) {
+            if (options.hydrate) {
+                $$.fragment.l(children(options.target));
+            }
+            else {
+                $$.fragment.c();
+            }
+            if (options.intro && component.$$.fragment.i)
+                component.$$.fragment.i();
+            mount_component(component, options.target, options.anchor);
+            flush();
+        }
+        set_current_component(parent_component);
+    }
+    class SvelteComponent {
+        $destroy() {
+            destroy(this, true);
+            this.$destroy = noop;
+        }
+        $on(type, callback) {
+            const callbacks = (this.$$.callbacks[type] || (this.$$.callbacks[type] = []));
+            callbacks.push(callback);
+            return () => {
+                const index = callbacks.indexOf(callback);
+                if (index !== -1)
+                    callbacks.splice(index, 1);
+            };
+        }
+        $set() {
+            // overridden by instance, if it has props
+        }
+    }
+    class SvelteComponentDev extends SvelteComponent {
+        constructor(options) {
+            if (!options || (!options.target && !options.$$inline)) {
+                throw new Error(`'target' is a required option`);
+            }
+            super();
+        }
+        $destroy() {
+            super.$destroy();
+            this.$destroy = () => {
+                console.warn(`Component was already destroyed`); // eslint-disable-line no-console
+            };
+        }
+    }
+
+    /**
+     * Creates a `Readable` store that allows reading by subscription.
+     * @param value initial value
+     * @param {StartStopNotifier}start start and stop notifications for subscriptions
+     */
+    function readable(value, start) {
+        return {
+            subscribe: writable(value, start).subscribe,
+        };
+    }
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = [];
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (!stop) {
+                    return; // not ready
+                }
+                subscribers.forEach((s) => s[1]());
+                subscribers.forEach((s) => s[0](value));
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.push(subscriber);
+            if (subscribers.length === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                const index = subscribers.indexOf(subscriber);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                }
+                if (subscribers.length === 0) {
+                    stop();
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+    /**
+     * Derived value store by synchronizing one or more readable stores and
+     * applying an aggregation function over its input values.
+     * @param {Stores} stores input stores
+     * @param {function(Stores=, function(*)=):*}fn function callback that aggregates the values
+     * @param {*=}initial_value when used asynchronously
+     */
+    function derived(stores, fn, initial_value) {
+        const single = !Array.isArray(stores);
+        const stores_array = single
+            ? [stores]
+            : stores;
+        const auto = fn.length < 2;
+        return readable(initial_value, (set) => {
+            let inited = false;
+            const values = [];
+            let pending = 0;
+            let cleanup = noop;
+            const sync = () => {
+                if (pending) {
+                    return;
+                }
+                cleanup();
+                const result = fn(single ? values[0] : values, set);
+                if (auto) {
+                    set(result);
+                }
+                else {
+                    cleanup = is_function(result) ? result : noop;
+                }
+            };
+            const unsubscribers = stores_array.map((store, i) => store.subscribe((value) => {
+                values[i] = value;
+                pending &= ~(1 << i);
+                if (inited) {
+                    sync();
+                }
+            }, () => {
+                pending |= (1 << i);
+            }));
+            inited = true;
+            sync();
+            return function stop() {
+                run_all(unsubscribers);
+                cleanup();
+            };
+        });
+    }
+
+    /**
+     * SSB
+     *
+     * TL;DR: SSB API for Patchfox using Hermiebox.
+     *
+     * OBJECTIVE:
+     * The SSB is in flux right now. There are many approaches being played with which might
+     * affect how this WebExtension connect to sbot. Some of the experiments being tried out are:
+     *
+     * - lessbot/nobot: each app maintain its own database and index but post through a shared sbot.
+     * - graphql: export a GraphQL server which offers SSB features.
+     * - json-rpc: export a JSON-RPC server offering SSB features.
+     *
+     * This driver folder will contain the various adapters to use these modes of connection as they
+     * become available. For now, we'll use hermiebox.
+     *
+     * **Important: Each driver should export the exact same API to Patchfox**. This way we can
+     * switch drivers without having to refactor the add-on.
+     *
+     * HOW IT WORKS:
+     * Hermiebox is a browserified fat package of common NodeJS modules from our community and also
+     * few highlevel API methods for common tasks. It uses WebSockets to connect to a running sbot
+     * using muxrpc and shs stuff, so it needs your `secret` to be available.
+     * 
+     * ATTENTION:
+     * This is a legacy from when Patchfox was vanilla JS. I'm gonna need to refactor this a lot
+     * 
+     * TODO: Refactor to use `ssb-query`
+     */
+
+    const pull = hermiebox.modules.pullStream;
+    const sort = hermiebox.modules.ssbSort;
+
+    let sbot = false;
+
+    class SSB {
+
+      log(pMsg, pVal = "") {
+        console.log(`[SSB API] - ${pMsg}`, pVal);
+      }
+
+      async connect(pKeys) {
+        var server = await hermiebox.api.connect(pKeys);
+        this.log("you are", server.id);
+        this.feed = server.id;
+        sbot = server;
+      }
+
+      filterLimit() {
+        return pull.take(getPref("limit", 10))
+      }
+
+      filterTypes() {
+        let knownMessageTypes = {
+          "post": "showTypePost",
+          "about": "showTypeAbout",
+          "vote": "showTypeVote",
+          "contact": "showTypeContent",
+          "pub": "showTypePost",
+          "blog": "showTypeBlog",
+          "channel": "showTypeChannel"
+        };
+
+        let showUnknown = getPref("showTypeUnknown", false);
+
+        if (showUnknown) {
+          return pull.filter(() => true);
+        }
+
+        return pull.filter(msg => {
+          let type = msg.value.content.type;
+
+          if (typeof type == "string" && knownMessageTypes.hasOwnProperty(type)) {
+            return getPref(knownMessageTypes[type], true)
+          }
+          return getPref("showTypeUnknown", false)
+        })
+
+      }
+
+      public(opts) {
+        return new Promise((resolve, reject) => {
+
+          opts = opts || {};
+          opts.reverse = opts.reverse || true;
+
+          pull(
+            sbot.createFeedStream(opts),
+            pull.filter(msg => msg && msg.value && msg.value.content),
+            this.filterTypes(),
+            this.filterLimit(),
+            pull.collect((err, msgs) => {
+              if (err) {
+                reject(err);
+              }
+
+              resolve(msgs);
+            })
+          );
+        })
+      }
+
+      thread(id) {
+        return new Promise((resolve, reject) => {
+          sbot.get(id, (err, value) => {
+            if (err) return cb(err)
+            var rootMsg = { key: id, value: value };
+            pull(
+              sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
+                query: [
+                  {
+                    $filter: {
+                      dest: id,
+                      value: {
+                        content: {
+
+                          root: id
+                        }
+                      }
+                    }
+                  }
+                ]
+              }) : pull(
+                sbot.links({ dest: id, values: true, rel: 'root' }),
+                pull.filter(function (msg) {
+                  var c = msg && msg.value && msg.value.content;
+                  return c && c.type === 'post' && c.root === id
+                }),
+                pull.unique('key')
+              ),
+              this.filterTypes(),
+              pull.collect((err, msgs) => {
+                if (err) reject(err);
+                resolve(sort([rootMsg].concat(msgs)));
+              })
+            );
+          });
+        })
+      }
+
+      mentions(feed, lt) {
+        return new Promise((resolve, reject) => {
+          const createBacklinkStream = id => {
+            var filterQuery = {
+              $filter: {
+                dest: id
+              }
+            };
+        
+            if (lt) {
+              filterQuery.$filter.value = { timestamp: { $lt: lt } };
+            }
+        
+            return sbot.backlinks.read({
+              query: [filterQuery],
+              index: "DTA", // use asserted timestamps
+              reverse: true,
+            });
+          };
+
+          pull(
+            createBacklinkStream(sbot.id),
+            this.filterTypes(),
+            this.filterLimit(),
+            pull.collect((err, msgs) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msgs);
+              }
+            })
+          );
+        })
+      }
+
+      async profile(feedid) {
+        try {
+          var user = await hermiebox.api.profile(feedid);
+          return user
+
+        } catch (n) {
+          console.error(n);
+          return false
+        }
+      }
+
+      async get(msgid) {
+        var msg = await hermiebox.api.get(msgid);
+        return msg
+      }
+
+      async setAvatarCache(feed, data) {
+        let s = {};
+        s[`avatar-${feed}`] = data;
+        return browser.storage.local.set(s)
+      }
+
+      async getCachedAvatar(feed) {
+        return browser.storage.local.get(`avatar-${feed}`)
+      }
+
+      async avatar(feed) {
+        try {
+          let avatar = await hermiebox.api.avatar(feed);
+          await this.setAvatarCache(feed, avatar);
+          return avatar
+        } catch (n) {
+          throw n
+        }
+
+      }
+
+      async blurbFromMsg(msgid, howManyChars) {
+        let retVal = msgid;
+
+        try {
+          let data = await ssb.get(msgid);
+
+          if (data.content.type == "post") {
+            retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...");
+          }
+          return retVal
+        } catch (n) {
+          return retVal
+        }
+      }
+      plainTextFromMarkdown(text) {
+        // TODO: this doesn't belong here
+        let html = this.markdown(text);
+        let div = document.createElement("div");
+        div.innerHTML = html;
+        return div.innerText
+      }
+
+      markdown(text) {
+
+        function replaceMsgID(match, id, offset, string) {
+          let eid = encodeURIComponent(`%${id}`);
+
+          return `<a class="thread-link" href="?thread=${eid}#/thread`;
+        }
+
+        function replaceChannel(match, id, offset, string) {
+          let eid = encodeURIComponent(id);
+
+          return `<a class="channel-link" href="?channel=${eid}#/channel`;
+        }
+
+
+        function replaceFeedID(match, id, offset, string) {
+          let eid = encodeURIComponent(`@${id}`);
+          return "<a class=\"profile-link\" href=\"?feed=" + eid + "#/profile";
+        }
+
+
+        function replaceImageLinks(match, id, offset, string) {
+          return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+        }
+
+
+        function replaceImages(match, id, offset, string) {
+          return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+        }
+
+        let html = hermiebox.modules.ssbMarkdown.block(text);
+        html = html
+          .replace("<pre>", "<pre class=\"code\">")
+          .replace(/<a href="#([^"]*)/gi, replaceChannel)
+          .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+          .replace(/target="_blank"/gi, "")
+          .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+          .replace(/<img src="&([^"]*)/gi, replaceImages)
+          .replace(/<a href="&([^"]*)/gi, replaceImageLinks);
+
+        return html
+      }
+
+      ref() {
+        return hermiebox.modules.ssbRef
+      }
+
+      getTimestamp(msg) {
+        const arrivalTimestamp = msg.timestamp;
+        const declaredTimestamp = msg.value.timestamp;
+        return Math.min(arrivalTimestamp, declaredTimestamp);
+      }
+
+      getRootMsgId(msg) {
+        if (msg && msg.value && msg.value.content) {
+          const root = msg.value.content.root;
+          if (hermiebox.modules.ssbRef.isMsgId(root)) {
+            return root;
+          }
+        }
+      }
+
+      newPost(data) {
+        return new Promise((resolve, reject) => {
+          let msgToPost = { type: "post", text: data.text };
+
+          const commonFields = [
+            "root",
+            "branch",
+            "channel",
+            "fork"
+          ];
+
+          commonFields.forEach(f => {
+            if (typeof data[f] !== "undefined") {
+              msgToPost[f] = data[f];
+            }
+          });
+
+          msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || [];
+          msgToPost.mentions = msgToPost.mentions.filter(n => n); // prevent null elements...
+
+          const sbot = hermiebox.sbot || false;
+
+          console.log("post", msgToPost);
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          } else {
+            reject("There is no sbot connection");
+          }
+        })
+      }
+
+      follow(userId) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            sbot.publish({
+              type: "contact",
+              contact: userId,
+              following: true
+            }, (err, msg) => {
+              // 'msg' includes the hash-id and headers
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+
+      getBlob(blobid) {
+        return hermiebox.api.getBlob(blobid)
+      }
+
+      votes(msgid) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot;
+
+          if (sbot) {
+            pull(
+              sbot.links({ dest: msgid, rel: "vote", values: true }),
+              pull.collect((err, msgs) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(msgs);
+                }
+              })
+            );
+          }
+        })
+      }
+
+      like(msgid) {
+        return new Promise((resolve, reject) => {
+
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "vote",
+            "vote": {
+              "link": msgid,
+              "value": 1,
+              "expression": "Like"
+            }
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      unlike(msgid) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "vote",
+            "vote": {
+              "link": msgid,
+              "value": 0,
+              "expression": "Unlike"
+            }
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      channels() {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            console.log("querying channels");
+            pull(
+              sbot.query.read({
+                query: [
+                  { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
+                  {
+                    "$reduce": {
+                      "channel": ["value", "content", "channel"],
+                      "count": { "$count": true },
+                      "timestamp": { "$max": ["value", "timestamp"] }
+                    }
+                  },
+                  { "$sort": [["timestamp"], ["count"]] }
+                ],
+                limit: 20
+              }),
+              pull.collect(function (err, data) {
+                console.log("channels", data);
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      channel(channel, opts) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+          let query = {
+            "$filter": {
+              value: {
+                content: { channel }
+              }
+            }
+          };
+
+          if (opts.lt) {
+            query.$filter.value.timestamp = { $lt: opts.lt };
+          }
+
+          console.dir(query);
+
+          if (sbot) {
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                limit: opts.limit,
+                reverse: true
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      channelSubscribe(channel) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "channel",
+            "channel": channel,
+            "subscribed": true
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      channelUnsubscribe(channel) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "channel",
+            "channel": channel,
+            "subscribed": false
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      channelSubscribed(channel, feed) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            if (!feed) {
+              feed = sbot.id;
+            }
+
+            let query = {
+              "$filter": {
+                value: {
+                  author: feed,
+                  content: {
+                    type: "channel",
+                    channel
+                  }
+                }
+              }
+            };
+
+
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: true
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  if (data.length > 0) {
+                    resolve(data[0].value.content.subscribed || false);
+                  } else {
+                    resolve(false);
+                  }
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      subscribedChannels(channel, feed) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            if (!feed) {
+              feed = sbot.id;
+            }
+
+            let query = {
+              "$filter": {
+                value: {
+                  author: feed,
+                  content: {
+                    type: "channel"
+                  }
+                }
+              },
+              "$map": {
+                channel: ["value", "content", "channel"],
+                subscribed: ["value", "content", "subscribed"]
+              },
+              "$sort": [["value", "timestamp"]]
+            };
+
+
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: true
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      follow(feed) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "contact",
+            "contact": feed,
+            "following": true
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      unfollow(feed) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "contact",
+            "contact": feed,
+            "following": false
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      block(feed) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "contact",
+            "contact": feed,
+            "blocking": true
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      unblock(feed) {
+        return new Promise((resolve, reject) => {
+          const sbot = hermiebox.sbot || false;
+
+          const msgToPost = {
+            "type": "contact",
+            "contact": feed,
+            "blocking": false
+          };
+
+          if (sbot) {
+            sbot.publish(msgToPost, function (err, msg) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(msg);
+              }
+            });
+          }
+        })
+      }
+
+      following(feed, byWhom) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            if (!byWhom) {
+              byWhom = sbot.id;
+            }
+
+            let query = {
+              "$filter": {
+                value: {
+                  author: byWhom,
+                  content: {
+                    type: "contact",
+                    contact: feed,
+                    following: { $is: "boolean" }
+                  }
+                }
+              }
+            };
+
+
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: true
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  if (data.length > 0) {
+                    resolve(data[0].value.content.following || false);
+                  } else {
+                    resolve(false);
+                  }
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      blocking(feed, byWhom) {
+        return new Promise((resolve, reject) => {
+          let pull = hermiebox.modules.pullStream;
+          let sbot = hermiebox.sbot || false;
+
+          if (sbot) {
+            if (!byWhom) {
+              byWhom = sbot.id;
+            }
+
+            let query = {
+              "$filter": {
+                value: {
+                  author: byWhom,
+                  content: {
+                    type: "contact",
+                    contact: feed,
+                    blocking: { $is: "boolean" }
+                  }
+                }
+              }
+            };
+
+
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: true
+              }),
+              pull.collect(function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  if (data.length > 0) {
+                    resolve(data[0].value.content.blocking || false);
+                  } else {
+                    resolve(false);
+                  }
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+
+      query(filter, limit, reverse, map, reduce) {
+        return new Promise((resolve, reject) => {
+          if (sbot) {
+
+            let query = {
+              "$filter": filter
+            };
+
+            if (map) {
+              query.$map = map;
+            }
+
+            if (reduce) {
+              query.$reduce = reduce;
+            }
+
+            if (typeof reverse == "undefined") {
+              reverse = true;
+            }
+
+            pull(
+              sbot.query.read({
+                query: [
+                  query
+                ],
+                reverse: reverse
+              }),
+              this.filterTypes(),
+              this.filterLimit(),
+              pull.collect( (err, data) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(data);
+                }
+              })
+            );
+          } else {
+            reject("no sbot");
+          }
+        })
+      }
+    }
+
+    var strictUriEncode = str => encodeURIComponent(str).replace(/[!'()*]/g, x => `%${x.charCodeAt(0).toString(16).toUpperCase()}`);
+
+    var token = '%[a-f0-9]{2}';
+    var singleMatcher = new RegExp(token, 'gi');
+    var multiMatcher = new RegExp('(' + token + ')+', 'gi');
+
+    function decodeComponents(components, split) {
+    	try {
+    		// Try to decode the entire string first
+    		return decodeURIComponent(components.join(''));
+    	} catch (err) {
+    		// Do nothing
+    	}
+
+    	if (components.length === 1) {
+    		return components;
+    	}
+
+    	split = split || 1;
+
+    	// Split the array in 2 parts
+    	var left = components.slice(0, split);
+    	var right = components.slice(split);
+
+    	return Array.prototype.concat.call([], decodeComponents(left), decodeComponents(right));
+    }
+
+    function decode(input) {
+    	try {
+    		return decodeURIComponent(input);
+    	} catch (err) {
+    		var tokens = input.match(singleMatcher);
+
+    		for (var i = 1; i < tokens.length; i++) {
+    			input = decodeComponents(tokens, i).join('');
+
+    			tokens = input.match(singleMatcher);
+    		}
+
+    		return input;
+    	}
+    }
+
+    function customDecodeURIComponent(input) {
+    	// Keep track of all the replacements and prefill the map with the `BOM`
+    	var replaceMap = {
+    		'%FE%FF': '\uFFFD\uFFFD',
+    		'%FF%FE': '\uFFFD\uFFFD'
+    	};
+
+    	var match = multiMatcher.exec(input);
+    	while (match) {
+    		try {
+    			// Decode as big chunks as possible
+    			replaceMap[match[0]] = decodeURIComponent(match[0]);
+    		} catch (err) {
+    			var result = decode(match[0]);
+
+    			if (result !== match[0]) {
+    				replaceMap[match[0]] = result;
+    			}
+    		}
+
+    		match = multiMatcher.exec(input);
+    	}
+
+    	// Add `%C2` at the end of the map to make sure it does not replace the combinator before everything else
+    	replaceMap['%C2'] = '\uFFFD';
+
+    	var entries = Object.keys(replaceMap);
+
+    	for (var i = 0; i < entries.length; i++) {
+    		// Replace all decoded components
+    		var key = entries[i];
+    		input = input.replace(new RegExp(key, 'g'), replaceMap[key]);
+    	}
+
+    	return input;
+    }
+
+    var decodeUriComponent = function (encodedURI) {
+    	if (typeof encodedURI !== 'string') {
+    		throw new TypeError('Expected `encodedURI` to be of type `string`, got `' + typeof encodedURI + '`');
+    	}
+
+    	try {
+    		encodedURI = encodedURI.replace(/\+/g, ' ');
+
+    		// Try the built in decoder first
+    		return decodeURIComponent(encodedURI);
+    	} catch (err) {
+    		// Fallback to a more advanced decoder
+    		return customDecodeURIComponent(encodedURI);
+    	}
+    };
+
+    var splitOnFirst = (string, separator) => {
+    	if (!(typeof string === 'string' && typeof separator === 'string')) {
+    		throw new TypeError('Expected the arguments to be of type `string`');
+    	}
+
+    	if (separator === '') {
+    		return [string];
+    	}
+
+    	const separatorIndex = string.indexOf(separator);
+
+    	if (separatorIndex === -1) {
+    		return [string];
+    	}
+
+    	return [
+    		string.slice(0, separatorIndex),
+    		string.slice(separatorIndex + separator.length)
+    	];
+    };
+
+    function encoderForArrayFormat(options) {
+    	switch (options.arrayFormat) {
+    		case 'index':
+    			return key => (result, value) => {
+    				const index = result.length;
+    				if (value === undefined) {
+    					return result;
+    				}
+
+    				if (value === null) {
+    					return [...result, [encode(key, options), '[', index, ']'].join('')];
+    				}
+
+    				return [
+    					...result,
+    					[encode(key, options), '[', encode(index, options), ']=', encode(value, options)].join('')
+    				];
+    			};
+
+    		case 'bracket':
+    			return key => (result, value) => {
+    				if (value === undefined) {
+    					return result;
+    				}
+
+    				if (value === null) {
+    					return [...result, [encode(key, options), '[]'].join('')];
+    				}
+
+    				return [...result, [encode(key, options), '[]=', encode(value, options)].join('')];
+    			};
+
+    		case 'comma':
+    			return key => (result, value, index) => {
+    				if (value === null || value === undefined || value.length === 0) {
+    					return result;
+    				}
+
+    				if (index === 0) {
+    					return [[encode(key, options), '=', encode(value, options)].join('')];
+    				}
+
+    				return [[result, encode(value, options)].join(',')];
+    			};
+
+    		default:
+    			return key => (result, value) => {
+    				if (value === undefined) {
+    					return result;
+    				}
+
+    				if (value === null) {
+    					return [...result, encode(key, options)];
+    				}
+
+    				return [...result, [encode(key, options), '=', encode(value, options)].join('')];
+    			};
+    	}
+    }
+
+    function parserForArrayFormat(options) {
+    	let result;
+
+    	switch (options.arrayFormat) {
+    		case 'index':
+    			return (key, value, accumulator) => {
+    				result = /\[(\d*)\]$/.exec(key);
+
+    				key = key.replace(/\[\d*\]$/, '');
+
+    				if (!result) {
+    					accumulator[key] = value;
+    					return;
+    				}
+
+    				if (accumulator[key] === undefined) {
+    					accumulator[key] = {};
+    				}
+
+    				accumulator[key][result[1]] = value;
+    			};
+
+    		case 'bracket':
+    			return (key, value, accumulator) => {
+    				result = /(\[\])$/.exec(key);
+    				key = key.replace(/\[\]$/, '');
+
+    				if (!result) {
+    					accumulator[key] = value;
+    					return;
+    				}
+
+    				if (accumulator[key] === undefined) {
+    					accumulator[key] = [value];
+    					return;
+    				}
+
+    				accumulator[key] = [].concat(accumulator[key], value);
+    			};
+
+    		case 'comma':
+    			return (key, value, accumulator) => {
+    				const isArray = typeof value === 'string' && value.split('').indexOf(',') > -1;
+    				const newValue = isArray ? value.split(',') : value;
+    				accumulator[key] = newValue;
+    			};
+
+    		default:
+    			return (key, value, accumulator) => {
+    				if (accumulator[key] === undefined) {
+    					accumulator[key] = value;
+    					return;
+    				}
+
+    				accumulator[key] = [].concat(accumulator[key], value);
+    			};
+    	}
+    }
+
+    function encode(value, options) {
+    	if (options.encode) {
+    		return options.strict ? strictUriEncode(value) : encodeURIComponent(value);
+    	}
+
+    	return value;
+    }
+
+    function decode$1(value, options) {
+    	if (options.decode) {
+    		return decodeUriComponent(value);
+    	}
+
+    	return value;
+    }
+
+    function keysSorter(input) {
+    	if (Array.isArray(input)) {
+    		return input.sort();
+    	}
+
+    	if (typeof input === 'object') {
+    		return keysSorter(Object.keys(input))
+    			.sort((a, b) => Number(a) - Number(b))
+    			.map(key => input[key]);
+    	}
+
+    	return input;
+    }
+
+    function removeHash(input) {
+    	const hashStart = input.indexOf('#');
+    	if (hashStart !== -1) {
+    		input = input.slice(0, hashStart);
+    	}
+
+    	return input;
+    }
+
+    function extract(input) {
+    	input = removeHash(input);
+    	const queryStart = input.indexOf('?');
+    	if (queryStart === -1) {
+    		return '';
+    	}
+
+    	return input.slice(queryStart + 1);
+    }
+
+    function parse(input, options) {
+    	options = Object.assign({
+    		decode: true,
+    		arrayFormat: 'none'
+    	}, options);
+
+    	const formatter = parserForArrayFormat(options);
+
+    	// Create an object with no prototype
+    	const ret = Object.create(null);
+
+    	if (typeof input !== 'string') {
+    		return ret;
+    	}
+
+    	input = input.trim().replace(/^[?#&]/, '');
+
+    	if (!input) {
+    		return ret;
+    	}
+
+    	for (const param of input.split('&')) {
+    		let [key, value] = splitOnFirst(param.replace(/\+/g, ' '), '=');
+
+    		// Missing `=` should be `null`:
+    		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+    		value = value === undefined ? null : decode$1(value, options);
+
+    		formatter(decode$1(key, options), value, ret);
+    	}
+
+    	return Object.keys(ret).sort().reduce((result, key) => {
+    		const value = ret[key];
+    		if (Boolean(value) && typeof value === 'object' && !Array.isArray(value)) {
+    			// Sort object keys, not values
+    			result[key] = keysSorter(value);
+    		} else {
+    			result[key] = value;
+    		}
+
+    		return result;
+    	}, Object.create(null));
+    }
+
+    var extract_1 = extract;
+    var parse_1 = parse;
+
+    var stringify = (object, options) => {
+    	if (!object) {
+    		return '';
+    	}
+
+    	options = Object.assign({
+    		encode: true,
+    		strict: true,
+    		arrayFormat: 'none'
+    	}, options);
+
+    	const formatter = encoderForArrayFormat(options);
+    	const keys = Object.keys(object);
+
+    	if (options.sort !== false) {
+    		keys.sort(options.sort);
+    	}
+
+    	return keys.map(key => {
+    		const value = object[key];
+
+    		if (value === undefined) {
+    			return '';
+    		}
+
+    		if (value === null) {
+    			return encode(key, options);
+    		}
+
+    		if (Array.isArray(value)) {
+    			return value
+    				.reduce(formatter(key), [])
+    				.join('&');
+    		}
+
+    		return encode(key, options) + '=' + encode(value, options);
+    	}).filter(x => x.length > 0).join('&');
+    };
+
+    var parseUrl = (input, options) => {
+    	return {
+    		url: removeHash(input).split('?')[0] || '',
+    		query: parse(extract(input), options)
+    	};
+    };
+
+    var queryString = {
+    	extract: extract_1,
+    	parse: parse_1,
+    	stringify: stringify,
+    	parseUrl: parseUrl
+    };
+
+    /* src\messageTypes\PostMsg.svelte generated by Svelte v3.4.4 */
+
+    const file = "src\\messageTypes\\PostMsg.svelte";
+
+    // (79:6) {#if msg.value.content.root}
+    function create_if_block_2(ctx) {
+    	var span, a, t, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			a = element("a");
+    			t = text("(root)");
+    			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
+    			add_location(a, file, 80, 10, 2065);
+    			add_location(span, file, 79, 8, 2047);
+    			dispose = listen(a, "click", prevent_default(ctx.goRoot));
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, a);
+    			append(a, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (88:6) {#if msg.value.content.branch}
+    function create_if_block_1(ctx) {
+    	var span, a, t, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			a = element("a");
+    			t = text("(in reply to)");
+    			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
+    			add_location(a, file, 89, 10, 2327);
+    			add_location(span, file, 88, 8, 2309);
+    			dispose = listen(a, "click", prevent_default(ctx.goBranch));
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, a);
+    			append(a, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (99:4) {#if !msg.value.private}
+    function create_if_block(ctx) {
+    	var div, button0, t_1, button1, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			button0 = element("button");
+    			button0.textContent = "Fork";
+    			t_1 = space();
+    			button1 = element("button");
+    			button1.textContent = "Reply";
+    			button0.className = "btn";
+    			add_location(button0, file, 100, 6, 2629);
+    			button1.className = "btn";
+    			add_location(button1, file, 102, 6, 2688);
+    			div.className = "column col-6 text-right";
+    			add_location(div, file, 99, 4, 2584);
+
+    			dispose = [
+    				listen(button0, "click", ctx.fork),
+    				listen(button1, "click", ctx.reply)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, button0);
+    			append(div, t_1);
+    			append(div, button1);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function create_fragment(ctx) {
+    	var div0, t0, div3, div2, div1, label, input, t1, i, t2, t3, t4, t5, dispose;
+
+    	var if_block0 = (ctx.msg.value.content.root) && create_if_block_2(ctx);
+
+    	var if_block1 = (ctx.msg.value.content.branch) && create_if_block_1(ctx);
+
+    	var if_block2 = (!ctx.msg.value.private) && create_if_block(ctx);
+
+    	return {
+    		c: function create() {
+    			div0 = element("div");
+    			t0 = space();
+    			div3 = element("div");
+    			div2 = element("div");
+    			div1 = element("div");
+    			label = element("label");
+    			input = element("input");
+    			t1 = space();
+    			i = element("i");
+    			t2 = text("\r\n        Like");
+    			t3 = space();
+    			if (if_block0) if_block0.c();
+    			t4 = space();
+    			if (if_block1) if_block1.c();
+    			t5 = space();
+    			if (if_block2) if_block2.c();
+    			div0.className = "card-body svelte-1ftdgav";
+    			add_location(div0, file, 67, 0, 1673);
+    			attr(input, "type", "checkbox");
+    			input.checked = ctx.liked;
+    			add_location(input, file, 74, 8, 1873);
+    			i.className = "form-icon";
+    			add_location(i, file, 75, 8, 1948);
+    			label.className = "form-switch d-inline";
+    			add_location(label, file, 73, 6, 1827);
+    			div1.className = "column col-6";
+    			add_location(div1, file, 72, 4, 1793);
+    			div2.className = "columns col-gapless";
+    			add_location(div2, file, 71, 2, 1754);
+    			div3.className = "card-footer";
+    			add_location(div3, file, 70, 0, 1725);
+    			dispose = listen(input, "change", ctx.likeChanged);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div0, anchor);
+    			div0.innerHTML = ctx.content;
+    			insert(target, t0, anchor);
+    			insert(target, div3, anchor);
+    			append(div3, div2);
+    			append(div2, div1);
+    			append(div1, label);
+    			append(label, input);
+    			append(label, t1);
+    			append(label, i);
+    			append(label, t2);
+    			append(div1, t3);
+    			if (if_block0) if_block0.m(div1, null);
+    			append(div1, t4);
+    			if (if_block1) if_block1.m(div1, null);
+    			append(div2, t5);
+    			if (if_block2) if_block2.m(div2, null);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.liked) {
+    				input.checked = ctx.liked;
+    			}
+
+    			if (ctx.msg.value.content.root) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_2(ctx);
+    					if_block0.c();
+    					if_block0.m(div1, t4);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.msg.value.content.branch) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_1(ctx);
+    					if_block1.c();
+    					if_block1.m(div1, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (!ctx.msg.value.private) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    				} else {
+    					if_block2 = create_if_block(ctx);
+    					if_block2.c();
+    					if_block2.m(div2, null);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div0);
+    				detach(t0);
+    				detach(div3);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let content = ssb.markdown(msg.value.content.text);
+      let liked = false;
+
+      ssb.votes(msg.key).then(ms => {
+        ms.forEach(m => {
+          let author = m.value.author;
+          if (author === ssb.feed && m.value.content.vote.value === 1) {
+            $$invalidate('liked', liked = true);
+          }
+        });
+      });
+
+      const likeChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb
+            .like(msg.key)
+            .then(() => console.log("liked", msg.key))
+            .catch(() => { const $$result = (liked = false); $$invalidate('liked', liked); return $$result; });
+        } else {
+          ssb
+            .unlike(msg.key)
+            .then(() => console.log("unliked", msg.key))
+            .catch(() => { const $$result = (liked = true); $$invalidate('liked', liked); return $$result; });
+        }
+      };
+
+      const reply = ev => {
+        let root = msg.value.content.root || msg.key;
+        let channel = msg.value.content.channel;
+        let replyfeed = msg.value.author;
+        navigate("/compose", { root, branch: msg.key, channel, replyfeed });
+      };
+
+      const fork = ev => {
+        let originalRoot = msg.value.content.root || msg.key;
+        let channel = msg.value.content.channel;
+        let replyfeed = msg.value.author;
+        navigate("/compose", { root: msg.key, branch: msg.key, fork: originalRoot, channel, replyfeed });
+      };
+
+      const goRoot = ev => {
+        let rootId = msg.value.content.root || msg.key;
+        navigate("/thread", { thread: rootId });
+      };
+
+      const goBranch = ev => {
+        let branchId = msg.value.content.branch || msg.key;
+        navigate("/thread", { thread: branchId });
+      };
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<PostMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		content,
+    		liked,
+    		likeChanged,
+    		reply,
+    		fork,
+    		goRoot,
+    		goBranch
+    	};
+    }
+
+    class PostMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance, create_fragment, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<PostMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<PostMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<PostMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\GenericMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$1 = "src\\messageTypes\\GenericMsg.svelte";
+
+    function create_fragment$1(ctx) {
+    	var div, pre, code, t;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			pre = element("pre");
+    			code = element("code");
+    			t = text(ctx.rawContent);
+    			add_location(code, file$1, 13, 4, 189);
+    			pre.className = "code svelte-1c3kv1x";
+    			add_location(pre, file$1, 12, 2, 166);
+    			div.className = "card-body";
+    			add_location(div, file$1, 11, 0, 140);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, pre);
+    			append(pre, code);
+    			append(code, t);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    function instance$1($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let rawContent = JSON.stringify(msg, null, 2);
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<GenericMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return { msg, rawContent };
+    }
+
+    class GenericMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<GenericMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<GenericMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<GenericMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\VoteMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$2 = "src\\messageTypes\\VoteMsg.svelte";
+
+    function create_fragment$2(ctx) {
+    	var div, t0, t1, t2, t3, a, t4, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text(ctx.person);
+    			t1 = space();
+    			t2 = text(ctx.expression);
+    			t3 = space();
+    			a = element("a");
+    			t4 = text(ctx.label);
+    			a.href = a_href_value = "/index.html?thread=" + ctx.encodedid + "#/thread";
+    			add_location(a, file$2, 29, 2, 707);
+    			div.className = "card-body";
+    			add_location(div, file$2, 27, 0, 656);
+    			dispose = listen(a, "click", ctx.goThread);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    			append(div, t2);
+    			append(div, t3);
+    			append(div, a);
+    			append(a, t4);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.person) {
+    				set_data(t0, ctx.person);
+    			}
+
+    			if (changed.label) {
+    				set_data(t4, ctx.label);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let expression = msg.value.content.vote.expression;
+      let msgid = msg.value.content.vote.link;
+      let encodedid = encodeURIComponent(msgid);
+      let label = msgid;
+      let person = msg.value.author;
+
+      ssb.blurbFromMsg(msgid, 100).then(blurb => {
+        $$invalidate('label', label = blurb);
+      });
+
+      ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
+
+      const goThread = ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if (ev.ctrlKey) {
+          window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
+        } else {
+          navigate("/thread", { thread: msgid });
+        }
+      };
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<VoteMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		expression,
+    		encodedid,
+    		label,
+    		person,
+    		goThread
+    	};
+    }
+
+    class VoteMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<VoteMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<VoteMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<VoteMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\PrivateMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$3 = "src\\messageTypes\\PrivateMsg.svelte";
+
+    function create_fragment$3(ctx) {
+    	var div, p;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			p = element("p");
+    			p.textContent = "🔒 PRIVATE";
+    			add_location(p, file$3, 5, 0, 62);
+    			div.className = "card-body";
+    			add_location(div, file$3, 4, 0, 38);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, p);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    function instance$3($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<PrivateMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return { msg };
+    }
+
+    class PrivateMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<PrivateMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<PrivateMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<PrivateMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\ContactMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$4 = "src\\messageTypes\\ContactMsg.svelte";
+
+    function create_fragment$4(ctx) {
+    	var div, t0, t1, t2, t3, a, t4, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text(ctx.person);
+    			t1 = space();
+    			t2 = text(ctx.verb);
+    			t3 = space();
+    			a = element("a");
+    			t4 = text(ctx.otherPersonName);
+    			a.href = a_href_value = "?feed=" + ctx.otherPersonFeed + "#/profile";
+    			add_location(a, file$4, 31, 2, 792);
+    			div.className = "card-body";
+    			add_location(div, file$4, 29, 0, 745);
+    			dispose = listen(a, "click", ctx.goProfile);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    			append(div, t2);
+    			append(div, t3);
+    			append(div, a);
+    			append(a, t4);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.person) {
+    				set_data(t0, ctx.person);
+    			}
+
+    			if (changed.verb) {
+    				set_data(t2, ctx.verb);
+    			}
+
+    			if (changed.otherPersonName) {
+    				set_data(t4, ctx.otherPersonName);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$4($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let person = msg.value.author;
+      let otherPersonFeed = encodeURIComponent(msg.value.content.contact);
+      let otherPersonName = otherPersonFeed;
+      let verb = msg.value.content.following ? "followed" : "unfollowed";
+
+      if (msg.value.content.blocking) {
+        $$invalidate('verb', verb = "blocked");
+      }
+
+      ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
+      ssb
+        .avatar(msg.value.content.contact)
+        .then(data => {
+          $$invalidate('otherPersonName', otherPersonName = data.name);
+        })
+        .catch(n => console.log(n));
+
+      const goProfile = ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        navigate("/profile", { feed: msg.value.content.contact });
+      };
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<ContactMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		person,
+    		otherPersonFeed,
+    		otherPersonName,
+    		verb,
+    		goProfile
+    	};
+    }
+
+    class ContactMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<ContactMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<ContactMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<ContactMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\ChannelMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$5 = "src\\messageTypes\\ChannelMsg.svelte";
+
+    function create_fragment$5(ctx) {
+    	var div, t0, t1, t2, t3, a, t4, t5, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text(ctx.person);
+    			t1 = space();
+    			t2 = text(ctx.verb);
+    			t3 = space();
+    			a = element("a");
+    			t4 = text("#");
+    			t5 = text(ctx.channel);
+    			a.href = a_href_value = "?channel=" + ctx.channel + "#/channel";
+    			add_location(a, file$5, 20, 2, 538);
+    			div.className = "card-body";
+    			add_location(div, file$5, 18, 0, 491);
+    			dispose = listen(a, "click", ctx.goChannel);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    			append(div, t2);
+    			append(div, t3);
+    			append(div, a);
+    			append(a, t4);
+    			append(a, t5);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.person) {
+    				set_data(t0, ctx.person);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$5($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let person = msg.value.author;
+      let verb = msg.value.content.subscribed ? "subscribed" : "unsubscribed";
+      let channel = encodeURIComponent(msg.value.content.channel);
+
+      ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
+
+       const goChannel = ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        navigate("/channel", { channel: msg.value.content.channel });
+      };
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<ChannelMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return { msg, person, verb, channel, goChannel };
+    }
+
+    class ChannelMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<ChannelMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<ChannelMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<ChannelMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\AboutMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$6 = "src\\messageTypes\\AboutMsg.svelte";
+
+    // (52:2) {:else}
+    function create_else_block_1(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text(ctx.person);
+    			t1 = text(" is doing something related to a gathering but gatherings are not\r\n      supported yet, sorry.");
+    			div.className = "toast";
+    			add_location(div, file$6, 52, 4, 1454);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.person) {
+    				set_data(t0, ctx.person);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (35:2) {#if isThisAboutFeeds}
+    function create_if_block$1(ctx) {
+    	var t0, t1, t2, t3, a, a_href_value, t4, if_block1_anchor;
+
+    	function select_block_type_1(ctx) {
+    		if (ctx.image) return create_if_block_2$1;
+    		return create_else_block;
+    	}
+
+    	var current_block_type = select_block_type_1(ctx);
+    	var if_block0 = current_block_type(ctx);
+
+    	var if_block1 = (ctx.msg.value.content.description) && create_if_block_1$1(ctx);
+
+    	return {
+    		c: function create() {
+    			t0 = text(ctx.person);
+    			t1 = space();
+    			t2 = text(ctx.verb);
+    			t3 = space();
+    			a = element("a");
+    			if_block0.c();
+    			t4 = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    			a.href = a_href_value = "?feed=" + ctx.otherLink + "#/profile";
+    			add_location(a, file$6, 36, 4, 1002);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, t0, anchor);
+    			insert(target, t1, anchor);
+    			insert(target, t2, anchor);
+    			insert(target, t3, anchor);
+    			insert(target, a, anchor);
+    			if_block0.m(a, null);
+    			insert(target, t4, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.person) {
+    				set_data(t0, ctx.person);
+    			}
+
+    			if (changed.verb) {
+    				set_data(t2, ctx.verb);
+    			}
+
+    			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block0) {
+    				if_block0.p(changed, ctx);
+    			} else {
+    				if_block0.d(1);
+    				if_block0 = current_block_type(ctx);
+    				if (if_block0) {
+    					if_block0.c();
+    					if_block0.m(a, null);
+    				}
+    			}
+
+    			if (ctx.msg.value.content.description) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_1$1(ctx);
+    					if_block1.c();
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(t0);
+    				detach(t1);
+    				detach(t2);
+    				detach(t3);
+    				detach(a);
+    			}
+
+    			if_block0.d();
+
+    			if (detaching) {
+    				detach(t4);
+    			}
+
+    			if (if_block1) if_block1.d(detaching);
+
+    			if (detaching) {
+    				detach(if_block1_anchor);
+    			}
+    		}
+    	};
+    }
+
+    // (43:6) {:else}
+    function create_else_block(ctx) {
+    	var span, t;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			t = text(ctx.otherName);
+    			span.className = "chip";
+    			add_location(span, file$6, 43, 8, 1223);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.otherName) {
+    				set_data(t, ctx.otherName);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+    		}
+    	};
+    }
+
+    // (38:6) {#if image}
+    function create_if_block_2$1(ctx) {
+    	var div, img, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			img = element("img");
+    			t0 = space();
+    			t1 = text(ctx.otherName);
+    			img.src = ctx.image;
+    			img.className = "avatar avatar-sm";
+    			img.alt = ctx.otherName;
+    			add_location(img, file$6, 39, 10, 1098);
+    			div.className = "chip";
+    			add_location(div, file$6, 38, 8, 1068);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, img);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.otherName) {
+    				img.alt = ctx.otherName;
+    				set_data(t1, ctx.otherName);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (47:4) {#if msg.value.content.description}
+    function create_if_block_1$1(ctx) {
+    	var blockquote, raw_value = ctx.ssb.markdown(ctx.msg.value.content.description);
+
+    	return {
+    		c: function create() {
+    			blockquote = element("blockquote");
+    			add_location(blockquote, file$6, 47, 6, 1332);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, blockquote, anchor);
+    			blockquote.innerHTML = raw_value;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.msg.value.content.description))) {
+    				blockquote.innerHTML = raw_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(blockquote);
+    			}
+    		}
+    	};
+    }
+
+    function create_fragment$6(ctx) {
+    	var div;
+
+    	function select_block_type(ctx) {
+    		if (ctx.isThisAboutFeeds) return create_if_block$1;
+    		return create_else_block_1;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block = current_block_type(ctx);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			if_block.c();
+    			div.className = "card-body";
+    			add_location(div, file$6, 33, 0, 926);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			if_block.m(div, null);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(div, null);
+    				}
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			if_block.d();
+    		}
+    	};
+    }
+
+    function instance$6($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let person = msg.value.author;
+      let otherLink = encodeURIComponent(msg.value.content.about);
+      let otherName = msg.value.content.name || msg.value.content.about;
+      let isThisAboutFeeds = true;
+      let verb =
+        msg.value.content.about === msg.value.author
+          ? "self-identifies"
+          : "identifies";
+
+      ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
+
+      if (otherName === msg.value.content.about) {
+        ssb.avatar(msg.value.content.about).then(data => { const $$result = (otherName = data.name); $$invalidate('otherName', otherName); return $$result; });
+      }
+
+      let image = msg.value.content.image
+        ? `http://localhost:8989/blobs/get/${encodeURIComponent(
+        msg.value.content.image
+      )}`
+        : false;
+
+      if (msg.value.content.description) {
+        $$invalidate('verb', verb += " with description");
+      }
+
+      if (msg.value.content.about.startsWith("%")) {
+        $$invalidate('isThisAboutFeeds', isThisAboutFeeds = false); // this appear to be a gathering
+      }
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<AboutMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		person,
+    		otherLink,
+    		otherName,
+    		isThisAboutFeeds,
+    		verb,
+    		image,
+    		ssb
+    	};
+    }
+
+    class AboutMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<AboutMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<AboutMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<AboutMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\PubMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$7 = "src\\messageTypes\\PubMsg.svelte";
+
+    function create_fragment$7(ctx) {
+    	var div, t0, t1, a, t2, t3, t4, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text(ctx.person);
+    			t1 = text(" announced pub\r\n  ");
+    			a = element("a");
+    			t2 = text(ctx.host);
+    			t3 = text(":");
+    			t4 = text(ctx.port);
+    			a.href = a_href_value = "/index.html?feed=" + ctx.encodedid + "#/profile";
+    			add_location(a, file$7, 22, 2, 569);
+    			div.className = "card-body";
+    			add_location(div, file$7, 20, 0, 515);
+    			dispose = listen(a, "click", ctx.goProfile);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    			append(div, a);
+    			append(a, t2);
+    			append(a, t3);
+    			append(a, t4);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.person) {
+    				set_data(t0, ctx.person);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$7($$self, $$props, $$invalidate) {
+    	let { msg } = $$props;
+
+      let encodedid = encodeURIComponent(msg.value.content.address.key);
+      let person = msg.value.author;
+      let host = msg.value.content.address.host;
+      let port = msg.value.content.address.port;
+
+      ssb.avatar(msg.value.author).then(data => { const $$result = (person = data.name); $$invalidate('person', person); return $$result; });
+
+      
+      const goProfile = ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        navigate("/profile", { feed: msg.value.content.address.key });
+      };
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<PubMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		encodedid,
+    		person,
+    		host,
+    		port,
+    		goProfile
+    	};
+    }
+
+    class PubMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<PubMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<PubMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<PubMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\messageTypes\BlogMsg.svelte generated by Svelte v3.4.4 */
+
+    const file$8 = "src\\messageTypes\\BlogMsg.svelte";
+
+    // (87:0) {#if thumbnail}
+    function create_if_block_6(ctx) {
+    	var div, img, img_src_value;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			img = element("img");
+    			img.src = img_src_value = "http://localhost:8989/blobs/get/" + encodeURIComponent(ctx.thumbnail);
+    			img.className = "img-responsive";
+    			img.alt = ctx.title;
+    			add_location(img, file$8, 88, 4, 1991);
+    			div.className = "card-image";
+    			add_location(div, file$8, 87, 2, 1962);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, img);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (96:2) {#if title}
+    function create_if_block_5(ctx) {
+    	var h1, t;
+
+    	return {
+    		c: function create() {
+    			h1 = element("h1");
+    			t = text(ctx.title);
+    			h1.className = "card-title h5";
+    			add_location(h1, file$8, 96, 4, 2179);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, h1, anchor);
+    			append(h1, t);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(h1);
+    			}
+    		}
+    	};
+    }
+
+    // (100:2) {#if toast}
+    function create_if_block_4(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Can't load blogpost: ");
+    			t1 = text(ctx.toastMsg);
+    			div.className = "toast toast-error";
+    			add_location(div, file$8, 100, 4, 2245);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.toastMsg) {
+    				set_data(t1, ctx.toastMsg);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (105:2) {:else}
+    function create_else_block_1$1(ctx) {
+    	var raw_before, raw_after;
+
+    	return {
+    		c: function create() {
+    			raw_before = element('noscript');
+    			raw_after = element('noscript');
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, raw_before, anchor);
+    			raw_before.insertAdjacentHTML("afterend", ctx.summary);
+    			insert(target, raw_after, anchor);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach_between(raw_before, raw_after);
+    				detach(raw_before);
+    				detach(raw_after);
+    			}
+    		}
+    	};
+    }
+
+    // (103:2) {#if showBlogpost}
+    function create_if_block_3(ctx) {
+    	var raw_before, raw_after;
+
+    	return {
+    		c: function create() {
+    			raw_before = element('noscript');
+    			raw_after = element('noscript');
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, raw_before, anchor);
+    			raw_before.insertAdjacentHTML("afterend", ctx.post);
+    			insert(target, raw_after, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.post) {
+    				detach_between(raw_before, raw_after);
+    				raw_before.insertAdjacentHTML("afterend", ctx.post);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach_between(raw_before, raw_after);
+    				detach(raw_before);
+    				detach(raw_after);
+    			}
+    		}
+    	};
+    }
+
+    // (117:6) {#if msg.value.content.root}
+    function create_if_block_2$2(ctx) {
+    	var span, a, t, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			a = element("a");
+    			t = text("(root)");
+    			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
+    			add_location(a, file$8, 118, 10, 2735);
+    			add_location(span, file$8, 117, 8, 2718);
+    			dispose = listen(a, "click", prevent_default(ctx.goRoot));
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, a);
+    			append(a, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (126:6) {#if msg.value.content.branch}
+    function create_if_block_1$2(ctx) {
+    	var span, a, t, a_href_value, dispose;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			a = element("a");
+    			t = text("(in reply to)");
+    			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
+    			add_location(a, file$8, 127, 10, 2988);
+    			add_location(span, file$8, 126, 8, 2971);
+    			dispose = listen(a, "click", prevent_default(ctx.goBranch));
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, a);
+    			append(a, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (145:6) {:else}
+    function create_else_block$1(ctx) {
+    	var button, dispose;
+
+    	return {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "Close Blogpost";
+    			button.className = "btn btn-primary";
+    			toggle_class(button, "locating", ctx.loading);
+    			add_location(button, file$8, 145, 8, 3514);
+    			dispose = listen(button, "click", ctx.click_handler);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, button, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.loading) {
+    				toggle_class(button, "locating", ctx.loading);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(button);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (138:6) {#if !showBlogpost}
+    function create_if_block$2(ctx) {
+    	var button, dispose;
+
+    	return {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "Read Blogpost";
+    			button.className = "btn btn-primary";
+    			toggle_class(button, "locating", ctx.loading);
+    			add_location(button, file$8, 138, 8, 3335);
+    			dispose = listen(button, "click", ctx.displayBlogPost);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, button, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.loading) {
+    				toggle_class(button, "locating", ctx.loading);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(button);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$8(ctx) {
+    	var t0, div0, t1, t2, t3, div4, div3, div1, label, input, t4, i, t5, t6, t7, t8, div2, button, t10, dispose;
+
+    	var if_block0 = (ctx.thumbnail) && create_if_block_6(ctx);
+
+    	var if_block1 = (ctx.title) && create_if_block_5(ctx);
+
+    	var if_block2 = (ctx.toast) && create_if_block_4(ctx);
+
+    	function select_block_type(ctx) {
+    		if (ctx.showBlogpost) return create_if_block_3;
+    		return create_else_block_1$1;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block3 = current_block_type(ctx);
+
+    	var if_block4 = (ctx.msg.value.content.root) && create_if_block_2$2(ctx);
+
+    	var if_block5 = (ctx.msg.value.content.branch) && create_if_block_1$2(ctx);
+
+    	function select_block_type_1(ctx) {
+    		if (!ctx.showBlogpost) return create_if_block$2;
+    		return create_else_block$1;
+    	}
+
+    	var current_block_type_1 = select_block_type_1(ctx);
+    	var if_block6 = current_block_type_1(ctx);
+
+    	return {
+    		c: function create() {
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			div0 = element("div");
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			if (if_block2) if_block2.c();
+    			t2 = space();
+    			if_block3.c();
+    			t3 = space();
+    			div4 = element("div");
+    			div3 = element("div");
+    			div1 = element("div");
+    			label = element("label");
+    			input = element("input");
+    			t4 = space();
+    			i = element("i");
+    			t5 = text("\n        Like");
+    			t6 = space();
+    			if (if_block4) if_block4.c();
+    			t7 = space();
+    			if (if_block5) if_block5.c();
+    			t8 = space();
+    			div2 = element("div");
+    			button = element("button");
+    			button.textContent = "Reply";
+    			t10 = space();
+    			if_block6.c();
+    			div0.className = "card-body";
+    			add_location(div0, file$8, 94, 0, 2137);
+    			attr(input, "type", "checkbox");
+    			input.checked = ctx.liked;
+    			add_location(input, file$8, 112, 8, 2549);
+    			i.className = "form-icon";
+    			add_location(i, file$8, 113, 8, 2623);
+    			label.className = "form-switch d-inline";
+    			add_location(label, file$8, 111, 6, 2504);
+    			div1.className = "column col-6";
+    			add_location(div1, file$8, 110, 4, 2471);
+    			button.className = "btn";
+    			add_location(button, file$8, 136, 6, 3249);
+    			div2.className = "column col-6 text-right";
+    			add_location(div2, file$8, 135, 4, 3205);
+    			div3.className = "columns col-gapless";
+    			add_location(div3, file$8, 109, 2, 2433);
+    			div4.className = "card-footer";
+    			add_location(div4, file$8, 108, 0, 2405);
+
+    			dispose = [
+    				listen(input, "change", ctx.likeChanged),
+    				listen(button, "click", ctx.reply)
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t0, anchor);
+    			insert(target, div0, anchor);
+    			if (if_block1) if_block1.m(div0, null);
+    			append(div0, t1);
+    			if (if_block2) if_block2.m(div0, null);
+    			append(div0, t2);
+    			if_block3.m(div0, null);
+    			insert(target, t3, anchor);
+    			insert(target, div4, anchor);
+    			append(div4, div3);
+    			append(div3, div1);
+    			append(div1, label);
+    			append(label, input);
+    			append(label, t4);
+    			append(label, i);
+    			append(label, t5);
+    			append(div1, t6);
+    			if (if_block4) if_block4.m(div1, null);
+    			append(div1, t7);
+    			if (if_block5) if_block5.m(div1, null);
+    			append(div3, t8);
+    			append(div3, div2);
+    			append(div2, button);
+    			append(div2, t10);
+    			if_block6.m(div2, null);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.thumbnail) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_6(ctx);
+    					if_block0.c();
+    					if_block0.m(t0.parentNode, t0);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.title) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_5(ctx);
+    					if_block1.c();
+    					if_block1.m(div0, t1);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (ctx.toast) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    				} else {
+    					if_block2 = create_if_block_4(ctx);
+    					if_block2.c();
+    					if_block2.m(div0, t2);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block3) {
+    				if_block3.p(changed, ctx);
+    			} else {
+    				if_block3.d(1);
+    				if_block3 = current_block_type(ctx);
+    				if (if_block3) {
+    					if_block3.c();
+    					if_block3.m(div0, null);
+    				}
+    			}
+
+    			if (changed.liked) {
+    				input.checked = ctx.liked;
+    			}
+
+    			if (ctx.msg.value.content.root) {
+    				if (if_block4) {
+    					if_block4.p(changed, ctx);
+    				} else {
+    					if_block4 = create_if_block_2$2(ctx);
+    					if_block4.c();
+    					if_block4.m(div1, t7);
+    				}
+    			} else if (if_block4) {
+    				if_block4.d(1);
+    				if_block4 = null;
+    			}
+
+    			if (ctx.msg.value.content.branch) {
+    				if (if_block5) {
+    					if_block5.p(changed, ctx);
+    				} else {
+    					if_block5 = create_if_block_1$2(ctx);
+    					if_block5.c();
+    					if_block5.m(div1, null);
+    				}
+    			} else if (if_block5) {
+    				if_block5.d(1);
+    				if_block5 = null;
+    			}
+
+    			if (current_block_type_1 === (current_block_type_1 = select_block_type_1(ctx)) && if_block6) {
+    				if_block6.p(changed, ctx);
+    			} else {
+    				if_block6.d(1);
+    				if_block6 = current_block_type_1(ctx);
+    				if (if_block6) {
+    					if_block6.c();
+    					if_block6.m(div2, null);
+    				}
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+
+    			if (detaching) {
+    				detach(t0);
+    				detach(div0);
+    			}
+
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    			if_block3.d();
+
+    			if (detaching) {
+    				detach(t3);
+    				detach(div4);
+    			}
+
+    			if (if_block4) if_block4.d();
+    			if (if_block5) if_block5.d();
+    			if_block6.d();
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function instance$8($$self, $$props, $$invalidate) {
+    	let $routeLocation;
+
+    	validate_store(routeLocation, 'routeLocation');
+    	subscribe($$self, routeLocation, $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
+
+    	let { msg } = $$props;
+
+      let content = msg.value.content;
+
+      let summary = ssb.markdown(content.summary);
+      let thumbnail = content.thumbnail || false;
+      let title = content.title || false;
+      let showBlogpost = false;
+      let loading = false;
+      let toast = false;
+      let toastMsg = "";
+      let post = summary;
+
+      let liked = false;
+
+      ssb.votes(msg.key).then(ms => {
+        ms.forEach(m => {
+          let author = m.value.author;
+          if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+            $$invalidate('liked', liked = true);
+          }
+        });
+      });
+
+      const likeChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb
+            .like(msg.key)
+            .then(() => console.log("liked", msg.key))
+            .catch(() => { const $$result = (liked = false); $$invalidate('liked', liked); return $$result; });
+        } else {
+          ssb
+            .unlike(msg.key)
+            .then(() => console.log("unliked", msg.key))
+            .catch(() => { const $$result = (liked = true); $$invalidate('liked', liked); return $$result; });
+        }
+      };
+
+      const displayBlogPost = ev => {
+        $$invalidate('loading', loading = true);
+        console.log("loading blogpost", content.blog);
+
+        ssb
+          .getBlob(content.blog)
+          .then(data => {
+            $$invalidate('post', post = ssb.markdown(data));
+            $$invalidate('showBlogpost', showBlogpost = true);
+          })
+          .catch(err => {
+            console.error("can't load blog post", err);
+            $$invalidate('toast', toast = true);
+            $$invalidate('toastMsg', toastMsg = err);
+          });
+      };
+
+      const reply = ev => {
+        let rootId = msg.value.content.root || msg.key;
+        let channel = msg.value.content.channel;
+        navigate("/compose", { root: rootId, branch: msg.key, channel });
+      };
+
+      const goRoot = ev => {
+        let rootId = msg.value.content.root || msg.key;
+        navigate("/thread", { thread: rootId });
+      };
+
+      const goBranch = ev => {
+        let branchId = msg.value.content.branch || msg.key;
+        navigate("/thread", { thread: branchId });
+      };
+
+      if ($routeLocation == "/thread") {
+        setTimeout(displayBlogPost, 100);
+      }
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<BlogMsg> was created with unknown prop '${key}'`);
+    	});
+
+    	function click_handler() {
+    		const $$result = (showBlogpost = false);
+    		$$invalidate('showBlogpost', showBlogpost);
+    		return $$result;
+    	}
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		summary,
+    		thumbnail,
+    		title,
+    		showBlogpost,
+    		loading,
+    		toast,
+    		toastMsg,
+    		post,
+    		liked,
+    		likeChanged,
+    		displayBlogPost,
+    		reply,
+    		goRoot,
+    		goBranch,
+    		click_handler
+    	};
+    }
+
+    class BlogMsg extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<BlogMsg> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<BlogMsg>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<BlogMsg>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\parts\AvatarChip.svelte generated by Svelte v3.4.4 */
+
+    const file$9 = "src\\parts\\AvatarChip.svelte";
+
+    // (29:0) {:else}
+    function create_else_block$2(ctx) {
+    	var span, t, dispose;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			t = text(ctx.name);
+    			span.className = "chip";
+    			add_location(span, file$9, 29, 2, 566);
+    			dispose = listen(span, "click", ctx.avatarClick);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.name) {
+    				set_data(t, ctx.name);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (24:0) {#if image}
+    function create_if_block$3(ctx) {
+    	var div, img, t0, t1, dispose;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			img = element("img");
+    			t0 = space();
+    			t1 = text(ctx.name);
+    			img.src = ctx.image;
+    			img.className = "avatar avatar-sm";
+    			add_location(img, file$9, 25, 4, 490);
+    			div.className = "chip";
+    			add_location(div, file$9, 24, 2, 444);
+    			dispose = listen(div, "click", ctx.avatarClick);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, img);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.image) {
+    				img.src = ctx.image;
+    			}
+
+    			if (changed.name) {
+    				set_data(t1, ctx.name);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$9(ctx) {
+    	var if_block_anchor;
+
+    	function select_block_type(ctx) {
+    		if (ctx.image) return create_if_block$3;
+    		return create_else_block$2;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block = current_block_type(ctx);
+
+    	return {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+
+    			if (detaching) {
+    				detach(if_block_anchor);
+    			}
+    		}
+    	};
+    }
+
+    function instance$9($$self, $$props, $$invalidate) {
+    	let { feed } = $$props;
+
+      let image = false;
+      let name = feed;
+      const dispatch = createEventDispatcher();
+
+      ssb.avatar(feed).then(data => {
+        if (data.image !== null) {
+          $$invalidate('image', image = `http://localhost:8989/blobs/get/${data.image}`);
+        }
+        $$invalidate('name', name = data.name);
+      });
+
+      function avatarClick() {
+        dispatch("avatarClick", {
+          feed,
+          name
+        });
+      }
+
+    	const writable_props = ['feed'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<AvatarChip> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$set = $$props => {
+    		if ('feed' in $$props) $$invalidate('feed', feed = $$props.feed);
+    	};
+
+    	return { feed, image, name, avatarClick };
+    }
+
+    class AvatarChip extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$9, create_fragment$9, safe_not_equal, ["feed"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.feed === undefined && !('feed' in props)) {
+    			console.warn("<AvatarChip> was created without expected prop 'feed'");
+    		}
+    	}
+
+    	get feed() {
+    		throw new Error("<AvatarChip>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set feed(value) {
+    		throw new Error("<AvatarChip>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    var timeago = function(){};
+
+    timeago.prototype.simple = function(date_time) {
+        // today date and time in milliseconds 
+        var today = Date.now();
+        var dateParse = Date.parse(date_time);
+        
+        //We will perform some test - if there is error, we will throw error to console and exit, no change will be on the data.
+        try {
+            // We need to check if we able to parse the Date (if the result is NaN, this is an issue)
+            if(dateParse !== dateParse) throw "timeago-simple: Please check date and time format! Unable to parse the date & time: " + date_time;
+        }
+        catch(err) {
+            console.error(err);
+            return (date_time);
+        }
+        
+        if((dateParse - today) < 0) {
+    		return pastCalc(date_time);
+    	} else {
+    		return futureCalc(date_time);
+    	}
+    };
+
+
+    // General help functions for time calculations
+    function pastCalc(timeData){
+
+        // today date and time in milliseconds 
+        var today = Date.now();
+            
+        // parsing post date and time into milliseconds format
+        timeData = Date.parse(timeData);
+
+        var seconds = (today - timeData) / 1000;
+        var minutes = (seconds / 60);
+        var hours = (seconds / 3600);
+        if(seconds < 60 && minutes < 1) {
+            return (seconds === 1 ? Math.round(seconds) + " second ago" : Math.round(seconds) + " seconds ago");
+        }
+        if(minutes < 60 && hours < 1) {
+            return (minutes === 1 ? Math.round(minutes) + " minute ago" : Math.round(minutes) + " minutes ago");
+        }
+        if(hours > 24){
+            var days = hours / 24;
+            if (days > 30) {
+                var month = days / 30;
+                if (month > 12) {
+                    var years = month / 12;
+                    if (years > 0) {
+                        return (years === 1 ? Math.ceil(years) + " year ago" : Math.ceil(years) + " years ago");
+                    }
+                }
+                return (Math.round(month) + " month ago");
+            }
+            return (days === 1 ? Math.round(days) + " day ago" : Math.round(days) + " days ago");
+        } else {
+            return (hours === 1 ? Math.round(hours) + " hour ago" : Math.round(hours) + " hours ago");
+        }
+            
+    }
+
+    function futureCalc(timeData){
+
+        // today date and time in milliseconds 
+        var today = Date.now();
+         
+        // parsing post date and time into milliseconds format
+        timeData = Date.parse(timeData);
+        var seconds = (timeData - today) / 1000;
+        var minutes = (seconds / 60);
+        var hours = (seconds / 3600);
+        if(seconds < 60 && minutes < 1) {
+            return (seconds === 1 ? "in " + Math.round(seconds) + " second" : "in " + Math.round(seconds) + " seconds");
+        }
+        if(minutes < 60 && hours < 1) {
+            return (minutes === 1 ? "in " + Math.round(minutes) + " minute" : "in " + Math.round(minutes) + " minutes");
+        }
+        if(hours > 24){
+            var days = hours / 24;
+            if (days > 30) {
+                var month = days / 30;
+                if (month > 12) {
+                    var years = month / 12;
+                    if (years > 0) {
+                        return (years === 1 ? "in " + Math.ceil(years) + " year" : "in " + Math.ceil(years) + " years"); 
+                    }
+                }
+               return ("in " + Math.round(month) + " month"); 
+            }
+            return (days === 1 ? "in " + Math.round(days) + " day" : "in " + Math.round(days) + " days");
+        } else {
+            return (hours === 1 ? "in " + Math.round(hours) + " hour" : "in " + Math.round(hours) + " hours");
+        }
+    }
+
+    // Future calculation
+    timeago.prototype.future = function(timeData) {
+        console.warn("timeago-simple: .future function is depricated! Please use .simple for both past and future dates.");
+        // today date and time in milliseconds 
+        var today = Date.now();
+
+        //We will perform some test - if there is error, we will throw error to console and exit, no change will be on the data.
+        try {
+            // We need to check if we able to parse the Date (if the result is NaN, this is an issue)
+            if(Date.parse(timeData) !== Date.parse(timeData)) throw "timeago-simple: Please check date and time format! Unable to parse the date & time: " + timeData;
+            // Need to check if it's really future date to parse
+            if((Date.parse(timeData) - today) < 0) throw "timeago-simple: Looks like it's more relevant case for timeago.simple"; 
+        }
+        catch(err) {
+            console.error(err);
+            return (timeData);
+        }
+      
+        // parsing post date and time into milliseconds format
+        timeData = Date.parse(timeData);
+        var seconds = (timeData - today) / 1000;
+        var minutes = (seconds / 60);
+        var hours = (seconds / 3600);
+        /* istanbul ignore if */
+        if(seconds < 60 && minutes < 1) {
+            return (seconds === 1 ? "in " + Math.round(seconds) + " second" : "in " + Math.round(seconds) + " seconds");
+        }
+        /* istanbul ignore if */
+        if(minutes < 60 && hours < 1) {
+        	return (minutes === 1 ? "in " + Math.round(minutes) + " minute" : "in " + Math.round(minutes) + " minutes");
+        }
+        /* istanbul ignore if */
+        if(hours > 24){
+            var days = hours / 24;
+            if (days > 30) {
+                var month = days / 30;
+                if (month > 12) {
+                    var years = month / 12;
+                    if (years > 0) {
+                        return (years === 1 ? "in " + Math.ceil(years) + " year" : "in " + Math.ceil(years) + " years");
+                    }
+                }
+    	        return ("in " + Math.round(month) + " month");
+            }
+            return (days === 1 ? "in " + Math.round(days) + " day" : "in " + Math.round(days) + " days");
+        }
+        return (hours === 1 ? "in " + Math.round(hours) + " hour" : "in " + Math.round(hours) + " hours");
+    };
+
+
+    var timeagoSimple = new timeago();
+
+    const timestamp = t => {
+
+        return timeagoSimple.simple(new Date(t))
+    };
+
+    /* src\messageTypes\MessageRenderer.svelte generated by Svelte v3.4.4 */
+
+    const file$a = "src\\messageTypes\\MessageRenderer.svelte";
+
+    // (141:4) {#if privateMsgForYou}
+    function create_if_block_3$1(ctx) {
+    	var span;
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			span.textContent = "PRIVATE";
+    			span.className = "label";
+    			add_location(span, file$a, 141, 4, 3274);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+    		}
+    	};
+    }
+
+    // (150:8) {#if msg.value.content.channel}
+    function create_if_block_2$3(ctx) {
+    	var t0, t1_value = ctx.msg.value.content.channel, t1;
+
+    	return {
+    		c: function create() {
+    			t0 = text("#");
+    			t1 = text(t1_value);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, t0, anchor);
+    			insert(target, t1, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && t1_value !== (t1_value = ctx.msg.value.content.channel)) {
+    				set_data(t1, t1_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(t0);
+    				detach(t1);
+    			}
+    		}
+    	};
+    }
+
+    // (186:44) {:else}
+    function create_else_block_1$2(ctx) {
+    	var t;
+
+    	return {
+    		c: function create() {
+    			t = text("Close raw message");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, t, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(t);
+    			}
+    		}
+    	};
+    }
+
+    // (186:14) {#if !showRaw}
+    function create_if_block_1$3(ctx) {
+    	var t;
+
+    	return {
+    		c: function create() {
+    			t = text("Show raw message");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, t, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(t);
+    			}
+    		}
+    	};
+    }
+
+    // (195:2) {:else}
+    function create_else_block$3(ctx) {
+    	var div3, div2, div0, pre, code, t0, t1, div1, p0, t2, em, t3, t4, t5, p1, t6, a, t7, t8, a_href_value, t9;
+
+    	return {
+    		c: function create() {
+    			div3 = element("div");
+    			div2 = element("div");
+    			div0 = element("div");
+    			pre = element("pre");
+    			code = element("code");
+    			t0 = text(ctx.rawContent);
+    			t1 = space();
+    			div1 = element("div");
+    			p0 = element("p");
+    			t2 = text("This is a message of type\n            ");
+    			em = element("em");
+    			t3 = text(ctx.type);
+    			t4 = text("\n            .");
+    			t5 = space();
+    			p1 = element("p");
+    			t6 = text("To learn more about it, go to\n            ");
+    			a = element("a");
+    			t7 = text("the documentation about messages with type ");
+    			t8 = text(ctx.type);
+    			t9 = text("\n            .");
+    			add_location(code, file$a, 199, 12, 5173);
+    			pre.className = "code";
+    			add_location(pre, file$a, 198, 10, 5142);
+    			div0.className = "column col-9";
+    			add_location(div0, file$a, 197, 8, 5105);
+    			add_location(em, file$a, 205, 12, 5330);
+    			add_location(p0, file$a, 203, 10, 5276);
+    			a.target = "_blank";
+    			a.href = a_href_value = "/docs/index.html#/message_types/" + ctx.type;
+    			add_location(a, file$a, 210, 12, 5443);
+    			add_location(p1, file$a, 208, 10, 5385);
+    			div1.className = "column col-3";
+    			add_location(div1, file$a, 202, 8, 5239);
+    			div2.className = "columns";
+    			add_location(div2, file$a, 196, 6, 5075);
+    			div3.className = "card-body";
+    			add_location(div3, file$a, 195, 4, 5045);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div3, anchor);
+    			append(div3, div2);
+    			append(div2, div0);
+    			append(div0, pre);
+    			append(pre, code);
+    			append(code, t0);
+    			append(div2, t1);
+    			append(div2, div1);
+    			append(div1, p0);
+    			append(p0, t2);
+    			append(p0, em);
+    			append(em, t3);
+    			append(p0, t4);
+    			append(div1, t5);
+    			append(div1, p1);
+    			append(p1, t6);
+    			append(p1, a);
+    			append(a, t7);
+    			append(a, t8);
+    			append(p1, t9);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.type) {
+    				set_data(t3, ctx.type);
+    				set_data(t8, ctx.type);
+    			}
+
+    			if ((changed.type) && a_href_value !== (a_href_value = "/docs/index.html#/message_types/" + ctx.type)) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div3);
+    			}
+    		}
+    	};
+    }
+
+    // (193:2) {#if !showRaw}
+    function create_if_block$4(ctx) {
+    	var switch_instance_anchor, current;
+
+    	var switch_value = ctx.selectedRenderer;
+
+    	function switch_props(ctx) {
+    		return {
+    			props: { msg: ctx.msg },
+    			$$inline: true
+    		};
+    	}
+
+    	if (switch_value) {
+    		var switch_instance = new switch_value(switch_props(ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			if (switch_instance) switch_instance.$$.fragment.c();
+    			switch_instance_anchor = empty();
+    		},
+
+    		m: function mount(target, anchor) {
+    			if (switch_instance) {
+    				mount_component(switch_instance, target, anchor);
+    			}
+
+    			insert(target, switch_instance_anchor, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var switch_instance_changes = {};
+    			if (changed.msg) switch_instance_changes.msg = ctx.msg;
+
+    			if (switch_value !== (switch_value = ctx.selectedRenderer)) {
+    				if (switch_instance) {
+    					group_outros();
+    					const old_component = switch_instance;
+    					on_outro(() => {
+    						old_component.$destroy();
+    					});
+    					old_component.$$.fragment.o(1);
+    					check_outros();
+    				}
+
+    				if (switch_value) {
+    					switch_instance = new switch_value(switch_props(ctx));
+
+    					switch_instance.$$.fragment.c();
+    					switch_instance.$$.fragment.i(1);
+    					mount_component(switch_instance, switch_instance_anchor.parentNode, switch_instance_anchor);
+    				} else {
+    					switch_instance = null;
+    				}
+    			}
+
+    			else if (switch_value) {
+    				switch_instance.$set(switch_instance_changes);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (switch_instance) switch_instance.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (switch_instance) switch_instance.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(switch_instance_anchor);
+    			}
+
+    			if (switch_instance) switch_instance.$destroy(detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$a(ctx) {
+    	var div10, div9, div6, div5, div4, div1, div0, img, t0, div3, div2, t1, t2, small, t3_value = timestamp(ctx.msg.value.timestamp), t3, t4, t5, div8, span0, t6, div7, span1, i0, t7, ul, li0, a0, i1, t8, a0_href_value, t9, li1, a1, i2, t10, t11, li2, a2, i3, t12, t13, li3, t14, li4, a3, i4, t15, t16, current_block_type_index, if_block3, current, dispose;
+
+    	var if_block0 = (ctx.privateMsgForYou) && create_if_block_3$1(ctx);
+
+    	var if_block1 = (ctx.msg.value.content.channel) && create_if_block_2$3(ctx);
+
+    	function select_block_type(ctx) {
+    		if (!ctx.showRaw) return create_if_block_1$3;
+    		return create_else_block_1$2;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block2 = current_block_type(ctx);
+
+    	var if_block_creators = [
+    		create_if_block$4,
+    		create_else_block$3
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type_1(ctx) {
+    		if (!ctx.showRaw) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type_1(ctx);
+    	if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div10 = element("div");
+    			div9 = element("div");
+    			div6 = element("div");
+    			div5 = element("div");
+    			div4 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			img = element("img");
+    			t0 = space();
+    			div3 = element("div");
+    			div2 = element("div");
+    			t1 = text(ctx.name);
+    			t2 = space();
+    			small = element("small");
+    			t3 = text(t3_value);
+    			t4 = space();
+    			if (if_block0) if_block0.c();
+    			t5 = space();
+    			div8 = element("div");
+    			span0 = element("span");
+    			if (if_block1) if_block1.c();
+    			t6 = space();
+    			div7 = element("div");
+    			span1 = element("span");
+    			i0 = element("i");
+    			t7 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			a0 = element("a");
+    			i1 = element("i");
+    			t8 = text("\n              Open in new tab");
+    			t9 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			i2 = element("i");
+    			t10 = text("\n              Copy permalink to clipboard");
+    			t11 = space();
+    			li2 = element("li");
+    			a2 = element("a");
+    			i3 = element("i");
+    			t12 = text("\n              Copy message id to clipboard");
+    			t13 = space();
+    			li3 = element("li");
+    			t14 = space();
+    			li4 = element("li");
+    			a3 = element("a");
+    			i4 = element("i");
+    			t15 = space();
+    			if_block2.c();
+    			t16 = space();
+    			if_block3.c();
+    			img.src = ctx.image;
+    			img.className = "avatar avatar-lg";
+    			img.alt = ctx.feed;
+    			add_location(img, file$a, 128, 14, 2888);
+    			div0.className = "example-tile-icon";
+    			add_location(div0, file$a, 127, 12, 2842);
+    			div1.className = "tile-icon";
+    			add_location(div1, file$a, 126, 10, 2806);
+    			div2.className = "tile-title";
+    			add_location(div2, file$a, 132, 12, 3029);
+    			small.className = "tile-subtitle text-gray";
+    			add_location(small, file$a, 133, 12, 3078);
+    			div3.className = "tile-content";
+    			add_location(div3, file$a, 131, 10, 2990);
+    			div4.className = "tile tile-centered feed-display svelte-m5ll6n";
+    			add_location(div4, file$a, 123, 8, 2709);
+    			div5.className = "card-title";
+    			add_location(div5, file$a, 122, 6, 2676);
+    			div6.className = "float-left";
+    			add_location(div6, file$a, 121, 4, 2645);
+    			span0.className = "text-gray channel-display svelte-m5ll6n";
+    			add_location(span0, file$a, 144, 6, 3355);
+    			i0.className = "icon icon-more-vert";
+    			add_location(i0, file$a, 157, 10, 3825);
+    			span1.className = "btn btn-link dropdown-toggle";
+    			span1.tabIndex = "0";
+    			toggle_class(span1, "active", ctx.dropdownActive);
+    			add_location(span1, file$a, 152, 8, 3636);
+    			i1.className = "icon icon-share";
+    			add_location(i1, file$a, 165, 14, 4073);
+    			a0.href = a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
+    			a0.target = "_blank";
+    			add_location(a0, file$a, 162, 12, 3958);
+    			li0.className = "menu-item";
+    			add_location(li0, file$a, 160, 10, 3922);
+    			i2.className = "icon icon-copy";
+    			add_location(i2, file$a, 171, 14, 4278);
+    			a1.href = "#";
+    			add_location(a1, file$a, 170, 12, 4211);
+    			li1.className = "menu-item";
+    			add_location(li1, file$a, 169, 10, 4176);
+    			i3.className = "icon icon-copy";
+    			add_location(i3, file$a, 177, 14, 4489);
+    			a2.href = "#";
+    			add_location(a2, file$a, 176, 12, 4427);
+    			li2.className = "menu-item";
+    			add_location(li2, file$a, 175, 10, 4392);
+    			li3.className = "divider";
+    			li3.dataset.content = "FOR THE CURIOUS";
+    			add_location(li3, file$a, 181, 10, 4604);
+    			i4.className = "icon icon-message";
+    			add_location(i4, file$a, 184, 14, 4773);
+    			a3.href = "#";
+    			add_location(a3, file$a, 183, 12, 4703);
+    			li4.className = "menu-item";
+    			add_location(li4, file$a, 182, 10, 4668);
+    			ul.className = "menu menu-right svelte-m5ll6n";
+    			add_location(ul, file$a, 159, 8, 3883);
+    			div7.className = "dropdown";
+    			add_location(div7, file$a, 151, 6, 3605);
+    			div8.className = "float-right";
+    			add_location(div8, file$a, 143, 4, 3323);
+    			div9.className = "card-header";
+    			add_location(div9, file$a, 120, 2, 2615);
+    			div10.className = "card m-2 svelte-m5ll6n";
+    			toggle_class(div10, "private", ctx.privateMsgForYou);
+    			add_location(div10, file$a, 119, 0, 2557);
+
+    			dispose = [
+    				listen(div4, "click", ctx.goProfile),
+    				listen(span0, "click", ctx.click_handler),
+    				listen(span1, "click", ctx.click_handler_1),
+    				listen(a1, "click", prevent_default(ctx.copyPermalink)),
+    				listen(a2, "click", prevent_default(ctx.copyHash)),
+    				listen(a3, "click", prevent_default(ctx.toggleRawMessage))
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div10, anchor);
+    			append(div10, div9);
+    			append(div9, div6);
+    			append(div6, div5);
+    			append(div5, div4);
+    			append(div4, div1);
+    			append(div1, div0);
+    			append(div0, img);
+    			append(div4, t0);
+    			append(div4, div3);
+    			append(div3, div2);
+    			append(div2, t1);
+    			append(div3, t2);
+    			append(div3, small);
+    			append(small, t3);
+    			append(div9, t4);
+    			if (if_block0) if_block0.m(div9, null);
+    			append(div9, t5);
+    			append(div9, div8);
+    			append(div8, span0);
+    			if (if_block1) if_block1.m(span0, null);
+    			append(div8, t6);
+    			append(div8, div7);
+    			append(div7, span1);
+    			append(span1, i0);
+    			append(div7, t7);
+    			append(div7, ul);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(a0, i1);
+    			append(a0, t8);
+    			append(ul, t9);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(a1, i2);
+    			append(a1, t10);
+    			append(ul, t11);
+    			append(ul, li2);
+    			append(li2, a2);
+    			append(a2, i3);
+    			append(a2, t12);
+    			append(ul, t13);
+    			append(ul, li3);
+    			append(ul, t14);
+    			append(ul, li4);
+    			append(li4, a3);
+    			append(a3, i4);
+    			append(a3, t15);
+    			if_block2.m(a3, null);
+    			append(div10, t16);
+    			if_blocks[current_block_type_index].m(div10, null);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (!current || changed.image) {
+    				img.src = ctx.image;
+    			}
+
+    			if (!current || changed.name) {
+    				set_data(t1, ctx.name);
+    			}
+
+    			if ((!current || changed.msg) && t3_value !== (t3_value = timestamp(ctx.msg.value.timestamp))) {
+    				set_data(t3, t3_value);
+    			}
+
+    			if (ctx.privateMsgForYou) {
+    				if (!if_block0) {
+    					if_block0 = create_if_block_3$1(ctx);
+    					if_block0.c();
+    					if_block0.m(div9, t5);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.msg.value.content.channel) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_2$3(ctx);
+    					if_block1.c();
+    					if_block1.m(span0, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (changed.dropdownActive) {
+    				toggle_class(span1, "active", ctx.dropdownActive);
+    			}
+
+    			if ((!current || changed.msg) && a0_href_value !== (a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread")) {
+    				a0.href = a0_href_value;
+    			}
+
+    			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
+    				if_block2.d(1);
+    				if_block2 = current_block_type(ctx);
+    				if (if_block2) {
+    					if_block2.c();
+    					if_block2.m(a3, null);
+    				}
+    			}
+
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type_1(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block3.o(1);
+    				check_outros();
+
+    				if_block3 = if_blocks[current_block_type_index];
+    				if (!if_block3) {
+    					if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block3.c();
+    				}
+    				if_block3.i(1);
+    				if_block3.m(div10, null);
+    			}
+
+    			if (changed.privateMsgForYou) {
+    				toggle_class(div10, "private", ctx.privateMsgForYou);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block3) if_block3.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block3) if_block3.o();
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div10);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if_block2.d();
+    			if_blocks[current_block_type_index].d();
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function instance$a($$self, $$props, $$invalidate) {
+    	
+
+      let { msg } = $$props;
+
+      let type;
+      let feed = msg.value.author;
+      let showRaw = false;
+      let rawContent = JSON.stringify(msg, null, 2);
+      let dropdownActive = false;
+      let privateMsgForYou = false;
+
+      let messageTypes = {
+        "*": GenericMsg,
+        post: PostMsg,
+        vote: VoteMsg,
+        private: PrivateMsg,
+        contact: ContactMsg,
+        channel: ChannelMsg,
+        about: AboutMsg,
+        pub: PubMsg,
+        blog: BlogMsg
+      };
+
+      let selectedRenderer;
+
+      if (typeof msg.value.content === "string") {
+        $$invalidate('type', type = "private");
+      } else {
+        $$invalidate('type', type = msg.value.content.type);
+      }
+
+      if (msg.value.private) {
+        $$invalidate('privateMsgForYou', privateMsgForYou = true);
+      }
+
+      if (messageTypes.hasOwnProperty(type)) {
+        $$invalidate('selectedRenderer', selectedRenderer = messageTypes[type]);
+      } else {
+        $$invalidate('selectedRenderer', selectedRenderer = messageTypes["*"]);
+      }
+
+      let image = "images/icon.png";
+      let name = feed;
+
+      ssb.avatar(feed).then(data => {
+        if (data.image !== null) {
+          $$invalidate('image', image = `http://localhost:8989/blobs/get/${data.image}`);
+        }
+        $$invalidate('name', name = data.name);
+      });
+
+      const toggleRawMessage = () => {
+        $$invalidate('showRaw', showRaw = !showRaw);
+        $$invalidate('dropdownActive', dropdownActive = false);
+      };
+
+      const copyPermalink = () => {
+        navigator.clipboard
+          .writeText(`ssb:${msg.key}`)
+          .then(() => console.log("permalink copied"))
+          .catch(err => console.error("can't copy permalink", err));
+
+        $$invalidate('dropdownActive', dropdownActive = false);
+      };
+
+      const copyHash = () => {
+        navigator.clipboard
+          .writeText(`${msg.key}`)
+          .then(() => console.log("hash copied"))
+          .catch(err => console.error("can't copy hash", err));
+
+        $$invalidate('dropdownActive', dropdownActive = false);
+      };
+
+      const goProfile = (ev) => {
+         if (ev.ctrlKey) {
+          window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
+        } else {
+          navigate('/profile', { feed });
+        }
+      };
+
+    	const writable_props = ['msg'];
+    	Object.keys($$props).forEach(key => {
+    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<MessageRenderer> was created with unknown prop '${key}'`);
+    	});
+
+    	function click_handler() {
+    		return navigate('/channel', {
+    	            channel: msg.value.content.channel
+    	          });
+    	}
+
+    	function click_handler_1() {
+    		const $$result = (dropdownActive = !dropdownActive);
+    		$$invalidate('dropdownActive', dropdownActive);
+    		return $$result;
+    	}
+
+    	$$self.$set = $$props => {
+    		if ('msg' in $$props) $$invalidate('msg', msg = $$props.msg);
+    	};
+
+    	return {
+    		msg,
+    		type,
+    		feed,
+    		showRaw,
+    		rawContent,
+    		dropdownActive,
+    		privateMsgForYou,
+    		selectedRenderer,
+    		image,
+    		name,
+    		toggleRawMessage,
+    		copyPermalink,
+    		copyHash,
+    		goProfile,
+    		encodeURIComponent,
+    		click_handler,
+    		click_handler_1
+    	};
+    }
+
+    class MessageRenderer extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$a, create_fragment$a, safe_not_equal, ["msg"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.msg === undefined && !('msg' in props)) {
+    			console.warn("<MessageRenderer> was created without expected prop 'msg'");
+    		}
+    	}
+
+    	get msg() {
+    		throw new Error("<MessageRenderer>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set msg(value) {
+    		throw new Error("<MessageRenderer>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\views\Public.svelte generated by Svelte v3.4.4 */
+
+    const file$b = "src\\views\\Public.svelte";
+
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.msg = list[i];
+    	return child_ctx;
+    }
+
+    // (80:0) {#if error}
+    function create_if_block_1$4(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Error: ");
+    			t1 = text(ctx.error);
+    			div.className = "toast toast-error";
+    			add_location(div, file$b, 80, 2, 1656);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (85:0) {:else}
+    function create_else_block$4(ctx) {
+    	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
+
+    	var each_value = ctx.msgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block(key, child_ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+
+    			t0 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			a0 = element("a");
+    			div0 = element("div");
+    			div0.textContent = "Previous";
+    			t2 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			div1 = element("div");
+    			div1.textContent = "Next";
+    			div0.className = "page-item-subtitle";
+    			add_location(div0, file$b, 91, 8, 2008);
+    			a0.href = "#/public";
+    			add_location(a0, file$b, 90, 6, 1926);
+    			li0.className = "page-item page-previous";
+    			add_location(li0, file$b, 89, 4, 1882);
+    			div1.className = "page-item-subtitle";
+    			add_location(div1, file$b, 96, 8, 2201);
+    			a1.href = "#/public";
+    			add_location(a1, file$b, 95, 6, 2123);
+    			li1.className = "page-item page-next";
+    			add_location(li1, file$b, 94, 4, 2083);
+    			ul.className = "pagination";
+    			add_location(ul, file$b, 88, 2, 1853);
+
+    			dispose = [
+    				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
+    				listen(a1, "click", stop_propagation(prevent_default(ctx.goNext)))
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			insert(target, t0, anchor);
+    			insert(target, ul, anchor);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(a0, div0);
+    			append(ul, t2);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(a1, div1);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			const each_value = ctx.msgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, t0.parentNode, outro_and_destroy_block, create_each_block, t0, get_each_context);
+    			check_outros();
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
+
+    			if (detaching) {
+    				detach(t0);
+    				detach(ul);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (83:0) {#if !msgs}
+    function create_if_block$5(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$b, 83, 2, 1731);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (86:2) {#each msgs as msg (msg.key)}
+    function create_each_block(key_1, ctx) {
+    	var first, current;
+
+    	var messagerenderer = new MessageRenderer({
+    		props: { msg: ctx.msg },
+    		$$inline: true
+    	});
+
+    	return {
+    		key: key_1,
+
+    		first: null,
+
+    		c: function create() {
+    			first = empty();
+    			messagerenderer.$$.fragment.c();
+    			this.first = first;
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, first, anchor);
+    			mount_component(messagerenderer, target, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var messagerenderer_changes = {};
+    			if (changed.msgs) messagerenderer_changes.msg = ctx.msg;
+    			messagerenderer.$set(messagerenderer_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			messagerenderer.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			messagerenderer.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(first);
+    			}
+
+    			messagerenderer.$destroy(detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$b(ctx) {
+    	var div2, div1, h4, t1, div0, t2, t3, current_block_type_index, if_block1, if_block1_anchor, current;
+
+    	var if_block0 = (ctx.error) && create_if_block_1$4(ctx);
+
+    	var if_block_creators = [
+    		create_if_block$5,
+    		create_else_block$4
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type(ctx) {
+    		if (!ctx.msgs) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			h4 = element("h4");
+    			h4.textContent = "Public Feed";
+    			t1 = space();
+    			div0 = element("div");
+    			t2 = space();
+    			if (if_block0) if_block0.c();
+    			t3 = space();
+    			if_block1.c();
+    			if_block1_anchor = empty();
+    			h4.className = "column";
+    			add_location(h4, file$b, 75, 4, 1558);
+    			div0.className = "column";
+    			add_location(div0, file$b, 76, 4, 1599);
+    			div1.className = "columns";
+    			add_location(div1, file$b, 74, 2, 1531);
+    			div2.className = "container";
+    			add_location(div2, file$b, 73, 0, 1504);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div1);
+    			append(div1, h4);
+    			append(div1, t1);
+    			append(div1, div0);
+    			insert(target, t2, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t3, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.error) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1$4(ctx);
+    					if_block0.c();
+    					if_block0.m(t3.parentNode, t3);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block1.o(1);
+    				check_outros();
+
+    				if_block1 = if_blocks[current_block_type_index];
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
+    				}
+    				if_block1.i(1);
+    				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block1) if_block1.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block1) if_block1.o();
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div2);
+    				detach(t2);
+    			}
+
+    			if (if_block0) if_block0.d(detaching);
+
+    			if (detaching) {
+    				detach(t3);
+    			}
+
+    			if_blocks[current_block_type_index].d(detaching);
+
+    			if (detaching) {
+    				detach(if_block1_anchor);
+    			}
+    		}
+    	};
+    }
+
+    function instance$b($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+
+      let msgs = false;
+      let error = $routeParams.error || false;
+
+      let opts = {
+        limit: $routeParams.limit || getPref("limit", 10),
+        reverse: true
+      };
+
+      const goNext = () => {
+        navigate("/public", {
+          lt: msgs[msgs.length - 1].rts
+        });
+      };
+      const goPrevious = () => {
+        history.back();
+      };
+
+      let previousShortcutUnbind = keymage("p", () => {
+        goPrevious();
+        return false;
+      });
+      let nextShortcutUnbind = keymage("n", () => {
+        goNext();
+        return false;
+      });
+
+      onDestroy(() => {
+        previousShortcutUnbind();
+        nextShortcutUnbind();
+      });
+
+    	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, error: 1 }) => {
+    		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.error) { {
+            Object.assign(opts, $routeParams);
+        
+            document.title = `Patchfox - Public`;
+        
+            if (opts.hasOwnProperty("lt")) {
+              opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('error', error);
+            }
+        
+            if (opts.hasOwnProperty("limit")) {
+              opts.limit = parseInt(opts.limit); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('error', error);
+            }
+        
+            let promise = ssb
+              .public(opts)
+              .then(ms => {
+                $$invalidate('msgs', msgs = ms);
+                window.scrollTo(0, 0);
+              })
+              .catch(n => {
+                if (!error) {
+                  console.error("errrrooooor", n);
+                }
+              });
+          } }
+    	};
+
+    	return { msgs, error, goNext, goPrevious };
+    }
+
+    class Public extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$b, create_fragment$b, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Default.svelte generated by Svelte v3.4.4 */
+
+    const file$c = "src\\views\\Default.svelte";
+
+    function create_fragment$c(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "empty";
+    			add_location(div, file$c, 0, 0, 0);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    class Default extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, null, create_fragment$c, safe_not_equal, []);
+    	}
+    }
+
+    function handleDrop(callback, event) {
+      event.stopPropagation();
+      event.preventDefault();
+      callback(Array.prototype.slice.call(event.dataTransfer.files));
+    }
+
+    function killEvent(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      return false
+    }
+
+    function addDragDropListener(element, callback) {
+      element.addEventListener("dragenter", killEvent, false);
+      element.addEventListener("dragover", killEvent, false);
+      element.addEventListener("drop", handleDrop.bind(undefined, callback), false);
+    }
+
+    var ondrop = addDragDropListener;
+
+    function cubicOut(t) {
+        const f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    function slide(node, { delay = 0, duration = 400, easing = cubicOut }) {
+        const style = getComputedStyle(node);
+        const opacity = +style.opacity;
+        const height = parseFloat(style.height);
+        const padding_top = parseFloat(style.paddingTop);
+        const padding_bottom = parseFloat(style.paddingBottom);
+        const margin_top = parseFloat(style.marginTop);
+        const margin_bottom = parseFloat(style.marginBottom);
+        const border_top_width = parseFloat(style.borderTopWidth);
+        const border_bottom_width = parseFloat(style.borderBottomWidth);
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `overflow: hidden;` +
+                `opacity: ${Math.min(t * 20, 1) * opacity};` +
+                `height: ${t * height}px;` +
+                `padding-top: ${t * padding_top}px;` +
+                `padding-bottom: ${t * padding_bottom}px;` +
+                `margin-top: ${t * margin_top}px;` +
+                `margin-bottom: ${t * margin_bottom}px;` +
+                `border-top-width: ${t * border_top_width}px;` +
+                `border-bottom-width: ${t * border_bottom_width}px;`
+        };
+    }
+
+    /* src\views\Compose.svelte generated by Svelte v3.4.4 */
+
+    const file$d = "src\\views\\Compose.svelte";
+
+    // (210:6) {#if fork}
+    function create_if_block_10(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("You are forking: ");
+    			t1 = text(ctx.fork);
+    			div.className = "toast toast-warning";
+    			add_location(div, file$d, 210, 8, 5407);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (213:6) {#if msg}
+    function create_if_block_8(ctx) {
+    	var if_block_anchor;
+
+    	function select_block_type(ctx) {
+    		if (ctx.error) return create_if_block_9;
+    		return create_else_block_1$3;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block = current_block_type(ctx);
+
+    	return {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+
+    			if (detaching) {
+    				detach(if_block_anchor);
+    			}
+    		}
+    	};
+    }
+
+    // (216:8) {:else}
+    function create_else_block_1$3(ctx) {
+    	var div, t0, a, t1, a_href_value;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Your message has been posted. Do you want to\r\n            ");
+    			a = element("a");
+    			t1 = text("Check it out?");
+    			a.target = "_blank";
+    			a.href = a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
+    			add_location(a, file$d, 218, 12, 5708);
+    			div.className = "toast toast-success";
+    			add_location(div, file$d, 216, 10, 5603);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, a);
+    			append(a, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (214:8) {#if error}
+    function create_if_block_9(ctx) {
+    	var div, t;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t = text(ctx.msg);
+    			div.className = "toast toast-error";
+    			add_location(div, file$d, 214, 10, 5532);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.msg) {
+    				set_data(t, ctx.msg);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (278:6) {:else}
+    function create_else_block$5(ctx) {
+    	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, span, t6, div2, button0, t8, button1, dispose;
+
+    	var if_block = (ctx.channel || ctx.root || ctx.branch) && create_if_block_4$1(ctx);
+
+    	return {
+    		c: function create() {
+    			div4 = element("div");
+    			h2 = element("h2");
+    			h2.textContent = "Post preview";
+    			t1 = space();
+    			if (if_block) if_block.c();
+    			t2 = space();
+    			raw_before = element('noscript');
+    			raw_after = element('noscript');
+    			t3 = space();
+    			div0 = element("div");
+    			t4 = space();
+    			div3 = element("div");
+    			div1 = element("div");
+    			span = element("span");
+    			span.textContent = "This message will be public and can't be edited or deleted";
+    			t6 = space();
+    			div2 = element("div");
+    			button0 = element("button");
+    			button0.textContent = "Go Back";
+    			t8 = space();
+    			button1 = element("button");
+    			button1.textContent = "Post";
+    			add_location(h2, file$d, 279, 10, 7872);
+    			div0.className = "divider";
+    			add_location(div0, file$d, 304, 10, 8573);
+    			span.className = "label label-warning";
+    			add_location(span, file$d, 307, 14, 8699);
+    			div1.className = "column col-md-12 col-lg-10";
+    			add_location(div1, file$d, 306, 12, 8643);
+    			button0.className = "btn";
+    			add_location(button0, file$d, 312, 14, 8921);
+    			button1.className = "btn btn-primary";
+    			toggle_class(button1, "loading", ctx.posting);
+    			add_location(button1, file$d, 315, 14, 9046);
+    			div2.className = "column col-md-12 col-lg-2";
+    			add_location(div2, file$d, 311, 12, 8866);
+    			div3.className = "columns";
+    			add_location(div3, file$d, 305, 10, 8608);
+    			div4.className = "column col-md-12";
+    			add_location(div4, file$d, 278, 8, 7830);
+
+    			dispose = [
+    				listen(button0, "click", ctx.click_handler),
+    				listen(button1, "click", ctx.post)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div4, anchor);
+    			append(div4, h2);
+    			append(div4, t1);
+    			if (if_block) if_block.m(div4, null);
+    			append(div4, t2);
+    			append(div4, raw_before);
+    			raw_before.insertAdjacentHTML("afterend", raw_value);
+    			append(div4, raw_after);
+    			append(div4, t3);
+    			append(div4, div0);
+    			append(div4, t4);
+    			append(div4, div3);
+    			append(div3, div1);
+    			append(div1, span);
+    			append(div3, t6);
+    			append(div3, div2);
+    			append(div2, button0);
+    			append(div2, t8);
+    			append(div2, button1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.channel || ctx.root || ctx.branch) {
+    				if (if_block) {
+    					if_block.p(changed, ctx);
+    				} else {
+    					if_block = create_if_block_4$1(ctx);
+    					if_block.c();
+    					if_block.m(div4, t2);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if ((changed.content) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.content))) {
+    				detach_between(raw_before, raw_after);
+    				raw_before.insertAdjacentHTML("afterend", raw_value);
+    			}
+
+    			if (changed.posting) {
+    				toggle_class(button1, "loading", ctx.posting);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div4);
+    			}
+
+    			if (if_block) if_block.d();
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (227:6) {#if !showPreview}
+    function create_if_block$6(ctx) {
+    	var div, label0, t1, input0, t2, t3, t4, label1, t6, textarea, t7, br, t8, input1, t9, button0, t11, t12, button1, div_intro, div_outro, current, dispose;
+
+    	var if_block0 = (ctx.branch) && create_if_block_3$2(ctx);
+
+    	var if_block1 = (ctx.replyfeed) && create_if_block_2$4(ctx);
+
+    	var if_block2 = (ctx.ipfsDaemonRunning) && create_if_block_1$5(ctx);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			label0 = element("label");
+    			label0.textContent = "Channel";
+    			t1 = space();
+    			input0 = element("input");
+    			t2 = space();
+    			if (if_block0) if_block0.c();
+    			t3 = space();
+    			if (if_block1) if_block1.c();
+    			t4 = space();
+    			label1 = element("label");
+    			label1.textContent = "Message";
+    			t6 = space();
+    			textarea = element("textarea");
+    			t7 = space();
+    			br = element("br");
+    			t8 = space();
+    			input1 = element("input");
+    			t9 = space();
+    			button0 = element("button");
+    			button0.textContent = "Attach File";
+    			t11 = space();
+    			if (if_block2) if_block2.c();
+    			t12 = space();
+    			button1 = element("button");
+    			button1.textContent = "Preview";
+    			label0.className = "form-label";
+    			label0.htmlFor = "channel";
+    			add_location(label0, file$d, 228, 10, 5994);
+    			input0.className = "form-input";
+    			attr(input0, "type", "text");
+    			input0.id = "channel";
+    			input0.placeholder = "channel";
+    			add_location(input0, file$d, 229, 10, 6061);
+    			label1.className = "form-label";
+    			label1.htmlFor = "content";
+    			add_location(label1, file$d, 254, 10, 6825);
+    			textarea.className = "form-input svelte-olsuyr";
+    			textarea.id = "content";
+    			textarea.placeholder = "Type in your post";
+    			textarea.rows = "10";
+    			toggle_class(textarea, "file-on-top", ctx.fileOnTop);
+    			add_location(textarea, file$d, 255, 10, 6892);
+    			add_location(br, file$d, 264, 10, 7255);
+    			attr(input1, "type", "file");
+    			input1.id = "fileInput";
+    			input1.className = "svelte-olsuyr";
+    			add_location(input1, file$d, 265, 10, 7273);
+    			button0.className = "btn";
+    			add_location(button0, file$d, 266, 10, 7343);
+    			button1.className = "btn btn-primary float-right";
+    			add_location(button1, file$d, 273, 10, 7684);
+    			div.className = "form-group";
+    			add_location(div, file$d, 227, 8, 5939);
+
+    			dispose = [
+    				listen(input0, "input", ctx.input0_input_handler),
+    				listen(textarea, "input", ctx.textarea_input_handler),
+    				listen(textarea, "dragover", stop_propagation(prevent_default(ctx.dragOver))),
+    				listen(textarea, "dragleave", stop_propagation(prevent_default(ctx.dragLeave))),
+    				listen(input1, "input", ctx.attachFile),
+    				listen(button0, "click", ctx.attachFileTrigger),
+    				listen(button1, "click", ctx.preview)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, label0);
+    			append(div, t1);
+    			append(div, input0);
+
+    			input0.value = ctx.channel;
+
+    			append(div, t2);
+    			if (if_block0) if_block0.m(div, null);
+    			append(div, t3);
+    			if (if_block1) if_block1.m(div, null);
+    			append(div, t4);
+    			append(div, label1);
+    			append(div, t6);
+    			append(div, textarea);
+
+    			textarea.value = ctx.content;
+
+    			append(div, t7);
+    			append(div, br);
+    			append(div, t8);
+    			append(div, input1);
+    			append(div, t9);
+    			append(div, button0);
+    			append(div, t11);
+    			if (if_block2) if_block2.m(div, null);
+    			append(div, t12);
+    			append(div, button1);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.channel && (input0.value !== ctx.channel)) input0.value = ctx.channel;
+
+    			if (ctx.branch) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_3$2(ctx);
+    					if_block0.c();
+    					if_block0.m(div, t3);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.replyfeed) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    					if_block1.i(1);
+    				} else {
+    					if_block1 = create_if_block_2$4(ctx);
+    					if_block1.c();
+    					if_block1.i(1);
+    					if_block1.m(div, t4);
+    				}
+    			} else if (if_block1) {
+    				group_outros();
+    				on_outro(() => {
+    					if_block1.d(1);
+    					if_block1 = null;
+    				});
+
+    				if_block1.o(1);
+    				check_outros();
+    			}
+
+    			if (changed.content) textarea.value = ctx.content;
+
+    			if (changed.fileOnTop) {
+    				toggle_class(textarea, "file-on-top", ctx.fileOnTop);
+    			}
+
+    			if (ctx.ipfsDaemonRunning) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    				} else {
+    					if_block2 = create_if_block_1$5(ctx);
+    					if_block2.c();
+    					if_block2.m(div, t12);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block1) if_block1.i();
+
+    			add_render_callback(() => {
+    				if (div_outro) div_outro.end(1);
+    				if (!div_intro) div_intro = create_in_transition(div, slide, {});
+    				div_intro.start();
+    			});
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block1) if_block1.o();
+    			if (div_intro) div_intro.invalidate();
+
+    			if (local) {
+    				div_outro = create_out_transition(div, slide, {});
+    			}
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+
+    			if (detaching) {
+    				if (div_outro) div_outro.end();
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (281:10) {#if channel || root || branch}
+    function create_if_block_4$1(ctx) {
+    	var blockquote, t0, t1;
+
+    	var if_block0 = (ctx.channel) && create_if_block_7(ctx);
+
+    	var if_block1 = (ctx.root) && create_if_block_6$1(ctx);
+
+    	var if_block2 = (ctx.branch) && create_if_block_5$1(ctx);
+
+    	return {
+    		c: function create() {
+    			blockquote = element("blockquote");
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			if (if_block2) if_block2.c();
+    			add_location(blockquote, file$d, 281, 12, 7950);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, blockquote, anchor);
+    			if (if_block0) if_block0.m(blockquote, null);
+    			append(blockquote, t0);
+    			if (if_block1) if_block1.m(blockquote, null);
+    			append(blockquote, t1);
+    			if (if_block2) if_block2.m(blockquote, null);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.channel) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_7(ctx);
+    					if_block0.c();
+    					if_block0.m(blockquote, t0);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.root) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_6$1(ctx);
+    					if_block1.c();
+    					if_block1.m(blockquote, t1);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (ctx.branch) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    				} else {
+    					if_block2 = create_if_block_5$1(ctx);
+    					if_block2.c();
+    					if_block2.m(blockquote, null);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(blockquote);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    		}
+    	};
+    }
+
+    // (283:14) {#if channel}
+    function create_if_block_7(ctx) {
+    	var p, b, t1, t2_value = ctx.channel.startsWith('#') ? ctx.channel.slice(1) : ctx.channel, t2;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			b = element("b");
+    			b.textContent = "Channel:";
+    			t1 = space();
+    			t2 = text(t2_value);
+    			add_location(b, file$d, 284, 18, 8032);
+    			add_location(p, file$d, 283, 16, 8009);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, b);
+    			append(p, t1);
+    			append(p, t2);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.channel) && t2_value !== (t2_value = ctx.channel.startsWith('#') ? ctx.channel.slice(1) : ctx.channel)) {
+    				set_data(t2, t2_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (289:14) {#if root}
+    function create_if_block_6$1(ctx) {
+    	var p, b, t1, t2;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			b = element("b");
+    			b.textContent = "Root:";
+    			t1 = space();
+    			t2 = text(ctx.root);
+    			add_location(b, file$d, 290, 18, 8232);
+    			add_location(p, file$d, 289, 16, 8209);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, b);
+    			append(p, t1);
+    			append(p, t2);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (295:14) {#if branch}
+    function create_if_block_5$1(ctx) {
+    	var p, b, t1, t2;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			b = element("b");
+    			b.textContent = "In Reply To:";
+    			t1 = space();
+    			t2 = text(ctx.branch);
+    			add_location(b, file$d, 296, 18, 8383);
+    			add_location(p, file$d, 295, 16, 8360);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, b);
+    			append(p, t1);
+    			append(p, t2);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.branch) {
+    				set_data(t2, ctx.branch);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (237:10) {#if branch}
+    function create_if_block_3$2(ctx) {
+    	var label, t_1, input, dispose;
+
+    	return {
+    		c: function create() {
+    			label = element("label");
+    			label.textContent = "In reply to";
+    			t_1 = space();
+    			input = element("input");
+    			label.className = "form-label";
+    			label.htmlFor = "reply-to";
+    			add_location(label, file$d, 237, 12, 6262);
+    			input.className = "form-input";
+    			attr(input, "type", "text");
+    			input.id = "reply-to";
+    			input.placeholder = "in reply to";
+    			add_location(input, file$d, 238, 12, 6336);
+    			dispose = listen(input, "input", ctx.input_input_handler);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, label, anchor);
+    			insert(target, t_1, anchor);
+    			insert(target, input, anchor);
+
+    			input.value = ctx.branch;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.branch && (input.value !== ctx.branch)) input.value = ctx.branch;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(label);
+    				detach(t_1);
+    				detach(input);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (247:10) {#if replyfeed}
+    function create_if_block_2$4(ctx) {
+    	var div, span, t, current;
+
+    	var avatarchip = new AvatarChip({
+    		props: { feed: ctx.replyfeed },
+    		$$inline: true
+    	});
+    	avatarchip.$on("avatarClick", ctx.avatarClick);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			span = element("span");
+    			t = text("Click the avatar to add a link to the message:\r\n                ");
+    			avatarchip.$$.fragment.c();
+    			add_location(span, file$d, 248, 14, 6605);
+    			div.className = "mt-2";
+    			add_location(div, file$d, 247, 12, 6571);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, span);
+    			append(span, t);
+    			mount_component(avatarchip, span, null);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var avatarchip_changes = {};
+    			if (changed.replyfeed) avatarchip_changes.feed = ctx.replyfeed;
+    			avatarchip.$set(avatarchip_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			avatarchip.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			avatarchip.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			avatarchip.$destroy();
+    		}
+    	};
+    }
+
+    // (268:10) {#if ipfsDaemonRunning}
+    function create_if_block_1$5(ctx) {
+    	var input, t, button, dispose;
+
+    	return {
+    		c: function create() {
+    			input = element("input");
+    			t = space();
+    			button = element("button");
+    			button.textContent = "Attach File using IPFS";
+    			attr(input, "type", "file");
+    			input.id = "fileInputIPFS";
+    			input.className = "svelte-olsuyr";
+    			add_location(input, file$d, 268, 12, 7461);
+    			button.className = "btn";
+    			add_location(button, file$d, 269, 12, 7541);
+
+    			dispose = [
+    				listen(input, "input", ctx.attachFileIPFS),
+    				listen(button, "click", ctx.attachFileIPFSTrigger)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, input, anchor);
+    			insert(target, t, anchor);
+    			insert(target, button, anchor);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(input);
+    				detach(t);
+    				detach(button);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function create_fragment$d(ctx) {
+    	var div2, div1, div0, t0, t1, current_block_type_index, if_block2, current;
+
+    	var if_block0 = (ctx.fork) && create_if_block_10(ctx);
+
+    	var if_block1 = (ctx.msg) && create_if_block_8(ctx);
+
+    	var if_block_creators = [
+    		create_if_block$6,
+    		create_else_block$5
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type_1(ctx) {
+    		if (!ctx.showPreview) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type_1(ctx);
+    	if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			if_block2.c();
+    			div0.className = "column";
+    			add_location(div0, file$d, 208, 4, 5359);
+    			div1.className = "columns";
+    			add_location(div1, file$d, 207, 2, 5332);
+    			div2.className = "container";
+    			add_location(div2, file$d, 206, 0, 5305);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div1);
+    			append(div1, div0);
+    			if (if_block0) if_block0.m(div0, null);
+    			append(div0, t0);
+    			if (if_block1) if_block1.m(div0, null);
+    			append(div0, t1);
+    			if_blocks[current_block_type_index].m(div0, null);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.fork) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_10(ctx);
+    					if_block0.c();
+    					if_block0.m(div0, t0);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (ctx.msg) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block_8(ctx);
+    					if_block1.c();
+    					if_block1.m(div0, t1);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type_1(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block2.o(1);
+    				check_outros();
+
+    				if_block2 = if_blocks[current_block_type_index];
+    				if (!if_block2) {
+    					if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block2.c();
+    				}
+    				if_block2.i(1);
+    				if_block2.m(div0, null);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block2) if_block2.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block2) if_block2.o();
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div2);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if_blocks[current_block_type_index].d();
+    		}
+    	};
+    }
+
+    function instance$c($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+
+      let showPreview = false;
+      let msg = false;
+      let error = false;
+      let posting = false;
+
+      let root = $routeParams.root;
+      let branch = $routeParams.branch;
+      let channel = $routeParams.channel || "";
+      let content = $routeParams.content || "";
+      let replyfeed = $routeParams.replyfeed || false;
+      let fork = $routeParams.fork;
+      let fileOnTop = false;
+      let pull = hermiebox.modules.pullStream;
+      let fileReader = hermiebox.modules.pullFileReader;
+      let sbot = hermiebox.sbot;
+      let ipfsDaemonRunning = false;
+
+      document.title = `Patchfox - compose`;
+
+      onMount(() => {
+        $$invalidate('error', error = false);
+        $$invalidate('msg', msg = "");
+
+        // this code could be in some better/smarter place.
+        // e.dataTransfer.getData('url'); from images in the browser window
+
+        ondrop(document.getElementById("content"), files => readFileAndAttach(files));
+        checkIpfsDaemon();
+      });
+
+      const checkIpfsDaemon = () => {
+        let port = getPref("ipfsPort", 5001);
+        fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
+          $$invalidate('ipfsDaemonRunning', ipfsDaemonRunning = true);
+        });
+      };
+
+      const readFileAndAttach = files => {
+        $$invalidate('error', error = false);
+        $$invalidate('msg', msg = "");
+
+        if (files.length == 0) {
+          $$invalidate('fileOnTop', fileOnTop = false);
+          console.log("this is not a file");
+          return false;
+        }
+
+        var first = files[0];
+        console.log(first);
+
+        if (!first.type.startsWith("image")) {
+          $$invalidate('error', error = true);
+          $$invalidate('msg', msg = `You can only drag & drop image, this file is a ${first.type}`);
+          return false;
+        }
+
+        if (first.size >= 5000000) {
+          $$invalidate('error', error = true);
+          $$invalidate('msg', msg = `File too large: ${Math.floor(
+        first.size / 1048576,
+        2
+      )}mb when max size is 5mb`);
+          return false;
+        }
+
+        pull(
+          fileReader(first),
+          sbot.blobs.add(function(err, hash) {
+            // 'hash' is the hash-id of the blob
+            if (err) {
+              $$invalidate('error', error = true);
+              $$invalidate('msg', msg = "Couldn't attach file: " + err);
+            } else {
+              $$invalidate('content', content += ` ![${first.name}](${hash})`);
+            }
+            $$invalidate('fileOnTop', fileOnTop = false);
+          })
+        );
+      };
+
+      const post = async ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        if (!posting) {
+          $$invalidate('posting', posting = true);
+
+          if (channel.startsWith("#")) {
+            $$invalidate('channel', channel = channel.slice(1));
+          }
+
+          try {
+            $$invalidate('msg', msg = await ssb.newPost({ text: content, channel, root, branch, fork }));
+            $$invalidate('posting', posting = false);
+            console.log("posted", msg);
+            window.scrollTo(0, 0);
+          } catch (n) {
+            $$invalidate('error', error = true);
+            $$invalidate('msg', msg = `Couldn't post your message: ${n}`);
+            window.scrollTo(0, 0);
+
+            if (msg.message == "stream is closed") {
+              $$invalidate('msg', msg += ". We lost connection to sbot. We'll try to restablish it...");
+
+              reconnect()
+                .then(() => {
+                  $$invalidate('showPreview', showPreview = false);
+                  $$invalidate('posting', posting = false);
+                  $$invalidate('error', error = false);
+                  $$invalidate('msg', msg = "Connection to sbot reestablished. Try posting again");
+                })
+                .catch(err => {
+                  window.location.search = `?root=${encodeURIComponent(
+                root
+              )}&branch=${encodeURIComponent(
+                branch
+              )}&content=${encodeURIComponent(
+                content
+              )}&channel=${encodeURIComponent(channel)}`;
+                  $$invalidate('msg', msg = `Sorry, couldn't reconnect to sbot:${err}. Try reloading the page. Your content has been saved to the URL`);
+                });
+            }
+          }
+        }
+      };
+
+      const preview = ev => {
+        $$invalidate('showPreview', showPreview = true);
+      };
+
+      const avatarClick = ev => {
+        let feed = ev.detail.feed;
+        let name = ev.detail.name;
+
+        if (content.length > 0) {
+          $$invalidate('content', content += ` [${name}](${feed})`);
+        } else {
+          $$invalidate('content', content = `[${name}](${feed})`);
+        }
+      };
+
+      const dragOver = ev => {
+        $$invalidate('fileOnTop', fileOnTop = true);
+      };
+
+      const dragLeave = ev => {
+        $$invalidate('fileOnTop', fileOnTop = false);
+      };
+
+      const attachFileTrigger = () => {
+        document.getElementById("fileInput").click();
+      };
+
+      const attachFileIPFSTrigger = () => {
+        document.getElementById("fileInputIPFS").click();
+      };
+
+      const attachFile = ev => {
+        const files = ev.target.files;
+        readFileAndAttach(files);
+      };
+
+      const attachFileIPFS = ev => {
+        const files = ev.target.files;
+        readFileAndAttachIPFS(files);
+      };
+
+      const readFileAndAttachIPFS = async files => {
+        $$invalidate('error', error = false);
+        $$invalidate('msg', msg = "");
+
+        var ipfs = window.IpfsHttpClient('127.0.0.1', '5001');
+        const results = await ipfs.add(files[0]);
+
+        console.log("added via IPFS", results);
+        $$invalidate('content', content += ` [${results[0].path}](ipfs://${results[0].hash})`);
+
+       
+      };
+
+    	function input0_input_handler() {
+    		channel = this.value;
+    		$$invalidate('channel', channel);
+    	}
+
+    	function input_input_handler() {
+    		branch = this.value;
+    		$$invalidate('branch', branch);
+    	}
+
+    	function textarea_input_handler() {
+    		content = this.value;
+    		$$invalidate('content', content);
+    	}
+
+    	function click_handler() {
+    		const $$result = (showPreview = false);
+    		$$invalidate('showPreview', showPreview);
+    		return $$result;
+    	}
+
+    	return {
+    		showPreview,
+    		msg,
+    		error,
+    		posting,
+    		root,
+    		branch,
+    		channel,
+    		content,
+    		replyfeed,
+    		fork,
+    		fileOnTop,
+    		ipfsDaemonRunning,
+    		post,
+    		preview,
+    		avatarClick,
+    		dragOver,
+    		dragLeave,
+    		attachFileTrigger,
+    		attachFileIPFSTrigger,
+    		attachFile,
+    		attachFileIPFS,
+    		ssb,
+    		encodeURIComponent,
+    		input0_input_handler,
+    		input_input_handler,
+    		textarea_input_handler,
+    		click_handler
+    	};
+    }
+
+    class Compose extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$c, create_fragment$d, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Thread.svelte generated by Svelte v3.4.4 */
+
+    const file$e = "src\\views\\Thread.svelte";
+
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.msg = list[i];
+    	return child_ctx;
+    }
+
+    // (36:0) {#if error}
+    function create_if_block_1$6(ctx) {
+    	var div, t0, a, t1, a_href_value, t2, t3;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Couldn't load thead\r\n    ");
+    			a = element("a");
+    			t1 = text(ctx.msgid);
+    			t2 = text("\r\n    : ");
+    			t3 = text(ctx.error);
+    			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
+    			add_location(a, file$e, 38, 4, 844);
+    			div.className = "toast toast-error";
+    			add_location(div, file$e, 36, 2, 782);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, a);
+    			append(a, t1);
+    			append(div, t2);
+    			append(div, t3);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.msgid) {
+    				set_data(t1, ctx.msgid);
+    			}
+
+    			if ((changed.msgid) && a_href_value !== (a_href_value = "?thread=" + ctx.msgid + "#/thread")) {
+    				a.href = a_href_value;
+    			}
+
+    			if (changed.error) {
+    				set_data(t3, ctx.error);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (45:0) {:else}
+    function create_else_block$6(ctx) {
+    	var each_blocks = [], each_1_lookup = new Map(), each_1_anchor, current;
+
+    	var each_value = ctx.msgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$1(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$1(key, child_ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+
+    			each_1_anchor = empty();
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			insert(target, each_1_anchor, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			const each_value = ctx.msgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, each_1_anchor.parentNode, outro_and_destroy_block, create_each_block$1, each_1_anchor, get_each_context$1);
+    			check_outros();
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
+
+    			if (detaching) {
+    				detach(each_1_anchor);
+    			}
+    		}
+    	};
+    }
+
+    // (43:0) {#if !msgs && !error}
+    function create_if_block$7(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$e, 43, 2, 948);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (46:2) {#each msgs as msg (msg.key)}
+    function create_each_block$1(key_1, ctx) {
+    	var first, current;
+
+    	var messagerenderer = new MessageRenderer({
+    		props: { msg: ctx.msg },
+    		$$inline: true
+    	});
+
+    	return {
+    		key: key_1,
+
+    		first: null,
+
+    		c: function create() {
+    			first = empty();
+    			messagerenderer.$$.fragment.c();
+    			this.first = first;
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, first, anchor);
+    			mount_component(messagerenderer, target, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var messagerenderer_changes = {};
+    			if (changed.msgs) messagerenderer_changes.msg = ctx.msg;
+    			messagerenderer.$set(messagerenderer_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			messagerenderer.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			messagerenderer.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(first);
+    			}
+
+    			messagerenderer.$destroy(detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$e(ctx) {
+    	var div, h4, t0, small, t1, t2, t3, current_block_type_index, if_block1, if_block1_anchor, current;
+
+    	var if_block0 = (ctx.error) && create_if_block_1$6(ctx);
+
+    	var if_block_creators = [
+    		create_if_block$7,
+    		create_else_block$6
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type(ctx) {
+    		if (!ctx.msgs && !ctx.error) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			h4 = element("h4");
+    			t0 = text("Thread\r\n    ");
+    			small = element("small");
+    			t1 = text(ctx.msgid);
+    			t2 = space();
+    			if (if_block0) if_block0.c();
+    			t3 = space();
+    			if_block1.c();
+    			if_block1_anchor = empty();
+    			small.className = "label hide-sm";
+    			add_location(small, file$e, 32, 4, 704);
+    			add_location(h4, file$e, 30, 2, 682);
+    			div.className = "container";
+    			add_location(div, file$e, 29, 0, 655);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, h4);
+    			append(h4, t0);
+    			append(h4, small);
+    			append(small, t1);
+    			insert(target, t2, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t3, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (!current || changed.msgid) {
+    				set_data(t1, ctx.msgid);
+    			}
+
+    			if (ctx.error) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1$6(ctx);
+    					if_block0.c();
+    					if_block0.m(t3.parentNode, t3);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block1.o(1);
+    				check_outros();
+
+    				if_block1 = if_blocks[current_block_type_index];
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
+    				}
+    				if_block1.i(1);
+    				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block1) if_block1.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block1) if_block1.o();
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    				detach(t2);
+    			}
+
+    			if (if_block0) if_block0.d(detaching);
+
+    			if (detaching) {
+    				detach(t3);
+    			}
+
+    			if_blocks[current_block_type_index].d(detaching);
+
+    			if (detaching) {
+    				detach(if_block1_anchor);
+    			}
+    		}
+    	};
+    }
+
+    function instance$d($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+      let msgs = false;
+      let error = false;
+      let msgid;
+
+    	$$self.$$.update = ($$dirty = { $routeParams: 1, msgid: 1 }) => {
+    		if ($$dirty.$routeParams || $$dirty.msgid) { {
+            $$invalidate('msgid', msgid = $routeParams.thread);
+            if (msgid.startsWith("ssb:")) {
+              $$invalidate('msgid', msgid = msgid.replace("ssb:", ""));
+            }
+            document.title = `Patchfox - Thread: ${msgid}`;
+        
+            let promise = ssb
+              .thread(msgid)
+              .then(ms => {
+                $$invalidate('msgs', msgs = ms);
+                window.scrollTo(0, 0);
+              })
+              .catch(n => {
+                console.dir(n);
+                $$invalidate('error', error = n.message);
+              });
+          } }
+    	};
+
+    	return { msgs, error, msgid };
+    }
+
+    class Thread extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$d, create_fragment$e, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Profile.svelte generated by Svelte v3.4.4 */
+
+    const file$f = "src\\views\\Profile.svelte";
+
+    function get_each_context$2(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.msg = list[i];
+    	return child_ctx;
+    }
+
+    // (177:2) {:catch n}
+    function create_catch_block_1(ctx) {
+    	var p, t0, t1_value = ctx.n.message, t1;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			t0 = text("Error: ");
+    			t1 = text(t1_value);
+    			add_location(p, file$f, 177, 4, 4412);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, t0);
+    			append(p, t1);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (108:2) {:then}
+    function create_then_block(ctx) {
+    	var div3, div1, div0, img, img_src_value, t0, div2, h1, t1, t2, pre, t3, t4, t5, p, raw_value = ctx.ssb.markdown(ctx.description), t6, div4, promise, current;
+
+    	var if_block = (ctx.feed !== ctx.ssb.feed) && create_if_block$8(ctx);
+
+    	let info = {
+    		ctx,
+    		current: null,
+    		pending: create_pending_block_1,
+    		then: create_then_block_1,
+    		catch: create_catch_block,
+    		value: 'data',
+    		error: 'n',
+    		blocks: Array(3)
+    	};
+
+    	handle_promise(promise = ctx.messagePromise, info);
+
+    	return {
+    		c: function create() {
+    			div3 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			img = element("img");
+    			t0 = space();
+    			div2 = element("div");
+    			h1 = element("h1");
+    			t1 = text(ctx.name);
+    			t2 = space();
+    			pre = element("pre");
+    			t3 = text(ctx.feed);
+    			t4 = space();
+    			if (if_block) if_block.c();
+    			t5 = space();
+    			p = element("p");
+    			t6 = space();
+    			div4 = element("div");
+
+    			info.block.c();
+    			img.className = "img-responsive";
+    			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
+    			img.alt = ctx.feed;
+    			add_location(img, file$f, 112, 10, 2525);
+    			div0.className = "container";
+    			add_location(div0, file$f, 111, 8, 2490);
+    			div1.className = "column col-6";
+    			add_location(div1, file$f, 110, 6, 2454);
+    			add_location(h1, file$f, 119, 8, 2725);
+    			add_location(pre, file$f, 120, 8, 2750);
+    			add_location(p, file$f, 145, 8, 3609);
+    			div2.className = "column col-6";
+    			add_location(div2, file$f, 118, 6, 2689);
+    			div3.className = "columns";
+    			add_location(div3, file$f, 108, 4, 2423);
+    			add_location(div4, file$f, 151, 4, 3705);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div3, anchor);
+    			append(div3, div1);
+    			append(div1, div0);
+    			append(div0, img);
+    			append(div3, t0);
+    			append(div3, div2);
+    			append(div2, h1);
+    			append(h1, t1);
+    			append(div2, t2);
+    			append(div2, pre);
+    			append(pre, t3);
+    			append(div2, t4);
+    			if (if_block) if_block.m(div2, null);
+    			append(div2, t5);
+    			append(div2, p);
+    			p.innerHTML = raw_value;
+    			insert(target, t6, anchor);
+    			insert(target, div4, anchor);
+
+    			info.block.m(div4, info.anchor = null);
+    			info.mount = () => div4;
+    			info.anchor = null;
+
+    			current = true;
+    		},
+
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
+    			if ((!current || changed.image) && img_src_value !== (img_src_value = "http://localhost:8989/blobs/get/" + ctx.image)) {
+    				img.src = img_src_value;
+    			}
+
+    			if (!current || changed.feed) {
+    				img.alt = ctx.feed;
+    			}
+
+    			if (!current || changed.name) {
+    				set_data(t1, ctx.name);
+    			}
+
+    			if (!current || changed.feed) {
+    				set_data(t3, ctx.feed);
+    			}
+
+    			if (ctx.feed !== ctx.ssb.feed) {
+    				if (if_block) {
+    					if_block.p(changed, ctx);
+    				} else {
+    					if_block = create_if_block$8(ctx);
+    					if_block.c();
+    					if_block.m(div2, t5);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if ((!current || changed.description) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.description))) {
+    				p.innerHTML = raw_value;
+    			}
+
+    			info.ctx = ctx;
+
+    			if (('messagePromise' in changed) && promise !== (promise = ctx.messagePromise) && handle_promise(promise, info)) ; else {
+    				info.block.p(changed, assign(assign({}, ctx), info.resolved));
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			info.block.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (let i = 0; i < 3; i += 1) {
+    				const block = info.blocks[i];
+    				if (block) block.o();
+    			}
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div3);
+    			}
+
+    			if (if_block) if_block.d();
+
+    			if (detaching) {
+    				detach(t6);
+    				detach(div4);
+    			}
+
+    			info.block.d();
+    			info = null;
+    		}
+    	};
+    }
+
+    // (122:8) {#if feed !== ssb.feed}
+    function create_if_block$8(ctx) {
+    	var div3, div0, t0, div1, label0, input0, t1, i0, t2, t3, label1, input1, t4, i1, t5, t6, div2, dispose;
+
+    	return {
+    		c: function create() {
+    			div3 = element("div");
+    			div0 = element("div");
+    			t0 = space();
+    			div1 = element("div");
+    			label0 = element("label");
+    			input0 = element("input");
+    			t1 = space();
+    			i0 = element("i");
+    			t2 = text("\r\n                following");
+    			t3 = space();
+    			label1 = element("label");
+    			input1 = element("input");
+    			t4 = space();
+    			i1 = element("i");
+    			t5 = text("\r\n                blocking");
+    			t6 = space();
+    			div2 = element("div");
+    			div0.className = "divider";
+    			add_location(div0, file$f, 123, 12, 2849);
+    			attr(input0, "type", "checkbox");
+    			add_location(input0, file$f, 126, 16, 2983);
+    			i0.className = "form-icon";
+    			add_location(i0, file$f, 130, 16, 3137);
+    			label0.className = "form-switch form-inline";
+    			add_location(label0, file$f, 125, 14, 2926);
+    			attr(input1, "type", "checkbox");
+    			add_location(input1, file$f, 134, 16, 3284);
+    			i1.className = "form-icon";
+    			add_location(i1, file$f, 138, 16, 3436);
+    			label1.className = "form-switch form-inline";
+    			add_location(label1, file$f, 133, 14, 3227);
+    			div1.className = "form-group";
+    			add_location(div1, file$f, 124, 12, 2886);
+    			div2.className = "divider";
+    			add_location(div2, file$f, 142, 12, 3543);
+    			div3.className = "container";
+    			add_location(div3, file$f, 122, 10, 2812);
+
+    			dispose = [
+    				listen(input0, "change", ctx.input0_change_handler),
+    				listen(input0, "change", ctx.followingChanged),
+    				listen(input1, "change", ctx.input1_change_handler),
+    				listen(input1, "change", ctx.blockingChanged)
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div3, anchor);
+    			append(div3, div0);
+    			append(div3, t0);
+    			append(div3, div1);
+    			append(div1, label0);
+    			append(label0, input0);
+
+    			input0.checked = ctx.following;
+
+    			append(label0, t1);
+    			append(label0, i0);
+    			append(label0, t2);
+    			append(div1, t3);
+    			append(div1, label1);
+    			append(label1, input1);
+
+    			input1.checked = ctx.blocking;
+
+    			append(label1, t4);
+    			append(label1, i1);
+    			append(label1, t5);
+    			append(div3, t6);
+    			append(div3, div2);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.following) input0.checked = ctx.following;
+    			if (changed.blocking) input1.checked = ctx.blocking;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div3);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (171:6) {:catch n}
+    function create_catch_block(ctx) {
+    	var p, t0, t1_value = ctx.n.message, t1;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			t0 = text("Error fetching messages: ");
+    			t1 = text(t1_value);
+    			add_location(p, file$f, 171, 8, 4317);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    			append(p, t0);
+    			append(p, t1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.messagePromise) && t1_value !== (t1_value = ctx.n.message)) {
+    				set_data(t1, t1_value);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (155:6) {:then data}
+    function create_then_block_1(ctx) {
+    	var each_blocks = [], each_1_lookup = new Map(), t, ul, li, a, div, current, dispose;
+
+    	var each_value = ctx.lastMsgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$2(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$2(key, child_ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+
+    			t = space();
+    			ul = element("ul");
+    			li = element("li");
+    			a = element("a");
+    			div = element("div");
+    			div.textContent = "Load More";
+    			div.className = "page-item-subtitle";
+    			add_location(div, file$f, 166, 14, 4192);
+    			a.href = "#/public";
+    			add_location(a, file$f, 161, 12, 3984);
+    			li.className = "page-item page-next";
+    			add_location(li, file$f, 160, 10, 3938);
+    			ul.className = "pagination";
+    			add_location(ul, file$f, 158, 8, 3901);
+    			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.click_handler)));
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			insert(target, t, anchor);
+    			insert(target, ul, anchor);
+    			append(ul, li);
+    			append(li, a);
+    			append(a, div);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			const each_value = ctx.lastMsgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, t.parentNode, outro_and_destroy_block, create_each_block$2, t, get_each_context$2);
+    			check_outros();
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
+
+    			if (detaching) {
+    				detach(t);
+    				detach(ul);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (156:8) {#each lastMsgs as msg (msg.key)}
+    function create_each_block$2(key_1, ctx) {
+    	var first, current;
+
+    	var messagerenderer = new MessageRenderer({
+    		props: { msg: ctx.msg },
+    		$$inline: true
+    	});
+
+    	return {
+    		key: key_1,
+
+    		first: null,
+
+    		c: function create() {
+    			first = empty();
+    			messagerenderer.$$.fragment.c();
+    			this.first = first;
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, first, anchor);
+    			mount_component(messagerenderer, target, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var messagerenderer_changes = {};
+    			if (changed.lastMsgs) messagerenderer_changes.msg = ctx.msg;
+    			messagerenderer.$set(messagerenderer_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			messagerenderer.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			messagerenderer.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(first);
+    			}
+
+    			messagerenderer.$destroy(detaching);
+    		}
+    	};
+    }
+
+    // (153:29)           <div class="loading" />        {:then data}
+    function create_pending_block_1(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading";
+    			add_location(div, file$f, 153, 8, 3751);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (106:40)       <div class="loading loading-lg" />    {:then}
+    function create_pending_block(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$f, 106, 4, 2372);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    function create_fragment$f(ctx) {
+    	var div, promise, current;
+
+    	let info = {
+    		ctx,
+    		current: null,
+    		pending: create_pending_block,
+    		then: create_then_block,
+    		catch: create_catch_block_1,
+    		value: 'null',
+    		error: 'n',
+    		blocks: Array(3)
+    	};
+
+    	handle_promise(promise = ctx.aboutPromise && ctx.avatarPromise, info);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+
+    			info.block.c();
+    			div.className = "container";
+    			add_location(div, file$f, 104, 0, 2301);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+
+    			info.block.m(div, info.anchor = null);
+    			info.mount = () => div;
+    			info.anchor = null;
+
+    			current = true;
+    		},
+
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
+    			info.ctx = ctx;
+
+    			if (promise !== (promise = ctx.aboutPromise && ctx.avatarPromise) && handle_promise(promise, info)) ; else {
+    				info.block.p(changed, assign(assign({}, ctx), info.resolved));
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			info.block.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (let i = 0; i < 3; i += 1) {
+    				const block = info.blocks[i];
+    				if (block) block.o();
+    			}
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			info.block.d();
+    			info = null;
+    		}
+    	};
+    }
+
+    function instance$e($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+
+      let description = false;
+      let following = false;
+      let blocking = false;
+      let image,
+        feed,
+        lastMsgs = [],
+        lastAbout;
+
+      // todo: move back into using stores.
+      $$invalidate('feed', feed = $routeParams.feed);
+
+      if (!feed) {
+        $$invalidate('feed', feed = ssb.feed);
+      }
+
+      let name = feed;
+
+      document.title = `Patchfox - Feed: ${feed}`;
+
+      console.log("fetching", feed);
+
+      let avatarPromise = ssb.avatar(feed).then(data => {
+        $$invalidate('name', name = data.name);
+        $$invalidate('image', image = data.image);
+        document.title = `Patchfox - Feed: ${name}`;
+      });
+
+      let aboutPromise = ssb.profile(feed).then(data => {
+        lastAbout = data.about.reverse().find(m => {
+          let a = m.value.content;
+          return a.hasOwnProperty("description");
+        });
+        try {
+          $$invalidate('description', description = lastAbout.value.content.description);
+        } catch (n) {
+          $$invalidate('description', description = "");
+        }
+        window.scrollTo(0, 0);
+      });
+
+      let messagePromise = ssb
+        .query(
+          {
+            value: {
+              author: feed 
+            }
+          },
+          10
+        )
+        .then(msgs => {
+          $$invalidate('lastMsgs', lastMsgs = msgs);
+
+          window.scrollTo(0, 0);
+        });
+
+      if (feed !== ssb.feed) {
+        ssb.following(feed).then(f => { const $$result = (following = f); $$invalidate('following', following); return $$result; });
+        ssb.blocking(feed).then(f => { const $$result = (blocking = f); $$invalidate('blocking', blocking); return $$result; });
+      }
+
+      const blockingChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb.block(feed).catch(() => { const $$result = (blocking = false); $$invalidate('blocking', blocking); return $$result; });
+        } else {
+          ssb.unblock(feed).catch(() => { const $$result = (blocking = true); $$invalidate('blocking', blocking); return $$result; });
+        }
+      };
+
+      const followingChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb.follow(feed).catch(() => { const $$result = (following = false); $$invalidate('following', following); return $$result; });
+        } else {
+          ssb.unfollow(feed).catch(() => { const $$result = (following = true); $$invalidate('following', following); return $$result; });
+        }
+      };
+
+      // todo: refactor navigation here. This is a hack it shouldn't hide and show values which are
+      // not reloading.
+      const loadMoreMessages = lt => {
+        $$invalidate('messagePromise', messagePromise = ssb
+          .query(
+            {
+              value: {
+                author: feed,
+                timestamp: { $lt: lt }
+              }
+            },
+            10
+          )
+          .then(msgs => {
+            $$invalidate('lastMsgs', lastMsgs = msgs);
+
+            window.scrollTo(0, 0);
+          }));
+      };
+
+    	function input0_change_handler() {
+    		following = this.checked;
+    		$$invalidate('following', following);
+    	}
+
+    	function input1_change_handler() {
+    		blocking = this.checked;
+    		$$invalidate('blocking', blocking);
+    	}
+
+    	function click_handler() {
+    	                loadMoreMessages(lastMsgs[lastMsgs.length - 1].timestamp);
+    	              }
+
+    	return {
+    		description,
+    		following,
+    		blocking,
+    		image,
+    		feed,
+    		lastMsgs,
+    		name,
+    		avatarPromise,
+    		aboutPromise,
+    		messagePromise,
+    		blockingChanged,
+    		followingChanged,
+    		loadMoreMessages,
+    		ssb,
+    		input0_change_handler,
+    		input1_change_handler,
+    		click_handler
+    	};
+    }
+
+    class Profile extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$e, create_fragment$f, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\ErrorView.svelte generated by Svelte v3.4.4 */
+
+    const file$g = "src\\views\\ErrorView.svelte";
+
+    // (51:2) {#if toast}
+    function create_if_block_1$7(ctx) {
+    	var div, t, div_class_value;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t = text(ctx.msg);
+    			div.className = div_class_value = "toast " + ctx.toastClass;
+    			add_location(div, file$g, 51, 4, 1208);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.msg) {
+    				set_data(t, ctx.msg);
+    			}
+
+    			if ((changed.toastClass) && div_class_value !== (div_class_value = "toast " + ctx.toastClass)) {
+    				div.className = div_class_value;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (60:4) {#if cta}
+    function create_if_block$9(ctx) {
+    	var li, a, t_value = ctx.cta.label, t, dispose;
+
+    	return {
+    		c: function create() {
+    			li = element("li");
+    			a = element("a");
+    			t = text(t_value);
+    			a.href = "#";
+    			add_location(a, file$g, 61, 8, 1434);
+    			add_location(li, file$g, 60, 6, 1420);
+    			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.cta.action)));
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, li, anchor);
+    			append(li, a);
+    			append(a, t);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.cta) && t_value !== (t_value = ctx.cta.label)) {
+    				set_data(t, t_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(li);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$g(ctx) {
+    	var div, h1, t1, t2, h4, t4, pre, code, t5, t6, p, t8, ul, t9, li0, a0, t11, li1, a1, t13;
+
+    	var if_block0 = (ctx.toast) && create_if_block_1$7(ctx);
+
+    	var if_block1 = (ctx.cta) && create_if_block$9(ctx);
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			h1 = element("h1");
+    			h1.textContent = "😿 An Error Has Occurred, sorry 😭";
+    			t1 = space();
+    			if (if_block0) if_block0.c();
+    			t2 = space();
+    			h4 = element("h4");
+    			h4.textContent = "This is what we know about it";
+    			t4 = space();
+    			pre = element("pre");
+    			code = element("code");
+    			t5 = text(ctx.error);
+    			t6 = space();
+    			p = element("p");
+    			p.textContent = "You might want to:";
+    			t8 = space();
+    			ul = element("ul");
+    			if (if_block1) if_block1.c();
+    			t9 = space();
+    			li0 = element("li");
+    			a0 = element("a");
+    			a0.textContent = "Open our troubleshooting documentation.";
+    			t11 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			a1.textContent = "Add an issue";
+    			t13 = text("\r\n      to the Patchfox repository.");
+    			add_location(h1, file$g, 49, 2, 1144);
+    			add_location(h4, file$g, 53, 2, 1264);
+    			add_location(code, file$g, 55, 4, 1330);
+    			pre.className = "code";
+    			add_location(pre, file$g, 54, 2, 1306);
+    			add_location(p, file$g, 57, 2, 1364);
+    			a0.href = "/docs/index.html#/troubleshooting/";
+    			a0.target = "_blank";
+    			add_location(a0, file$g, 67, 6, 1579);
+    			add_location(li0, file$g, 66, 4, 1567);
+    			a1.href = "https://github.com/soapdog/patchfox/issues";
+    			a1.target = "_blank";
+    			add_location(a1, file$g, 72, 6, 1730);
+    			add_location(li1, file$g, 71, 4, 1718);
+    			add_location(ul, file$g, 58, 2, 1393);
+    			div.className = "container";
+    			add_location(div, file$g, 48, 0, 1117);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, h1);
+    			append(div, t1);
+    			if (if_block0) if_block0.m(div, null);
+    			append(div, t2);
+    			append(div, h4);
+    			append(div, t4);
+    			append(div, pre);
+    			append(pre, code);
+    			append(code, t5);
+    			append(div, t6);
+    			append(div, p);
+    			append(div, t8);
+    			append(div, ul);
+    			if (if_block1) if_block1.m(ul, null);
+    			append(ul, t9);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(ul, t11);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(li1, t13);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (ctx.toast) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1$7(ctx);
+    					if_block0.c();
+    					if_block0.m(div, t2);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (changed.error) {
+    				set_data(t5, ctx.error);
+    			}
+
+    			if (ctx.cta) {
+    				if (if_block1) {
+    					if_block1.p(changed, ctx);
+    				} else {
+    					if_block1 = create_if_block$9(ctx);
+    					if_block1.c();
+    					if_block1.m(ul, t9);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    		}
+    	};
+    }
+
+    function instance$f($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	document.title = `Patchfox - Error`;
+
+      let error = $routeParams.error;
+      let errorObj = {};
+      let toastClass = "";
+      let toast = false;
+      let msg;
+      let cta = false;
+
+      console.dir(error);
+      if (typeof error == "object") {
+        errorObj = error;
+        $$invalidate('error', error = errorObj.message);
+      }
+
+      const tryReconnect = () => {
+        $$invalidate('toast', toast = true);
+        $$invalidate('toastClass', toastClass = "toast-warning");
+        $$invalidate('msg', msg = "Attempting to reconnect to sbot...");
+        reconnect()
+          .then(() => {
+            $$invalidate('toastClass', toastClass = "toast-success");
+            $$invalidate('toast', toast = true);
+            $$invalidate('msg', msg =
+              "Connection to sbot reestablished. Try going to your public feed.");
+          })
+          .catch(n => {
+            $$invalidate('toastClass', toastClass = "toast-error");
+            $$invalidate('toast', toast = true);
+            $$invalidate('msg', msg = "Couldn't reconnect. Try reloading the page.");
+          });
+      };
+
+      let errorMapping = {
+        "Error: stream is closed": {
+          label: "Want to try to reconnect?",
+          action: tryReconnect
+        }
+      };
+
+      if (errorMapping.hasOwnProperty(error)) {
+        $$invalidate('cta', cta = errorMapping[error]);
+      }
+
+    	return { error, toastClass, toast, msg, cta };
+    }
+
+    class ErrorView extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$f, create_fragment$g, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Channels.svelte generated by Svelte v3.4.4 */
+
+    const file$h = "src\\views\\Channels.svelte";
+
+    function get_each_context$3(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.c = list[i];
+    	return child_ctx;
+    }
+
+    // (69:0) {:else}
+    function create_else_block$7(ctx) {
+    	var each_1_anchor;
+
+    	var each_value = ctx.subscribedChannels;
+
+    	var each_blocks = [];
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$3(get_each_context$3(ctx, each_value, i));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (var i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (var i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert(target, each_1_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.subscribedChannels) {
+    				each_value = ctx.subscribedChannels;
+
+    				for (var i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$3(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(changed, child_ctx);
+    					} else {
+    						each_blocks[i] = create_each_block$3(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+
+    			if (detaching) {
+    				detach(each_1_anchor);
+    			}
+    		}
+    	};
+    }
+
+    // (65:0) {#if subscribedChannels.length == 0}
+    function create_if_block$a(ctx) {
+    	var div, t, p;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t = space();
+    			p = element("p");
+    			p.textContent = "This is a complex query, it might take a while... Channels will appear as we find them";
+    			div.className = "loading";
+    			add_location(div, file$h, 65, 2, 1383);
+    			add_location(p, file$h, 67, 2, 1412);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			insert(target, t, anchor);
+    			insert(target, p, anchor);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    				detach(t);
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (70:2) {#each subscribedChannels as c}
+    function create_each_block$3(ctx) {
+    	var span, t0, t1_value = ctx.c, t1, t2, dispose;
+
+    	function click_handler() {
+    		return ctx.click_handler(ctx);
+    	}
+
+    	return {
+    		c: function create() {
+    			span = element("span");
+    			t0 = text("#");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			span.className = "channel label label-secondary m-1 svelte-1or0a5q";
+    			add_location(span, file$h, 70, 4, 1555);
+    			dispose = listen(span, "click", click_handler);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, t0);
+    			append(span, t1);
+    			append(span, t2);
+    		},
+
+    		p: function update(changed, new_ctx) {
+    			ctx = new_ctx;
+    			if ((changed.subscribedChannels) && t1_value !== (t1_value = ctx.c)) {
+    				set_data(t1, t1_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(span);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$h(ctx) {
+    	var h4, t_1, if_block_anchor;
+
+    	function select_block_type(ctx) {
+    		if (ctx.subscribedChannels.length == 0) return create_if_block$a;
+    		return create_else_block$7;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block = current_block_type(ctx);
+
+    	return {
+    		c: function create() {
+    			h4 = element("h4");
+    			h4.textContent = "Subscribed Channels";
+    			t_1 = space();
+    			if_block.c();
+    			if_block_anchor = empty();
+    			add_location(h4, file$h, 62, 0, 1311);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, h4, anchor);
+    			insert(target, t_1, anchor);
+    			if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(h4);
+    				detach(t_1);
+    			}
+
+    			if_block.d(detaching);
+
+    			if (detaching) {
+    				detach(if_block_anchor);
+    			}
+    		}
+    	};
+    }
+
+    function instance$g($$self, $$props, $$invalidate) {
+      let subscribedChannels = [];
+
+      let pull = hermiebox.modules.pullStream;
+      let sbot = hermiebox.sbot;
+
+      const loadSubscribedChannels = () => {
+        let query = {
+          $filter: {
+            value: {
+              author: sbot.id,
+              content: {
+                type: "channel"
+              }
+            }
+          },
+          $sort: [["value", "timestamp"]]
+        };
+        pull(
+          sbot.query.read({
+            query: [query],
+            live: true,
+            reverse: true,
+            limit: 500
+          }),
+          //pull.filter(c => {
+          //  !subscribedChannels.some(sc => sc.channel == c.channel);
+          //}),
+          pull.drain(c => {
+            if (c.sync) {
+              console.log("finished loading");
+            } else {
+              if (c.value.content.subscribed) {
+                subscribedChannels.push(c.value.content.channel);
+                $$invalidate('subscribedChannels', subscribedChannels);
+              }
+            }
+          })
+        );
+      };
+
+      loadSubscribedChannels();
+
+    	function click_handler({ c }) {
+    		return navigate('/channel', { channel: c });
+    	}
+
+    	return { subscribedChannels, click_handler };
+    }
+
+    class Channels extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$g, create_fragment$h, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Channel.svelte generated by Svelte v3.4.4 */
+
+    const file$i = "src\\views\\Channel.svelte";
+
+    function get_each_context$4(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.msg = list[i];
+    	return child_ctx;
+    }
+
+    // (108:0) {#if error}
+    function create_if_block_1$8(ctx) {
+    	var div, t0, t1;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text("Error: ");
+    			t1 = text(ctx.error);
+    			div.className = "toast toast-error";
+    			add_location(div, file$i, 108, 2, 2505);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, t0);
+    			append(div, t1);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (113:0) {:else}
+    function create_else_block$8(ctx) {
+    	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
+
+    	var each_value = ctx.msgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$4(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$4(key, child_ctx));
+    	}
+
+    	var each_1_else = null;
+
+    	if (!each_value.length) {
+    		each_1_else = create_else_block_1$4(ctx);
+    		each_1_else.c();
+    	}
+
+    	return {
+    		c: function create() {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+
+    			t0 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			a0 = element("a");
+    			div0 = element("div");
+    			div0.textContent = "Previous";
+    			t2 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			div1 = element("div");
+    			div1.textContent = "Next";
+    			div0.className = "page-item-subtitle";
+    			add_location(div0, file$i, 121, 8, 2893);
+    			a0.href = "#/public";
+    			add_location(a0, file$i, 120, 6, 2811);
+    			li0.className = "page-item page-previous";
+    			add_location(li0, file$i, 119, 4, 2767);
+    			div1.className = "page-item-subtitle";
+    			add_location(div1, file$i, 126, 8, 3086);
+    			a1.href = "#/public";
+    			add_location(a1, file$i, 125, 6, 3008);
+    			li1.className = "page-item page-next";
+    			add_location(li1, file$i, 124, 4, 2968);
+    			ul.className = "pagination";
+    			add_location(ul, file$i, 118, 2, 2738);
+
+    			dispose = [
+    				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
+    				listen(a1, "click", stop_propagation(prevent_default(ctx.goNext)))
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			if (each_1_else) {
+    				each_1_else.m(target, null);
+    			}
+
+    			insert(target, t0, anchor);
+    			insert(target, ul, anchor);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(a0, div0);
+    			append(ul, t2);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(a1, div1);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			const each_value = ctx.msgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, t0.parentNode, outro_and_destroy_block, create_each_block$4, t0, get_each_context$4);
+    			check_outros();
+
+    			if (each_value.length) {
+    				if (each_1_else) {
+    					each_1_else.d(1);
+    					each_1_else = null;
+    				}
+    			} else if (!each_1_else) {
+    				each_1_else = create_else_block_1$4(ctx);
+    				each_1_else.c();
+    				each_1_else.m(t0.parentNode, t0);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
+
+    			if (each_1_else) each_1_else.d(detaching);
+
+    			if (detaching) {
+    				detach(t0);
+    				detach(ul);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (111:0) {#if !msgs}
+    function create_if_block$b(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$i, 111, 2, 2580);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (116:2) {:else}
+    function create_else_block_1$4(ctx) {
+    	var p;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "No messages.";
+    			add_location(p, file$i, 116, 4, 2704);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+    		}
+    	};
+    }
+
+    // (114:2) {#each msgs as msg (msg.key)}
+    function create_each_block$4(key_1, ctx) {
+    	var first, current;
+
+    	var messagerenderer = new MessageRenderer({
+    		props: { msg: ctx.msg },
+    		$$inline: true
+    	});
+
+    	return {
+    		key: key_1,
+
+    		first: null,
+
+    		c: function create() {
+    			first = empty();
+    			messagerenderer.$$.fragment.c();
+    			this.first = first;
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, first, anchor);
+    			mount_component(messagerenderer, target, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var messagerenderer_changes = {};
+    			if (changed.msgs) messagerenderer_changes.msg = ctx.msg;
+    			messagerenderer.$set(messagerenderer_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			messagerenderer.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			messagerenderer.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(first);
+    			}
+
+    			messagerenderer.$destroy(detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$i(ctx) {
+    	var div2, div1, h4, t0, t1, t2, div0, label, input, t3, i, t4, t5, t6, current_block_type_index, if_block1, if_block1_anchor, current, dispose;
+
+    	var if_block0 = (ctx.error) && create_if_block_1$8(ctx);
+
+    	var if_block_creators = [
+    		create_if_block$b,
+    		create_else_block$8
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type(ctx) {
+    		if (!ctx.msgs) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			h4 = element("h4");
+    			t0 = text("Channel: #");
+    			t1 = text(ctx.channel);
+    			t2 = space();
+    			div0 = element("div");
+    			label = element("label");
+    			input = element("input");
+    			t3 = space();
+    			i = element("i");
+    			t4 = text("\r\n        Subscribe");
+    			t5 = space();
+    			if (if_block0) if_block0.c();
+    			t6 = space();
+    			if_block1.c();
+    			if_block1_anchor = empty();
+    			h4.className = "column";
+    			add_location(h4, file$i, 94, 4, 2148);
+    			attr(input, "type", "checkbox");
+    			add_location(input, file$i, 97, 8, 2274);
+    			i.className = "form-icon";
+    			add_location(i, file$i, 101, 8, 2400);
+    			label.className = "form-switch float-right";
+    			add_location(label, file$i, 96, 6, 2225);
+    			div0.className = "column";
+    			add_location(div0, file$i, 95, 4, 2197);
+    			div1.className = "columns";
+    			add_location(div1, file$i, 93, 2, 2121);
+    			div2.className = "container";
+    			add_location(div2, file$i, 92, 0, 2094);
+
+    			dispose = [
+    				listen(input, "change", ctx.input_change_handler),
+    				listen(input, "change", ctx.subscriptionChanged)
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div1);
+    			append(div1, h4);
+    			append(h4, t0);
+    			append(h4, t1);
+    			append(div1, t2);
+    			append(div1, div0);
+    			append(div0, label);
+    			append(label, input);
+
+    			input.checked = ctx.subscribed;
+
+    			append(label, t3);
+    			append(label, i);
+    			append(label, t4);
+    			insert(target, t5, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t6, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.subscribed) input.checked = ctx.subscribed;
+
+    			if (ctx.error) {
+    				if (if_block0) {
+    					if_block0.p(changed, ctx);
+    				} else {
+    					if_block0 = create_if_block_1$8(ctx);
+    					if_block0.c();
+    					if_block0.m(t6.parentNode, t6);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block1.o(1);
+    				check_outros();
+
+    				if_block1 = if_blocks[current_block_type_index];
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
+    				}
+    				if_block1.i(1);
+    				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block1) if_block1.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block1) if_block1.o();
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div2);
+    				detach(t5);
+    			}
+
+    			if (if_block0) if_block0.d(detaching);
+
+    			if (detaching) {
+    				detach(t6);
+    			}
+
+    			if_blocks[current_block_type_index].d(detaching);
+
+    			if (detaching) {
+    				detach(if_block1_anchor);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function instance$h($$self, $$props, $$invalidate) {
+    	let $routeParams;
+
+    	validate_store(routeParams, 'routeParams');
+    	subscribe($$self, routeParams, $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+
+    	
+
+      let msgs = false;
+      let error = $routeParams.error || false;
+      let channel = $routeParams.channel || false;
+      let subscribed = false;
+
+      if (!channel) {
+        console.log("can't navigate to unnamed channel, going back to public");
+        location = "index.html#/public"; // force reload.
+      }
+
+      let opts = {
+        limit: $routeParams.limit || getPref("limit",10),
+        reverse: true
+      };
+
+      ssb.channelSubscribed(channel).then(s => { const $$result = (subscribed = s); $$invalidate('subscribed', subscribed); return $$result; });
+
+      const subscriptionChanged = ev => {
+        let v = ev.target.checked;
+        if (v) {
+          ssb.channelSubscribe(channel).catch(() => { const $$result = (subscribed = false); $$invalidate('subscribed', subscribed); return $$result; });
+        } else {
+          ssb.channelUnsubscribe(channel).catch(() => { const $$result = (subscribed = true); $$invalidate('subscribed', subscribed); return $$result; });
+        }
+      };
+
+      const goNext = () => {
+        navigate("/channel", {
+          channel,
+          lt: msgs[msgs.length - 1].rts
+        });
+      };
+      const goPrevious = () => {
+        history.back();
+      };
+
+      let previousShortcutUnbind = keymage("p", () => {
+        goPrevious();
+        return false;
+      });
+      let nextShortcutUnbind = keymage("n", () => {
+        goNext();
+        return false;
+      });
+
+      onDestroy(() => {
+        previousShortcutUnbind();
+        nextShortcutUnbind();
+      });
+
+    	function input_change_handler() {
+    		subscribed = this.checked;
+    		$$invalidate('subscribed', subscribed);
+    	}
+
+    	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, channel: 1, error: 1 }) => {
+    		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.channel || $$dirty.error) { {
+            Object.assign(opts, $routeParams);
+        
+            document.title = `Patchfox - #${channel}`;
+        
+            if (opts.hasOwnProperty("lt")) {
+              opts.lt = parseInt(opts.lt); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('channel', channel), $$invalidate('error', error);
+            }
+        
+            if (opts.hasOwnProperty("limit")) {
+              opts.limit = parseInt(opts.limit); $$invalidate('opts', opts), $$invalidate('$routeParams', $routeParams), $$invalidate('channel', channel), $$invalidate('error', error);
+            }
+        
+            let promise = ssb
+              .channel(channel, opts)
+              .then(ms => {
+                console.log("msg", ms);
+                $$invalidate('msgs', msgs = ms);
+                window.scrollTo(0, 0);
+              })
+              .catch(n => {
+                if (!error) {
+                  console.error("errrrooooor", n);
+                }
+              });
+          } }
+    	};
+
+    	return {
+    		msgs,
+    		error,
+    		channel,
+    		subscribed,
+    		subscriptionChanged,
+    		goNext,
+    		goPrevious,
+    		input_change_handler
+    	};
+    }
+
+    class Channel extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$h, create_fragment$i, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Settings.svelte generated by Svelte v3.4.4 */
+
+    const file$j = "src\\views\\Settings.svelte";
+
+    function create_fragment$j(ctx) {
+    	var h1, t1, p0, t2, i0, t4, t5, p1, b0, t6, i1, t8, a0, t10, t11, h40, t13, form0, label0, t14, i2, t16, i3, t18, code, t20, t21, input0, t22, label1, t24, input1, t25, label2, t27, textarea, t28, br0, t29, button, t31, p2, t33, h41, t35, form1, label3, t37, input2, t38, br1, t39, span, t40, a1, t41, i4, t43, label4, input3, t44, i5, t45, b1, t47, t48, label5, input4, t49, i6, t50, b2, t52, t53, label6, input5, t54, i7, t55, b3, t57, t58, label7, input6, t59, i8, t60, b4, t62, t63, label8, input7, t64, i9, t65, b5, t67, t68, label9, input8, t69, i10, t70, b6, t72, t73, label10, input9, t74, i11, t75, b7, t77, t78, label11, input10, t79, i12, t80, b8, t82, t83, div, t84, label12, input11, t85, i13, t86, b9, t88, t89, br2, t90, label13, t92, label14, input12, t93, i14, t94, t95, label15, input13, t96, i15, t97, t98, br3, t99, br4, dispose;
+
+    	return {
+    		c: function create() {
+    			h1 = element("h1");
+    			h1.textContent = "Settings";
+    			t1 = space();
+    			p0 = element("p");
+    			t2 = text("Settings changes are saved as you make them except for identity and connection\r\n  changes, those require a full page reload and thus you need to press a save\r\n  button. The reason behind this is that Patchfox needs to disconnect and\r\n  reconnect to the\r\n  ");
+    			i0 = element("i");
+    			i0.textContent = "ssb-server";
+    			t4 = text("\r\n  using the new info.");
+    			t5 = space();
+    			p1 = element("p");
+    			b0 = element("b");
+    			t6 = text("You can't use Patchfox until you fill your\r\n    ");
+    			i1 = element("i");
+    			i1.textContent = "Connection & Identity";
+    			t8 = text("\r\n    information.\r\n    ");
+    			a0 = element("a");
+    			a0.textContent = "If you want more help regarding connection and configuration click here";
+    			t10 = text("\r\n    .");
+    			t11 = space();
+    			h40 = element("h4");
+    			h40.textContent = "Connection & Identity";
+    			t13 = space();
+    			form0 = element("form");
+    			label0 = element("label");
+    			t14 = text("Patchfox can infer the values for both\r\n    ");
+    			i2 = element("i");
+    			i2.textContent = "remote";
+    			t16 = text("\r\n    and\r\n    ");
+    			i3 = element("i");
+    			i3.textContent = "secret";
+    			t18 = text("\r\n    from your\r\n    ");
+    			code = element("code");
+    			code.textContent = "~/.ssb/secret";
+    			t20 = text("\r\n    file. You can use the button below to browse for it.");
+    			t21 = space();
+    			input0 = element("input");
+    			t22 = space();
+    			label1 = element("label");
+    			label1.textContent = "Remote";
+    			t24 = space();
+    			input1 = element("input");
+    			t25 = space();
+    			label2 = element("label");
+    			label2.textContent = "Secret";
+    			t27 = space();
+    			textarea = element("textarea");
+    			t28 = space();
+    			br0 = element("br");
+    			t29 = space();
+    			button = element("button");
+    			button.textContent = "Save Identity & Remote";
+    			t31 = space();
+    			p2 = element("p");
+    			p2.textContent = "Saving identity and remote will cause a full page refresh.";
+    			t33 = space();
+    			h41 = element("h4");
+    			h41.textContent = "Vieweing Experience";
+    			t35 = space();
+    			form1 = element("form");
+    			label3 = element("label");
+    			label3.textContent = "Messages per page";
+    			t37 = space();
+    			input2 = element("input");
+    			t38 = space();
+    			br1 = element("br");
+    			t39 = space();
+    			span = element("span");
+    			t40 = text("Which message types you want to see?\r\n    ");
+    			a1 = element("a");
+    			t41 = text("Click here for more information about\r\n      ");
+    			i4 = element("i");
+    			i4.textContent = "Message Types";
+    			t43 = space();
+    			label4 = element("label");
+    			input3 = element("input");
+    			t44 = space();
+    			i5 = element("i");
+    			t45 = space();
+    			b1 = element("b");
+    			b1.textContent = "About";
+    			t47 = text("\r\n    (aka people setting avatars and descriptions; gatherings)");
+    			t48 = space();
+    			label5 = element("label");
+    			input4 = element("input");
+    			t49 = space();
+    			i6 = element("i");
+    			t50 = space();
+    			b2 = element("b");
+    			b2.textContent = "Blog";
+    			t52 = text("\r\n    (Longform text posts)");
+    			t53 = space();
+    			label6 = element("label");
+    			input5 = element("input");
+    			t54 = space();
+    			i7 = element("i");
+    			t55 = space();
+    			b3 = element("b");
+    			b3.textContent = "Channel";
+    			t57 = text("\r\n    (People subscribing to channels)");
+    			t58 = space();
+    			label7 = element("label");
+    			input6 = element("input");
+    			t59 = space();
+    			i8 = element("i");
+    			t60 = space();
+    			b4 = element("b");
+    			b4.textContent = "Contact";
+    			t62 = text("\r\n    (People following each other)");
+    			t63 = space();
+    			label8 = element("label");
+    			input7 = element("input");
+    			t64 = space();
+    			i9 = element("i");
+    			t65 = space();
+    			b5 = element("b");
+    			b5.textContent = "Posts";
+    			t67 = text("\r\n    (Common content post, leave this on or it is not that fun)");
+    			t68 = space();
+    			label9 = element("label");
+    			input8 = element("input");
+    			t69 = space();
+    			i10 = element("i");
+    			t70 = space();
+    			b6 = element("b");
+    			b6.textContent = "Pub";
+    			t72 = text("\r\n    (Pub servers announcements)");
+    			t73 = space();
+    			label10 = element("label");
+    			input9 = element("input");
+    			t74 = space();
+    			i11 = element("i");
+    			t75 = space();
+    			b7 = element("b");
+    			b7.textContent = "Private";
+    			t77 = text("\r\n    (Private messages; You won't be able to read them, but you'll see their\r\n    encrypted content passing by)");
+    			t78 = space();
+    			label11 = element("label");
+    			input10 = element("input");
+    			t79 = space();
+    			i12 = element("i");
+    			t80 = space();
+    			b8 = element("b");
+    			b8.textContent = "Vote";
+    			t82 = text("\r\n    (People liking/digging stuff)");
+    			t83 = space();
+    			div = element("div");
+    			t84 = space();
+    			label12 = element("label");
+    			input11 = element("input");
+    			t85 = space();
+    			i13 = element("i");
+    			t86 = space();
+    			b9 = element("b");
+    			b9.textContent = "Unknown";
+    			t88 = text("\r\n    (Show messages Patchfox doesn't understand as their raw content)");
+    			t89 = space();
+    			br2 = element("br");
+    			t90 = space();
+    			label13 = element("label");
+    			label13.textContent = "Feed column size. There is research that says that a short column size makes\r\n    for a more pleasant reading experience, still some users prefer to use the\r\n    full screen space. Your choice is between reading through long text lines or\r\n    short ones.";
+    			t92 = space();
+    			label14 = element("label");
+    			input12 = element("input");
+    			t93 = space();
+    			i14 = element("i");
+    			t94 = text("\r\n    Short column");
+    			t95 = space();
+    			label15 = element("label");
+    			input13 = element("input");
+    			t96 = space();
+    			i15 = element("i");
+    			t97 = text("\r\n    Long column");
+    			t98 = space();
+    			br3 = element("br");
+    			t99 = space();
+    			br4 = element("br");
+    			add_location(h1, file$j, 71, 0, 2107);
+    			add_location(i0, file$j, 77, 2, 2389);
+    			add_location(p0, file$j, 72, 0, 2126);
+    			add_location(i1, file$j, 83, 4, 2501);
+    			a0.href = "/docs/index.html#/troubleshooting/no-configuration";
+    			a0.target = "_blank";
+    			add_location(a0, file$j, 85, 4, 2553);
+    			add_location(b0, file$j, 81, 2, 2444);
+    			add_location(p1, file$j, 80, 0, 2437);
+    			add_location(h40, file$j, 94, 0, 2758);
+    			add_location(i2, file$j, 99, 4, 2915);
+    			add_location(i3, file$j, 101, 4, 2943);
+    			add_location(code, file$j, 103, 4, 2977);
+    			label0.className = "form-label";
+    			label0.htmlFor = "secret-file";
+    			add_location(label0, file$j, 97, 2, 2821);
+    			attr(input0, "type", "file");
+    			input0.className = "form-input";
+    			input0.id = "secret-file";
+    			add_location(input0, file$j, 106, 2, 3077);
+    			label1.className = "form-label";
+    			label1.htmlFor = "remote";
+    			add_location(label1, file$j, 111, 2, 3183);
+    			input1.className = "form-input";
+    			attr(input1, "type", "text");
+    			input1.id = "remote";
+    			input1.placeholder = "remote";
+    			add_location(input1, file$j, 112, 2, 3240);
+    			label2.className = "form-label";
+    			label2.htmlFor = "secret";
+    			add_location(label2, file$j, 119, 2, 3364);
+    			textarea.className = "form-input";
+    			textarea.id = "secret";
+    			textarea.placeholder = "Your secret";
+    			textarea.rows = "8";
+    			add_location(textarea, file$j, 120, 2, 3421);
+    			add_location(br0, file$j, 126, 2, 3546);
+    			button.className = "btn btn-primary float-right";
+    			add_location(button, file$j, 127, 2, 3556);
+    			add_location(p2, file$j, 130, 2, 3674);
+    			form0.className = "form-group";
+    			add_location(form0, file$j, 96, 0, 2792);
+    			add_location(h41, file$j, 133, 0, 3752);
+    			label3.className = "form-label";
+    			label3.htmlFor = "limit";
+    			add_location(label3, file$j, 135, 2, 3811);
+    			input2.className = "form-input";
+    			attr(input2, "type", "number");
+    			add_location(input2, file$j, 136, 2, 3878);
+    			add_location(br1, file$j, 142, 2, 4007);
+    			add_location(i4, file$j, 147, 6, 4183);
+    			a1.target = "_blank";
+    			a1.href = "/docs/index.html#/message_types/";
+    			add_location(a1, file$j, 145, 4, 4071);
+    			add_location(span, file$j, 143, 2, 4017);
+    			attr(input3, "type", "checkbox");
+    			add_location(input3, file$j, 151, 4, 4261);
+    			i5.className = "form-icon";
+    			add_location(i5, file$j, 157, 4, 4421);
+    			add_location(b1, file$j, 158, 4, 4450);
+    			label4.className = "form-switch";
+    			add_location(label4, file$j, 150, 2, 4228);
+    			attr(input4, "type", "checkbox");
+    			add_location(input4, file$j, 162, 4, 4574);
+    			i6.className = "form-icon";
+    			add_location(i6, file$j, 168, 4, 4731);
+    			add_location(b2, file$j, 169, 4, 4760);
+    			label5.className = "form-switch";
+    			add_location(label5, file$j, 161, 2, 4541);
+    			attr(input5, "type", "checkbox");
+    			add_location(input5, file$j, 173, 4, 4847);
+    			i7.className = "form-icon";
+    			add_location(i7, file$j, 179, 4, 5013);
+    			add_location(b3, file$j, 180, 4, 5042);
+    			label6.className = "form-switch";
+    			add_location(label6, file$j, 172, 2, 4814);
+    			attr(input6, "type", "checkbox");
+    			add_location(input6, file$j, 184, 4, 5143);
+    			i8.className = "form-icon";
+    			add_location(i8, file$j, 190, 4, 5309);
+    			add_location(b4, file$j, 191, 4, 5338);
+    			label7.className = "form-switch";
+    			add_location(label7, file$j, 183, 2, 5110);
+    			attr(input7, "type", "checkbox");
+    			add_location(input7, file$j, 195, 4, 5436);
+    			i9.className = "form-icon";
+    			add_location(i9, file$j, 201, 4, 5593);
+    			add_location(b5, file$j, 202, 4, 5622);
+    			label8.className = "form-switch";
+    			add_location(label8, file$j, 194, 2, 5403);
+    			attr(input8, "type", "checkbox");
+    			add_location(input8, file$j, 206, 4, 5747);
+    			i10.className = "form-icon";
+    			add_location(i10, file$j, 212, 4, 5901);
+    			add_location(b6, file$j, 213, 4, 5930);
+    			label9.className = "form-switch";
+    			add_location(label9, file$j, 205, 2, 5714);
+    			attr(input9, "type", "checkbox");
+    			add_location(input9, file$j, 218, 4, 6024);
+    			i11.className = "form-icon";
+    			add_location(i11, file$j, 224, 4, 6190);
+    			add_location(b7, file$j, 225, 4, 6219);
+    			label10.className = "form-switch";
+    			add_location(label10, file$j, 217, 2, 5991);
+    			attr(input10, "type", "checkbox");
+    			add_location(input10, file$j, 231, 4, 6396);
+    			i12.className = "form-icon";
+    			add_location(i12, file$j, 237, 4, 6553);
+    			add_location(b8, file$j, 238, 4, 6582);
+    			label11.className = "form-switch";
+    			add_location(label11, file$j, 230, 2, 6363);
+    			div.className = "divider";
+    			add_location(div, file$j, 241, 2, 6644);
+    			attr(input11, "type", "checkbox");
+    			add_location(input11, file$j, 243, 4, 6704);
+    			i13.className = "form-icon";
+    			add_location(i13, file$j, 249, 4, 6870);
+    			add_location(b9, file$j, 250, 4, 6899);
+    			label12.className = "form-switch";
+    			add_location(label12, file$j, 242, 2, 6671);
+    			add_location(br2, file$j, 253, 2, 6999);
+    			label13.className = "form-label";
+    			add_location(label13, file$j, 254, 2, 7009);
+    			ctx.$$binding_groups[0].push(input12);
+    			attr(input12, "type", "radio");
+    			input12.name = "column-size";
+    			input12.__value = "short";
+    			input12.value = input12.__value;
+    			add_location(input12, file$j, 261, 4, 7344);
+    			i14.className = "form-icon";
+    			add_location(i14, file$j, 267, 4, 7516);
+    			label14.className = "form-radio";
+    			add_location(label14, file$j, 260, 2, 7312);
+    			ctx.$$binding_groups[0].push(input13);
+    			attr(input13, "type", "radio");
+    			input13.name = "column-size";
+    			input13.__value = "long";
+    			input13.value = input13.__value;
+    			add_location(input13, file$j, 271, 4, 7605);
+    			i15.className = "form-icon";
+    			add_location(i15, file$j, 277, 4, 7776);
+    			label15.className = "form-radio";
+    			add_location(label15, file$j, 270, 2, 7573);
+    			form1.className = "form-group";
+    			add_location(form1, file$j, 134, 0, 3782);
+    			add_location(br3, file$j, 281, 0, 7839);
+    			add_location(br4, file$j, 282, 0, 7847);
+
+    			dispose = [
+    				listen(input0, "change", ctx.selectedFile),
+    				listen(input1, "input", ctx.input1_input_handler),
+    				listen(textarea, "input", ctx.textarea_input_handler),
+    				listen(button, "click", ctx.saveConfiguration),
+    				listen(input2, "input", ctx.input2_input_handler),
+    				listen(input2, "change", ctx.change_handler),
+    				listen(input3, "change", ctx.input3_change_handler),
+    				listen(input3, "change", ctx.change_handler_1),
+    				listen(input4, "change", ctx.input4_change_handler),
+    				listen(input4, "change", ctx.change_handler_2),
+    				listen(input5, "change", ctx.input5_change_handler),
+    				listen(input5, "change", ctx.change_handler_3),
+    				listen(input6, "change", ctx.input6_change_handler),
+    				listen(input6, "change", ctx.change_handler_4),
+    				listen(input7, "change", ctx.input7_change_handler),
+    				listen(input7, "change", ctx.change_handler_5),
+    				listen(input8, "change", ctx.input8_change_handler),
+    				listen(input8, "change", ctx.change_handler_6),
+    				listen(input9, "change", ctx.input9_change_handler),
+    				listen(input9, "change", ctx.change_handler_7),
+    				listen(input10, "change", ctx.input10_change_handler),
+    				listen(input10, "change", ctx.change_handler_8),
+    				listen(input11, "change", ctx.input11_change_handler),
+    				listen(input11, "change", ctx.change_handler_9),
+    				listen(input12, "change", ctx.input12_change_handler),
+    				listen(input12, "change", ctx.change_handler_10),
+    				listen(input13, "change", ctx.input13_change_handler),
+    				listen(input13, "change", ctx.change_handler_11)
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, h1, anchor);
+    			insert(target, t1, anchor);
+    			insert(target, p0, anchor);
+    			append(p0, t2);
+    			append(p0, i0);
+    			append(p0, t4);
+    			insert(target, t5, anchor);
+    			insert(target, p1, anchor);
+    			append(p1, b0);
+    			append(b0, t6);
+    			append(b0, i1);
+    			append(b0, t8);
+    			append(b0, a0);
+    			append(b0, t10);
+    			insert(target, t11, anchor);
+    			insert(target, h40, anchor);
+    			insert(target, t13, anchor);
+    			insert(target, form0, anchor);
+    			append(form0, label0);
+    			append(label0, t14);
+    			append(label0, i2);
+    			append(label0, t16);
+    			append(label0, i3);
+    			append(label0, t18);
+    			append(label0, code);
+    			append(label0, t20);
+    			append(form0, t21);
+    			append(form0, input0);
+    			append(form0, t22);
+    			append(form0, label1);
+    			append(form0, t24);
+    			append(form0, input1);
+
+    			input1.value = ctx.remote;
+
+    			append(form0, t25);
+    			append(form0, label2);
+    			append(form0, t27);
+    			append(form0, textarea);
+
+    			textarea.value = ctx.keys;
+
+    			append(form0, t28);
+    			append(form0, br0);
+    			append(form0, t29);
+    			append(form0, button);
+    			append(form0, t31);
+    			append(form0, p2);
+    			insert(target, t33, anchor);
+    			insert(target, h41, anchor);
+    			insert(target, t35, anchor);
+    			insert(target, form1, anchor);
+    			append(form1, label3);
+    			append(form1, t37);
+    			append(form1, input2);
+
+    			input2.value = ctx.limit;
+
+    			append(form1, t38);
+    			append(form1, br1);
+    			append(form1, t39);
+    			append(form1, span);
+    			append(span, t40);
+    			append(span, a1);
+    			append(a1, t41);
+    			append(a1, i4);
+    			append(form1, t43);
+    			append(form1, label4);
+    			append(label4, input3);
+
+    			input3.checked = ctx.showTypeAbout;
+
+    			append(label4, t44);
+    			append(label4, i5);
+    			append(label4, t45);
+    			append(label4, b1);
+    			append(label4, t47);
+    			append(form1, t48);
+    			append(form1, label5);
+    			append(label5, input4);
+
+    			input4.checked = ctx.showTypeBlog;
+
+    			append(label5, t49);
+    			append(label5, i6);
+    			append(label5, t50);
+    			append(label5, b2);
+    			append(label5, t52);
+    			append(form1, t53);
+    			append(form1, label6);
+    			append(label6, input5);
+
+    			input5.checked = ctx.showTypeChannel;
+
+    			append(label6, t54);
+    			append(label6, i7);
+    			append(label6, t55);
+    			append(label6, b3);
+    			append(label6, t57);
+    			append(form1, t58);
+    			append(form1, label7);
+    			append(label7, input6);
+
+    			input6.checked = ctx.showTypeContact;
+
+    			append(label7, t59);
+    			append(label7, i8);
+    			append(label7, t60);
+    			append(label7, b4);
+    			append(label7, t62);
+    			append(form1, t63);
+    			append(form1, label8);
+    			append(label8, input7);
+
+    			input7.checked = ctx.showTypePost;
+
+    			append(label8, t64);
+    			append(label8, i9);
+    			append(label8, t65);
+    			append(label8, b5);
+    			append(label8, t67);
+    			append(form1, t68);
+    			append(form1, label9);
+    			append(label9, input8);
+
+    			input8.checked = ctx.showTypePub;
+
+    			append(label9, t69);
+    			append(label9, i10);
+    			append(label9, t70);
+    			append(label9, b6);
+    			append(label9, t72);
+    			append(form1, t73);
+    			append(form1, label10);
+    			append(label10, input9);
+
+    			input9.checked = ctx.showTypePrivate;
+
+    			append(label10, t74);
+    			append(label10, i11);
+    			append(label10, t75);
+    			append(label10, b7);
+    			append(label10, t77);
+    			append(form1, t78);
+    			append(form1, label11);
+    			append(label11, input10);
+
+    			input10.checked = ctx.showTypeVote;
+
+    			append(label11, t79);
+    			append(label11, i12);
+    			append(label11, t80);
+    			append(label11, b8);
+    			append(label11, t82);
+    			append(form1, t83);
+    			append(form1, div);
+    			append(form1, t84);
+    			append(form1, label12);
+    			append(label12, input11);
+
+    			input11.checked = ctx.showTypeUnknown;
+
+    			append(label12, t85);
+    			append(label12, i13);
+    			append(label12, t86);
+    			append(label12, b9);
+    			append(label12, t88);
+    			append(form1, t89);
+    			append(form1, br2);
+    			append(form1, t90);
+    			append(form1, label13);
+    			append(form1, t92);
+    			append(form1, label14);
+    			append(label14, input12);
+
+    			input12.checked = input12.__value === ctx.columnSize;
+
+    			append(label14, t93);
+    			append(label14, i14);
+    			append(label14, t94);
+    			append(form1, t95);
+    			append(form1, label15);
+    			append(label15, input13);
+
+    			input13.checked = input13.__value === ctx.columnSize;
+
+    			append(label15, t96);
+    			append(label15, i15);
+    			append(label15, t97);
+    			insert(target, t98, anchor);
+    			insert(target, br3, anchor);
+    			insert(target, t99, anchor);
+    			insert(target, br4, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.remote && (input1.value !== ctx.remote)) input1.value = ctx.remote;
+    			if (changed.keys) textarea.value = ctx.keys;
+    			if (changed.limit) input2.value = ctx.limit;
+    			if (changed.showTypeAbout) input3.checked = ctx.showTypeAbout;
+    			if (changed.showTypeBlog) input4.checked = ctx.showTypeBlog;
+    			if (changed.showTypeChannel) input5.checked = ctx.showTypeChannel;
+    			if (changed.showTypeContact) input6.checked = ctx.showTypeContact;
+    			if (changed.showTypePost) input7.checked = ctx.showTypePost;
+    			if (changed.showTypePub) input8.checked = ctx.showTypePub;
+    			if (changed.showTypePrivate) input9.checked = ctx.showTypePrivate;
+    			if (changed.showTypeVote) input10.checked = ctx.showTypeVote;
+    			if (changed.showTypeUnknown) input11.checked = ctx.showTypeUnknown;
+    			if (changed.columnSize) input12.checked = input12.__value === ctx.columnSize;
+    			if (changed.columnSize) input13.checked = input13.__value === ctx.columnSize;
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(h1);
+    				detach(t1);
+    				detach(p0);
+    				detach(t5);
+    				detach(p1);
+    				detach(t11);
+    				detach(h40);
+    				detach(t13);
+    				detach(form0);
+    				detach(t33);
+    				detach(h41);
+    				detach(t35);
+    				detach(form1);
+    			}
+
+    			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input12), 1);
+    			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input13), 1);
+
+    			if (detaching) {
+    				detach(t98);
+    				detach(br3);
+    				detach(t99);
+    				detach(br4);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function instance$i($$self, $$props, $$invalidate) {
+    	
+
+      let keys = {};
+      let remote = "";
+      let limit = getPref("limit", 10);
+      let columnSize = getPref("columnSize", "short");
+
+      document.title = "Patchfox - Settings";
+
+      // message type filters
+      let showTypeUnknown = getPref("showTypeUnknown", false);
+      let showTypeAbout = getPref("showTypeAbout", true);
+      let showTypeBlog = getPref("showTypeBlog", true);
+      let showTypeChannel = getPref("showTypeChannel", true);
+      let showTypeContact = getPref("showTypeContact", true);
+      let showTypePost = getPref("showTypePost", true);
+      let showTypePrivate = getPref("showTypePrivate", true);
+      let showTypePub = getPref("showTypePub", true);
+      let showTypeVote = getPref("showTypeVote", true);
+
+      const saveConfiguration = ev => {
+        setConnectionConfiguration({ remote, keys: JSON.parse(keys), manifest });
+        navigate("/public");
+        location.reload();
+      };
+
+      const selectedFile = ev => {
+        const secretFile = ev.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          console.log(evt.target.result);
+          const contents = evt.target.result;
+          let secret = contents.split("\n").filter(function(line) {
+            return line.indexOf("#") != 0;
+          });
+          secret = JSON.parse(secret.join("\n"));
+          $$invalidate('remote', remote = `ws://localhost:8989~shs:${secret.id.slice(
+        0,
+        secret.id.indexOf("=") + 1
+      )}`);
+          updateUI({ keys: secret, remote });
+        };
+        reader.readAsText(secretFile);
+      };
+
+      const updateUI = savedData => {
+        console.log("saved data from settings", savedData);
+        $$invalidate('remote', remote = savedData.remote || "");
+        if (savedData.keys) {
+          $$invalidate('keys', keys = JSON.stringify(savedData.keys, null, 2));
+        } else {
+          $$invalidate('keys', keys = "");
+        }
+      };
+
+      const onError = error => {
+        console.error("error on settings", error);
+      };
+
+      const gettingStoredSettings = browser.storage.local
+        .get()
+        .then(updateUI, onError);
+
+    	const $$binding_groups = [[]];
+
+    	function input1_input_handler() {
+    		remote = this.value;
+    		$$invalidate('remote', remote);
+    	}
+
+    	function textarea_input_handler() {
+    		keys = this.value;
+    		$$invalidate('keys', keys);
+    	}
+
+    	function input2_input_handler() {
+    		limit = to_number(this.value);
+    		$$invalidate('limit', limit);
+    	}
+
+    	function change_handler() {
+    		return setPref('limit', limit);
+    	}
+
+    	function input3_change_handler() {
+    		showTypeAbout = this.checked;
+    		$$invalidate('showTypeAbout', showTypeAbout);
+    	}
+
+    	function change_handler_1(ev) {
+    	        setPref('showTypeAbout', showTypeAbout);
+    	      }
+
+    	function input4_change_handler() {
+    		showTypeBlog = this.checked;
+    		$$invalidate('showTypeBlog', showTypeBlog);
+    	}
+
+    	function change_handler_2(ev) {
+    	        setPref('showTypeBlog', showTypeBlog);
+    	      }
+
+    	function input5_change_handler() {
+    		showTypeChannel = this.checked;
+    		$$invalidate('showTypeChannel', showTypeChannel);
+    	}
+
+    	function change_handler_3(ev) {
+    	        setPref('showTypeChannel', showTypeChannel);
+    	      }
+
+    	function input6_change_handler() {
+    		showTypeContact = this.checked;
+    		$$invalidate('showTypeContact', showTypeContact);
+    	}
+
+    	function change_handler_4(ev) {
+    	        setPref('showTypeContact', showTypeContact);
+    	      }
+
+    	function input7_change_handler() {
+    		showTypePost = this.checked;
+    		$$invalidate('showTypePost', showTypePost);
+    	}
+
+    	function change_handler_5(ev) {
+    	        setPref('showTypePost', showTypePost);
+    	      }
+
+    	function input8_change_handler() {
+    		showTypePub = this.checked;
+    		$$invalidate('showTypePub', showTypePub);
+    	}
+
+    	function change_handler_6(ev) {
+    	        setPref('showTypePub', showTypePub);
+    	      }
+
+    	function input9_change_handler() {
+    		showTypePrivate = this.checked;
+    		$$invalidate('showTypePrivate', showTypePrivate);
+    	}
+
+    	function change_handler_7(ev) {
+    	        setPref('showTypePrivate', showTypePrivate);
+    	      }
+
+    	function input10_change_handler() {
+    		showTypeVote = this.checked;
+    		$$invalidate('showTypeVote', showTypeVote);
+    	}
+
+    	function change_handler_8(ev) {
+    	        setPref('showTypeVote', showTypeVote);
+    	      }
+
+    	function input11_change_handler() {
+    		showTypeUnknown = this.checked;
+    		$$invalidate('showTypeUnknown', showTypeUnknown);
+    	}
+
+    	function change_handler_9(ev) {
+    	        setPref('showTypeUnknown', showTypeUnknown);
+    	      }
+
+    	function input12_change_handler() {
+    		columnSize = this.__value;
+    		$$invalidate('columnSize', columnSize);
+    	}
+
+    	function change_handler_10() {
+    		return setPref('columnSize', columnSize);
+    	}
+
+    	function input13_change_handler() {
+    		columnSize = this.__value;
+    		$$invalidate('columnSize', columnSize);
+    	}
+
+    	function change_handler_11() {
+    		return setPref('columnSize', columnSize);
+    	}
+
+    	return {
+    		keys,
+    		remote,
+    		limit,
+    		columnSize,
+    		showTypeUnknown,
+    		showTypeAbout,
+    		showTypeBlog,
+    		showTypeChannel,
+    		showTypeContact,
+    		showTypePost,
+    		showTypePrivate,
+    		showTypePub,
+    		showTypeVote,
+    		saveConfiguration,
+    		selectedFile,
+    		input1_input_handler,
+    		textarea_input_handler,
+    		input2_input_handler,
+    		change_handler,
+    		input3_change_handler,
+    		change_handler_1,
+    		input4_change_handler,
+    		change_handler_2,
+    		input5_change_handler,
+    		change_handler_3,
+    		input6_change_handler,
+    		change_handler_4,
+    		input7_change_handler,
+    		change_handler_5,
+    		input8_change_handler,
+    		change_handler_6,
+    		input9_change_handler,
+    		change_handler_7,
+    		input10_change_handler,
+    		change_handler_8,
+    		input11_change_handler,
+    		change_handler_9,
+    		input12_change_handler,
+    		change_handler_10,
+    		input13_change_handler,
+    		change_handler_11,
+    		$$binding_groups
+    	};
+    }
+
+    class Settings extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$i, create_fragment$j, safe_not_equal, []);
+    	}
+    }
+
+    /* src\views\Mentions.svelte generated by Svelte v3.4.4 */
+
+    const file$k = "src\\views\\Mentions.svelte";
+
+    function get_each_context$5(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.msg = list[i];
+    	return child_ctx;
+    }
+
+    // (60:0) {:else}
+    function create_else_block$9(ctx) {
+    	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
+
+    	var each_value = ctx.msgs;
+
+    	const get_key = ctx => ctx.msg.key;
+
+    	for (var i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$5(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$5(key, child_ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].c();
+
+    			t0 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			a0 = element("a");
+    			div0 = element("div");
+    			div0.textContent = "Previous";
+    			t2 = space();
+    			li1 = element("li");
+    			a1 = element("a");
+    			div1 = element("div");
+    			div1.textContent = "Next";
+    			div0.className = "page-item-subtitle";
+    			add_location(div0, file$k, 68, 8, 1524);
+    			a0.href = "#/public";
+    			add_location(a0, file$k, 65, 6, 1414);
+    			li0.className = "page-item page-previous";
+    			add_location(li0, file$k, 64, 4, 1370);
+    			div1.className = "page-item-subtitle";
+    			add_location(div1, file$k, 77, 8, 1816);
+    			a1.href = "#/public";
+    			add_location(a1, file$k, 72, 6, 1639);
+    			li1.className = "page-item page-next";
+    			add_location(li1, file$k, 71, 4, 1599);
+    			ul.className = "pagination";
+    			add_location(ul, file$k, 63, 2, 1341);
+
+    			dispose = [
+    				listen(a0, "click", stop_propagation(prevent_default(ctx.click_handler))),
+    				listen(a1, "click", stop_propagation(prevent_default(ctx.click_handler_1)))
+    			];
+    		},
+
+    		m: function mount(target, anchor) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
+
+    			insert(target, t0, anchor);
+    			insert(target, ul, anchor);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(a0, div0);
+    			append(ul, t2);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(a1, div1);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			const each_value = ctx.msgs;
+
+    			group_outros();
+    			each_blocks = update_keyed_each(each_blocks, changed, get_key, 1, ctx, each_value, each_1_lookup, t0.parentNode, outro_and_destroy_block, create_each_block$5, t0, get_each_context$5);
+    			check_outros();
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].d(detaching);
+
+    			if (detaching) {
+    				detach(t0);
+    				detach(ul);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (58:0) {#if msgs.length === 0}
+    function create_if_block$c(ctx) {
+    	var div;
+
+    	return {
+    		c: function create() {
+    			div = element("div");
+    			div.className = "loading loading-lg";
+    			add_location(div, file$k, 58, 2, 1219);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+
+    		p: noop,
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div);
+    			}
+    		}
+    	};
+    }
+
+    // (61:2) {#each msgs as msg (msg.key)}
+    function create_each_block$5(key_1, ctx) {
+    	var first, current;
+
+    	var messagerenderer = new MessageRenderer({
+    		props: { msg: ctx.msg },
+    		$$inline: true
+    	});
+
+    	return {
+    		key: key_1,
+
+    		first: null,
+
+    		c: function create() {
+    			first = empty();
+    			messagerenderer.$$.fragment.c();
+    			this.first = first;
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, first, anchor);
+    			mount_component(messagerenderer, target, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var messagerenderer_changes = {};
+    			if (changed.msgs) messagerenderer_changes.msg = ctx.msg;
+    			messagerenderer.$set(messagerenderer_changes);
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			messagerenderer.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			messagerenderer.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(first);
+    			}
+
+    			messagerenderer.$destroy(detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$k(ctx) {
+    	var div2, div1, h4, t1, div0, t2, current_block_type_index, if_block, if_block_anchor, current;
+
+    	var if_block_creators = [
+    		create_if_block$c,
+    		create_else_block$9
+    	];
+
+    	var if_blocks = [];
+
+    	function select_block_type(ctx) {
+    		if (ctx.msgs.length === 0) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx);
+    	if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			h4 = element("h4");
+    			h4.textContent = "Mentions";
+    			t1 = space();
+    			div0 = element("div");
+    			t2 = space();
+    			if_block.c();
+    			if_block_anchor = empty();
+    			h4.className = "column";
+    			add_location(h4, file$k, 53, 4, 1112);
+    			div0.className = "column";
+    			add_location(div0, file$k, 54, 4, 1150);
+    			div1.className = "columns";
+    			add_location(div1, file$k, 52, 2, 1085);
+    			div2.className = "container";
+    			add_location(div2, file$k, 51, 0, 1058);
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div1);
+    			append(div1, h4);
+    			append(div1, t1);
+    			append(div1, div0);
+    			insert(target, t2, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			var previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(changed, ctx);
+    			} else {
+    				group_outros();
+    				on_outro(() => {
+    					if_blocks[previous_block_index].d(1);
+    					if_blocks[previous_block_index] = null;
+    				});
+    				if_block.o(1);
+    				check_outros();
+
+    				if_block = if_blocks[current_block_type_index];
+    				if (!if_block) {
+    					if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block.c();
+    				}
+    				if_block.i(1);
+    				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			if (if_block) if_block.i();
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			if (if_block) if_block.o();
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div2);
+    				detach(t2);
+    			}
+
+    			if_blocks[current_block_type_index].d(detaching);
+
+    			if (detaching) {
+    				detach(if_block_anchor);
+    			}
+    		}
+    	};
+    }
+
+    function instance$j($$self, $$props, $$invalidate) {
+    	
+
+      let msgs = [];
+      let unsub;
+
+      document.title = `Patchfox - Mentions`;
+
+      let lt = false;
+
+      const pull = hermiebox.modules.pullStream;
+      const sbot = hermiebox.sbot;
+      
+
+      const loadMentions = () => {
+        console.log("Loading mentions...", lt);
+        window.scrollTo(0, 0);
+        $$invalidate('msgs', msgs = []);
+        ssb.mentions(ssb.feed, lt).then(ms => { const $$result = msgs = ms; $$invalidate('msgs', msgs); return $$result; });
+      }; 
+
+      onDestroy(() => {
+        unsub();
+      });
+
+      onMount(() => {
+        unsub = routeParams.subscribe(params => {
+          console.log("params changed.", lt, params.lt);
+          if (params.lt) {
+            let newlt = parseInt(params.lt);
+            if (newlt !== lt) {
+              lt = newlt;
+            }
+          } else {
+            lt = false;
+          }
+          loadMentions();
+        });
+      });
+
+    	function click_handler() {
+    		return history.back();
+    	}
+
+    	function click_handler_1() {
+    	          navigate('/mentions', { lt: msgs[msgs.length - 1].rts });
+    	        }
+
+    	return { msgs, click_handler, click_handler_1 };
+    }
+
+    class Mentions extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$j, create_fragment$k, safe_not_equal, []);
+    	}
+    }
+
+    let savedData = {};
+
+    const parseLocation = () => {
+      let data = queryString.parse(window.location.search);
+      let loc = window.location.hash.slice(1).replace("?", "");
+      return { data, location: loc }
+    };
+
+    const intercept = () => {
+      let r = parseLocation();
+      if (r.location == "/intercept" && r.data.query) {
+        let hash = r.data.query.replace("ssb:", "");
+        let sigil = hash[0];
+        switch (sigil) {
+          case "%":
+            window.location = `/index.html?thread=${encodeURIComponent(hash)}#/thread`;
+            break
+          case "&":
+            window.location = `http://localhost:8989/blobs/get/${hash}`;
+            break
+          case "@":
+            window.location = `/index.html?feed=${encodeURIComponent(hash)}#/profile`;
+            break
+        }
+      }
+    };
+
+    const connected = writable(false);
+
+    // maybe in the future, migrate routing system to:
+    // https://github.com/ItalyPaleAle/svelte-spa-router
+    const route = writable(parseLocation());
+    const routeParams = derived(route, $route => $route.data);
+    const routeLocation = derived(route, $route => $route.location);
+
+    const navigate = (location, data) => {
+      data = data || {};
+      route.set({ location, data });
+      let dataAsQuery = queryString.stringify(data);
+      history.pushState({ location, data }, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);
+      console.log(`Navigate ${location}`, data);
+    };
+
+
+    const routes = {
+      "/thread": Thread,
+      "/public": Public,
+      "/compose": Compose,
+      "/profile": Profile,
+      "/error": ErrorView,
+      "/channels": Channels,
+      "/channel": Channel,
+      "/settings": Settings,
+      "/mentions": Mentions,
+      "*": Default
+    };
+
+
+
+    const currentView = derived([connected, route], ([$connected, $route]) => {
+      let r = $route.location;
+      if ($connected) {
+        if (routes.hasOwnProperty(r)) {
+          return routes[r];
+        } else {
+          console.log("didn't find", r);
+          return routes["*"];
+        }
+      } else {
+        if (r === "/settings") {
+          return Settings
+        } else {
+          return routes["*"];
+        }
+      }
+
+
+    });
+
+    const loadConfiguration = async () => {
+      console.log("Loading configuration...");
+      try {
+        let data = await browser.storage.local.get();
+
+        if (data.hasOwnProperty("keys")) {
+          savedData = data;
+        } else {
+          throw "Configuration is missing"
+        }
+      } catch (n) {
+        throw "Configuration is missing"
+      }
+    };
+
+    const connect = async () => {
+      console.log("Connecting to sbot...");
+      window.ssb = new SSB();
+
+      try {
+        await ssb.connect(savedData.keys);
+        connected.set(true);
+      } catch (err) {
+        console.error("can't connect", err);
+        connected.set(false);
+        throw "Can't connect to sbot"
+      }
+    };
+
+    const reconnect = () => {
+      return new Promise((resolve, reject) => {
+        const tryConnect = (data) => {
+          window.ssb = new DriverHermiebox();
+
+          ssb
+            .connect(data.keys)
+            .then(data => {
+              console.log("connected");
+              connected.set(true);
+              resolve();
+            })
+            .catch(err => {
+              console.error("can't reconnect", err);
+              reject(err);
+            });
+        };
+
+        browser.storage.local
+          .get()
+          .then(tryConnect, reject);
+      })
+    };
+
+    const keepPinging = () => {
+      let interval = setInterval(() => {
+        if (hermiebox.sbot) {
+          hermiebox.sbot.whoami((err, v) => {
+            if (err) {
+              console.error("can't call whoami", err);
+              reconnect().catch(n => {
+                console.error("can't reconnect");
+                clearInterval(interval);
+                navigate("/error", { error: n });
+              });
+            }
+          });
+        }
+      }, 5000);
+    };
+
+    // Preferences
+
+    const getPref = (key, defaultValue) => {
+      if (savedData.hasOwnProperty("preferences")) {
+        let preferences = savedData.preferences;
+        if (preferences.hasOwnProperty(key)) {
+          return preferences[key]
+        }
+      }
+      return defaultValue
+    };
+
+    const setConnectionConfiguration = ({ keys, remote, manifest }) => {
+      savedData.keys = keys;
+      savedData.remote = remote;
+      savedData.manifest = manifest;
+
+      browser.storage.local.set(savedData);
+
+    };
+
+    const setPref = (key, value) => {
+      console.log(`setPref - ${key}`, value);
+      savedData.preferences = savedData.preferences || {};
+      savedData.preferences[key] = value;
+
+      browser.storage.local.set(savedData);
+    };
+
+    /* src\Navigation.svelte generated by Svelte v3.4.4 */
+
+    const file$l = "src\\Navigation.svelte";
+
+    function create_fragment$l(ctx) {
+    	var header, section0, a0, i0, t0, a1, figure0, img0, t1, i1, i1_class_value, t2, a2, t4, a3, t6, a4, t8, a5, t10, a6, t12, a7, t14, section1, button, i2, t15, a8, figure1, img1, t16, i3, i3_class_value, t17, div0, a9, t18, i4, t19, ul, li0, a10, t21, li1, a11, t23, li2, a12, t25, li3, a13, t27, li4, a14, t29, li5, a15, t31, li6, a16, t33, div1, dispose;
+
+    	return {
+    		c: function create() {
+    			header = element("header");
+    			section0 = element("section");
+    			a0 = element("a");
+    			i0 = element("i");
+    			t0 = space();
+    			a1 = element("a");
+    			figure0 = element("figure");
+    			img0 = element("img");
+    			t1 = space();
+    			i1 = element("i");
+    			t2 = space();
+    			a2 = element("a");
+    			a2.textContent = "Compose";
+    			t4 = space();
+    			a3 = element("a");
+    			a3.textContent = "Public";
+    			t6 = space();
+    			a4 = element("a");
+    			a4.textContent = "Mentions";
+    			t8 = space();
+    			a5 = element("a");
+    			a5.textContent = "Channels";
+    			t10 = space();
+    			a6 = element("a");
+    			a6.textContent = "Settings";
+    			t12 = space();
+    			a7 = element("a");
+    			a7.textContent = "Help";
+    			t14 = space();
+    			section1 = element("section");
+    			button = element("button");
+    			i2 = element("i");
+    			t15 = space();
+    			a8 = element("a");
+    			figure1 = element("figure");
+    			img1 = element("img");
+    			t16 = space();
+    			i3 = element("i");
+    			t17 = space();
+    			div0 = element("div");
+    			a9 = element("a");
+    			t18 = text("Menu\r\n        ");
+    			i4 = element("i");
+    			t19 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			a10 = element("a");
+    			a10.textContent = "Compose";
+    			t21 = space();
+    			li1 = element("li");
+    			a11 = element("a");
+    			a11.textContent = "Public";
+    			t23 = space();
+    			li2 = element("li");
+    			a12 = element("a");
+    			a12.textContent = "Channels";
+    			t25 = space();
+    			li3 = element("li");
+    			a13 = element("a");
+    			a13.textContent = "Mentions";
+    			t27 = space();
+    			li4 = element("li");
+    			a14 = element("a");
+    			a14.textContent = "Settings";
+    			t29 = space();
+    			li5 = element("li");
+    			a15 = element("a");
+    			a15.textContent = "Help";
+    			t31 = space();
+    			li6 = element("li");
+    			a16 = element("a");
+    			a16.textContent = "Open as a Tab";
+    			t33 = space();
+    			div1 = element("div");
+    			i0.className = "icon icon-minus text-black";
+    			add_location(i0, file$l, 63, 6, 1513);
+    			a0.href = "#/sidebar";
+    			a0.className = "btn btn-link";
+    			add_location(a0, file$l, 62, 4, 1441);
+    			img0.src = ctx.avatar;
+    			img0.alt = "L";
+    			add_location(img0, file$l, 67, 8, 1687);
+    			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
+    			add_location(i1, file$l, 68, 8, 1725);
+    			figure0.className = "avatar avatar-lg";
+    			add_location(figure0, file$l, 66, 6, 1644);
+    			a1.href = "#";
+    			a1.className = "navbar-brand mr-2 p-1";
+    			add_location(a1, file$l, 65, 4, 1569);
+    			a2.href = "#/compose";
+    			a2.className = "btn btn-link";
+    			add_location(a2, file$l, 71, 4, 1823);
+    			a3.href = "#/public";
+    			a3.className = "btn btn-link";
+    			add_location(a3, file$l, 77, 4, 1968);
+    			a4.href = "#/mentions";
+    			a4.className = "btn btn-link";
+    			add_location(a4, file$l, 83, 4, 2110);
+    			a5.href = "#/channels";
+    			a5.className = "btn btn-link";
+    			add_location(a5, file$l, 89, 4, 2258);
+    			a6.href = "#/settings";
+    			a6.className = "btn btn-link";
+    			add_location(a6, file$l, 95, 4, 2407);
+    			a7.href = "/docs/index.html";
+    			a7.className = "btn btn-link";
+    			add_location(a7, file$l, 96, 4, 2489);
+    			section0.className = "navbar-section hide-sm";
+    			add_location(section0, file$l, 61, 2, 1395);
+    			i2.className = "icon icon-back";
+    			add_location(i2, file$l, 100, 6, 2692);
+    			button.className = "btn btn-link";
+    			add_location(button, file$l, 99, 4, 2623);
+    			img1.src = ctx.avatar;
+    			img1.alt = "L";
+    			add_location(img1, file$l, 104, 8, 2826);
+    			i3.className = i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
+    			add_location(i3, file$l, 105, 8, 2864);
+    			figure1.className = "avatar";
+    			add_location(figure1, file$l, 103, 6, 2793);
+    			a8.href = "...";
+    			a8.className = "navbar-brand mr-2 p-1";
+    			add_location(a8, file$l, 102, 4, 2741);
+    			i4.className = "icon icon-caret";
+    			add_location(i4, file$l, 115, 8, 3177);
+    			a9.href = "?";
+    			a9.className = "btn btn-link dropdown-toggle";
+    			a9.tabIndex = "0";
+    			add_location(a9, file$l, 109, 6, 3004);
+    			a10.href = "#/compose";
+    			a10.className = "btn btn-link";
+    			add_location(a10, file$l, 120, 10, 3318);
+    			li0.className = "menu-item";
+    			add_location(li0, file$l, 119, 8, 3284);
+    			a11.href = "#/public";
+    			a11.className = "btn btn-link";
+    			add_location(a11, file$l, 128, 10, 3546);
+    			li1.className = "menu-item";
+    			add_location(li1, file$l, 127, 8, 3512);
+    			a12.href = "#/channels";
+    			a12.className = "btn btn-link";
+    			add_location(a12, file$l, 136, 10, 3771);
+    			li2.className = "menu-item";
+    			add_location(li2, file$l, 135, 8, 3737);
+    			a13.href = "#/mentions";
+    			a13.className = "btn btn-link";
+    			add_location(a13, file$l, 144, 10, 4002);
+    			li3.className = "menu-item";
+    			add_location(li3, file$l, 143, 8, 3968);
+    			a14.href = "#/settings";
+    			a14.className = "btn btn-link";
+    			add_location(a14, file$l, 152, 10, 4233);
+    			li4.className = "menu-item";
+    			add_location(li4, file$l, 151, 8, 4199);
+    			a15.href = "/docs/index.html";
+    			a15.className = "btn btn-link";
+    			add_location(a15, file$l, 157, 10, 4394);
+    			li5.className = "menu-item";
+    			add_location(li5, file$l, 156, 8, 4360);
+    			a16.href = "#/sidebar";
+    			a16.className = "btn btn-link";
+    			add_location(a16, file$l, 160, 10, 4509);
+    			li6.className = "menu-item";
+    			add_location(li6, file$l, 159, 8, 4475);
+    			ul.className = "menu";
+    			add_location(ul, file$l, 118, 6, 3257);
+    			div0.className = "dropdown float-right";
+    			add_location(div0, file$l, 108, 4, 2962);
+    			section1.className = "navbar-section show-sm bg-gray above svelte-14egiim";
+    			add_location(section1, file$l, 98, 2, 2563);
+    			div1.className = "blocker show-sm svelte-14egiim";
+    			add_location(div1, file$l, 167, 2, 4675);
+    			header.className = "navbar";
+    			add_location(header, file$l, 60, 0, 1368);
+
+    			dispose = [
+    				listen(a0, "click", ctx.openSidebar),
+    				listen(a1, "click", ctx.openMyProfile),
+    				listen(a2, "click", stop_propagation(prevent_default(ctx.goCompose))),
+    				listen(a3, "click", stop_propagation(prevent_default(ctx.goPublic))),
+    				listen(a4, "click", stop_propagation(prevent_default(ctx.goMentions))),
+    				listen(a5, "click", stop_propagation(prevent_default(ctx.goChannels))),
+    				listen(a6, "click", ctx.goSettings),
+    				listen(button, "click", ctx.click_handler),
+    				listen(a9, "click", stop_propagation(prevent_default(click_handler_1))),
+    				listen(a10, "click", stop_propagation(prevent_default(ctx.goCompose))),
+    				listen(a11, "click", stop_propagation(prevent_default(ctx.goPublic))),
+    				listen(a12, "click", stop_propagation(prevent_default(ctx.goChannels))),
+    				listen(a13, "click", stop_propagation(prevent_default(ctx.goMentions))),
+    				listen(a14, "click", ctx.goSettings),
+    				listen(a16, "click", ctx.closeSidebar)
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, header, anchor);
+    			append(header, section0);
+    			append(section0, a0);
+    			append(a0, i0);
+    			append(section0, t0);
+    			append(section0, a1);
+    			append(a1, figure0);
+    			append(figure0, img0);
+    			append(figure0, t1);
+    			append(figure0, i1);
+    			append(section0, t2);
+    			append(section0, a2);
+    			append(section0, t4);
+    			append(section0, a3);
+    			append(section0, t6);
+    			append(section0, a4);
+    			append(section0, t8);
+    			append(section0, a5);
+    			append(section0, t10);
+    			append(section0, a6);
+    			append(section0, t12);
+    			append(section0, a7);
+    			append(header, t14);
+    			append(header, section1);
+    			append(section1, button);
+    			append(button, i2);
+    			append(section1, t15);
+    			append(section1, a8);
+    			append(a8, figure1);
+    			append(figure1, img1);
+    			append(figure1, t16);
+    			append(figure1, i3);
+    			append(section1, t17);
+    			append(section1, div0);
+    			append(div0, a9);
+    			append(a9, t18);
+    			append(a9, i4);
+    			append(div0, t19);
+    			append(div0, ul);
+    			append(ul, li0);
+    			append(li0, a10);
+    			append(ul, t21);
+    			append(ul, li1);
+    			append(li1, a11);
+    			append(ul, t23);
+    			append(ul, li2);
+    			append(li2, a12);
+    			append(ul, t25);
+    			append(ul, li3);
+    			append(li3, a13);
+    			append(ul, t27);
+    			append(ul, li4);
+    			append(li4, a14);
+    			append(ul, t29);
+    			append(ul, li5);
+    			append(li5, a15);
+    			append(ul, t31);
+    			append(ul, li6);
+    			append(li6, a16);
+    			append(header, t33);
+    			append(header, div1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.avatar) {
+    				img0.src = ctx.avatar;
+    			}
+
+    			if ((changed.$connected) && i1_class_value !== (i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim")) {
+    				i1.className = i1_class_value;
+    			}
+
+    			if (changed.avatar) {
+    				img1.src = ctx.avatar;
+    			}
+
+    			if ((changed.$connected) && i3_class_value !== (i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim")) {
+    				i3.className = i3_class_value;
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(header);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function click_handler_1() {
+    	return '';
+    }
+
+    function instance$k($$self, $$props, $$invalidate) {
+    	let $connected;
+
+    	validate_store(connected, 'connected');
+    	subscribe($$self, connected, $$value => { $connected = $$value; $$invalidate('$connected', $connected); });
+
+    	let avatar = "/images/icon.png";
+
+      const goSettings = ev => navigate("/settings");
+      const goCompose = () => navigate("/compose");
+      const goPublic = () => navigate("/public");
+      const goChannels = () => navigate("/channels");
+      const goMentions = () => navigate("/mentions");
+
+      const openSidebar = async ev => {
+        let loc = window.location.href;
+        browser.sidebarAction.setPanel({ panel: loc });
+        browser.sidebarAction.open();
+      };
+
+      const closeSidebar = async ev => {
+        let loc = await browser.sidebarAction.getPanel({});
+        await browser.tabs.create({ url: loc });
+        await browser.sidebarAction.close();
+      };
+
+      const openMyProfile = ev => {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        if (ssb.feed) {
+          navigate("/profile", { feed: ssb.feed });
+        }
+      };
+
+    	function click_handler() {
+    		return history.back();
+    	}
+
+    	$$self.$$.update = ($$dirty = { $connected: 1 }) => {
+    		if ($$dirty.$connected) { if ($connected) {
+            ssb.avatar(ssb.feed).then(data => {
+              $$invalidate('avatar', avatar = `http://localhost:8989/blobs/get/${data.image}`);
+            });
+          } }
+    	};
+
+    	return {
+    		avatar,
+    		goSettings,
+    		goCompose,
+    		goPublic,
+    		goChannels,
+    		goMentions,
+    		openSidebar,
+    		closeSidebar,
+    		openMyProfile,
+    		$connected,
+    		click_handler
+    	};
+    }
+
+    class Navigation extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$k, create_fragment$l, safe_not_equal, []);
+    	}
+    }
+
+    /* src\Patchfox.svelte generated by Svelte v3.4.4 */
+
+    const file$m = "src\\Patchfox.svelte";
+
+    function create_fragment$m(ctx) {
+    	var div2, div1, div0, t, current, dispose;
+
+    	var navigation = new Navigation({ $$inline: true });
+
+    	var switch_value = ctx.$currentView;
+
+    	function switch_props(ctx) {
+    		return { $$inline: true };
+    	}
+
+    	if (switch_value) {
+    		var switch_instance = new switch_value(switch_props(ctx));
+    	}
+
+    	return {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			navigation.$$.fragment.c();
+    			t = space();
+    			if (switch_instance) switch_instance.$$.fragment.c();
+    			div0.className = "column svelte-64hhw0";
+    			toggle_class(div0, "reduced-line-length", ctx.useShortColumn);
+    			add_location(div0, file$m, 70, 4, 1650);
+    			div1.className = "columns";
+    			add_location(div1, file$m, 69, 2, 1623);
+    			div2.className = "container bg-gray";
+    			add_location(div2, file$m, 68, 0, 1588);
+
+    			dispose = [
+    				listen(window, "popstate", ctx.popState),
+    				listen(window, "error", ctx.handleUncaughtException),
+    				listen(window, "hashchange", ctx.hashChange)
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div1);
+    			append(div1, div0);
+    			mount_component(navigation, div0, null);
+    			append(div0, t);
+
+    			if (switch_instance) {
+    				mount_component(switch_instance, div0, null);
+    			}
+
+    			current = true;
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (switch_value !== (switch_value = ctx.$currentView)) {
+    				if (switch_instance) {
+    					group_outros();
+    					const old_component = switch_instance;
+    					on_outro(() => {
+    						old_component.$destroy();
+    					});
+    					old_component.$$.fragment.o(1);
+    					check_outros();
+    				}
+
+    				if (switch_value) {
+    					switch_instance = new switch_value(switch_props(ctx));
+
+    					switch_instance.$$.fragment.c();
+    					switch_instance.$$.fragment.i(1);
+    					mount_component(switch_instance, div0, null);
+    				} else {
+    					switch_instance = null;
+    				}
+    			}
+
+    			if (changed.useShortColumn) {
+    				toggle_class(div0, "reduced-line-length", ctx.useShortColumn);
+    			}
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			navigation.$$.fragment.i(local);
+
+    			if (switch_instance) switch_instance.$$.fragment.i(local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			navigation.$$.fragment.o(local);
+    			if (switch_instance) switch_instance.$$.fragment.o(local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div2);
+    			}
+
+    			navigation.$destroy();
+
+    			if (switch_instance) switch_instance.$destroy();
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function instance$l($$self, $$props, $$invalidate) {
+    	let $routeLocation, $currentView;
+
+    	validate_store(routeLocation, 'routeLocation');
+    	subscribe($$self, routeLocation, $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
+    	validate_store(currentView, 'currentView');
+    	subscribe($$self, currentView, $$value => { $currentView = $$value; $$invalidate('$currentView', $currentView); });
+
+    	
+
+      let useShortColumn = getPref("columnSize", "short") == "short";
+
+      onMount(async () => {
+        try {
+          await connect();
+
+          keepPinging();
+        } catch (n) {
+          console.error("connect error", n);
+          switch (n) {
+            case "Can't connect to sbot":
+              // need to be able to go to settings even though no connection is
+              // established.
+              if ($routeLocation !== "/settings") {
+                window.location = "/docs/index.html#/troubleshooting/no-connection";
+              }
+              break;
+            default:
+              navigate("/error", { error: n });
+              break;
+          }
+        }
+      });
+
+      const popState = event => {
+        if (event.state !== null) {
+          console.dir("pop", event.state);
+          let { location, data } = event.state;
+          route.set({ location, data });
+        }
+      };
+
+      const handleUncaughtException = event => {
+        console.error("Uncaught exception", event);
+        navigate("/error", { error: event.message });
+      };
+
+      const hashChange = event => {
+        console.dir("hash change", event);
+      };
+
+    	return {
+    		useShortColumn,
+    		popState,
+    		handleUncaughtException,
+    		hashChange,
+    		$currentView
+    	};
+    }
+
+    class Patchfox extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$l, create_fragment$m, safe_not_equal, []);
+    	}
+    }
+
+    const main = async () => {
+        window.ssb = false;
+
+        intercept();
+        
+        try {
+            await loadConfiguration();
+
+        } catch (n) {
+            console.error("initialization error", n);
+            switch (n) {
+                case "Configuration is missing":
+                    navigate("/settings");
+                    break
+                default:
+                    navigate("/error", { error: n });
+                    break
+            }
+
+        }
+
+        const patchfox = new Patchfox({
+            target: document.body
+        });
+
+    };
+
+    main();
+
+}());
 //# sourceMappingURL=bundle.js.map

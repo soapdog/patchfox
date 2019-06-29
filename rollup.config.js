@@ -1,5 +1,6 @@
 import svelte from "rollup-plugin-svelte";
 import resolve from "rollup-plugin-node-resolve";
+import json from "rollup-plugin-json";
 import commonjs from "rollup-plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 import copy from "rollup-plugin-copy"
@@ -32,6 +33,7 @@ export default {
         // https://github.com/rollup/rollup-plugin-commonjs
         resolve(),
         commonjs(),
+        json(),
 
         // Watch the `public` directory and refresh the
         // browser on changes when not in production

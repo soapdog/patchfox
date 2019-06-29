@@ -1,4 +1,5 @@
 .DS_Store
 node_modules
-public/bundle.*
 .idea
+web-ext-artifacts
+*.zip

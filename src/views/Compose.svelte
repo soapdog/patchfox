@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import drop from "drag-and-drop-files";
   import { slide } from "svelte/transition";
-  import { navigate, routeParams, reconnect } from "../utils.js";
+  import { navigate, routeParams, reconnect, getPref } from "../utils.js";
   import AvatarChip from "../parts/AvatarChip.svelte";
 
   let showPreview = false;
@@ -20,6 +20,7 @@
   let pull = hermiebox.modules.pullStream;
   let fileReader = hermiebox.modules.pullFileReader;
   let sbot = hermiebox.sbot;
+  let ipfsDaemonRunning = false;
 
   document.title = `Patchfox - compose`;
 
@@ -31,7 +32,15 @@
     // e.dataTransfer.getData('url'); from images in the browser window
 
     drop(document.getElementById("content"), files => readFileAndAttach(files));
+    checkIpfsDaemon();
   });
+
+  const checkIpfsDaemon = () => {
+    let port = getPref("ipfsPort", 5001);
+    fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
+      ipfsDaemonRunning = true;
+    });
+  };
 
   const readFileAndAttach = files => {
     error = false;
@@ -157,9 +166,31 @@
     document.getElementById("fileInput").click();
   };
 
+  const attachFileIPFSTrigger = () => {
+    document.getElementById("fileInputIPFS").click();
+  };
+
   const attachFile = ev => {
     const files = ev.target.files;
     readFileAndAttach(files);
+  };
+
+  const attachFileIPFS = ev => {
+    const files = ev.target.files;
+    readFileAndAttachIPFS(files);
+  };
+
+  const readFileAndAttachIPFS = async files => {
+    error = false;
+    msg = "";
+
+    var ipfs = window.IpfsHttpClient('127.0.0.1', '5001')
+    const results = await ipfs.add(files[0])
+
+    console.log("added via IPFS", results)
+    content += ` [${results[0].path}](ipfs://${results[0].hash})`;
+
+   
   };
 </script>
 
@@ -234,6 +265,12 @@
           <br />
           <input type="file" on:input={attachFile} id="fileInput" />
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
+          {#if ipfsDaemonRunning}
+            <input type="file" on:input={attachFileIPFS} id="fileInputIPFS" />
+            <button class="btn" on:click={attachFileIPFSTrigger}>
+              Attach File using IPFS
+            </button>
+          {/if}
           <button class="btn btn-primary float-right" on:click={preview}>
             Preview
           </button>
