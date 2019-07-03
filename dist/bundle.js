@@ -4446,6 +4446,15 @@
             return false
         }
 
+        if (filter.expires) {
+            let expirationDate = new Date(filter.expires);
+            let today = new Date();
+
+            if (today > expirationDate) {
+                return false
+            }
+        }
+
         if (filter.feed == msg.value.author) {
             return true
         }
@@ -4456,11 +4465,13 @@
 
         if (filter.keywords.length > 0 && msg.value.content.type == "post" && msg.value.content.text) {
             let keywords = filter.keywords;
-            let content = msg.value.content.text;
+            let content = msg.value.content.text.toLowerCase();
 
-            let res  = keywords.map(k => content.includes(k)).some(r => r);
+            let res  = keywords.map(k => content.includes(k.toLowerCase())).some(r => r);
             return res
         }
+
+       
 
         return false
     };
@@ -9118,9 +9129,9 @@
     			p = element("p");
     			p.textContent = "You don't have any filter yet.";
     			p.className = "label";
-    			add_location(p, file$j, 400, 8, 11504);
+    			add_location(p, file$j, 400, 8, 11625);
     			div.className = "column col-12";
-    			add_location(div, file$j, 399, 6, 11467);
+    			add_location(div, file$j, 399, 6, 11588);
     		},
 
     		m: function mount(target, anchor) {
@@ -9138,29 +9149,35 @@
 
     // (370:14) {#if filter.feed}
     function create_if_block_3$3(ctx) {
-    	var li, t0, span, t1_value = ctx.filter.feed, t1;
+    	var li, t0, a, t1_value = ctx.filter.feed, t1, a_href_value;
 
     	return {
     		c: function create() {
     			li = element("li");
     			t0 = text("From ");
-    			span = element("span");
+    			a = element("a");
     			t1 = text(t1_value);
-    			span.className = "feed svelte-1e0jkdi";
-    			add_location(span, file$j, 370, 25, 10587);
+    			a.href = a_href_value = "?feed=" + ctx.filter.feed + "#/profile";
+    			a.target = "_blank";
+    			a.className = "feed svelte-1e0jkdi";
+    			add_location(a, file$j, 370, 25, 10587);
     			add_location(li, file$j, 370, 16, 10578);
     		},
 
     		m: function mount(target, anchor) {
     			insert(target, li, anchor);
     			append(li, t0);
-    			append(li, span);
-    			append(span, t1);
+    			append(li, a);
+    			append(a, t1);
     		},
 
     		p: function update(changed, ctx) {
     			if ((changed.currentFilters) && t1_value !== (t1_value = ctx.filter.feed)) {
     				set_data(t1, t1_value);
+    			}
+
+    			if ((changed.currentFilters) && a_href_value !== (a_href_value = "?feed=" + ctx.filter.feed + "#/profile")) {
+    				a.href = a_href_value;
     			}
     		},
 
@@ -9174,25 +9191,37 @@
 
     // (373:14) {#if filter.channel}
     function create_if_block_2$5(ctx) {
-    	var li, t0, t1_value = ctx.filter.channel, t1;
+    	var li, t0, a, t1, t2_value = ctx.filter.channel, t2, a_href_value;
 
     	return {
     		c: function create() {
     			li = element("li");
-    			t0 = text("On channel #");
-    			t1 = text(t1_value);
-    			add_location(li, file$j, 373, 16, 10706);
+    			t0 = text("On channel ");
+    			a = element("a");
+    			t1 = text("#");
+    			t2 = text(t2_value);
+    			a.href = a_href_value = "?channel=" + ctx.filter.feed + "#/channel";
+    			a.target = "_blank";
+    			a.className = "feed svelte-1e0jkdi";
+    			add_location(a, file$j, 373, 31, 10767);
+    			add_location(li, file$j, 373, 16, 10752);
     		},
 
     		m: function mount(target, anchor) {
     			insert(target, li, anchor);
     			append(li, t0);
-    			append(li, t1);
+    			append(li, a);
+    			append(a, t1);
+    			append(a, t2);
     		},
 
     		p: function update(changed, ctx) {
-    			if ((changed.currentFilters) && t1_value !== (t1_value = ctx.filter.channel)) {
-    				set_data(t1, t1_value);
+    			if ((changed.currentFilters) && t2_value !== (t2_value = ctx.filter.channel)) {
+    				set_data(t2, t2_value);
+    			}
+
+    			if ((changed.currentFilters) && a_href_value !== (a_href_value = "?channel=" + ctx.filter.feed + "#/channel")) {
+    				a.href = a_href_value;
     			}
     		},
 
@@ -9214,8 +9243,8 @@
     			li = element("li");
     			t0 = text("Containing: ");
     			t1 = text(t1_value);
-    			add_location(li, file$j, 377, 18, 10853);
-    			add_location(i, file$j, 376, 16, 10830);
+    			add_location(li, file$j, 377, 18, 10974);
+    			add_location(i, file$j, 376, 16, 10951);
     		},
 
     		m: function mount(target, anchor) {
@@ -9248,7 +9277,7 @@
     			li = element("li");
     			t0 = text("Expiring in ");
     			t1 = text(t1_value);
-    			add_location(li, file$j, 381, 16, 10999);
+    			add_location(li, file$j, 381, 16, 11120);
     		},
 
     		m: function mount(target, anchor) {
@@ -9317,9 +9346,9 @@
     			add_location(div2, file$j, 367, 10, 10486);
     			button.className = "btn";
     			attr(button, "aria-label", "Delete");
-    			add_location(button, file$j, 386, 12, 11145);
+    			add_location(button, file$j, 386, 12, 11266);
     			div3.className = "card-footer";
-    			add_location(div3, file$j, 385, 10, 11106);
+    			add_location(div3, file$j, 385, 10, 11227);
     			div4.className = "card filter svelte-1e0jkdi";
     			add_location(div4, file$j, 363, 8, 10332);
     			div5.className = "column col-6";
@@ -9836,61 +9865,61 @@
     			add_location(div1, file$j, 360, 2, 10229);
     			div2.className = "container";
     			add_location(div2, file$j, 359, 0, 10202);
-    			add_location(h51, file$j, 405, 0, 11602);
+    			add_location(h51, file$j, 405, 0, 11723);
     			ctx.$$binding_groups[0].push(input14);
     			attr(input14, "type", "radio");
     			input14.name = "filter-action";
     			input14.__value = "hide";
     			input14.value = input14.__value;
-    			add_location(input14, file$j, 408, 4, 11671);
+    			add_location(input14, file$j, 408, 4, 11792);
     			i16.className = "form-icon";
-    			add_location(i16, file$j, 413, 4, 11787);
+    			add_location(i16, file$j, 413, 4, 11908);
     			label16.className = "form-radio";
-    			add_location(label16, file$j, 407, 2, 11639);
+    			add_location(label16, file$j, 407, 2, 11760);
     			ctx.$$binding_groups[0].push(input15);
     			attr(input15, "type", "radio");
     			input15.name = "filter-action";
     			input15.__value = "blur";
     			input15.value = input15.__value;
-    			add_location(input15, file$j, 417, 4, 11876);
+    			add_location(input15, file$j, 417, 4, 11997);
     			i17.className = "form-icon";
-    			add_location(i17, file$j, 422, 4, 11992);
+    			add_location(i17, file$j, 422, 4, 12113);
     			label17.className = "form-radio";
-    			add_location(label17, file$j, 416, 2, 11844);
+    			add_location(label17, file$j, 416, 2, 11965);
     			label18.className = "form-label";
     			label18.htmlFor = "remote";
-    			add_location(label18, file$j, 425, 2, 12048);
+    			add_location(label18, file$j, 425, 2, 12169);
     			input16.className = "form-input";
     			attr(input16, "type", "text");
     			input16.placeholder = "Channel";
-    			add_location(input16, file$j, 426, 2, 12106);
+    			add_location(input16, file$j, 426, 2, 12227);
     			label19.className = "form-label";
     			label19.htmlFor = "remote";
-    			add_location(label19, file$j, 431, 2, 12219);
+    			add_location(label19, file$j, 431, 2, 12340);
     			input17.className = "form-input";
     			attr(input17, "type", "text");
     			input17.placeholder = "Feed";
-    			add_location(input17, file$j, 432, 2, 12274);
+    			add_location(input17, file$j, 432, 2, 12395);
     			label20.className = "form-label";
     			label20.htmlFor = "remote";
-    			add_location(label20, file$j, 437, 2, 12381);
+    			add_location(label20, file$j, 437, 2, 12502);
     			input18.className = "form-input";
     			attr(input18, "type", "text");
     			input18.placeholder = "Keywords separated by commas";
-    			add_location(input18, file$j, 438, 2, 12440);
+    			add_location(input18, file$j, 438, 2, 12561);
     			label21.className = "form-label";
     			label21.htmlFor = "remote";
-    			add_location(label21, file$j, 443, 2, 12575);
+    			add_location(label21, file$j, 443, 2, 12696);
     			input19.className = "form-input";
     			attr(input19, "type", "date");
     			input19.placeholder = "When should this filter expiry";
-    			add_location(input19, file$j, 444, 2, 12641);
-    			add_location(form_group, file$j, 406, 0, 11623);
-    			add_location(br3, file$j, 450, 0, 12789);
+    			add_location(input19, file$j, 444, 2, 12762);
+    			add_location(form_group, file$j, 406, 0, 11744);
+    			add_location(br3, file$j, 450, 0, 12910);
     			button1.className = "btn btn-primary";
-    			add_location(button1, file$j, 451, 0, 12797);
-    			add_location(br4, file$j, 452, 0, 12874);
-    			add_location(br5, file$j, 453, 0, 12882);
+    			add_location(button1, file$j, 451, 0, 12918);
+    			add_location(br4, file$j, 452, 0, 12995);
+    			add_location(br5, file$j, 453, 0, 13003);
 
     			dispose = [
     				listen(input0, "change", ctx.selectedFile),

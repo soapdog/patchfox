@@ -27,6 +27,15 @@ export const isMessageFiltered = (msg, filter, action) => {
         return false
     }
 
+    if (filter.expires) {
+        let expirationDate = new Date(filter.expires)
+        let today = new Date()
+
+        if (today > expirationDate) {
+            return false
+        }
+    }
+
     if (filter.feed == msg.value.author) {
         return true
     }
@@ -37,11 +46,13 @@ export const isMessageFiltered = (msg, filter, action) => {
 
     if (filter.keywords.length > 0 && msg.value.content.type == "post" && msg.value.content.text) {
         let keywords = filter.keywords
-        let content = msg.value.content.text
+        let content = msg.value.content.text.toLowerCase()
 
-        let res  = keywords.map(k => content.includes(k)).some(r => r)
+        let res  = keywords.map(k => content.includes(k.toLowerCase())).some(r => r)
         return res
     }
+
+   
 
     return false
 }

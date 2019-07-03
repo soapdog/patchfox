@@ -368,10 +368,10 @@
           <div class="card-body">
             <ul>
               {#if filter.feed}
-                <li>From <span class="feed">{filter.feed}</span></li>
+                <li>From <a href="?feed={filter.feed}#/profile" target="_blank" class="feed">{filter.feed}</a></li>
               {/if}
               {#if filter.channel}
-                <li>On channel #{filter.channel}</li>
+                <li>On channel <a href="?channel={filter.feed}#/channel" target="_blank" class="feed">#{filter.channel}</a></li>
               {/if}
               {#if filter.keywords.length > 0}
                 <i>
