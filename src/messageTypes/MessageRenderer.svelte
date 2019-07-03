@@ -11,6 +11,7 @@
   import AvatarChip from "../parts/AvatarChip.svelte";
   import timestamp from "../parts/timestamp.js";
   import { navigate } from "../utils.js";
+  import { isMessageBlured } from "../abusePrevention.js";
 
   export let msg;
 
@@ -53,6 +54,7 @@
 
   let image = "images/icon.png";
   let name = feed;
+  let blured = isMessageBlured(msg);
 
   ssb.avatar(feed).then(data => {
     if (data.image !== null) {
@@ -84,16 +86,23 @@
     dropdownActive = false;
   };
 
-  const goProfile = (ev) => {
-     if (ev.ctrlKey) {
+  const goProfile = ev => {
+    if (ev.ctrlKey) {
       window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
     } else {
-      navigate('/profile', { feed })
+      navigate("/profile", { feed });
     }
-  }
+  };
 </script>
 
 <style>
+  .blured img {
+    filter: blur(20px) !important;
+  }
+
+  .blured {
+    border: solid 2px red;
+  }
   .raw-content {
     width: 50%;
   }
@@ -117,13 +126,11 @@
   }
 </style>
 
-<div class="card m-2" class:private={privateMsgForYou}>
+<div class="card m-2" class:private={privateMsgForYou} class:blured>
   <div class="card-header">
     <div class="float-left">
       <div class="card-title">
-        <div
-          class="tile tile-centered feed-display"
-          on:click={goProfile}>
+        <div class="tile tile-centered feed-display" on:click={goProfile}>
           <div class="tile-icon">
             <div class="example-tile-icon">
               <img src={image} class="avatar avatar-lg" alt={feed} />
@@ -139,7 +146,7 @@
       </div>
     </div>
     {#if privateMsgForYou}
-    <span class="label">PRIVATE</span>
+      <span class="label">PRIVATE</span>
     {/if}
     <div class="float-right">
       <span

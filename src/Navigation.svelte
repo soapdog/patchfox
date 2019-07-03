@@ -1,7 +1,9 @@
 <script>
-  import { connected, navigate, routeLocation } from "./utils.js";
+  import { connected, navigate, routeLocation, intercept } from "./utils.js";
 
   let avatar = "/images/icon.png";
+
+  let query =""
 
   $: if ($connected) {
     ssb.avatar(ssb.feed).then(data => {
@@ -14,6 +16,11 @@
   const goPublic = () => navigate("/public");
   const goChannels = () => navigate("/channels");
   const goMentions = () => navigate("/mentions");
+
+  const goSearch = () => {
+    navigate("/intercept", {query})
+    intercept()
+  }
 
   const openSidebar = async ev => {
     let loc = window.location.href;
@@ -95,6 +102,12 @@
     </a>
     <a href="#/settings" class="btn btn-link" on:click={goSettings}>Settings</a>
     <a href="/docs/index.html" class="btn btn-link">Help</a>
+  </section>
+   <section class="navbar-section hide-sm">
+    <div class="input-group input-inline">
+      <input class="form-input" type="text" bind:value={query} placeholder="search">
+      <button class="btn btn-primary input-group-btn" on:click={goSearch}>Go</button>
+    </div>
   </section>
   <section class="navbar-section show-sm bg-gray above">
     <button class="btn btn-link" on:click={() => history.back()}>

@@ -9,3 +9,8 @@ a.image-link {
     display: block;
     width: 100%;
 }
+
+
+.blured img {
+    filter: blur(20px) !important;
+}

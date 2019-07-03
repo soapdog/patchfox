@@ -36,6 +36,9 @@ export const intercept = () => {
       case "@":
         window.location = `/index.html?feed=${encodeURIComponent(hash)}#/profile`
         break
+      case "#":
+        window.location = `/index.html?channel=${hash.replace("#","")}#/channel` 
+        break
     }
   }
 }
@@ -137,7 +140,7 @@ export const connect = async () => {
 export const reconnect = () => {
   return new Promise((resolve, reject) => {
     const tryConnect = (data) => {
-      window.ssb = new DriverHermiebox();
+      window.ssb = new SSB();
 
       ssb
         .connect(data.keys)

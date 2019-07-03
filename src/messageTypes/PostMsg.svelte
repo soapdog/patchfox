@@ -63,9 +63,10 @@
   .card-body {
     overflow-wrap: break-word;
   }
+
 </style>
 
-<div class="card-body">
+<div class="card-body"s>
   {@html content}
 </div>
 <div class="card-footer">
