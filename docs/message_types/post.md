@@ -1,9 +1,9 @@
 # post
-Post messages are text-based messages intented to a public or private audience. They are what you normally see on feeds from social networks and make most of the meaningful interaction in Scuttlebutt at the moment.
+Post messages are text-based messages intended for a public or private audience. They are what you normally see on feeds from social networks and make most of the meaningful interaction in Scuttlebutt at the moment.
 
 > **Attention:** Patchfox currently doesn't support private messages.
 
-## How does it looks like?
+## What does it look like? 
 
 ~~~
 {
@@ -35,6 +35,6 @@ These messages have a lot of fields. Lets go through the most important ones:
 * `branch`: If this message is a reply to another message, then `branch` points at the message this message is replying to.
 * `channel`: The channel this message is being posted to. It works much like hashtags but don't need to be present in the content itself.
 
-There are other fields such as `recps` which holds the recipients for the messages and is used by private messages and `mentions` which is used to help link mentioned users and messages.
+There are other fields such as `recps`- which holds the recipients for the messages and is used by private messages- and `mentions`- which is used to help link mentioned users and messages.
 
 There is [more information about posts online](http://scuttlebot.io/docs/message-types/post.html).

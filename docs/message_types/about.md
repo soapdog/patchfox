@@ -1,5 +1,5 @@
 # about
-About messages are used to add additional information to another messages, much like attaching post-it notes to some book page. You're _attaching information about_ something. Most use cases of `about` messages are to add names, images and descriptions to a user profile.
+About messages are used to add additional information to another message, much like attaching post-it notes to some book page. You're _attaching information about_ something. Most use cases of `about` messages are to add names, images and descriptions to a user profile.
 
 > **Attention:** There is no central authority handling names on the Scuttleverse. Much like in the physical world where two people can have the exact same name so it is on Scuttlebutt.
 >
@@ -9,7 +9,7 @@ About messages are used to add additional information to another messages, much 
 
 `about` messages are also used by [ssb-gathering](https://www.npmjs.com/package/ssb-gathering-schema) which is the collection of message types used by Secure Scuttlebutt to support events and gatherings. Patchfox currently doesn't support gatherings.
 
-## How does it look like?
+## What does it look like?
 
 ~~~
 {
