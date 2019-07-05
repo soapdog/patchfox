@@ -1,7 +1,7 @@
 <script>
   import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
   import { navigate, routeParams, getPref } from "../utils.js";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
 
   let msgs = false;
   let error = $routeParams.error || false;
@@ -47,20 +47,6 @@
   const goPrevious = () => {
     history.back();
   };
-
-  let previousShortcutUnbind = keymage("p", () => {
-    goPrevious();
-    return false;
-  });
-  let nextShortcutUnbind = keymage("n", () => {
-    goNext();
-    return false;
-  });
-
-  onDestroy(() => {
-    previousShortcutUnbind();
-    nextShortcutUnbind();
-  });
 </script>
 
 <style>

@@ -52,6 +52,7 @@ export const isMessageFiltered = (msg, filter, action) => {
         return res
     }
 
+    // todo: change to use arrays, collect them all, answer with some()
    
 
     return false

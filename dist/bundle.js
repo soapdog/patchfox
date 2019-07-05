@@ -861,19 +861,24 @@
         let showUnknown = getPref("showTypeUnknown", false);
 
         if (showUnknown) {
+          console.log("exiting filterTypes, showUnknown is", showUnknown);
           return pull.filter(() => true);
         }
 
         return pull.filter(msg => {
           let type = msg.value.content.type;
 
-          if (typeof type == "string" && knownMessageTypes.hasOwnProperty(type)) {
+
+          if (typeof type == "string" && knownMessageTypes[type]) {
+            console.log("checking msg", type, getPref(knownMessageTypes[type], true));
+
             return getPref(knownMessageTypes[type], true)
           }
           return getPref("showTypeUnknown", false)
         })
-
       }
+
+      
 
       public(opts) {
         return new Promise((resolve, reject) => {
@@ -4471,6 +4476,7 @@
             return res
         }
 
+        // todo: change to use arrays, collect them all, answer with some()
        
 
         return false
@@ -5240,7 +5246,7 @@
     	return child_ctx;
     }
 
-    // (80:0) {#if error}
+    // (66:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -5250,7 +5256,7 @@
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 80, 2, 1656);
+    			add_location(div, file$b, 66, 2, 1367);
     		},
 
     		m: function mount(target, anchor) {
@@ -5269,7 +5275,7 @@
     	};
     }
 
-    // (85:0) {:else}
+    // (71:0) {:else}
     function create_else_block$4(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -5299,19 +5305,19 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$b, 91, 8, 2008);
+    			add_location(div0, file$b, 77, 8, 1719);
     			a0.href = "#/public";
-    			add_location(a0, file$b, 90, 6, 1926);
+    			add_location(a0, file$b, 76, 6, 1637);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$b, 89, 4, 1882);
+    			add_location(li0, file$b, 75, 4, 1593);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$b, 96, 8, 2201);
+    			add_location(div1, file$b, 82, 8, 1912);
     			a1.href = "#/public";
-    			add_location(a1, file$b, 95, 6, 2123);
+    			add_location(a1, file$b, 81, 6, 1834);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$b, 94, 4, 2083);
+    			add_location(li1, file$b, 80, 4, 1794);
     			ul.className = "pagination";
-    			add_location(ul, file$b, 88, 2, 1853);
+    			add_location(ul, file$b, 74, 2, 1564);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
@@ -5368,7 +5374,7 @@
     	};
     }
 
-    // (83:0) {#if !msgs}
+    // (69:0) {#if !msgs}
     function create_if_block$5(ctx) {
     	var div;
 
@@ -5376,7 +5382,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$b, 83, 2, 1731);
+    			add_location(div, file$b, 69, 2, 1442);
     		},
 
     		m: function mount(target, anchor) {
@@ -5395,7 +5401,7 @@
     	};
     }
 
-    // (86:2) {#each msgs as msg (msg.key)}
+    // (72:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -5483,13 +5489,13 @@
     			if_block1.c();
     			if_block1_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$b, 75, 4, 1558);
+    			add_location(h4, file$b, 61, 4, 1269);
     			div0.className = "column";
-    			add_location(div0, file$b, 76, 4, 1599);
+    			add_location(div0, file$b, 62, 4, 1310);
     			div1.className = "columns";
-    			add_location(div1, file$b, 74, 2, 1531);
+    			add_location(div1, file$b, 60, 2, 1242);
     			div2.className = "container";
-    			add_location(div2, file$b, 73, 0, 1504);
+    			add_location(div2, file$b, 59, 0, 1215);
     		},
 
     		l: function claim(nodes) {
@@ -5603,20 +5609,6 @@
       const goPrevious = () => {
         history.back();
       };
-
-      let previousShortcutUnbind = keymage("p", () => {
-        goPrevious();
-        return false;
-      });
-      let nextShortcutUnbind = keymage("n", () => {
-        goNext();
-        return false;
-      });
-
-      onDestroy(() => {
-        previousShortcutUnbind();
-        nextShortcutUnbind();
-      });
 
     	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, error: 1 }) => {
     		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.error) { {
@@ -8581,7 +8573,7 @@
     	return child_ctx;
     }
 
-    // (108:0) {#if error}
+    // (116:0) {#if error}
     function create_if_block_1$8(ctx) {
     	var div, t0, t1;
 
@@ -8591,7 +8583,7 @@
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$i, 108, 2, 2505);
+    			add_location(div, file$i, 116, 2, 2744);
     		},
 
     		m: function mount(target, anchor) {
@@ -8610,7 +8602,7 @@
     	};
     }
 
-    // (113:0) {:else}
+    // (121:0) {:else}
     function create_else_block$8(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -8647,19 +8639,19 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$i, 121, 8, 2893);
+    			add_location(div0, file$i, 129, 8, 3132);
     			a0.href = "#/public";
-    			add_location(a0, file$i, 120, 6, 2811);
+    			add_location(a0, file$i, 128, 6, 3050);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$i, 119, 4, 2767);
+    			add_location(li0, file$i, 127, 4, 3006);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$i, 126, 8, 3086);
+    			add_location(div1, file$i, 134, 8, 3325);
     			a1.href = "#/public";
-    			add_location(a1, file$i, 125, 6, 3008);
+    			add_location(a1, file$i, 133, 6, 3247);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$i, 124, 4, 2968);
+    			add_location(li1, file$i, 132, 4, 3207);
     			ul.className = "pagination";
-    			add_location(ul, file$i, 118, 2, 2738);
+    			add_location(ul, file$i, 126, 2, 2977);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
@@ -8733,7 +8725,7 @@
     	};
     }
 
-    // (111:0) {#if !msgs}
+    // (119:0) {#if !msgs}
     function create_if_block$b(ctx) {
     	var div;
 
@@ -8741,7 +8733,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$i, 111, 2, 2580);
+    			add_location(div, file$i, 119, 2, 2819);
     		},
 
     		m: function mount(target, anchor) {
@@ -8760,7 +8752,7 @@
     	};
     }
 
-    // (116:2) {:else}
+    // (124:2) {:else}
     function create_else_block_1$4(ctx) {
     	var p;
 
@@ -8768,7 +8760,7 @@
     		c: function create() {
     			p = element("p");
     			p.textContent = "No messages.";
-    			add_location(p, file$i, 116, 4, 2704);
+    			add_location(p, file$i, 124, 4, 2943);
     		},
 
     		m: function mount(target, anchor) {
@@ -8783,7 +8775,7 @@
     	};
     }
 
-    // (114:2) {#each msgs as msg (msg.key)}
+    // (122:2) {#each msgs as msg (msg.key)}
     function create_each_block$4(key_1, ctx) {
     	var first, current;
 
@@ -8838,7 +8830,7 @@
     }
 
     function create_fragment$i(ctx) {
-    	var div2, div1, h4, t0, t1, t2, div0, label, input, t3, i, t4, t5, t6, current_block_type_index, if_block1, if_block1_anchor, current, dispose;
+    	var div3, div2, div0, h4, t0, t1, t2, div1, label, input, t3, i, t4, t5, button, t6, button_href_value, t7, t8, current_block_type_index, if_block1, if_block1_anchor, current, dispose;
 
     	var if_block0 = (ctx.error) && create_if_block_1$8(ctx);
 
@@ -8859,41 +8851,50 @@
 
     	return {
     		c: function create() {
+    			div3 = element("div");
     			div2 = element("div");
-    			div1 = element("div");
+    			div0 = element("div");
     			h4 = element("h4");
     			t0 = text("Channel: #");
     			t1 = text(ctx.channel);
     			t2 = space();
-    			div0 = element("div");
+    			div1 = element("div");
     			label = element("label");
     			input = element("input");
     			t3 = space();
     			i = element("i");
     			t4 = text("\r\n        Subscribe");
     			t5 = space();
+    			button = element("button");
+    			t6 = text("New Post");
+    			t7 = space();
     			if (if_block0) if_block0.c();
-    			t6 = space();
+    			t8 = space();
     			if_block1.c();
     			if_block1_anchor = empty();
-    			h4.className = "column";
-    			add_location(h4, file$i, 94, 4, 2148);
-    			attr(input, "type", "checkbox");
-    			add_location(input, file$i, 97, 8, 2274);
-    			i.className = "form-icon";
-    			add_location(i, file$i, 101, 8, 2400);
-    			label.className = "form-switch float-right";
-    			add_location(label, file$i, 96, 6, 2225);
+    			add_location(h4, file$i, 95, 6, 2177);
     			div0.className = "column";
-    			add_location(div0, file$i, 95, 4, 2197);
-    			div1.className = "columns";
-    			add_location(div1, file$i, 93, 2, 2121);
-    			div2.className = "container";
-    			add_location(div2, file$i, 92, 0, 2094);
+    			add_location(div0, file$i, 94, 4, 2149);
+    			attr(input, "type", "checkbox");
+    			add_location(input, file$i, 99, 8, 2301);
+    			i.className = "form-icon";
+    			add_location(i, file$i, 103, 8, 2427);
+    			label.className = "form-switch float-right";
+    			add_location(label, file$i, 98, 6, 2252);
+    			button.className = "btn btn-link float-right";
+    			attr(button, "href", button_href_value = "?channel=" + ctx.channel + "#/compose");
+    			add_location(button, file$i, 106, 6, 2493);
+    			div1.className = "column";
+    			add_location(div1, file$i, 97, 4, 2224);
+    			div2.className = "columns";
+    			add_location(div2, file$i, 93, 2, 2122);
+    			div3.className = "container";
+    			add_location(div3, file$i, 92, 0, 2095);
 
     			dispose = [
     				listen(input, "change", ctx.input_change_handler),
-    				listen(input, "change", ctx.subscriptionChanged)
+    				listen(input, "change", ctx.subscriptionChanged),
+    				listen(button, "click", prevent_default(ctx.click_handler))
     			];
     		},
 
@@ -8902,14 +8903,15 @@
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div2, anchor);
-    			append(div2, div1);
-    			append(div1, h4);
+    			insert(target, div3, anchor);
+    			append(div3, div2);
+    			append(div2, div0);
+    			append(div0, h4);
     			append(h4, t0);
     			append(h4, t1);
-    			append(div1, t2);
-    			append(div1, div0);
-    			append(div0, label);
+    			append(div2, t2);
+    			append(div2, div1);
+    			append(div1, label);
     			append(label, input);
 
     			input.checked = ctx.subscribed;
@@ -8917,9 +8919,12 @@
     			append(label, t3);
     			append(label, i);
     			append(label, t4);
-    			insert(target, t5, anchor);
+    			append(div1, t5);
+    			append(div1, button);
+    			append(button, t6);
+    			insert(target, t7, anchor);
     			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t6, anchor);
+    			insert(target, t8, anchor);
     			if_blocks[current_block_type_index].m(target, anchor);
     			insert(target, if_block1_anchor, anchor);
     			current = true;
@@ -8934,7 +8939,7 @@
     				} else {
     					if_block0 = create_if_block_1$8(ctx);
     					if_block0.c();
-    					if_block0.m(t6.parentNode, t6);
+    					if_block0.m(t8.parentNode, t8);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -8977,14 +8982,14 @@
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div2);
-    				detach(t5);
+    				detach(div3);
+    				detach(t7);
     			}
 
     			if (if_block0) if_block0.d(detaching);
 
     			if (detaching) {
-    				detach(t6);
+    				detach(t8);
     			}
 
     			if_blocks[current_block_type_index].d(detaching);
@@ -9017,7 +9022,7 @@
       }
 
       let opts = {
-        limit: $routeParams.limit || getPref("limit",10),
+        limit: $routeParams.limit || getPref("limit", 10),
         reverse: true
       };
 
@@ -9061,6 +9066,10 @@
     		$$invalidate('subscribed', subscribed);
     	}
 
+    	function click_handler() {
+    		return navigate('/compose', { channel });
+    	}
+
     	$$self.$$.update = ($$dirty = { opts: 1, $routeParams: 1, channel: 1, error: 1 }) => {
     		if ($$dirty.opts || $$dirty.$routeParams || $$dirty.channel || $$dirty.error) { {
             Object.assign(opts, $routeParams);
@@ -9098,7 +9107,8 @@
     		subscriptionChanged,
     		goNext,
     		goPrevious,
-    		input_change_handler
+    		input_change_handler,
+    		click_handler
     	};
     }
 
@@ -11197,12 +11207,12 @@
     // Preferences
 
     const getPref = (key, defaultValue) => {
-      if (savedData.hasOwnProperty("preferences")) {
-        let preferences = savedData.preferences;
-        if (preferences.hasOwnProperty(key)) {
-          return preferences[key]
+      if (savedData.preferences) {
+        if (savedData.preferences.hasOwnProperty(key)) {
+          return savedData.preferences[key]
         }
       }
+      console.log("returning default value for key", key, savedData.preferences);
       return defaultValue
     };
 

@@ -181,12 +181,12 @@ export const keepPinging = () => {
 // Preferences
 
 export const getPref = (key, defaultValue) => {
-  if (savedData.hasOwnProperty("preferences")) {
-    let preferences = savedData.preferences
-    if (preferences.hasOwnProperty(key)) {
-      return preferences[key]
+  if (savedData.preferences) {
+    if (savedData.preferences.hasOwnProperty(key)) {
+      return savedData.preferences[key]
     }
   }
+  console.log("returning default value for key", key, savedData.preferences)
   return defaultValue
 }
 

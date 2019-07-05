@@ -66,19 +66,24 @@ export class SSB {
     let showUnknown = getPref("showTypeUnknown", false)
 
     if (showUnknown) {
+      console.log("exiting filterTypes, showUnknown is", showUnknown)
       return pull.filter(() => true);
     }
 
     return pull.filter(msg => {
       let type = msg.value.content.type
 
-      if (typeof type == "string" && knownMessageTypes.hasOwnProperty(type)) {
+
+      if (typeof type == "string" && knownMessageTypes[type]) {
+        console.log("checking msg", type, getPref(knownMessageTypes[type], true))
+
         return getPref(knownMessageTypes[type], true)
       }
       return getPref("showTypeUnknown", false)
     })
-
   }
+
+  
 
   public(opts) {
     return new Promise((resolve, reject) => {

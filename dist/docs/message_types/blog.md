@@ -1,14 +1,14 @@
 # blog
 
-Sometimes messages of type `post` are not enough for you to express what you need. All messages in Secure Scuttlebutt have a maximum size of 8k, this is counting the metadata associated with the message and not just the content itself. For those occasions when you need to write longer messages you can use `blog`.
+Sometimes messages of type `post` are not enough for you to express what you need. All messages in Secure Scuttlebutt have a maximum size of 8k which is counting the metadata associated with the message and not just the content itself. For those occasions when you need to write longer messages you can use `blog`.
 
-These messages are actually a small set of metadata, just enough so that clients can display a summary and an associated [blob (this link explains them in deep)](https://ssbc.github.io/scuttlebutt-protocol-guide/#blobs) which holds the content. 
+These messages are actually a small set of metadata, just enough so that clients can display a summary and an associated [blob (this link explains them in depth)](https://ssbc.github.io/scuttlebutt-protocol-guide/#blobs) which holds the content. 
 
-> **Attention:** Patchfox currenytly **supports reading blogposts but does't support writing them.** This will change once I figure out how to do blob uploading.
+> **Attention:** Patchfox currently **supports reading blogposts but does't support writing them.** This will change once I figure out how to do blob uploading.
 
-> **About blobs:** You can think of blobs like attachments to an email. Blobs are not downloaded automatically, they need to be requested. Patchfox will request images on its own so that you can see posts and images together but it will not requests other blobs unless you initiate some action that needs them. In cases such as `blog` messages, the blobs are requested when you press the _Read Blogpost_ button. If you don't press it, we don't download that post.
+> **About blobs:** You can think of blobs like attachments to an email. Blobs are not downloaded automatically, they need to be requested. Patchfox will request images on its own so that you can see posts and images together but it will not request other blobs unless you initiate some action that needs them. In cases such as `blog` messages, the blobs are requested when you press the _Read Blogpost_ button. If you don't press it, we don't download that post.
 
-## What blog posts look like?
+## What do blog posts look like?
 
 ~~~~
 {

@@ -14,7 +14,7 @@
   }
 
   let opts = {
-    limit: $routeParams.limit || getPref("limit",10),
+    limit: $routeParams.limit || getPref("limit", 10),
     reverse: true
   };
 
@@ -92,7 +92,9 @@
 
 <div class="container">
   <div class="columns">
-    <h4 class="column">Channel: #{channel}</h4>
+    <div class="column">
+      <h4>Channel: #{channel} </h4>
+    </div>
     <div class="column">
       <label class="form-switch float-right">
         <input
@@ -102,6 +104,12 @@
         <i class="form-icon" />
         Subscribe
       </label>
+      <button
+        class="btn btn-link float-right"
+        href="?channel={channel}#/compose"
+        on:click|preventDefault={() => navigate('/compose', { channel })}>
+        New Post
+      </button>
     </div>
   </div>
 </div>

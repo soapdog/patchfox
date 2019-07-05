@@ -3,7 +3,7 @@ This message is used to _subscribe and unsubscribe from channels_. Be aware that
 
 > **Important:** At the moment Patchfox ignores this information. In the future we plan to change the public view to take this into account.
 
-## How does it looks like?
+## What does it looks like?
 
 ~~~
 {
