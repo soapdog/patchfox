@@ -913,6 +913,8 @@
 
     let sbot = false;
 
+    let avatarCache = {};
+
     class SSB {
 
       log(pMsg, pVal = "") {
@@ -1093,9 +1095,13 @@
       }
 
       async avatar(feed) {
+        if (avatarCache[feed]) {
+          return avatarCache[feed]
+        }
         try {
           let avatar = await hermiebox.api.avatar(feed);
-          await this.setAvatarCache(feed, avatar);
+          // await this.setAvatarCache(feed, avatar)
+          avatarCache[feed] = avatar;
           return avatar
         } catch (n) {
           throw n
@@ -8603,7 +8609,7 @@
     	return child_ctx;
     }
 
-    // (116:0) {#if error}
+    // (102:0) {#if error}
     function create_if_block_1$8(ctx) {
     	var div, t0, t1;
 
@@ -8613,7 +8619,7 @@
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$i, 116, 2, 2744);
+    			add_location(div, file$i, 102, 2, 2466);
     		},
 
     		m: function mount(target, anchor) {
@@ -8632,7 +8638,7 @@
     	};
     }
 
-    // (121:0) {:else}
+    // (107:0) {:else}
     function create_else_block$8(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -8669,19 +8675,19 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$i, 129, 8, 3132);
+    			add_location(div0, file$i, 115, 8, 2854);
     			a0.href = "#/public";
-    			add_location(a0, file$i, 128, 6, 3050);
+    			add_location(a0, file$i, 114, 6, 2772);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$i, 127, 4, 3006);
+    			add_location(li0, file$i, 113, 4, 2728);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$i, 134, 8, 3325);
+    			add_location(div1, file$i, 120, 8, 3047);
     			a1.href = "#/public";
-    			add_location(a1, file$i, 133, 6, 3247);
+    			add_location(a1, file$i, 119, 6, 2969);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$i, 132, 4, 3207);
+    			add_location(li1, file$i, 118, 4, 2929);
     			ul.className = "pagination";
-    			add_location(ul, file$i, 126, 2, 2977);
+    			add_location(ul, file$i, 112, 2, 2699);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
@@ -8755,7 +8761,7 @@
     	};
     }
 
-    // (119:0) {#if !msgs}
+    // (105:0) {#if !msgs}
     function create_if_block$b(ctx) {
     	var div;
 
@@ -8763,7 +8769,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$i, 119, 2, 2819);
+    			add_location(div, file$i, 105, 2, 2541);
     		},
 
     		m: function mount(target, anchor) {
@@ -8782,7 +8788,7 @@
     	};
     }
 
-    // (124:2) {:else}
+    // (110:2) {:else}
     function create_else_block_1$4(ctx) {
     	var p;
 
@@ -8790,7 +8796,7 @@
     		c: function create() {
     			p = element("p");
     			p.textContent = "No messages.";
-    			add_location(p, file$i, 124, 4, 2943);
+    			add_location(p, file$i, 110, 4, 2665);
     		},
 
     		m: function mount(target, anchor) {
@@ -8805,7 +8811,7 @@
     	};
     }
 
-    // (122:2) {#each msgs as msg (msg.key)}
+    // (108:2) {#each msgs as msg (msg.key)}
     function create_each_block$4(key_1, ctx) {
     	var first, current;
 
@@ -8902,24 +8908,24 @@
     			t8 = space();
     			if_block1.c();
     			if_block1_anchor = empty();
-    			add_location(h4, file$i, 95, 6, 2177);
+    			add_location(h4, file$i, 81, 6, 1899);
     			div0.className = "column";
-    			add_location(div0, file$i, 94, 4, 2149);
+    			add_location(div0, file$i, 80, 4, 1871);
     			attr(input, "type", "checkbox");
-    			add_location(input, file$i, 99, 8, 2301);
+    			add_location(input, file$i, 85, 8, 2023);
     			i.className = "form-icon";
-    			add_location(i, file$i, 103, 8, 2427);
+    			add_location(i, file$i, 89, 8, 2149);
     			label.className = "form-switch float-right";
-    			add_location(label, file$i, 98, 6, 2252);
+    			add_location(label, file$i, 84, 6, 1974);
     			button.className = "btn btn-link float-right";
     			attr(button, "href", button_href_value = "?channel=" + ctx.channel + "#/compose");
-    			add_location(button, file$i, 106, 6, 2493);
+    			add_location(button, file$i, 92, 6, 2215);
     			div1.className = "column";
-    			add_location(div1, file$i, 97, 4, 2224);
+    			add_location(div1, file$i, 83, 4, 1946);
     			div2.className = "columns";
-    			add_location(div2, file$i, 93, 2, 2122);
+    			add_location(div2, file$i, 79, 2, 1844);
     			div3.className = "container";
-    			add_location(div3, file$i, 92, 0, 2095);
+    			add_location(div3, file$i, 78, 0, 1817);
 
     			dispose = [
     				listen(input, "change", ctx.input_change_handler),
@@ -9076,20 +9082,6 @@
       const goPrevious = () => {
         history.back();
       };
-
-      let previousShortcutUnbind = keymage("p", () => {
-        goPrevious();
-        return false;
-      });
-      let nextShortcutUnbind = keymage("n", () => {
-        goNext();
-        return false;
-      });
-
-      onDestroy(() => {
-        previousShortcutUnbind();
-        nextShortcutUnbind();
-      });
 
     	function input_change_handler() {
     		subscribed = this.checked;

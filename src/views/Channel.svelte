@@ -66,20 +66,6 @@
   const goPrevious = () => {
     history.back();
   };
-
-  let previousShortcutUnbind = keymage("p", () => {
-    goPrevious();
-    return false;
-  });
-  let nextShortcutUnbind = keymage("n", () => {
-    goNext();
-    return false;
-  });
-
-  onDestroy(() => {
-    previousShortcutUnbind();
-    nextShortcutUnbind();
-  });
 </script>
 
 <style>

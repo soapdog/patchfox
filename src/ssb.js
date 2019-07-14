@@ -36,6 +36,8 @@ const sort = hermiebox.modules.ssbSort
 
 let sbot = false
 
+let avatarCache = {}
+
 export class SSB {
 
   log(pMsg, pVal = "") {
@@ -245,9 +247,13 @@ export class SSB {
   }
 
   async avatar(feed) {
+    if (avatarCache[feed]) {
+      return avatarCache[feed]
+    }
     try {
       let avatar = await hermiebox.api.avatar(feed)
-      await this.setAvatarCache(feed, avatar)
+      // await this.setAvatarCache(feed, avatar)
+      avatarCache[feed] = avatar
       return avatar
     } catch (n) {
       throw n
