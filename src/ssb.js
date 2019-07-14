@@ -49,7 +49,8 @@ export class SSB {
   }
 
   filterLimit() {
-    return pull.take(getPref("limit", 10))
+    let limit = getPref("limit", 10)
+    return pull.take(limit)
   }
 
   filterTypes() {
@@ -66,17 +67,13 @@ export class SSB {
     let showUnknown = getPref("showTypeUnknown", false)
 
     if (showUnknown) {
-      console.log("exiting filterTypes, showUnknown is", showUnknown)
       return pull.filter(() => true);
     }
 
     return pull.filter(msg => {
       let type = msg.value.content.type
 
-
       if (typeof type == "string" && knownMessageTypes[type]) {
-        console.log("checking msg", type, getPref(knownMessageTypes[type], true))
-
         return getPref(knownMessageTypes[type], true)
       }
       return getPref("showTypeUnknown", false)
@@ -91,12 +88,15 @@ export class SSB {
       opts = opts || {}
       opts.reverse = opts.reverse || true
 
+      console.log("opts", opts)
+
       pull(
         sbot.createFeedStream(opts),
         pull.filter(msg => msg && msg.value && msg.value.content),
         this.filterTypes(),
         this.filterLimit(),
         pull.collect((err, msgs) => {
+          console.log("msgs", msgs)
           if (err) {
             reject(err)
           }
@@ -300,7 +300,7 @@ export class SSB {
 
     let html = hermiebox.modules.ssbMarkdown.block(text)
     html = html
-      .replace("<pre>", "<pre class=\"code\">")
+      .replace(/<pre>/gi, "<pre class=\"code\">")
       .replace(/<a href="#([^"]*)/gi, replaceChannel)
       .replace(/<a href="@([^"]*)/gi, replaceFeedID)
       .replace(/target="_blank"/gi, "")
@@ -518,17 +518,16 @@ export class SSB {
         query.$filter.value.timestamp = { $lt: opts.lt }
       }
 
-      console.dir(query)
-
       if (sbot) {
         pull(
           sbot.query.read({
             query: [
               query
             ],
-            limit: opts.limit,
             reverse: true
           }),
+          this.filterTypes(),
+          this.filterLimit(),
           pull.collect(function (err, data) {
             if (err) {
               reject(err)

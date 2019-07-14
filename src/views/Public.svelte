@@ -7,10 +7,7 @@
   let error = $routeParams.error || false;
   let dropdownActive = false;
 
-  let opts = {
-    limit: $routeParams.limit || getPref("limit", 10),
-    reverse: true
-  };
+  let opts = {};
 
   // todo: move back into using stores.
   $: {

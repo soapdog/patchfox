@@ -186,7 +186,6 @@ export const getPref = (key, defaultValue) => {
       return savedData.preferences[key]
     }
   }
-  console.log("returning default value for key", key, savedData.preferences)
   return defaultValue
 }
 
@@ -200,7 +199,6 @@ export const setConnectionConfiguration = ({ keys, remote, manifest }) => {
 }
 
 export const setPref = (key, value) => {
-  console.log(`setPref - ${key}`, value)
   savedData.preferences = savedData.preferences || {}
   savedData.preferences[key] = value
 

@@ -160,4 +160,3 @@ var manifest = {
     }
 };
 
-console.log("manifest", manifest);

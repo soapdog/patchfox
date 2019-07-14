@@ -844,7 +844,8 @@
       }
 
       filterLimit() {
-        return pull.take(getPref("limit", 10))
+        let limit = getPref("limit", 10);
+        return pull.take(limit)
       }
 
       filterTypes() {
@@ -861,17 +862,13 @@
         let showUnknown = getPref("showTypeUnknown", false);
 
         if (showUnknown) {
-          console.log("exiting filterTypes, showUnknown is", showUnknown);
           return pull.filter(() => true);
         }
 
         return pull.filter(msg => {
           let type = msg.value.content.type;
 
-
           if (typeof type == "string" && knownMessageTypes[type]) {
-            console.log("checking msg", type, getPref(knownMessageTypes[type], true));
-
             return getPref(knownMessageTypes[type], true)
           }
           return getPref("showTypeUnknown", false)
@@ -886,12 +883,15 @@
           opts = opts || {};
           opts.reverse = opts.reverse || true;
 
+          console.log("opts", opts);
+
           pull(
             sbot.createFeedStream(opts),
             pull.filter(msg => msg && msg.value && msg.value.content),
             this.filterTypes(),
             this.filterLimit(),
             pull.collect((err, msgs) => {
+              console.log("msgs", msgs);
               if (err) {
                 reject(err);
               }
@@ -1066,7 +1066,7 @@
 
         let html = hermiebox.modules.ssbMarkdown.block(text);
         html = html
-          .replace("<pre>", "<pre class=\"code\">")
+          .replace(/<pre>/gi, "<pre class=\"code\">")
           .replace(/<a href="#([^"]*)/gi, replaceChannel)
           .replace(/<a href="@([^"]*)/gi, replaceFeedID)
           .replace(/target="_blank"/gi, "")
@@ -1284,17 +1284,16 @@
             query.$filter.value.timestamp = { $lt: opts.lt };
           }
 
-          console.dir(query);
-
           if (sbot) {
             pull(
               sbot.query.read({
                 query: [
                   query
                 ],
-                limit: opts.limit,
                 reverse: true
               }),
+              this.filterTypes(),
+              this.filterLimit(),
               pull.collect(function (err, data) {
                 if (err) {
                   reject(err);
@@ -5246,7 +5245,7 @@
     	return child_ctx;
     }
 
-    // (66:0) {#if error}
+    // (63:0) {#if error}
     function create_if_block_1$4(ctx) {
     	var div, t0, t1;
 
@@ -5256,7 +5255,7 @@
     			t0 = text("Error: ");
     			t1 = text(ctx.error);
     			div.className = "toast toast-error";
-    			add_location(div, file$b, 66, 2, 1367);
+    			add_location(div, file$b, 63, 2, 1288);
     		},
 
     		m: function mount(target, anchor) {
@@ -5275,7 +5274,7 @@
     	};
     }
 
-    // (71:0) {:else}
+    // (68:0) {:else}
     function create_else_block$4(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t0, ul, li0, a0, div0, t2, li1, a1, div1, current, dispose;
 
@@ -5305,19 +5304,19 @@
     			div1 = element("div");
     			div1.textContent = "Next";
     			div0.className = "page-item-subtitle";
-    			add_location(div0, file$b, 77, 8, 1719);
+    			add_location(div0, file$b, 74, 8, 1640);
     			a0.href = "#/public";
-    			add_location(a0, file$b, 76, 6, 1637);
+    			add_location(a0, file$b, 73, 6, 1558);
     			li0.className = "page-item page-previous";
-    			add_location(li0, file$b, 75, 4, 1593);
+    			add_location(li0, file$b, 72, 4, 1514);
     			div1.className = "page-item-subtitle";
-    			add_location(div1, file$b, 82, 8, 1912);
+    			add_location(div1, file$b, 79, 8, 1833);
     			a1.href = "#/public";
-    			add_location(a1, file$b, 81, 6, 1834);
+    			add_location(a1, file$b, 78, 6, 1755);
     			li1.className = "page-item page-next";
-    			add_location(li1, file$b, 80, 4, 1794);
+    			add_location(li1, file$b, 77, 4, 1715);
     			ul.className = "pagination";
-    			add_location(ul, file$b, 74, 2, 1564);
+    			add_location(ul, file$b, 71, 2, 1485);
 
     			dispose = [
     				listen(a0, "click", stop_propagation(prevent_default(ctx.goPrevious))),
@@ -5374,7 +5373,7 @@
     	};
     }
 
-    // (69:0) {#if !msgs}
+    // (66:0) {#if !msgs}
     function create_if_block$5(ctx) {
     	var div;
 
@@ -5382,7 +5381,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$b, 69, 2, 1442);
+    			add_location(div, file$b, 66, 2, 1363);
     		},
 
     		m: function mount(target, anchor) {
@@ -5401,7 +5400,7 @@
     	};
     }
 
-    // (72:2) {#each msgs as msg (msg.key)}
+    // (69:2) {#each msgs as msg (msg.key)}
     function create_each_block(key_1, ctx) {
     	var first, current;
 
@@ -5489,13 +5488,13 @@
     			if_block1.c();
     			if_block1_anchor = empty();
     			h4.className = "column";
-    			add_location(h4, file$b, 61, 4, 1269);
+    			add_location(h4, file$b, 58, 4, 1190);
     			div0.className = "column";
-    			add_location(div0, file$b, 62, 4, 1310);
+    			add_location(div0, file$b, 59, 4, 1231);
     			div1.className = "columns";
-    			add_location(div1, file$b, 60, 2, 1242);
+    			add_location(div1, file$b, 57, 2, 1163);
     			div2.className = "container";
-    			add_location(div2, file$b, 59, 0, 1215);
+    			add_location(div2, file$b, 56, 0, 1136);
     		},
 
     		l: function claim(nodes) {
@@ -5596,10 +5595,7 @@
       let msgs = false;
       let error = $routeParams.error || false;
 
-      let opts = {
-        limit: $routeParams.limit || getPref("limit", 10),
-        reverse: true
-      };
+      let opts = {};
 
       const goNext = () => {
         navigate("/public", {
@@ -11212,7 +11208,6 @@
           return savedData.preferences[key]
         }
       }
-      console.log("returning default value for key", key, savedData.preferences);
       return defaultValue
     };
 
@@ -11226,7 +11221,6 @@
     };
 
     const setPref = (key, value) => {
-      console.log(`setPref - ${key}`, value);
       savedData.preferences = savedData.preferences || {};
       savedData.preferences[key] = value;
 
