@@ -18,14 +18,29 @@ export const deleteFilter = (filter) => {
 
 export const isMessageBlured = (msg) => {
     let currentFilters = getFilters().filter(f => f.action == "blur")
-    let res = currentFilters.map((f) => isMessageFiltered(msg, f, "blur"))
-    return res.some(r => r)
+    if (currentFilters.length > 0) {
+        let res = currentFilters.map((f) => isMessageFiltered(msg, f, "blur"))
+        return !res.some(r => r)
+    } else {
+        return false
+    }
+}
+
+
+export const isMessageHidden = (msg) => {
+    let currentFilters = getFilters().filter(f => f.action == "hide")
+    if (currentFilters.length > 0) {
+        let res = currentFilters.map((f) => isMessageFiltered(msg, f, "hide"))
+        return res.some(r => r)
+    } else {
+        return true // true because it is used by a pull.filter()
+    }
 }
 
 export const isMessageFiltered = (msg, filter, action) => {
     let filterResults = []
     if (filter.action !== action) {
-        return false
+        return true
     }
 
     if (filter.expires) {
@@ -33,12 +48,13 @@ export const isMessageFiltered = (msg, filter, action) => {
         let today = new Date()
 
         if (today > expirationDate) {
-            return false
+            return true
         }
     }
 
     if (filter.feed) {
         if (filter.feed == msg.value.author) {
+            console.log("filtered due to feed")
             filterResults.push(true)
         } else {
             filterResults.push(false)
@@ -46,6 +62,7 @@ export const isMessageFiltered = (msg, filter, action) => {
     }
 
     if (filter.channel) {
+        console.log("filtered due to channel")
         if (msg.value.content.channel && filter.channel == msg.value.content.channel) {
             filterResults.push(true)
         } else {
@@ -58,9 +75,10 @@ export const isMessageFiltered = (msg, filter, action) => {
         let content = msg.value.content.text.toLowerCase()
 
         let res = keywords.map(k => content.includes(k.toLowerCase())).some(r => r)
+        if (res) console.log("filtered due to keywords")
         filterResults.push(res)
     }
 
-
-    return !filterResults.some(false)
+    console.log("res", !filterResults.some(n => n == true))
+    return !filterResults.some(n => n == true)
 }

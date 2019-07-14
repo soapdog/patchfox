@@ -29,6 +29,7 @@
  */
 
 import { getPref } from "./utils.js"
+import { isMessageHidden } from "./abusePrevention.js"
 
 const pull = hermiebox.modules.pullStream
 const sort = hermiebox.modules.ssbSort
@@ -51,6 +52,10 @@ export class SSB {
   filterLimit() {
     let limit = getPref("limit", 10)
     return pull.take(limit)
+  }
+
+  filterWithUserFilters() {
+    return pull.filter(m => isMessageHidden(m))
   }
 
   filterTypes() {
@@ -94,6 +99,7 @@ export class SSB {
         sbot.createFeedStream(opts),
         pull.filter(msg => msg && msg.value && msg.value.content),
         this.filterTypes(),
+        this.filterWithUserFilters(),
         this.filterLimit(),
         pull.collect((err, msgs) => {
           console.log("msgs", msgs)
@@ -136,6 +142,8 @@ export class SSB {
             pull.unique('key')
           ),
           this.filterTypes(),
+          this.filterWithUserFilters(),
+          this.filterLimit(),
           pull.collect((err, msgs) => {
             if (err) reject(err)
             resolve(sort([rootMsg].concat(msgs)))
@@ -197,6 +205,7 @@ export class SSB {
       pull(
         createBacklinkStream(sbot.id),
         this.filterTypes(),
+        this.filterWithUserFilters(),
         this.filterLimit(),
         pull.collect((err, msgs) => {
           if (err) {
@@ -527,6 +536,7 @@ export class SSB {
             reverse: true
           }),
           this.filterTypes(),
+          this.filterWithUserFilters(),
           this.filterLimit(),
           pull.collect(function (err, data) {
             if (err) {

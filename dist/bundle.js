@@ -795,6 +795,89 @@
         });
     }
 
+    const getFilters = () => getPref("filters", []);
+
+    const addFilter = (filter) => {
+        let currentFilters = getFilters();
+
+        currentFilters.push(filter);
+
+        setPref("filters", currentFilters);
+    };
+
+    const deleteFilter = (filter) => {
+        let currentFilters = getFilters();
+
+        setPref("filters", currentFilters.filter(f => f !== filter));
+    };
+
+    const isMessageBlured = (msg) => {
+        let currentFilters = getFilters().filter(f => f.action == "blur");
+        if (currentFilters.length > 0) {
+            let res = currentFilters.map((f) => isMessageFiltered(msg, f, "blur"));
+            return !res.some(r => r)
+        } else {
+            return false
+        }
+    };
+
+
+    const isMessageHidden = (msg) => {
+        let currentFilters = getFilters().filter(f => f.action == "hide");
+        if (currentFilters.length > 0) {
+            let res = currentFilters.map((f) => isMessageFiltered(msg, f, "hide"));
+            return res.some(r => r)
+        } else {
+            return true // true because it is used by a pull.filter()
+        }
+    };
+
+    const isMessageFiltered = (msg, filter, action) => {
+        let filterResults = [];
+        if (filter.action !== action) {
+            return true
+        }
+
+        if (filter.expires) {
+            let expirationDate = new Date(filter.expires);
+            let today = new Date();
+
+            if (today > expirationDate) {
+                return true
+            }
+        }
+
+        if (filter.feed) {
+            if (filter.feed == msg.value.author) {
+                console.log("filtered due to feed");
+                filterResults.push(true);
+            } else {
+                filterResults.push(false);
+            }
+        }
+
+        if (filter.channel) {
+            console.log("filtered due to channel");
+            if (msg.value.content.channel && filter.channel == msg.value.content.channel) {
+                filterResults.push(true);
+            } else {
+                filterResults.push(false);
+            }
+        }
+
+        if (filter.keywords.length > 0 && msg.value.content.type == "post" && msg.value.content.text) {
+            let keywords = filter.keywords;
+            let content = msg.value.content.text.toLowerCase();
+
+            let res = keywords.map(k => content.includes(k.toLowerCase())).some(r => r);
+            if (res) console.log("filtered due to keywords");
+            filterResults.push(res);
+        }
+
+        console.log("res", !filterResults.some(n => n == true));
+        return !filterResults.some(n => n == true)
+    };
+
     /**
      * SSB
      *
@@ -848,6 +931,10 @@
         return pull.take(limit)
       }
 
+      filterWithUserFilters() {
+        return pull.filter(m => isMessageHidden(m))
+      }
+
       filterTypes() {
         let knownMessageTypes = {
           "post": "showTypePost",
@@ -889,6 +976,7 @@
             sbot.createFeedStream(opts),
             pull.filter(msg => msg && msg.value && msg.value.content),
             this.filterTypes(),
+            this.filterWithUserFilters(),
             this.filterLimit(),
             pull.collect((err, msgs) => {
               console.log("msgs", msgs);
@@ -931,6 +1019,8 @@
                 pull.unique('key')
               ),
               this.filterTypes(),
+              this.filterWithUserFilters(),
+              this.filterLimit(),
               pull.collect((err, msgs) => {
                 if (err) reject(err);
                 resolve(sort([rootMsg].concat(msgs)));
@@ -963,6 +1053,7 @@
           pull(
             createBacklinkStream(sbot.id),
             this.filterTypes(),
+            this.filterWithUserFilters(),
             this.filterLimit(),
             pull.collect((err, msgs) => {
               if (err) {
@@ -1293,6 +1384,7 @@
                 reverse: true
               }),
               this.filterTypes(),
+              this.filterWithUserFilters(),
               this.filterLimit(),
               pull.collect(function (err, data) {
                 if (err) {
@@ -4421,71 +4513,6 @@
     const timestamp = t => {
 
         return timeagoSimple.simple(new Date(t))
-    };
-
-    const getFilters = () => getPref("filters", []);
-
-    const addFilter = (filter) => {
-        let currentFilters = getFilters();
-
-        currentFilters.push(filter);
-
-        setPref("filters", currentFilters);
-    };
-
-    const deleteFilter = (filter) => {
-        let currentFilters = getFilters();
-
-        setPref("filters", currentFilters.filter(f => f !== filter));
-    };
-
-    const isMessageBlured = (msg) => {
-        let currentFilters = getFilters().filter(f => f.action == "blur");
-        let res = currentFilters.map((f) => isMessageFiltered(msg, f, "blur"));
-        return res.some(r => r)
-    };
-
-    const isMessageFiltered = (msg, filter, action) => {
-        let filterResults = [];
-        if (filter.action !== action) {
-            return false
-        }
-
-        if (filter.expires) {
-            let expirationDate = new Date(filter.expires);
-            let today = new Date();
-
-            if (today > expirationDate) {
-                return false
-            }
-        }
-
-        if (filter.feed) {
-            if (filter.feed == msg.value.author) {
-                filterResults.push(true);
-            } else {
-                filterResults.push(false);
-            }
-        }
-
-        if (filter.channel) {
-            if (msg.value.content.channel && filter.channel == msg.value.content.channel) {
-                filterResults.push(true);
-            } else {
-                filterResults.push(false);
-            }
-        }
-
-        if (filter.keywords.length > 0 && msg.value.content.type == "post" && msg.value.content.text) {
-            let keywords = filter.keywords;
-            let content = msg.value.content.text.toLowerCase();
-
-            let res = keywords.map(k => content.includes(k.toLowerCase())).some(r => r);
-            filterResults.push(res);
-        }
-
-
-        return !filterResults.some(false)
     };
 
     /* src\messageTypes\MessageRenderer.svelte generated by Svelte v3.4.4 */
