@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "crayon": "^2.0.6",
+    "is-my-json-valid": "^2.20.0",
     "lodash": "^4.17.11",
     "query-string": "^6.5.0",
     "timeago-simple": "^1.2.4"

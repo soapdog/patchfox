@@ -58,7 +58,7 @@ export class SSB {
       "post": "showTypePost",
       "about": "showTypeAbout",
       "vote": "showTypeVote",
-      "contact": "showTypeContent",
+      "contact": "showTypeContact",
       "pub": "showTypePost",
       "blog": "showTypeBlog",
       "channel": "showTypeChannel"

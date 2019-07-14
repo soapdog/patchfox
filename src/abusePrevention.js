@@ -23,6 +23,7 @@ export const isMessageBlured = (msg) => {
 }
 
 export const isMessageFiltered = (msg, filter, action) => {
+    let filterResults = []
     if (filter.action !== action) {
         return false
     }
@@ -36,24 +37,30 @@ export const isMessageFiltered = (msg, filter, action) => {
         }
     }
 
-    if (filter.feed == msg.value.author) {
-        return true
+    if (filter.feed) {
+        if (filter.feed == msg.value.author) {
+            filterResults.push(true)
+        } else {
+            filterResults.push(false)
+        }
     }
 
-    if (filter.channel && msg.value.content.channel && filter.channel == msg.value.content.channel) {
-        return true
+    if (filter.channel) {
+        if (msg.value.content.channel && filter.channel == msg.value.content.channel) {
+            filterResults.push(true)
+        } else {
+            filterResults.push(false)
+        }
     }
 
     if (filter.keywords.length > 0 && msg.value.content.type == "post" && msg.value.content.text) {
         let keywords = filter.keywords
         let content = msg.value.content.text.toLowerCase()
 
-        let res  = keywords.map(k => content.includes(k.toLowerCase())).some(r => r)
-        return res
+        let res = keywords.map(k => content.includes(k.toLowerCase())).some(r => r)
+        filterResults.push(res)
     }
 
-    // todo: change to use arrays, collect them all, answer with some()
-   
 
-    return false
+    return !filterResults.some(false)
 }
