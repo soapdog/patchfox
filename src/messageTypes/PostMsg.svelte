@@ -5,6 +5,8 @@
 
   let content = ssb.markdown(msg.value.content.text);
   let liked = false;
+  let hasContentWarning = msg.value.content.contentWarning || false;
+  let showContentWarning = true;
 
   ssb.votes(msg.key).then(ms => {
     ms.forEach(m => {
@@ -41,7 +43,13 @@
     let originalRoot = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
-    navigate("/compose", { root: msg.key, branch: msg.key, fork: originalRoot, channel, replyfeed });
+    navigate("/compose", {
+      root: msg.key,
+      branch: msg.key,
+      fork: originalRoot,
+      channel,
+      replyfeed
+    });
   };
 
   const goRoot = ev => {
@@ -63,11 +71,19 @@
   .card-body {
     overflow-wrap: break-word;
   }
-
 </style>
 
-<div class="card-body"s>
-  {@html content}
+<div class="card-body">
+  {#if hasContentWarning && showContentWarning}
+    <p>{msg.value.content.contentWarning}</p>
+    <button
+      class="btn"
+      on:click={() => (showContentWarning = !showContentWarning)}>
+      Show Message
+    </button>
+  {:else}
+    {@html content}
+  {/if}
 </div>
 <div class="card-footer">
   <div class="columns col-gapless">
@@ -98,11 +114,11 @@
     </div>
 
     {#if !msg.value.private}
-    <div class="column col-6 text-right">
-      <button class="btn" on:click={fork}>Fork</button>
+      <div class="column col-6 text-right">
+        <button class="btn" on:click={fork}>Fork</button>
 
-      <button class="btn" on:click={reply}>Reply</button>
-    </div>
+        <button class="btn" on:click={reply}>Reply</button>
+      </div>
     {/if}
   </div>
 

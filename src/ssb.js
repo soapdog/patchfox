@@ -66,7 +66,7 @@ export class SSB {
       "about": "showTypeAbout",
       "vote": "showTypeVote",
       "contact": "showTypeContact",
-      "pub": "showTypePost",
+      "pub": "showTypePub",
       "blog": "showTypeBlog",
       "channel": "showTypeChannel"
     }

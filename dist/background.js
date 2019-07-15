@@ -1,4 +1,6 @@
 
+import { SSB } from "./ssb.js";
+
 // Display the userguide or release notes depending if the add-on was
 // installed or updated.
 function installedOrUpdated(details) {
