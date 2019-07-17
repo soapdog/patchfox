@@ -1733,7 +1733,7 @@
         })
       }
 
-      query(filter, limit, reverse, map, reduce) {
+      query(filter, reverse, map, reduce) {
         return new Promise((resolve, reject) => {
           if (sbot) {
 
@@ -7587,7 +7587,7 @@
     	return child_ctx;
     }
 
-    // (177:2) {:catch n}
+    // (175:2) {:catch n}
     function create_catch_block_1(ctx) {
     	var p, t0, t1_value = ctx.n.message, t1;
 
@@ -7596,7 +7596,7 @@
     			p = element("p");
     			t0 = text("Error: ");
     			t1 = text(t1_value);
-    			add_location(p, file$f, 177, 4, 4235);
+    			add_location(p, file$f, 175, 4, 4228);
     		},
 
     		m: function mount(target, anchor) {
@@ -7617,7 +7617,7 @@
     	};
     }
 
-    // (108:2) {:then}
+    // (106:2) {:then}
     function create_then_block(ctx) {
     	var div3, div1, div0, img, img_src_value, t0, div2, h1, t1, t2, pre, t3, t4, t5, p, raw_value = ctx.ssb.markdown(ctx.description), t6, div4, promise, current;
 
@@ -7660,19 +7660,19 @@
     			img.className = "img-responsive";
     			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
     			img.alt = ctx.feed;
-    			add_location(img, file$f, 112, 10, 2413);
+    			add_location(img, file$f, 110, 10, 2400);
     			div0.className = "container";
-    			add_location(div0, file$f, 111, 8, 2379);
+    			add_location(div0, file$f, 109, 8, 2366);
     			div1.className = "column col-6";
-    			add_location(div1, file$f, 110, 6, 2344);
-    			add_location(h1, file$f, 119, 8, 2606);
-    			add_location(pre, file$f, 120, 8, 2630);
-    			add_location(p, file$f, 145, 8, 3464);
+    			add_location(div1, file$f, 108, 6, 2331);
+    			add_location(h1, file$f, 117, 8, 2593);
+    			add_location(pre, file$f, 118, 8, 2617);
+    			add_location(p, file$f, 143, 8, 3451);
     			div2.className = "column col-6";
-    			add_location(div2, file$f, 118, 6, 2571);
+    			add_location(div2, file$f, 116, 6, 2558);
     			div3.className = "columns";
-    			add_location(div3, file$f, 108, 4, 2315);
-    			add_location(div4, file$f, 151, 4, 3554);
+    			add_location(div3, file$f, 106, 4, 2302);
+    			add_location(div4, file$f, 149, 4, 3541);
     		},
 
     		m: function mount(target, anchor) {
@@ -7777,7 +7777,7 @@
     	};
     }
 
-    // (122:8) {#if feed !== ssb.feed}
+    // (120:8) {#if feed !== ssb.feed}
     function create_if_block$8(ctx) {
     	var div3, div0, t0, div1, label0, input0, t1, i0, t2, t3, label1, input1, t4, i1, t5, t6, div2, dispose;
 
@@ -7801,25 +7801,25 @@
     			t6 = space();
     			div2 = element("div");
     			div0.className = "divider";
-    			add_location(div0, file$f, 123, 12, 2726);
+    			add_location(div0, file$f, 121, 12, 2713);
     			attr(input0, "type", "checkbox");
-    			add_location(input0, file$f, 126, 16, 2857);
+    			add_location(input0, file$f, 124, 16, 2844);
     			i0.className = "form-icon";
-    			add_location(i0, file$f, 130, 16, 3007);
+    			add_location(i0, file$f, 128, 16, 2994);
     			label0.className = "form-switch form-inline";
-    			add_location(label0, file$f, 125, 14, 2801);
+    			add_location(label0, file$f, 123, 14, 2788);
     			attr(input1, "type", "checkbox");
-    			add_location(input1, file$f, 134, 16, 3150);
+    			add_location(input1, file$f, 132, 16, 3137);
     			i1.className = "form-icon";
-    			add_location(i1, file$f, 138, 16, 3298);
+    			add_location(i1, file$f, 136, 16, 3285);
     			label1.className = "form-switch form-inline";
-    			add_location(label1, file$f, 133, 14, 3094);
+    			add_location(label1, file$f, 131, 14, 3081);
     			div1.className = "form-group";
-    			add_location(div1, file$f, 124, 12, 2762);
+    			add_location(div1, file$f, 122, 12, 2749);
     			div2.className = "divider";
-    			add_location(div2, file$f, 142, 12, 3401);
+    			add_location(div2, file$f, 140, 12, 3388);
     			div3.className = "container";
-    			add_location(div3, file$f, 122, 10, 2690);
+    			add_location(div3, file$f, 120, 10, 2677);
 
     			dispose = [
     				listen(input0, "change", ctx.input0_change_handler),
@@ -7870,7 +7870,7 @@
     	};
     }
 
-    // (171:6) {:catch n}
+    // (169:6) {:catch n}
     function create_catch_block(ctx) {
     	var p, t0, t1_value = ctx.n.message, t1;
 
@@ -7879,7 +7879,7 @@
     			p = element("p");
     			t0 = text("Error fetching messages: ");
     			t1 = text(t1_value);
-    			add_location(p, file$f, 171, 8, 4146);
+    			add_location(p, file$f, 169, 8, 4139);
     		},
 
     		m: function mount(target, anchor) {
@@ -7905,7 +7905,7 @@
     	};
     }
 
-    // (155:6) {:then data}
+    // (153:6) {:then data}
     function create_then_block_1(ctx) {
     	var each_blocks = [], each_1_lookup = new Map(), t, ul, li, a, div, current, dispose;
 
@@ -7930,13 +7930,13 @@
     			div = element("div");
     			div.textContent = "Load More";
     			div.className = "page-item-subtitle";
-    			add_location(div, file$f, 166, 14, 4026);
+    			add_location(div, file$f, 164, 14, 4019);
     			a.href = "#/public";
-    			add_location(a, file$f, 161, 12, 3823);
+    			add_location(a, file$f, 159, 12, 3810);
     			li.className = "page-item page-next";
-    			add_location(li, file$f, 160, 10, 3778);
+    			add_location(li, file$f, 158, 10, 3765);
     			ul.className = "pagination";
-    			add_location(ul, file$f, 158, 8, 3743);
+    			add_location(ul, file$f, 156, 8, 3730);
     			dispose = listen(a, "click", stop_propagation(prevent_default(ctx.click_handler)));
     		},
 
@@ -7985,7 +7985,7 @@
     	};
     }
 
-    // (156:8) {#each lastMsgs as msg (msg.key)}
+    // (154:8) {#each lastMsgs as msg (msg.key)}
     function create_each_block$2(key_1, ctx) {
     	var first, current;
 
@@ -8039,7 +8039,7 @@
     	};
     }
 
-    // (153:29)          <div class="loading" />       {:then data}
+    // (151:29)          <div class="loading" />       {:then data}
     function create_pending_block_1(ctx) {
     	var div;
 
@@ -8047,7 +8047,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading";
-    			add_location(div, file$f, 153, 8, 3598);
+    			add_location(div, file$f, 151, 8, 3585);
     		},
 
     		m: function mount(target, anchor) {
@@ -8066,7 +8066,7 @@
     	};
     }
 
-    // (106:40)      <div class="loading loading-lg" />   {:then}
+    // (104:40)      <div class="loading loading-lg" />   {:then}
     function create_pending_block(ctx) {
     	var div;
 
@@ -8074,7 +8074,7 @@
     		c: function create() {
     			div = element("div");
     			div.className = "loading loading-lg";
-    			add_location(div, file$f, 106, 4, 2266);
+    			add_location(div, file$f, 104, 4, 2253);
     		},
 
     		m: function mount(target, anchor) {
@@ -8115,7 +8115,7 @@
 
     			info.block.c();
     			div.className = "container";
-    			add_location(div, file$f, 104, 0, 2197);
+    			add_location(div, file$f, 102, 0, 2184);
     		},
 
     		l: function claim(nodes) {
@@ -8263,12 +8263,10 @@
                 author: feed,
                 timestamp: { $lt: lt }
               }
-            },
-            10
+            }
           )
           .then(msgs => {
             $$invalidate('lastMsgs', lastMsgs = msgs);
-
             window.scrollTo(0, 0);
           }));
       };
@@ -8284,7 +8282,7 @@
     	}
 
     	function click_handler() {
-    	                loadMoreMessages(lastMsgs[lastMsgs.length - 1].timestamp);
+    	                loadMoreMessages(lastMsgs[lastMsgs.length - 1].value.timestamp);
     	              }
 
     	return {

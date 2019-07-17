@@ -885,7 +885,7 @@ export class SSB {
     })
   }
 
-  query(filter, limit, reverse, map, reduce) {
+  query(filter, reverse, map, reduce) {
     return new Promise((resolve, reject) => {
       if (sbot) {
 

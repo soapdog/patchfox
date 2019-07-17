@@ -91,12 +91,10 @@
             author: feed,
             timestamp: { $lt: lt }
           }
-        },
-        10
+        }
       )
       .then(msgs => {
         lastMsgs = msgs;
-
         window.scrollTo(0, 0);
       });
   };
@@ -162,7 +160,7 @@
             <a
               href="#/public"
               on:click|stopPropagation|preventDefault={() => {
-                loadMoreMessages(lastMsgs[lastMsgs.length - 1].timestamp);
+                loadMoreMessages(lastMsgs[lastMsgs.length - 1].value.timestamp);
               }}>
               <div class="page-item-subtitle">Load More</div>
             </a>
