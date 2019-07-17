@@ -14,6 +14,7 @@
   import Navigation from "./Navigation.svelte";
 
   let useShortColumn = getPref("columnSize", "short") == "short";
+  console.log("columnSize", useShortColumn)
 
   onMount(async () => {
     try {
@@ -58,7 +59,7 @@
 <style>
   .reduced-line-length {
     max-width: 840px;
-    margin: auto;
+    margin: auto; 
   }
 </style>
 

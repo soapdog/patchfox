@@ -353,7 +353,8 @@ export class SSB {
         "root",
         "branch",
         "channel",
-        "fork"
+        "fork",
+        "contentWarning"
       ]
 
       commonFields.forEach(f => {

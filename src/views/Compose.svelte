@@ -97,7 +97,14 @@
       }
 
       try {
-        msg = await ssb.newPost({ text: content, channel, root, branch, fork });
+        msg = await ssb.newPost({
+          text: content,
+          channel,
+          root,
+          branch,
+          fork,
+          contentWarning: contentWarning.length > 0 ? contentWarning : undefined
+        });
         posting = false;
         console.log("posted", msg);
         window.scrollTo(0, 0);
@@ -184,14 +191,19 @@
     error = false;
     msg = "";
 
-    var ipfs = window.IpfsHttpClient('127.0.0.1', '5001')
-    const results = await ipfs.add(files[0])
+    var ipfs = window.IpfsHttpClient("127.0.0.1", "5001");
+    const results = await ipfs.add(files[0]);
 
-    console.log("added via IPFS", results)
+    console.log("added via IPFS", results);
     content += ` [${results[0].path}](ipfs://${results[0].hash})`;
-
-   
   };
+
+  let showContentWarningField = false;
+
+  const toggleContentWarning = () =>
+    (showContentWarningField = !showContentWarningField);
+
+  let contentWarning = "";
 </script>
 
 <style>
@@ -262,7 +274,18 @@
             on:dragleave|preventDefault|stopPropagation={dragLeave}
             class:file-on-top={fileOnTop}
             bind:value={content} />
-          <br />
+          <div class="d-block m-2">
+            <button class="btn btn-link" on:click={toggleContentWarning}>
+              CW
+            </button>
+            {#if showContentWarningField}
+              <input
+                type="text"
+                size="50"
+                bind:value={contentWarning}
+                placeholder="Describe your content warning (leave empty to no use it)" />
+            {/if}
+          </div>
           <input type="file" on:input={attachFile} id="fileInput" />
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
           {#if ipfsDaemonRunning}
@@ -278,24 +301,30 @@
       {:else}
         <div class="column col-md-12">
           <h2>Post preview</h2>
-          {#if channel || root || branch}
+          {#if channel || root || branch || contentWarning.length > 0}
             <blockquote>
               {#if channel}
                 <p>
                   <b>Channel:</b>
-                   {channel.startsWith('#') ? channel.slice(1) : channel}
+                  {channel.startsWith('#') ? channel.slice(1) : channel}
                 </p>
               {/if}
               {#if root}
                 <p>
                   <b>Root:</b>
-                   {root}
+                  {root}
                 </p>
               {/if}
               {#if branch}
                 <p>
                   <b>In Reply To:</b>
-                   {branch}
+                  {branch}
+                </p>
+              {/if}
+              {#if contentWarning.length > 0}
+                <p>
+                  <b>Content Warning:</b>
+                  {contentWarning}
                 </p>
               {/if}
             </blockquote>
