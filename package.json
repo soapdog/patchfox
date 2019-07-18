@@ -7,11 +7,12 @@
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-copy": "^2.0.1",
     "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-livereload": "^1.0.1",
     "rollup-plugin-node-resolve": "^4.2.3",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^4.0.4",
-    "svelte": "^3.0.0"
+    "svelte": "^3.0.0",
+    "svelte-preprocess": "^2.14.4"
   },
   "scripts": {
     "build": "rollup -c",
@@ -20,7 +21,7 @@
   "dependencies": {
     "crayon": "^2.0.6",
     "is-my-json-valid": "^2.20.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "query-string": "^6.5.0",
     "timeago-simple": "^1.2.4"
   }
