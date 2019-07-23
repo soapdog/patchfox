@@ -35,25 +35,14 @@ browser.runtime.onInstalled.addListener(installedOrUpdated)
 
 // Build caches
 
-let avatarCache;
-let blockedCache;
-let friendsCache;
+let contactWorker
 
 const backgroundMain = async () => {
-    
-    try {
-        await loadConfiguration()
-        await connect()
-        // keepPinging()
-        console.log("from bg, you are", ssb.whoami)
-
-    } catch (n) {
-        console.error("initialization error", n)
-
+    contactWorker = new SharedWorker('worker-contact-cache-bundle.js')
+    contactWorker.port.onmessage = e => {
+        console.log("[[ contact worker ]]", e)
     }
-
-    
-
+    contactWorker.port.postMessage({command: "connect", hermiebox})
 }
 
 backgroundMain()
