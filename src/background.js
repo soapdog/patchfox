@@ -44,7 +44,7 @@ const backgroundMain = async () => {
     try {
         await loadConfiguration()
         await connect()
-        keepPinging()
+        // keepPinging()
         console.log("from bg, you are", ssb.whoami)
 
     } catch (n) {

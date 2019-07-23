@@ -38,7 +38,7 @@
 
   const goNext = () => {
     navigate("/public", {
-      lt: msgs[msgs.length - 1].rts
+      lt: msgs[msgs.length - 1].value.timestamp
     });
   };
   const goPrevious = () => {
