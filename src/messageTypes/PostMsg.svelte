@@ -82,6 +82,19 @@
       Show Message
     </button>
   {:else}
+    {#if hasContentWarning}
+      <div class="toast toast-warning">
+        <p>
+          <b>Content Warning:</b>
+          {msg.value.content.contentWarning}
+          <button
+            class="btn btn-sm float-right"
+            on:click={() => (showContentWarning = !showContentWarning)}>
+            Hide Message
+          </button>
+        </p>
+      </div>
+    {/if}
     {@html content}
   {/if}
 </div>
