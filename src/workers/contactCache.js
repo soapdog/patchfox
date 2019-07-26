@@ -20,6 +20,7 @@ import {
 } from "../utils"
 
 import { SSB } from "../ssb.js"
+import ssbClient from "ssb-client"
 
 onconnect = function (e) {
     let port = e.ports[0];
