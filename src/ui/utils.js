@@ -1,5 +1,5 @@
 import { writable, derived } from "svelte/store";
-import { SSB } from "./ssb.js";
+import { SSB } from "./ssb";
 
 import queryString from "query-string";
 import Public from "./views/Public.svelte";

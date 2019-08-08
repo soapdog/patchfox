@@ -624,7 +624,10 @@ function extract(input) {
 function parse(input, options) {
 	options = Object.assign({
 		decode: true,
-		arrayFormat: 'none'
+		sort: true,
+		arrayFormat: 'none',
+		parseNumbers: false,
+		parseBooleans: false
 	}, options);
 
 	const formatter = parserForArrayFormat(options);
@@ -649,10 +652,20 @@ function parse(input, options) {
 		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 		value = value === undefined ? null : decode(value, options);
 
+		if (options.parseNumbers && !Number.isNaN(Number(value)) && (typeof value === 'string' && value.trim() !== '')) {
+			value = Number(value);
+		} else if (options.parseBooleans && value !== null && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) {
+			value = value.toLowerCase() === 'true';
+		}
+
 		formatter(decode(key, options), value, ret);
 	}
 
-	return Object.keys(ret).sort().reduce((result, key) => {
+	if (options.sort === false) {
+		return ret;
+	}
+
+	return (options.sort === true ? Object.keys(ret).sort() : Object.keys(ret).sort(options.sort)).reduce((result, key) => {
 		const value = ret[key];
 		if (Boolean(value) && typeof value === 'object' && !Array.isArray(value)) {
 			// Sort object keys, not values
@@ -1274,46 +1287,46 @@ module.exports = function (css) {
 
 /***/ }),
 
-/***/ "./node_modules/svelte/easing.mjs":
-/*!****************************************!*\
-  !*** ./node_modules/svelte/easing.mjs ***!
-  \****************************************/
-/*! exports provided: linear, backInOut, backIn, backOut, bounceOut, bounceInOut, bounceIn, circInOut, circIn, circOut, cubicInOut, cubicIn, cubicOut, elasticInOut, elasticIn, elasticOut, expoInOut, expoIn, expoOut, quadInOut, quadIn, quadOut, quartInOut, quartIn, quartOut, quintInOut, quintIn, quintOut, sineInOut, sineIn, sineOut */
+/***/ "./node_modules/svelte/easing/index.mjs":
+/*!**********************************************!*\
+  !*** ./node_modules/svelte/easing/index.mjs ***!
+  \**********************************************/
+/*! exports provided: linear, backIn, backInOut, backOut, bounceIn, bounceInOut, bounceOut, circIn, circInOut, circOut, cubicIn, cubicInOut, cubicOut, elasticIn, elasticInOut, elasticOut, expoIn, expoInOut, expoOut, quadIn, quadInOut, quadOut, quartIn, quartInOut, quartOut, quintIn, quintInOut, quintOut, sineIn, sineInOut, sineOut */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backInOut", function() { return backInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backIn", function() { return backIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backInOut", function() { return backInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backOut", function() { return backOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bounceOut", function() { return bounceOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bounceInOut", function() { return bounceInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bounceIn", function() { return bounceIn; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "circInOut", function() { return circInOut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bounceInOut", function() { return bounceInOut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bounceOut", function() { return bounceOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "circIn", function() { return circIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "circInOut", function() { return circInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "circOut", function() { return circOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cubicInOut", function() { return cubicInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cubicIn", function() { return cubicIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cubicInOut", function() { return cubicInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cubicOut", function() { return cubicOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elasticInOut", function() { return elasticInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elasticIn", function() { return elasticIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elasticInOut", function() { return elasticInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elasticOut", function() { return elasticOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "expoInOut", function() { return expoInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "expoIn", function() { return expoIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "expoInOut", function() { return expoInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "expoOut", function() { return expoOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quadInOut", function() { return quadInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quadIn", function() { return quadIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quadInOut", function() { return quadInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quadOut", function() { return quadOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quartInOut", function() { return quartInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quartIn", function() { return quartIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quartInOut", function() { return quartInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quartOut", function() { return quartOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quintInOut", function() { return quintInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quintIn", function() { return quintIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quintInOut", function() { return quintInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quintOut", function() { return quintOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sineInOut", function() { return sineInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sineIn", function() { return sineIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sineInOut", function() { return sineInOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sineOut", function() { return sineOut; });
-/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "linear", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["identity"]; });
 
 
@@ -1468,159 +1481,169 @@ function sineOut(t) {
 /*!***************************************!*\
   !*** ./node_modules/svelte/index.mjs ***!
   \***************************************/
-/*! exports provided: onMount, onDestroy, beforeUpdate, afterUpdate, setContext, getContext, tick, createEventDispatcher */
+/*! exports provided: afterUpdate, beforeUpdate, createEventDispatcher, getContext, onDestroy, onMount, setContext, tick */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./internal */ "./node_modules/svelte/internal.mjs");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "onMount", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["onMount"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "onDestroy", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["onDestroy"]; });
+/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./internal */ "./node_modules/svelte/internal/index.mjs");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "afterUpdate", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["afterUpdate"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "beforeUpdate", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["beforeUpdate"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "afterUpdate", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["afterUpdate"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "setContext", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["setContext"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createEventDispatcher", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["createEventDispatcher"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "getContext", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["getContext"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "tick", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["tick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "onDestroy", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["onDestroy"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createEventDispatcher", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["createEventDispatcher"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "onMount", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["onMount"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "setContext", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["setContext"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "tick", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["tick"]; });
 
 
 
 
 /***/ }),
 
-/***/ "./node_modules/svelte/internal.mjs":
-/*!******************************************!*\
-  !*** ./node_modules/svelte/internal.mjs ***!
-  \******************************************/
-/*! exports provided: create_animation, fix_position, handle_promise, append, insert, detach, detach_between, detach_before, detach_after, destroy_each, element, object_without_properties, svg_element, text, space, empty, listen, prevent_default, stop_propagation, attr, set_attributes, set_custom_element_data, xlink_attr, get_binding_group_value, to_number, time_ranges_to_array, children, claim_element, claim_text, set_data, set_input_type, set_style, select_option, select_options, select_value, select_multiple_value, add_resize_listener, toggle_class, custom_event, destroy_block, outro_and_destroy_block, fix_and_outro_and_destroy_block, update_keyed_each, measure, current_component, set_current_component, beforeUpdate, onMount, afterUpdate, onDestroy, createEventDispatcher, setContext, getContext, bubble, clear_loops, loop, dirty_components, intros, schedule_update, tick, add_binding_callback, add_render_callback, add_flush_callback, flush, get_spread_update, invalid_attribute_name_character, spread, escaped, escape, each, missing_component, validate_component, debug, create_ssr_component, get_store_value, group_outros, check_outros, on_outro, create_in_transition, create_out_transition, create_bidirectional_transition, noop, identity, assign, is_promise, add_location, run, blank_object, run_all, is_function, safe_not_equal, not_equal, validate_store, subscribe, create_slot, get_slot_context, get_slot_changes, exclude_internal_props, now, raf, set_now, set_raf, bind, mount_component, init, SvelteElement, SvelteComponent, SvelteComponentDev */
+/***/ "./node_modules/svelte/internal/index.mjs":
+/*!************************************************!*\
+  !*** ./node_modules/svelte/internal/index.mjs ***!
+  \************************************************/
+/*! exports provided: HtmlTag, SvelteComponent, SvelteComponentDev, SvelteElement, add_attribute, add_classes, add_flush_callback, add_location, add_render_callback, add_resize_listener, add_transform, afterUpdate, append, assign, attr, beforeUpdate, bind, binding_callbacks, blank_object, bubble, check_outros, children, claim_element, claim_text, clear_loops, component_subscribe, createEventDispatcher, create_animation, create_bidirectional_transition, create_in_transition, create_out_transition, create_slot, create_ssr_component, current_component, custom_event, debug, destroy_block, destroy_component, destroy_each, detach, dirty_components, each, element, empty, escape, escaped, exclude_internal_props, fix_and_destroy_block, fix_and_outro_and_destroy_block, fix_position, flush, getContext, get_binding_group_value, get_slot_changes, get_slot_context, get_spread_update, get_store_value, globals, group_outros, handle_promise, identity, init, insert, intros, invalid_attribute_name_character, is_client, is_function, is_promise, listen, loop, measure, missing_component, mount_component, noop, not_equal, now, null_to_empty, object_without_properties, onDestroy, onMount, once, outro_and_destroy_block, prevent_default, raf, run, run_all, safe_not_equal, schedule_update, select_multiple_value, select_option, select_options, select_value, setContext, set_attributes, set_current_component, set_custom_element_data, set_data, set_input_type, set_now, set_raf, set_style, space, spread, stop_propagation, subscribe, svg_element, text, tick, time_ranges_to_array, to_number, toggle_class, transition_in, transition_out, update_keyed_each, validate_component, validate_store, xlink_attr */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_animation", function() { return create_animation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fix_position", function() { return fix_position; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handle_promise", function() { return handle_promise; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HtmlTag", function() { return HtmlTag; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SvelteComponent", function() { return SvelteComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SvelteComponentDev", function() { return SvelteComponentDev; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SvelteElement", function() { return SvelteElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_attribute", function() { return add_attribute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_classes", function() { return add_classes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_flush_callback", function() { return add_flush_callback; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_location", function() { return add_location; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_render_callback", function() { return add_render_callback; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_resize_listener", function() { return add_resize_listener; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_transform", function() { return add_transform; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "afterUpdate", function() { return afterUpdate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "append", function() { return append; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "insert", function() { return insert; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "detach", function() { return detach; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "detach_between", function() { return detach_between; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "detach_before", function() { return detach_before; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "detach_after", function() { return detach_after; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "destroy_each", function() { return destroy_each; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "element", function() { return element; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "object_without_properties", function() { return object_without_properties; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "svg_element", function() { return svg_element; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "text", function() { return text; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "space", function() { return space; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "empty", function() { return empty; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "listen", function() { return listen; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "prevent_default", function() { return prevent_default; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stop_propagation", function() { return stop_propagation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assign", function() { return assign; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "attr", function() { return attr; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_attributes", function() { return set_attributes; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_custom_element_data", function() { return set_custom_element_data; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "xlink_attr", function() { return xlink_attr; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_binding_group_value", function() { return get_binding_group_value; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "to_number", function() { return to_number; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "time_ranges_to_array", function() { return time_ranges_to_array; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "beforeUpdate", function() { return beforeUpdate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bind", function() { return bind; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "binding_callbacks", function() { return binding_callbacks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "blank_object", function() { return blank_object; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bubble", function() { return bubble; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "check_outros", function() { return check_outros; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "children", function() { return children; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "claim_element", function() { return claim_element; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "claim_text", function() { return claim_text; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_data", function() { return set_data; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_input_type", function() { return set_input_type; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_style", function() { return set_style; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clear_loops", function() { return clear_loops; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "component_subscribe", function() { return component_subscribe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEventDispatcher", function() { return createEventDispatcher; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_animation", function() { return create_animation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_bidirectional_transition", function() { return create_bidirectional_transition; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_in_transition", function() { return create_in_transition; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_out_transition", function() { return create_out_transition; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_slot", function() { return create_slot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_ssr_component", function() { return create_ssr_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "current_component", function() { return current_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "custom_event", function() { return custom_event; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "debug", function() { return debug; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "destroy_block", function() { return destroy_block; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "destroy_component", function() { return destroy_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "destroy_each", function() { return destroy_each; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "detach", function() { return detach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dirty_components", function() { return dirty_components; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "each", function() { return each; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "element", function() { return element; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "empty", function() { return empty; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "escape", function() { return escape; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "escaped", function() { return escaped; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exclude_internal_props", function() { return exclude_internal_props; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fix_and_destroy_block", function() { return fix_and_destroy_block; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fix_and_outro_and_destroy_block", function() { return fix_and_outro_and_destroy_block; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fix_position", function() { return fix_position; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flush", function() { return flush; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContext", function() { return getContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_binding_group_value", function() { return get_binding_group_value; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_slot_changes", function() { return get_slot_changes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_slot_context", function() { return get_slot_context; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_spread_update", function() { return get_spread_update; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_store_value", function() { return get_store_value; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "globals", function() { return globals; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "group_outros", function() { return group_outros; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handle_promise", function() { return handle_promise; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "identity", function() { return identity; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "insert", function() { return insert; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "intros", function() { return intros; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "invalid_attribute_name_character", function() { return invalid_attribute_name_character; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is_client", function() { return is_client; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is_function", function() { return is_function; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is_promise", function() { return is_promise; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "listen", function() { return listen; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loop", function() { return loop; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measure", function() { return measure; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "missing_component", function() { return missing_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mount_component", function() { return mount_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "noop", function() { return noop; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "not_equal", function() { return not_equal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "now", function() { return now; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "null_to_empty", function() { return null_to_empty; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "object_without_properties", function() { return object_without_properties; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onDestroy", function() { return onDestroy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMount", function() { return onMount; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "once", function() { return once; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "outro_and_destroy_block", function() { return outro_and_destroy_block; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "prevent_default", function() { return prevent_default; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "raf", function() { return raf; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "run", function() { return run; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "run_all", function() { return run_all; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "safe_not_equal", function() { return safe_not_equal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "schedule_update", function() { return schedule_update; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_multiple_value", function() { return select_multiple_value; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_option", function() { return select_option; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_options", function() { return select_options; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_value", function() { return select_value; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select_multiple_value", function() { return select_multiple_value; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_resize_listener", function() { return add_resize_listener; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggle_class", function() { return toggle_class; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "custom_event", function() { return custom_event; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "destroy_block", function() { return destroy_block; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "outro_and_destroy_block", function() { return outro_and_destroy_block; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fix_and_outro_and_destroy_block", function() { return fix_and_outro_and_destroy_block; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update_keyed_each", function() { return update_keyed_each; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "measure", function() { return measure; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "current_component", function() { return current_component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_current_component", function() { return set_current_component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "beforeUpdate", function() { return beforeUpdate; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMount", function() { return onMount; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "afterUpdate", function() { return afterUpdate; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onDestroy", function() { return onDestroy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEventDispatcher", function() { return createEventDispatcher; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setContext", function() { return setContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContext", function() { return getContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bubble", function() { return bubble; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clear_loops", function() { return clear_loops; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loop", function() { return loop; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dirty_components", function() { return dirty_components; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "intros", function() { return intros; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "schedule_update", function() { return schedule_update; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tick", function() { return tick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_binding_callback", function() { return add_binding_callback; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_render_callback", function() { return add_render_callback; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_flush_callback", function() { return add_flush_callback; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flush", function() { return flush; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_spread_update", function() { return get_spread_update; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "invalid_attribute_name_character", function() { return invalid_attribute_name_character; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spread", function() { return spread; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "escaped", function() { return escaped; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "escape", function() { return escape; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "each", function() { return each; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "missing_component", function() { return missing_component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validate_component", function() { return validate_component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "debug", function() { return debug; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_ssr_component", function() { return create_ssr_component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_store_value", function() { return get_store_value; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "group_outros", function() { return group_outros; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "check_outros", function() { return check_outros; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "on_outro", function() { return on_outro; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_in_transition", function() { return create_in_transition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_out_transition", function() { return create_out_transition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_bidirectional_transition", function() { return create_bidirectional_transition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "noop", function() { return noop; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "identity", function() { return identity; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assign", function() { return assign; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is_promise", function() { return is_promise; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add_location", function() { return add_location; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "run", function() { return run; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "blank_object", function() { return blank_object; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "run_all", function() { return run_all; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is_function", function() { return is_function; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "safe_not_equal", function() { return safe_not_equal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "not_equal", function() { return not_equal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validate_store", function() { return validate_store; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribe", function() { return subscribe; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create_slot", function() { return create_slot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_slot_context", function() { return get_slot_context; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_slot_changes", function() { return get_slot_changes; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exclude_internal_props", function() { return exclude_internal_props; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "now", function() { return now; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "raf", function() { return raf; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_attributes", function() { return set_attributes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_current_component", function() { return set_current_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_custom_element_data", function() { return set_custom_element_data; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_data", function() { return set_data; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_input_type", function() { return set_input_type; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_now", function() { return set_now; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_raf", function() { return set_raf; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bind", function() { return bind; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mount_component", function() { return mount_component; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SvelteElement", function() { return SvelteElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SvelteComponent", function() { return SvelteComponent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SvelteComponentDev", function() { return SvelteComponentDev; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set_style", function() { return set_style; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "space", function() { return space; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spread", function() { return spread; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stop_propagation", function() { return stop_propagation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribe", function() { return subscribe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "svg_element", function() { return svg_element; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "text", function() { return text; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tick", function() { return tick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "time_ranges_to_array", function() { return time_ranges_to_array; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "to_number", function() { return to_number; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggle_class", function() { return toggle_class; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "transition_in", function() { return transition_in; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "transition_out", function() { return transition_out; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update_keyed_each", function() { return update_keyed_each; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validate_component", function() { return validate_component; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validate_store", function() { return validate_store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "xlink_attr", function() { return xlink_attr; });
 function noop() { }
 const identity = x => x;
 function assign(tar, src) {
+    // @ts-ignore
     for (const k in src)
         tar[k] = src[k];
     return tar;
 }
 function is_promise(value) {
-    return value && typeof value.then === 'function';
+    return value && typeof value === 'object' && typeof value.then === 'function';
 }
 function add_location(element, file, line, column, char) {
     element.__svelte_meta = {
@@ -1650,11 +1673,17 @@ function validate_store(store, name) {
         throw new Error(`'${name}' is not a store with a 'subscribe' method`);
     }
 }
-function subscribe(component, store, callback) {
+function subscribe(store, callback) {
     const unsub = store.subscribe(callback);
-    component.$$.on_destroy.push(unsub.unsubscribe
-        ? () => unsub.unsubscribe()
-        : unsub);
+    return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+}
+function get_store_value(store) {
+    let value;
+    subscribe(store, _ => value = _)();
+    return value;
+}
+function component_subscribe(component, store, callback) {
+    component.$$.on_destroy.push(subscribe(store, callback));
 }
 function create_slot(definition, ctx, fn) {
     if (definition) {
@@ -1679,11 +1708,24 @@ function exclude_internal_props(props) {
             result[k] = props[k];
     return result;
 }
+function once(fn) {
+    let ran = false;
+    return function (...args) {
+        if (ran)
+            return;
+        ran = true;
+        fn.call(this, ...args);
+    };
+}
+function null_to_empty(value) {
+    return value == null ? '' : value;
+}
+
 const is_client = typeof window !== 'undefined';
 let now = is_client
     ? () => window.performance.now()
     : () => Date.now();
-let raf = is_client ? requestAnimationFrame : noop;
+let raf = is_client ? cb => requestAnimationFrame(cb) : noop;
 // used internally for testing
 function set_now(fn) {
     now = fn;
@@ -1735,21 +1777,6 @@ function insert(target, node, anchor) {
 function detach(node) {
     node.parentNode.removeChild(node);
 }
-function detach_between(before, after) {
-    while (before.nextSibling && before.nextSibling !== after) {
-        before.parentNode.removeChild(before.nextSibling);
-    }
-}
-function detach_before(after) {
-    while (after.previousSibling) {
-        after.parentNode.removeChild(after.previousSibling);
-    }
-}
-function detach_after(before) {
-    while (before.nextSibling) {
-        before.parentNode.removeChild(before.nextSibling);
-    }
-}
 function destroy_each(iterations, detaching) {
     for (let i = 0; i < iterations.length; i += 1) {
         if (iterations[i])
@@ -1760,6 +1787,7 @@ function element(name) {
     return document.createElement(name);
 }
 function object_without_properties(obj, exclude) {
+    // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
     const target = {};
     for (const k in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, k)
@@ -1921,6 +1949,7 @@ function add_resize_listener(element, fn) {
     const object = document.createElement('object');
     object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
     object.type = 'text/html';
+    object.tabIndex = -1;
     let win;
     object.onload = () => {
         win = object.contentDocument.defaultView;
@@ -1948,6 +1977,31 @@ function custom_event(type, detail) {
     const e = document.createEvent('CustomEvent');
     e.initCustomEvent(type, false, false, detail);
     return e;
+}
+class HtmlTag {
+    constructor(html, anchor = null) {
+        this.e = element('div');
+        this.a = anchor;
+        this.u(html);
+    }
+    m(target, anchor = null) {
+        for (let i = 0; i < this.n.length; i += 1) {
+            insert(target, this.n[i], anchor);
+        }
+        this.t = target;
+    }
+    u(html) {
+        this.e.innerHTML = html;
+        this.n = Array.from(this.e.childNodes);
+    }
+    p(html) {
+        this.d();
+        this.u(html);
+        this.m(this.t, this.a);
+    }
+    d() {
+        this.n.forEach(detach);
+    }
 }
 
 let stylesheet;
@@ -2012,7 +2066,11 @@ function create_animation(node, from, fn, params) {
     const to = node.getBoundingClientRect();
     if (from.left === to.left && from.right === to.right && from.top === to.top && from.bottom === to.bottom)
         return noop;
-    const { delay = 0, duration = 300, easing = identity, start: start_time = now() + delay, end = start_time + duration, tick = noop, css } = fn(node, { from, to }, params);
+    const { delay = 0, duration = 300, easing = identity, 
+    // @ts-ignore todo: should this be separated from destructuring? Or start/end added to public api and documentation?
+    start: start_time = now() + delay, 
+    // @ts-ignore todo:
+    end = start_time + duration, tick = noop, css } = fn(node, { from, to }, params);
     let running = true;
     let started = false;
     let name;
@@ -2029,11 +2087,11 @@ function create_animation(node, from, fn, params) {
             delete_rule(node, name);
         running = false;
     }
-    loop(now$$1 => {
-        if (!started && now$$1 >= start_time) {
+    loop(now => {
+        if (!started && now >= start_time) {
             started = true;
         }
-        if (started && now$$1 >= end) {
+        if (started && now >= end) {
             tick(1, 0);
             stop();
         }
@@ -2041,7 +2099,7 @@ function create_animation(node, from, fn, params) {
             return false;
         }
         if (started) {
-            const p = now$$1 - start_time;
+            const p = now - start_time;
             const t = 0 + 1 * easing(p / duration);
             tick(t, 1 - t);
         }
@@ -2059,12 +2117,15 @@ function fix_position(node) {
         node.style.position = 'absolute';
         node.style.width = width;
         node.style.height = height;
-        const b = node.getBoundingClientRect();
-        if (a.left !== b.left || a.top !== b.top) {
-            const style = getComputedStyle(node);
-            const transform = style.transform === 'none' ? '' : style.transform;
-            node.style.transform = `${transform} translate(${a.left - b.left}px, ${a.top - b.top}px)`;
-        }
+        add_transform(node, a);
+    }
+}
+function add_transform(node, a) {
+    const b = node.getBoundingClientRect();
+    if (a.left !== b.left || a.top !== b.top) {
+        const style = getComputedStyle(node);
+        const transform = style.transform === 'none' ? '' : style.transform;
+        node.style.transform = `${transform} translate(${a.left - b.left}px, ${a.top - b.top}px)`;
     }
 }
 
@@ -2078,13 +2139,13 @@ function get_current_component() {
     return current_component;
 }
 function beforeUpdate(fn) {
-    get_current_component().$$.before_render.push(fn);
+    get_current_component().$$.before_update.push(fn);
 }
 function onMount(fn) {
     get_current_component().$$.on_mount.push(fn);
 }
 function afterUpdate(fn) {
-    get_current_component().$$.after_render.push(fn);
+    get_current_component().$$.after_update.push(fn);
 }
 function onDestroy(fn) {
     get_current_component().$$.on_destroy.push(fn);
@@ -2121,11 +2182,11 @@ function bubble(component, event) {
 
 const dirty_components = [];
 const intros = { enabled: false };
-const resolved_promise = Promise.resolve();
-let update_scheduled = false;
 const binding_callbacks = [];
 const render_callbacks = [];
 const flush_callbacks = [];
+const resolved_promise = Promise.resolve();
+let update_scheduled = false;
 function schedule_update() {
     if (!update_scheduled) {
         update_scheduled = true;
@@ -2135,9 +2196,6 @@ function schedule_update() {
 function tick() {
     schedule_update();
     return resolved_promise;
-}
-function add_binding_callback(fn) {
-    binding_callbacks.push(fn);
 }
 function add_render_callback(fn) {
     render_callbacks.push(fn);
@@ -2156,18 +2214,19 @@ function flush() {
             update(component.$$);
         }
         while (binding_callbacks.length)
-            binding_callbacks.shift()();
+            binding_callbacks.pop()();
         // then, once components are updated, call
         // afterUpdate functions. This may cause
         // subsequent updates...
-        while (render_callbacks.length) {
-            const callback = render_callbacks.pop();
+        for (let i = 0; i < render_callbacks.length; i += 1) {
+            const callback = render_callbacks[i];
             if (!seen_callbacks.has(callback)) {
                 callback();
                 // ...so guard against infinite loops
                 seen_callbacks.add(callback);
             }
         }
+        render_callbacks.length = 0;
     } while (dirty_components.length);
     while (flush_callbacks.length) {
         flush_callbacks.pop()();
@@ -2177,10 +2236,10 @@ function flush() {
 function update($$) {
     if ($$.fragment) {
         $$.update($$.dirty);
-        run_all($$.before_render);
+        run_all($$.before_update);
         $$.fragment.p($$.dirty, $$.ctx);
         $$.dirty = null;
-        $$.after_render.forEach(add_render_callback);
+        $$.after_update.forEach(add_render_callback);
     }
 }
 
@@ -2197,21 +2256,44 @@ function wait() {
 function dispatch(node, direction, kind) {
     node.dispatchEvent(custom_event(`${direction ? 'intro' : 'outro'}${kind}`));
 }
+const outroing = new Set();
 let outros;
 function group_outros() {
     outros = {
-        remaining: 0,
-        callbacks: []
+        r: 0,
+        c: [],
+        p: outros // parent group
     };
 }
 function check_outros() {
-    if (!outros.remaining) {
-        run_all(outros.callbacks);
+    if (!outros.r) {
+        run_all(outros.c);
+    }
+    outros = outros.p;
+}
+function transition_in(block, local) {
+    if (block && block.i) {
+        outroing.delete(block);
+        block.i(local);
     }
 }
-function on_outro(callback) {
-    outros.callbacks.push(callback);
+function transition_out(block, local, detach, callback) {
+    if (block && block.o) {
+        if (outroing.has(block))
+            return;
+        outroing.add(block);
+        outros.c.push(() => {
+            outroing.delete(block);
+            if (callback) {
+                if (detach)
+                    block.d(1);
+                callback();
+            }
+        });
+        block.o(local);
+    }
 }
+const null_transition = { duration: 0 };
 function create_in_transition(node, fn, params) {
     let config = fn(node, params);
     let running = false;
@@ -2223,25 +2305,27 @@ function create_in_transition(node, fn, params) {
             delete_rule(node, animation_name);
     }
     function go() {
-        const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+        const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
         if (css)
             animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
-        tick$$1(0, 1);
+        tick(0, 1);
         const start_time = now() + delay;
         const end_time = start_time + duration;
         if (task)
             task.abort();
         running = true;
-        task = loop(now$$1 => {
+        add_render_callback(() => dispatch(node, true, 'start'));
+        task = loop(now => {
             if (running) {
-                if (now$$1 >= end_time) {
-                    tick$$1(1, 0);
+                if (now >= end_time) {
+                    tick(1, 0);
+                    dispatch(node, true, 'end');
                     cleanup();
                     return running = false;
                 }
-                if (now$$1 >= start_time) {
-                    const t = easing((now$$1 - start_time) / duration);
-                    tick$$1(t, 1 - t);
+                if (now >= start_time) {
+                    const t = easing((now - start_time) / duration);
+                    tick(t, 1 - t);
                 }
             }
             return running;
@@ -2253,7 +2337,7 @@ function create_in_transition(node, fn, params) {
             if (started)
                 return;
             delete_rule(node);
-            if (typeof config === 'function') {
+            if (is_function(config)) {
                 config = config();
                 wait().then(go);
             }
@@ -2277,34 +2361,37 @@ function create_out_transition(node, fn, params) {
     let running = true;
     let animation_name;
     const group = outros;
-    group.remaining += 1;
+    group.r += 1;
     function go() {
-        const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+        const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
         if (css)
             animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
         const start_time = now() + delay;
         const end_time = start_time + duration;
-        loop(now$$1 => {
+        add_render_callback(() => dispatch(node, false, 'start'));
+        loop(now => {
             if (running) {
-                if (now$$1 >= end_time) {
-                    tick$$1(0, 1);
-                    if (!--group.remaining) {
+                if (now >= end_time) {
+                    tick(0, 1);
+                    dispatch(node, false, 'end');
+                    if (!--group.r) {
                         // this will result in `end()` being called,
                         // so we don't need to clean up here
-                        run_all(group.callbacks);
+                        run_all(group.c);
                     }
                     return false;
                 }
-                if (now$$1 >= start_time) {
-                    const t = easing((now$$1 - start_time) / duration);
-                    tick$$1(1 - t, t);
+                if (now >= start_time) {
+                    const t = easing((now - start_time) / duration);
+                    tick(1 - t, t);
                 }
             }
             return running;
         });
     }
-    if (typeof config === 'function') {
+    if (is_function(config)) {
         wait().then(() => {
+            // @ts-ignore
             config = config();
             go();
         });
@@ -2349,7 +2436,7 @@ function create_bidirectional_transition(node, fn, params, intro) {
         };
     }
     function go(b) {
-        const { delay = 0, duration = 300, easing = identity, tick: tick$$1 = noop, css } = config;
+        const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
         const program = {
             start: now() + delay,
             b
@@ -2357,7 +2444,7 @@ function create_bidirectional_transition(node, fn, params, intro) {
         if (!b) {
             // @ts-ignore todo: improve typings
             program.group = outros;
-            outros.remaining += 1;
+            outros.r += 1;
         }
         if (running_program) {
             pending_program = program;
@@ -2370,11 +2457,11 @@ function create_bidirectional_transition(node, fn, params, intro) {
                 animation_name = create_rule(node, t, b, duration, delay, easing, css);
             }
             if (b)
-                tick$$1(0, 1);
+                tick(0, 1);
             running_program = init(program, duration);
             add_render_callback(() => dispatch(node, b, 'start'));
-            loop(now$$1 => {
-                if (pending_program && now$$1 > pending_program.start) {
+            loop(now => {
+                if (pending_program && now > pending_program.start) {
                     running_program = init(pending_program, duration);
                     pending_program = null;
                     dispatch(node, running_program.b, 'start');
@@ -2384,8 +2471,8 @@ function create_bidirectional_transition(node, fn, params, intro) {
                     }
                 }
                 if (running_program) {
-                    if (now$$1 >= running_program.end) {
-                        tick$$1(t = running_program.b, 1 - t);
+                    if (now >= running_program.end) {
+                        tick(t = running_program.b, 1 - t);
                         dispatch(node, running_program.b, 'end');
                         if (!pending_program) {
                             // we're done
@@ -2395,16 +2482,16 @@ function create_bidirectional_transition(node, fn, params, intro) {
                             }
                             else {
                                 // outro — needs to be coordinated
-                                if (!--running_program.group.remaining)
-                                    run_all(running_program.group.callbacks);
+                                if (!--running_program.group.r)
+                                    run_all(running_program.group.c);
                             }
                         }
                         running_program = null;
                     }
-                    else if (now$$1 >= running_program.start) {
-                        const p = now$$1 - running_program.start;
+                    else if (now >= running_program.start) {
+                        const p = now - running_program.start;
                         t = running_program.a + running_program.d * easing(p / running_program.duration);
-                        tick$$1(t, 1 - t);
+                        tick(t, 1 - t);
                     }
                 }
                 return !!(running_program || pending_program);
@@ -2413,8 +2500,9 @@ function create_bidirectional_transition(node, fn, params, intro) {
     }
     return {
         run(b) {
-            if (typeof config === 'function') {
+            if (is_function(config)) {
                 wait().then(() => {
+                    // @ts-ignore
                     config = config();
                     go(b);
                 });
@@ -2443,11 +2531,9 @@ function handle_promise(promise, info) {
                 info.blocks.forEach((block, i) => {
                     if (i !== index && block) {
                         group_outros();
-                        on_outro(() => {
-                            block.d(1);
+                        transition_out(block, 1, 1, () => {
                             info.blocks[i] = null;
                         });
-                        block.o(1);
                         check_outros();
                     }
                 });
@@ -2456,8 +2542,7 @@ function handle_promise(promise, info) {
                 info.block.d(1);
             }
             block.c();
-            if (block.i)
-                block.i(1);
+            transition_in(block, 1);
             block.m(info.mount(), info.anchor);
             flush();
         }
@@ -2486,15 +2571,20 @@ function handle_promise(promise, info) {
     }
 }
 
+const globals = (typeof window !== 'undefined' ? window : window);
+
 function destroy_block(block, lookup) {
     block.d(1);
     lookup.delete(block.key);
 }
 function outro_and_destroy_block(block, lookup) {
-    on_outro(() => {
-        destroy_block(block, lookup);
+    transition_out(block, 1, 1, () => {
+        lookup.delete(block.key);
     });
-    block.o(1);
+}
+function fix_and_destroy_block(block, lookup) {
+    block.f();
+    destroy_block(block, lookup);
 }
 function fix_and_outro_and_destroy_block(block, lookup) {
     block.f();
@@ -2529,8 +2619,7 @@ function update_keyed_each(old_blocks, changed, get_key, dynamic, ctx, list, loo
     const will_move = new Set();
     const did_move = new Set();
     function insert(block) {
-        if (block.i)
-            block.i(1);
+        transition_in(block, 1);
         block.m(node, next);
         lookup.set(block.key, block);
         next = block.first;
@@ -2681,8 +2770,8 @@ function create_ssr_component(fn) {
             context: new Map(parent_component ? parent_component.$$.context : []),
             // these will be immediately discarded
             on_mount: [],
-            before_render: [],
-            after_render: [],
+            before_update: [],
+            after_update: [],
             callbacks: blank_object()
         };
         set_current_component({ $$ });
@@ -2708,10 +2797,13 @@ function create_ssr_component(fn) {
         $$render
     };
 }
-function get_store_value(store) {
-    let value;
-    store.subscribe(_ => value = _)();
-    return value;
+function add_attribute(name, value, boolean) {
+    if (value == null || (boolean && !value))
+        return '';
+    return ` ${name}${value === true ? '' : `=${typeof value === 'string' ? JSON.stringify(escape(value)) : `"${value}"`}`}`;
+}
+function add_classes(classes) {
+    return classes ? ` class="${classes}"` : ``;
 }
 
 function bind(component, name, callback) {
@@ -2721,11 +2813,9 @@ function bind(component, name, callback) {
     callback(component.$$.ctx[name]);
 }
 function mount_component(component, target, anchor) {
-    const { fragment, on_mount, on_destroy, after_render } = component.$$;
+    const { fragment, on_mount, on_destroy, after_update } = component.$$;
     fragment.m(target, anchor);
-    // onMount happens after the initial afterUpdate. Because
-    // afterUpdate callbacks happen in reverse order (inner first)
-    // we schedule onMount callbacks before afterUpdate callbacks
+    // onMount happens before the initial afterUpdate
     add_render_callback(() => {
         const new_on_destroy = on_mount.map(run).filter(is_function);
         if (on_destroy) {
@@ -2738,10 +2828,10 @@ function mount_component(component, target, anchor) {
         }
         component.$$.on_mount = [];
     });
-    after_render.forEach(add_render_callback);
+    after_update.forEach(add_render_callback);
 }
-function destroy(component, detaching) {
-    if (component.$$) {
+function destroy_component(component, detaching) {
+    if (component.$$.fragment) {
         run_all(component.$$.on_destroy);
         component.$$.fragment.d(detaching);
         // TODO null out other refs, including component.$$ (but need to
@@ -2758,7 +2848,7 @@ function make_dirty(component, key) {
     }
     component.$$.dirty[key] = true;
 }
-function init(component, options, instance, create_fragment, not_equal$$1, prop_names) {
+function init(component, options, instance, create_fragment, not_equal, prop_names) {
     const parent_component = current_component;
     set_current_component(component);
     const props = options.props || {};
@@ -2768,13 +2858,13 @@ function init(component, options, instance, create_fragment, not_equal$$1, prop_
         // state
         props: prop_names,
         update: noop,
-        not_equal: not_equal$$1,
+        not_equal,
         bound: blank_object(),
         // lifecycle
         on_mount: [],
         on_destroy: [],
-        before_render: [],
-        after_render: [],
+        before_update: [],
+        after_update: [],
         context: new Map(parent_component ? parent_component.$$.context : []),
         // everything else
         callbacks: blank_object(),
@@ -2783,7 +2873,7 @@ function init(component, options, instance, create_fragment, not_equal$$1, prop_
     let ready = false;
     $$.ctx = instance
         ? instance(component, props, (key, value) => {
-            if ($$.ctx && not_equal$$1($$.ctx[key], $$.ctx[key] = value)) {
+            if ($$.ctx && not_equal($$.ctx[key], $$.ctx[key] = value)) {
                 if ($$.bound[key])
                     $$.bound[key](value);
                 if (ready)
@@ -2793,17 +2883,19 @@ function init(component, options, instance, create_fragment, not_equal$$1, prop_
         : props;
     $$.update();
     ready = true;
-    run_all($$.before_render);
+    run_all($$.before_update);
     $$.fragment = create_fragment($$.ctx);
     if (options.target) {
         if (options.hydrate) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             $$.fragment.l(children(options.target));
         }
         else {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             $$.fragment.c();
         }
-        if (options.intro && component.$$.fragment.i)
-            component.$$.fragment.i();
+        if (options.intro)
+            transition_in(component.$$.fragment);
         mount_component(component, options.target, options.anchor);
         flush();
     }
@@ -2823,11 +2915,11 @@ if (typeof HTMLElement !== 'undefined') {
                 this.appendChild(this.$$.slotted[key]);
             }
         }
-        attributeChangedCallback(attr$$1, oldValue, newValue) {
-            this[attr$$1] = newValue;
+        attributeChangedCallback(attr, _oldValue, newValue) {
+            this[attr] = newValue;
         }
         $destroy() {
-            destroy(this, true);
+            destroy_component(this, 1);
             this.$destroy = noop;
         }
         $on(type, callback) {
@@ -2847,7 +2939,7 @@ if (typeof HTMLElement !== 'undefined') {
 }
 class SvelteComponent {
     $destroy() {
-        destroy(this, true);
+        destroy_component(this, 1);
         this.$destroy = noop;
     }
     $on(type, callback) {
@@ -2883,22 +2975,25 @@ class SvelteComponentDev extends SvelteComponent {
 
 /***/ }),
 
-/***/ "./node_modules/svelte/store.mjs":
-/*!***************************************!*\
-  !*** ./node_modules/svelte/store.mjs ***!
-  \***************************************/
-/*! exports provided: readable, writable, derived, get */
+/***/ "./node_modules/svelte/store/index.mjs":
+/*!*********************************************!*\
+  !*** ./node_modules/svelte/store/index.mjs ***!
+  \*********************************************/
+/*! exports provided: get, derived, readable, writable */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "derived", function() { return derived; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readable", function() { return readable; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "writable", function() { return writable; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "derived", function() { return derived; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get", function() { return get; });
-/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../internal */ "./node_modules/svelte/internal/index.mjs");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "get", function() { return _internal__WEBPACK_IMPORTED_MODULE_0__["get_store_value"]; });
 
 
+
+
+const subscriber_queue = [];
 /**
  * Creates a `Readable` store that allows reading by subscription.
  * @param value initial value
@@ -2920,11 +3015,20 @@ function writable(value, start = _internal__WEBPACK_IMPORTED_MODULE_0__["noop"])
     function set(new_value) {
         if (Object(_internal__WEBPACK_IMPORTED_MODULE_0__["safe_not_equal"])(value, new_value)) {
             value = new_value;
-            if (!stop) {
-                return; // not ready
+            if (stop) { // store is ready
+                const run_queue = !subscriber_queue.length;
+                for (let i = 0; i < subscribers.length; i += 1) {
+                    const s = subscribers[i];
+                    s[1]();
+                    subscriber_queue.push(s, value);
+                }
+                if (run_queue) {
+                    for (let i = 0; i < subscriber_queue.length; i += 2) {
+                        subscriber_queue[i][0](subscriber_queue[i + 1]);
+                    }
+                    subscriber_queue.length = 0;
+                }
             }
-            subscribers.forEach((s) => s[1]());
-            subscribers.forEach((s) => s[0](value));
         }
     }
     function update(fn) {
@@ -2944,6 +3048,7 @@ function writable(value, start = _internal__WEBPACK_IMPORTED_MODULE_0__["noop"])
             }
             if (subscribers.length === 0) {
                 stop();
+                stop = null;
             }
         };
     }
@@ -2997,38 +3102,29 @@ function derived(stores, fn, initial_value) {
         };
     });
 }
-/**
- * Get the current value from a store by subscribing and immediately unsubscribing.
- * @param store readable
- */
-function get(store) {
-    let value;
-    store.subscribe((_) => value = _)();
-    return value;
-}
 
 
 
 
 /***/ }),
 
-/***/ "./node_modules/svelte/transition.mjs":
-/*!********************************************!*\
-  !*** ./node_modules/svelte/transition.mjs ***!
-  \********************************************/
-/*! exports provided: fade, fly, slide, scale, draw, crossfade */
+/***/ "./node_modules/svelte/transition/index.mjs":
+/*!**************************************************!*\
+  !*** ./node_modules/svelte/transition/index.mjs ***!
+  \**************************************************/
+/*! exports provided: crossfade, draw, fade, fly, scale, slide */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "crossfade", function() { return crossfade; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "draw", function() { return draw; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fade", function() { return fade; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fly", function() { return fly; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "slide", function() { return slide; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scale", function() { return scale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "draw", function() { return draw; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "crossfade", function() { return crossfade; });
-/* harmony import */ var _easing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./easing */ "./node_modules/svelte/easing.mjs");
-/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./internal */ "./node_modules/svelte/internal.mjs");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "slide", function() { return slide; });
+/* harmony import */ var _easing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../easing */ "./node_modules/svelte/easing/index.mjs");
+/* harmony import */ var _internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internal */ "./node_modules/svelte/internal/index.mjs");
 
 
 
@@ -3052,8 +3148,10 @@ function __rest(s, e) {
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
     if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
-            t[p[i]] = s[p[i]];
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
     return t;
 }
 
@@ -3114,7 +3212,7 @@ function scale(node, { delay = 0, duration = 400, easing = _easing__WEBPACK_IMPO
         delay,
         duration,
         easing,
-        css: (t, u) => `
+        css: (_t, u) => `
 			transform: ${transform} scale(${1 - (sd * u)});
 			opacity: ${target_opacity - (od * u)}
 		`
@@ -3149,6 +3247,8 @@ function crossfade(_a) {
         const to = node.getBoundingClientRect();
         const dx = from.left - to.left;
         const dy = from.top - to.top;
+        const dw = from.width / to.width;
+        const dh = from.height / to.height;
         const d = Math.sqrt(dx * dx + dy * dy);
         const style = getComputedStyle(node);
         const transform = style.transform === 'none' ? '' : style.transform;
@@ -3159,7 +3259,8 @@ function crossfade(_a) {
             easing,
             css: (t, u) => `
 				opacity: ${t * opacity};
-				transform: ${transform} translate(${u * dx}px,${u * dy}px);
+				transform-origin: top left;
+				transform: ${transform} translate(${u * dx}px,${u * dy}px) scale(${t + (1 - t) * dw}, ${t + (1 - t) * dh});
 			`
         };
     }
@@ -3359,11 +3460,11 @@ module.exports = new timeago();
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.js */ "./src/ui/utils.js");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_Navigation_svelte_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/ui/Navigation.svelte.css */ "./src/ui/Navigation.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_Navigation_svelte_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_Navigation_svelte_css__WEBPACK_IMPORTED_MODULE_2__);
-/* src\ui\Navigation.svelte generated by Svelte v3.4.4 */
+/* src\ui\Navigation.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -3453,67 +3554,67 @@ function create_fragment(ctx) {
 			a16.textContent = "Open as a Tab";
 			t36 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			div2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			a0.href = "#/sidebar";
-			a0.className = "btn btn-link";
-			img0.src = ctx.avatar;
-			img0.alt = "L";
-			i1.className = i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
-			figure0.className = "avatar avatar-lg";
-			a1.href = "#";
-			a1.className = "navbar-brand mr-2 p-1";
-			a2.href = "#/compose";
-			a2.className = "btn btn-link";
-			a3.href = "#/public";
-			a3.className = "btn btn-link";
-			a4.href = "#/mentions";
-			a4.className = "btn btn-link";
-			a5.href = "#/channels";
-			a5.className = "btn btn-link";
-			a6.href = "#/settings";
-			a6.className = "btn btn-link";
-			a7.href = "/docs/index.html";
-			a7.className = "btn btn-link";
-			section0.className = "navbar-section hide-sm";
-			input.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "href", "#/sidebar");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img0, "src", ctx.avatar);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img0, "alt", "L");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i1, "class", i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(figure0, "class", "avatar avatar-lg");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a1, "href", "#");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a1, "class", "navbar-brand mr-2 p-1");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a2, "href", "#/compose");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a2, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a3, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a3, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a4, "href", "#/mentions");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a4, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a5, "href", "#/channels");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a5, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a6, "href", "#/settings");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a6, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a7, "href", "/docs/index.html");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a7, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(section0, "class", "navbar-section hide-sm");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "text");
-			input.placeholder = "search";
-			button0.className = "btn btn-primary input-group-btn";
-			div0.className = "input-group input-inline";
-			section1.className = "navbar-section hide-sm";
-			button1.className = "btn btn-link";
-			img1.src = ctx.avatar;
-			img1.alt = "L";
-			i3.className = i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim";
-			figure1.className = "avatar";
-			a8.href = "...";
-			a8.className = "navbar-brand mr-2 p-1";
-			a9.href = "?";
-			a9.className = "btn btn-link dropdown-toggle";
-			a9.tabIndex = "0";
-			a10.href = "#/compose";
-			a10.className = "btn btn-link";
-			li0.className = "menu-item";
-			a11.href = "#/public";
-			a11.className = "btn btn-link";
-			li1.className = "menu-item";
-			a12.href = "#/channels";
-			a12.className = "btn btn-link";
-			li2.className = "menu-item";
-			a13.href = "#/mentions";
-			a13.className = "btn btn-link";
-			li3.className = "menu-item";
-			a14.href = "#/settings";
-			a14.className = "btn btn-link";
-			li4.className = "menu-item";
-			li5.className = "menu-item";
-			a16.href = "#/sidebar";
-			a16.className = "btn btn-link";
-			li6.className = "menu-item";
-			ul.className = "menu";
-			div1.className = "dropdown float-right";
-			section2.className = "navbar-section show-sm bg-gray above svelte-14egiim";
-			div2.className = "blocker show-sm svelte-14egiim";
-			header.className = "navbar";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "placeholder", "search");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button0, "class", "btn btn-primary input-group-btn");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "input-group input-inline");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(section1, "class", "navbar-section hide-sm");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button1, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img1, "src", ctx.avatar);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img1, "alt", "L");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i3, "class", i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(figure1, "class", "avatar");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a8, "href", "...");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a8, "class", "navbar-brand mr-2 p-1");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a9, "href", "?");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a9, "class", "btn btn-link dropdown-toggle");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a9, "tabindex", "0");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a10, "href", "#/compose");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a10, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li0, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a11, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a11, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li1, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a12, "href", "#/channels");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a12, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li2, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a13, "href", "#/mentions");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a13, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li3, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a14, "href", "#/settings");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a14, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li4, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li5, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a16, "href", "#/sidebar");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a16, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li6, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(ul, "class", "menu");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "dropdown float-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(section2, "class", "navbar-section show-sm bg-gray above svelte-14egiim");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "blocker show-sm svelte-14egiim");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(header, "class", "navbar");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a0, "click", ctx.openSidebar),
@@ -3525,7 +3626,7 @@ function create_fragment(ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a6, "click", ctx.goSettings),
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "input", ctx.input_input_handler),
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button0, "click", ctx.goSearch),
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button1, "click", ctx.click_handler),
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button1, "click", click_handler),
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a9, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(click_handler_1))),
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a10, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goCompose))),
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a11, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goPublic))),
@@ -3606,21 +3707,21 @@ function create_fragment(ctx) {
 
 		p(changed, ctx) {
 			if (changed.avatar) {
-				img0.src = ctx.avatar;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img0, "src", ctx.avatar);
 			}
 
 			if ((changed.$connected) && i1_class_value !== (i1_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim")) {
-				i1.className = i1_class_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i1, "class", i1_class_value);
 			}
 
 			if (changed.query && (input.value !== ctx.query)) input.value = ctx.query;
 
 			if (changed.avatar) {
-				img1.src = ctx.avatar;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img1, "src", ctx.avatar);
 			}
 
 			if ((changed.$connected) && i3_class_value !== (i3_class_value = "avatar-presence " + (ctx.$connected ? 'online' : 'offline') + " svelte-14egiim")) {
-				i3.className = i3_class_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i3, "class", i3_class_value);
 			}
 		},
 
@@ -3637,6 +3738,10 @@ function create_fragment(ctx) {
 	};
 }
 
+function click_handler() {
+	return history.back();
+}
+
 function click_handler_1() {
 	return '';
 }
@@ -3644,7 +3749,7 @@ function click_handler_1() {
 function instance($$self, $$props, $$invalidate) {
 	let $connected;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_1__["connected"], $$value => { $connected = $$value; $$invalidate('$connected', $connected); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_1__["connected"], $$value => { $connected = $$value; $$invalidate('$connected', $connected); });
 
 	let avatar = "/images/icon.png";
 
@@ -3687,10 +3792,6 @@ function instance($$self, $$props, $$invalidate) {
 		$$invalidate('query', query);
 	}
 
-	function click_handler() {
-		return history.back();
-	}
-
 	$$self.$$.update = ($$dirty = { $connected: 1 }) => {
 		if ($$dirty.$connected) { if ($connected) {
         ssb.avatar(ssb.feed).then(data => {
@@ -3712,8 +3813,7 @@ function instance($$self, $$props, $$invalidate) {
 		closeSidebar,
 		openMyProfile,
 		$connected,
-		input_input_handler,
-		click_handler
+		input_input_handler
 	};
 }
 
@@ -3724,11 +3824,7 @@ class Navigation extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCom
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Navigation);
-
 
 
 
@@ -3773,14 +3869,15 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils.js */ "./src/ui/utils.js");
 /* harmony import */ var _Navigation_svelte__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Navigation.svelte */ "./src/ui/Navigation.svelte");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_Patchfox_svelte_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./src/ui/Patchfox.svelte.css */ "./src/ui/Patchfox.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_Patchfox_svelte_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_Patchfox_svelte_css__WEBPACK_IMPORTED_MODULE_4__);
-/* src\ui\Patchfox.svelte generated by Svelte v3.4.4 */
+/* src\ui\Patchfox.svelte generated by Svelte v3.7.1 */
 
+const { window: window_1 } = svelte_internal__WEBPACK_IMPORTED_MODULE_0__["globals"];
 
 
 
@@ -3808,15 +3905,15 @@ function create_fragment(ctx) {
 			navigation.$$.fragment.c();
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if (switch_instance) switch_instance.$$.fragment.c();
-			div0.className = "column svelte-1mwu09k";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "column svelte-1mwu09k");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(div0, "reduced-line-length", ctx.useShortColumn);
-			div1.className = "columns";
-			div2.className = "container bg-gray";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "columns");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "container bg-gray");
 
 			dispose = [
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(window, "popstate", ctx.popState),
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(window, "error", ctx.handleUncaughtException),
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(window, "hashchange", ctx.hashChange)
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(window_1, "popstate", ctx.popState),
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(window_1, "error", ctx.handleUncaughtException),
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(window_1, "hashchange", ctx.hashChange)
 			];
 		},
 
@@ -3839,10 +3936,9 @@ function create_fragment(ctx) {
 				if (switch_instance) {
 					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
 					const old_component = switch_instance;
-					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-						old_component.$destroy();
+					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(old_component.$$.fragment, 1, 0, () => {
+						Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(old_component, 1);
 					});
-					old_component.$$.fragment.o(1);
 					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 				}
 
@@ -3850,7 +3946,7 @@ function create_fragment(ctx) {
 					switch_instance = new switch_value(switch_props(ctx));
 
 					switch_instance.$$.fragment.c();
-					switch_instance.$$.fragment.i(1);
+					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(switch_instance.$$.fragment, 1);
 					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["mount_component"])(switch_instance, div0, null);
 				} else {
 					switch_instance = null;
@@ -3864,16 +3960,16 @@ function create_fragment(ctx) {
 
 		i(local) {
 			if (current) return;
-			navigation.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(navigation.$$.fragment, local);
 
-			if (switch_instance) switch_instance.$$.fragment.i(local);
+			if (switch_instance) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(switch_instance.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			navigation.$$.fragment.o(local);
-			if (switch_instance) switch_instance.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(navigation.$$.fragment, local);
+			if (switch_instance) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(switch_instance.$$.fragment, local);
 			current = false;
 		},
 
@@ -3882,9 +3978,9 @@ function create_fragment(ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(div2);
 			}
 
-			navigation.$destroy();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(navigation);
 
-			if (switch_instance) switch_instance.$destroy();
+			if (switch_instance) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(switch_instance);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["run_all"])(dispose);
 		}
 	};
@@ -3893,8 +3989,8 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $routeLocation, $currentView;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeLocation"], $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["currentView"], $$value => { $currentView = $$value; $$invalidate('$currentView', $currentView); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeLocation"], $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["currentView"], $$value => { $currentView = $$value; $$invalidate('$currentView', $currentView); });
 
 	
 
@@ -3956,11 +4052,7 @@ class Patchfox extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompo
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Patchfox);
-
 
 
 
@@ -4118,7 +4210,7 @@ const main = async () => {
     window.ssb = false;
 
     Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["intercept"])()
-    
+
     try {
         await Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["loadConfiguration"])()
 
@@ -4138,7 +4230,6 @@ const main = async () => {
     const patchfox = new _Patchfox_svelte__WEBPACK_IMPORTED_MODULE_0__["default"]({
         target: document.body
     });
-
 }
 
 main()
@@ -4154,8 +4245,8 @@ main()
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
-/* src\ui\messageTypes\AboutMsg.svelte generated by Svelte v3.4.4 */
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
+/* src\ui\messageTypes\AboutMsg.svelte generated by Svelte v3.7.1 */
 
 
 // (52:2) {:else}
@@ -4167,7 +4258,7 @@ function create_else_block_1(ctx) {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.person);
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(" is doing something related to a gathering but gatherings are not\r\n      supported yet, sorry.");
-			div.className = "toast";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast");
 		},
 
 		m(target, anchor) {
@@ -4215,7 +4306,7 @@ function create_if_block(ctx) {
 			t4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if (if_block1) if_block1.c();
 			if_block1_anchor = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["empty"])();
-			a.href = a_href_value = "?feed=" + ctx.otherLink + "#/profile";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?feed=" + ctx.otherLink + "#/profile");
 		},
 
 		m(target, anchor) {
@@ -4296,7 +4387,7 @@ function create_else_block(ctx) {
 		c() {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.otherName);
-			span.className = "chip";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span, "class", "chip");
 		},
 
 		m(target, anchor) {
@@ -4328,10 +4419,10 @@ function create_if_block_2(ctx) {
 			img = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("img");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.otherName);
-			img.src = ctx.image;
-			img.className = "avatar avatar-sm";
-			img.alt = ctx.otherName;
-			div.className = "chip";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", ctx.image);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "class", "avatar avatar-sm");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "alt", ctx.otherName);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "chip");
 		},
 
 		m(target, anchor) {
@@ -4343,7 +4434,7 @@ function create_if_block_2(ctx) {
 
 		p(changed, ctx) {
 			if (changed.otherName) {
-				img.alt = ctx.otherName;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "alt", ctx.otherName);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["set_data"])(t1, ctx.otherName);
 			}
 		},
@@ -4399,7 +4490,7 @@ function create_fragment(ctx) {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			if_block.c();
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 		},
 
 		m(target, anchor) {
@@ -4488,11 +4579,7 @@ class AboutMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompo
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (AboutMsg);
-
 
 /***/ }),
 
@@ -4505,9 +4592,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\messageTypes\BlogMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\BlogMsg.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -4519,10 +4606,10 @@ function create_if_block_6(ctx) {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			img = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("img");
-			img.src = img_src_value = "http://localhost:8989/blobs/get/" + encodeURIComponent(ctx.thumbnail);
-			img.className = "img-responsive";
-			img.alt = ctx.title;
-			div.className = "card-image";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", img_src_value = "http://localhost:8989/blobs/get/" + encodeURIComponent(ctx.thumbnail));
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "class", "img-responsive");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "alt", ctx.title);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-image");
 		},
 
 		m(target, anchor) {
@@ -4548,7 +4635,7 @@ function create_if_block_5(ctx) {
 		c() {
 			h1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("h1");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.title);
-			h1.className = "card-title h5";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(h1, "class", "card-title h5");
 		},
 
 		m(target, anchor) {
@@ -4575,7 +4662,7 @@ function create_if_block_4(ctx) {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("Can't load blogpost: ");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.toastMsg);
-			div.className = "toast toast-error";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-error");
 		},
 
 		m(target, anchor) {
@@ -4600,27 +4687,22 @@ function create_if_block_4(ctx) {
 
 // (105:2) {:else}
 function create_else_block_1(ctx) {
-	var raw_before, raw_after;
+	var html_tag;
 
 	return {
 		c() {
-			raw_before = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
-			raw_after = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
+			html_tag = new svelte_internal__WEBPACK_IMPORTED_MODULE_0__["HtmlTag"](ctx.summary, null);
 		},
 
 		m(target, anchor) {
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, raw_before, anchor);
-			raw_before.insertAdjacentHTML("afterend", ctx.summary);
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, raw_after, anchor);
+			html_tag.m(target, anchor);
 		},
 
 		p: svelte_internal__WEBPACK_IMPORTED_MODULE_0__["noop"],
 
 		d(detaching) {
 			if (detaching) {
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach_between"])(raw_before, raw_after);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(raw_before);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(raw_after);
+				html_tag.d();
 			}
 		}
 	};
@@ -4628,32 +4710,26 @@ function create_else_block_1(ctx) {
 
 // (103:2) {#if showBlogpost}
 function create_if_block_3(ctx) {
-	var raw_before, raw_after;
+	var html_tag;
 
 	return {
 		c() {
-			raw_before = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
-			raw_after = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
+			html_tag = new svelte_internal__WEBPACK_IMPORTED_MODULE_0__["HtmlTag"](ctx.post, null);
 		},
 
 		m(target, anchor) {
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, raw_before, anchor);
-			raw_before.insertAdjacentHTML("afterend", ctx.post);
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, raw_after, anchor);
+			html_tag.m(target, anchor);
 		},
 
 		p(changed, ctx) {
 			if (changed.post) {
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach_between"])(raw_before, raw_after);
-				raw_before.insertAdjacentHTML("afterend", ctx.post);
+				html_tag.p(ctx.post);
 			}
 		},
 
 		d(detaching) {
 			if (detaching) {
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach_between"])(raw_before, raw_after);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(raw_before);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(raw_after);
+				html_tag.d();
 			}
 		}
 	};
@@ -4668,7 +4744,7 @@ function create_if_block_2(ctx) {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("(root)");
-			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goRoot));
 		},
 
@@ -4680,7 +4756,7 @@ function create_if_block_2(ctx) {
 
 		p(changed, ctx) {
 			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -4703,7 +4779,7 @@ function create_if_block_1(ctx) {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("(in reply to)");
-			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goBranch));
 		},
 
@@ -4715,7 +4791,7 @@ function create_if_block_1(ctx) {
 
 		p(changed, ctx) {
 			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -4737,7 +4813,7 @@ function create_else_block(ctx) {
 		c() {
 			button = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button.textContent = "Close Blogpost";
-			button.className = "btn btn-primary";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn btn-primary");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(button, "locating", ctx.loading);
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button, "click", ctx.click_handler);
 		},
@@ -4770,7 +4846,7 @@ function create_if_block(ctx) {
 		c() {
 			button = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button.textContent = "Read Blogpost";
-			button.className = "btn btn-primary";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn btn-primary");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(button, "locating", ctx.loading);
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button, "click", ctx.displayBlogPost);
 		},
@@ -4853,16 +4929,16 @@ function create_fragment(ctx) {
 			button.textContent = "Reply";
 			t10 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block6.c();
-			div0.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "card-body");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "checkbox");
 			input.checked = ctx.liked;
-			i.className = "form-icon";
-			label.className = "form-switch d-inline";
-			div1.className = "column col-6";
-			button.className = "btn";
-			div2.className = "column col-6 text-right";
-			div3.className = "columns col-gapless";
-			div4.className = "card-footer";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label, "class", "form-switch d-inline");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "column col-6");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "column col-6 text-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "columns col-gapless");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div4, "class", "card-footer");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "change", ctx.likeChanged),
@@ -5023,7 +5099,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $routeLocation;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_1__["routeLocation"], $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_1__["routeLocation"], $$value => { $routeLocation = $$value; $$invalidate('$routeLocation', $routeLocation); });
 
 	let { msg } = $$props;
 
@@ -5138,11 +5214,7 @@ class BlogMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (BlogMsg);
-
 
 /***/ }),
 
@@ -5155,9 +5227,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\messageTypes\ChannelMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\ChannelMsg.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -5174,8 +5246,8 @@ function create_fragment(ctx) {
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("#");
 			t5 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.channel);
-			a.href = a_href_value = "?channel=" + ctx.channel + "#/channel";
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?channel=" + ctx.channel + "#/channel");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", ctx.goChannel);
 		},
 
@@ -5238,11 +5310,7 @@ class ChannelMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCom
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (ChannelMsg);
-
 
 /***/ }),
 
@@ -5255,9 +5323,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\messageTypes\ContactMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\ContactMsg.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -5273,8 +5341,8 @@ function create_fragment(ctx) {
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.otherPersonName);
-			a.href = a_href_value = "?feed=" + ctx.otherPersonFeed + "#/profile";
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?feed=" + ctx.otherPersonFeed + "#/profile");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", ctx.goProfile);
 		},
 
@@ -5362,11 +5430,7 @@ class ContactMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCom
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (ContactMsg);
-
 
 /***/ }),
 
@@ -5379,10 +5443,10 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_GenericMsg_svelte_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/ui/messageTypes/GenericMsg.svelte.css */ "./src/ui/messageTypes/GenericMsg.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_GenericMsg_svelte_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_GenericMsg_svelte_css__WEBPACK_IMPORTED_MODULE_1__);
-/* src\ui\messageTypes\GenericMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\GenericMsg.svelte generated by Svelte v3.7.1 */
 
 
 function create_fragment(ctx) {
@@ -5394,8 +5458,8 @@ function create_fragment(ctx) {
 			pre = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("pre");
 			code = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("code");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.rawContent);
-			pre.className = "code svelte-mp70wj";
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(pre, "class", "code svelte-mp70wj");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 		},
 
 		m(target, anchor) {
@@ -5436,11 +5500,7 @@ class GenericMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCom
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (GenericMsg);
-
 
 
 
@@ -5485,7 +5545,7 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _PostMsg_svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PostMsg.svelte */ "./src/ui/messageTypes/PostMsg.svelte");
 /* harmony import */ var _GenericMsg_svelte__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GenericMsg.svelte */ "./src/ui/messageTypes/GenericMsg.svelte");
 /* harmony import */ var _VoteMsg_svelte__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./VoteMsg.svelte */ "./src/ui/messageTypes/VoteMsg.svelte");
@@ -5501,7 +5561,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _abusePrevention_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../abusePrevention.js */ "./src/ui/abusePrevention.js");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_MessageRenderer_svelte_css__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./src/ui/messageTypes/MessageRenderer.svelte.css */ "./src/ui/messageTypes/MessageRenderer.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_MessageRenderer_svelte_css__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_MessageRenderer_svelte_css__WEBPACK_IMPORTED_MODULE_14__);
-/* src\ui\messageTypes\MessageRenderer.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\MessageRenderer.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -5525,7 +5585,7 @@ function create_if_block_3(ctx) {
 		c() {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			span.textContent = "PRIVATE";
-			span.className = "label";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span, "class", "label");
 		},
 
 		m(target, anchor) {
@@ -5638,13 +5698,13 @@ function create_else_block(ctx) {
 			t7 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("the documentation about messages with type ");
 			t8 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.type);
 			t9 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("\r\n            .");
-			pre.className = "code";
-			div0.className = "column col-9";
-			a.target = "_blank";
-			a.href = a_href_value = "/docs/index.html#/message_types/" + ctx.type;
-			div1.className = "column col-3";
-			div2.className = "columns";
-			div3.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(pre, "class", "code");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "column col-9");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "target", "_blank");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "/docs/index.html#/message_types/" + ctx.type);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "column col-3");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "columns");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "card-body");
 		},
 
 		m(target, anchor) {
@@ -5677,7 +5737,7 @@ function create_else_block(ctx) {
 			}
 
 			if ((changed.type) && a_href_value !== (a_href_value = "/docs/index.html#/message_types/" + ctx.type)) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -5729,10 +5789,9 @@ function create_if_block(ctx) {
 				if (switch_instance) {
 					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
 					const old_component = switch_instance;
-					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-						old_component.$destroy();
+					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(old_component.$$.fragment, 1, 0, () => {
+						Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(old_component, 1);
 					});
-					old_component.$$.fragment.o(1);
 					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 				}
 
@@ -5740,7 +5799,7 @@ function create_if_block(ctx) {
 					switch_instance = new switch_value(switch_props(ctx));
 
 					switch_instance.$$.fragment.c();
-					switch_instance.$$.fragment.i(1);
+					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(switch_instance.$$.fragment, 1);
 					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["mount_component"])(switch_instance, switch_instance_anchor.parentNode, switch_instance_anchor);
 				} else {
 					switch_instance = null;
@@ -5754,13 +5813,13 @@ function create_if_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			if (switch_instance) switch_instance.$$.fragment.i(local);
+			if (switch_instance) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(switch_instance.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			if (switch_instance) switch_instance.$$.fragment.o(local);
+			if (switch_instance) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(switch_instance.$$.fragment, local);
 			current = false;
 		},
 
@@ -5769,7 +5828,7 @@ function create_if_block(ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(switch_instance_anchor);
 			}
 
-			if (switch_instance) switch_instance.$destroy(detaching);
+			if (switch_instance) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(switch_instance, detaching);
 		}
 	};
 }
@@ -5859,39 +5918,39 @@ function create_fragment(ctx) {
 			if_block2.c();
 			t16 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block3.c();
-			img.src = ctx.image;
-			img.className = "avatar avatar-lg svelte-1jn1wek";
-			img.alt = ctx.feed;
-			div0.className = "example-tile-icon";
-			div1.className = "tile-icon";
-			div2.className = "tile-title";
-			small.className = "tile-subtitle text-gray";
-			div3.className = "tile-content";
-			div4.className = "tile tile-centered feed-display svelte-1jn1wek";
-			div5.className = "card-title";
-			div6.className = "float-left";
-			span0.className = "text-gray channel-display svelte-1jn1wek";
-			span1.className = "btn btn-link dropdown-toggle";
-			span1.tabIndex = "0";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", ctx.image);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "class", "avatar avatar-lg svelte-1jn1wek");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "alt", ctx.feed);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "example-tile-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "tile-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "tile-title");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(small, "class", "tile-subtitle text-gray");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "tile-content");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div4, "class", "tile tile-centered feed-display svelte-1jn1wek");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div5, "class", "card-title");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div6, "class", "float-left");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span0, "class", "text-gray channel-display svelte-1jn1wek");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span1, "class", "btn btn-link dropdown-toggle");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span1, "tabindex", "0");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(span1, "active", ctx.dropdownActive);
-			i1.className = "icon icon-share";
-			a0.href = a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
-			a0.target = "_blank";
-			li0.className = "menu-item";
-			a1.href = "#";
-			li1.className = "menu-item";
-			a2.href = "#";
-			li2.className = "menu-item";
-			li3.className = "divider";
-			li3.dataset.content = "FOR THE CURIOUS";
-			i4.className = "icon icon-message";
-			a3.href = "#";
-			li4.className = "menu-item";
-			ul.className = "menu menu-right svelte-1jn1wek";
-			div7.className = "dropdown";
-			div8.className = "float-right";
-			div9.className = "card-header";
-			div10.className = "card m-2 svelte-1jn1wek";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i1, "class", "icon icon-share");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "href", a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "target", "_blank");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li0, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a1, "href", "#");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li1, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a2, "href", "#");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li2, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li3, "class", "divider");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li3, "data-content", "FOR THE CURIOUS");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i4, "class", "icon icon-message");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a3, "href", "#");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li4, "class", "menu-item");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(ul, "class", "menu menu-right svelte-1jn1wek");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div7, "class", "dropdown");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div8, "class", "float-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div9, "class", "card-header");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div10, "class", "card m-2 svelte-1jn1wek");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(div10, "private", ctx.privateMsgForYou);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(div10, "blured", ctx.blured);
 
@@ -5957,7 +6016,7 @@ function create_fragment(ctx) {
 
 		p(changed, ctx) {
 			if (!current || changed.image) {
-				img.src = ctx.image;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", ctx.image);
 			}
 
 			if (!current || changed.name) {
@@ -5997,7 +6056,7 @@ function create_fragment(ctx) {
 			}
 
 			if ((!current || changed.msg) && a0_href_value !== (a0_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread")) {
-				a0.href = a0_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "href", a0_href_value);
 			}
 
 			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
@@ -6015,11 +6074,9 @@ function create_fragment(ctx) {
 				if_blocks[current_block_type_index].p(changed, ctx);
 			} else {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_blocks[previous_block_index].d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_blocks[previous_block_index], 1, 1, () => {
 					if_blocks[previous_block_index] = null;
 				});
-				if_block3.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 
 				if_block3 = if_blocks[current_block_type_index];
@@ -6027,7 +6084,7 @@ function create_fragment(ctx) {
 					if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block3.c();
 				}
-				if_block3.i(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block3, 1);
 				if_block3.m(div10, null);
 			}
 
@@ -6042,12 +6099,12 @@ function create_fragment(ctx) {
 
 		i(local) {
 			if (current) return;
-			if (if_block3) if_block3.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block3);
 			current = true;
 		},
 
 		o(local) {
-			if (if_block3) if_block3.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block3);
 			current = false;
 		},
 
@@ -6194,11 +6251,7 @@ class MessageRenderer extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["Svel
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (MessageRenderer);
-
 
 
 
@@ -6243,17 +6296,17 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_PostMsg_svelte_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/ui/messageTypes/PostMsg.svelte.css */ "./src/ui/messageTypes/PostMsg.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_PostMsg_svelte_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_messageTypes_PostMsg_svelte_css__WEBPACK_IMPORTED_MODULE_2__);
-/* src\ui\messageTypes\PostMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\PostMsg.svelte generated by Svelte v3.7.1 */
 
 
 
 // (84:2) {:else}
 function create_else_block(ctx) {
-	var t, raw_before, raw_after;
+	var t, html_tag;
 
 	var if_block = (ctx.hasContentWarning) && create_if_block_4(ctx);
 
@@ -6261,16 +6314,13 @@ function create_else_block(ctx) {
 		c() {
 			if (if_block) if_block.c();
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
-			raw_before = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
-			raw_after = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
+			html_tag = new svelte_internal__WEBPACK_IMPORTED_MODULE_0__["HtmlTag"](ctx.content, null);
 		},
 
 		m(target, anchor) {
 			if (if_block) if_block.m(target, anchor);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, t, anchor);
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, raw_before, anchor);
-			raw_before.insertAdjacentHTML("afterend", ctx.content);
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, raw_after, anchor);
+			html_tag.m(target, anchor);
 		},
 
 		p(changed, ctx) {
@@ -6293,9 +6343,7 @@ function create_else_block(ctx) {
 
 			if (detaching) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(t);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach_between"])(raw_before, raw_after);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(raw_before);
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(raw_after);
+				html_tag.d();
 			}
 		}
 	};
@@ -6312,7 +6360,7 @@ function create_if_block_3(ctx) {
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			button = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button.textContent = "Show Message";
-			button.className = "btn";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button, "click", ctx.click_handler);
 		},
 
@@ -6356,8 +6404,8 @@ function create_if_block_4(ctx) {
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			button = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button.textContent = "Hide Message";
-			button.className = "btn btn-sm float-right";
-			div.className = "toast toast-warning";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn btn-sm float-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-warning");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button, "click", ctx.click_handler_1);
 		},
 
@@ -6396,7 +6444,7 @@ function create_if_block_2(ctx) {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("(root)");
-			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goRoot));
 		},
 
@@ -6408,7 +6456,7 @@ function create_if_block_2(ctx) {
 
 		p(changed, ctx) {
 			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.root) + "#/thread")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -6431,7 +6479,7 @@ function create_if_block_1(ctx) {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("(in reply to)");
-			a.href = a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goBranch));
 		},
 
@@ -6443,7 +6491,7 @@ function create_if_block_1(ctx) {
 
 		p(changed, ctx) {
 			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(ctx.msg.value.content.branch) + "#/thread")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -6469,9 +6517,9 @@ function create_if_block(ctx) {
 			t_1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			button1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button1.textContent = "Reply";
-			button0.className = "btn";
-			button1.className = "btn";
-			div.className = "column col-6 text-right";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button0, "class", "btn");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button1, "class", "btn");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "column col-6 text-right");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button0, "click", ctx.fork),
@@ -6485,8 +6533,6 @@ function create_if_block(ctx) {
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div, t_1);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div, button1);
 		},
-
-		p: svelte_internal__WEBPACK_IMPORTED_MODULE_0__["noop"],
 
 		d(detaching) {
 			if (detaching) {
@@ -6534,14 +6580,14 @@ function create_fragment(ctx) {
 			if (if_block2) if_block2.c();
 			t5 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if (if_block3) if_block3.c();
-			div0.className = "card-body svelte-1ftdgav";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "card-body svelte-1ftdgav");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "checkbox");
 			input.checked = ctx.liked;
-			i.className = "form-icon";
-			label.className = "form-switch d-inline";
-			div1.className = "column col-6";
-			div2.className = "columns col-gapless";
-			div3.className = "card-footer";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label, "class", "form-switch d-inline");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "column col-6");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "columns col-gapless");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "card-footer");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "change", ctx.likeChanged);
 		},
 
@@ -6608,9 +6654,7 @@ function create_fragment(ctx) {
 			}
 
 			if (!ctx.msg.value.private) {
-				if (if_block3) {
-					if_block3.p(changed, ctx);
-				} else {
+				if (!if_block3) {
 					if_block3 = create_if_block(ctx);
 					if_block3.c();
 					if_block3.m(div2, null);
@@ -6745,11 +6789,7 @@ class PostMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (PostMsg);
-
 
 
 
@@ -6794,8 +6834,8 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
-/* src\ui\messageTypes\PrivateMsg.svelte generated by Svelte v3.4.4 */
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
+/* src\ui\messageTypes\PrivateMsg.svelte generated by Svelte v3.7.1 */
 
 
 function create_fragment(ctx) {
@@ -6805,7 +6845,7 @@ function create_fragment(ctx) {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			div.innerHTML = `<p>🔒 PRIVATE</p>`;
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 		},
 
 		m(target, anchor) {
@@ -6841,11 +6881,7 @@ class PrivateMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCom
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (PrivateMsg);
-
 
 /***/ }),
 
@@ -6858,9 +6894,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\messageTypes\PubMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\PubMsg.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -6876,8 +6912,8 @@ function create_fragment(ctx) {
 			t2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.host);
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(":");
 			t4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.port);
-			a.href = a_href_value = "/index.html?feed=" + ctx.encodedid + "#/profile";
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "/index.html?feed=" + ctx.encodedid + "#/profile");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", ctx.goProfile);
 		},
 
@@ -6948,11 +6984,7 @@ class PubMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompone
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (PubMsg);
-
 
 /***/ }),
 
@@ -6965,9 +6997,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\messageTypes\VoteMsg.svelte generated by Svelte v3.4.4 */
+/* src\ui\messageTypes\VoteMsg.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -6983,8 +7015,8 @@ function create_fragment(ctx) {
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.label);
-			a.href = a_href_value = "/index.html?thread=" + ctx.encodedid + "#/thread";
-			div.className = "card-body";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "/index.html?thread=" + ctx.encodedid + "#/thread");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "card-body");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", ctx.goThread);
 		},
 
@@ -7067,11 +7099,7 @@ class VoteMsg extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (VoteMsg);
-
 
 /***/ }),
 
@@ -7084,9 +7112,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
-/* src\ui\parts\AvatarChip.svelte generated by Svelte v3.4.4 */
+/* src\ui\parts\AvatarChip.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -7098,7 +7126,7 @@ function create_else_block(ctx) {
 		c() {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.name);
-			span.className = "chip";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span, "class", "chip");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(span, "click", ctx.avatarClick);
 		},
 
@@ -7133,9 +7161,9 @@ function create_if_block(ctx) {
 			img = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("img");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.name);
-			img.src = ctx.image;
-			img.className = "avatar avatar-sm";
-			div.className = "chip";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", ctx.image);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "class", "avatar avatar-sm");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "chip");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(div, "click", ctx.avatarClick);
 		},
 
@@ -7148,7 +7176,7 @@ function create_if_block(ctx) {
 
 		p(changed, ctx) {
 			if (changed.image) {
-				img.src = ctx.image;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", ctx.image);
 			}
 
 			if (changed.name) {
@@ -7249,11 +7277,7 @@ class AvatarChip extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCom
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (AvatarChip);
-
 
 /***/ }),
 
@@ -7290,8 +7314,8 @@ const timestamp = t => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SSB", function() { return SSB; });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./src/ui/utils.js");
-/* harmony import */ var _abusePrevention_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./abusePrevention.js */ "./src/ui/abusePrevention.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/ui/utils.js");
+/* harmony import */ var _abusePrevention__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./abusePrevention */ "./src/ui/abusePrevention.js");
 /**
  * SSB
  *
@@ -7325,6 +7349,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const pull = hermiebox.modules.pullStream
 const sort = hermiebox.modules.ssbSort
 
@@ -7334,893 +7359,893 @@ let avatarCache = {}
 
 class SSB {
 
-  log(pMsg, pVal = "") {
-    console.log(`[SSB API] - ${pMsg}`, pVal)
-  }
-
-  async connect(pKeys) {
-    var server = await hermiebox.api.connect(pKeys)
-    this.log("you are", server.id)
-    this.feed = server.id
-    sbot = server
-  }
-
-  filterLimit() {
-    let limit = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getPref"])("limit", 10)
-    return pull.take(limit)
-  }
-
-  filterWithUserFilters() {
-    return pull.filter(m => Object(_abusePrevention_js__WEBPACK_IMPORTED_MODULE_1__["isMessageHidden"])(m))
-  }
-
-  filterTypes() {
-    let knownMessageTypes = {
-      "post": "showTypePost",
-      "about": "showTypeAbout",
-      "vote": "showTypeVote",
-      "contact": "showTypeContact",
-      "pub": "showTypePub",
-      "blog": "showTypeBlog",
-      "channel": "showTypeChannel"
+    log(pMsg, pVal = "") {
+        console.log(`[SSB API] - ${pMsg}`, pVal)
     }
 
-    let showUnknown = Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getPref"])("showTypeUnknown", false)
-
-    if (showUnknown) {
-      return pull.filter(() => true);
+    async connect(pKeys) {
+        var server = await hermiebox.api.connect(pKeys)
+        this.log("you are", server.id)
+        this.feed = server.id
+        sbot = server
     }
 
-    return pull.filter(msg => {
-      let type = msg.value.content.type
+    filterLimit() {
+        let limit = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getPref"])("limit", 10)
+        return pull.take(limit)
+    }
 
-      if (typeof type == "string" && knownMessageTypes[type]) {
-        return Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getPref"])(knownMessageTypes[type], true)
-      }
-      return Object(_utils_js__WEBPACK_IMPORTED_MODULE_0__["getPref"])("showTypeUnknown", false)
-    })
-  }
+    filterWithUserFilters() {
+        return pull.filter(m => Object(_abusePrevention__WEBPACK_IMPORTED_MODULE_1__["isMessageHidden"])(m))
+    }
 
-  
+    filterTypes() {
+        let knownMessageTypes = {
+            "post": "showTypePost",
+            "about": "showTypeAbout",
+            "vote": "showTypeVote",
+            "contact": "showTypeContact",
+            "pub": "showTypePub",
+            "blog": "showTypeBlog",
+            "channel": "showTypeChannel"
+        }
 
-  public(opts) {
-    return new Promise((resolve, reject) => {
+        let showUnknown = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getPref"])("showTypeUnknown", false)
 
-      opts = opts || {}
-      opts.reverse = opts.reverse || true
+        if (showUnknown) {
+            return pull.filter(() => true);
+        }
 
-      console.log("opts", opts)
+        return pull.filter(msg => {
+            let type = msg.value.content.type
 
-      pull(
-        sbot.createFeedStream(opts),
-        pull.filter(msg => msg && msg.value && msg.value.content),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
-        pull.collect((err, msgs) => {
-          console.log("msgs", msgs)
-          if (err) {
-            reject(err)
-          }
-
-          resolve(msgs)
+            if (typeof type == "string" && knownMessageTypes[type]) {
+                return Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getPref"])(knownMessageTypes[type], true)
+            }
+            return Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getPref"])("showTypeUnknown", false)
         })
-      )
-    })
-  }
+    }
 
-  thread(id) {
-    return new Promise((resolve, reject) => {
-      sbot.get(id, (err, value) => {
-        if (err) return cb(err)
-        var rootMsg = { key: id, value: value }
-        pull(
-          sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
-            query: [
-              {
-                $filter: {
-                  dest: id,
-                  value: {
-                    content: {
 
-                      root: id
+
+    public(opts) {
+        return new Promise((resolve, reject) => {
+
+            opts = opts || {}
+            opts.reverse = opts.reverse || true
+
+            console.log("opts", opts)
+
+            pull(
+                sbot.createFeedStream(opts),
+                pull.filter(msg => msg && msg.value && msg.value.content),
+                this.filterTypes(),
+                this.filterWithUserFilters(),
+                this.filterLimit(),
+                pull.collect((err, msgs) => {
+                    console.log("msgs", msgs)
+                    if (err) {
+                        reject(err)
                     }
-                  }
+
+                    resolve(msgs)
+                })
+            )
+        })
+    }
+
+    thread(id) {
+        return new Promise((resolve, reject) => {
+            sbot.get(id, (err, value) => {
+                if (err) return cb(err)
+                var rootMsg = { key: id, value: value }
+                pull(
+                    sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
+                        query: [
+                            {
+                                $filter: {
+                                    dest: id,
+                                    value: {
+                                        content: {
+
+                                            root: id
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }) : pull(
+                        sbot.links({ dest: id, values: true, rel: 'root' }),
+                        pull.filter(function (msg) {
+                            var c = msg && msg.value && msg.value.content
+                            return c && c.type === 'post' && c.root === id
+                        }),
+                        pull.unique('key')
+                    ),
+                    this.filterTypes(),
+                    this.filterWithUserFilters(),
+                    this.filterLimit(),
+                    pull.collect((err, msgs) => {
+                        if (err) reject(err)
+                        resolve(sort([rootMsg].concat(msgs)))
+                    })
+                )
+            })
+        })
+    }
+
+    mentions(feed, lt) {
+        return new Promise((resolve, reject) => {
+            const createBacklinkStream = id => {
+                var filterQuery = {
+                    $filter: {
+                        dest: id
+                    }
+                };
+
+                if (lt) {
+                    filterQuery.$filter.value = { timestamp: { $lt: lt } };
                 }
-              }
+
+                return sbot.backlinks.read({
+                    query: [filterQuery],
+                    index: "DTA", // use asserted timestamps
+                    reverse: true,
+                });
+            };
+
+            const uniqueRoots = msg => {
+                return pull.filter(msg => {
+                    let msgKey = msg.key;
+                    if (msg.value.content.type !== "post") {
+                        return true;
+                    }
+                    let rootKey = msg.value.content.root || false;
+                    if (rootKey) {
+                        if (msgs.some(m => m.value.content.root === rootKey)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            };
+
+            const mentionUser = msg => {
+                return pull.filter(msg => {
+                    if (msg.value.content.type !== "post") {
+                        return true;
+                    }
+                    let mentions = msg.value.content.mentions || [];
+                    if (mentions.some(m => m.link == sbot.id)) {
+                        return true;
+                    }
+                    return false;
+                });
+            };
+
+            pull(
+                createBacklinkStream(sbot.id),
+                this.filterTypes(),
+                this.filterWithUserFilters(),
+                this.filterLimit(),
+                pull.collect((err, msgs) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msgs)
+                    }
+                })
+            );
+        })
+    }
+
+    async profile(feedid) {
+        try {
+            var user = await hermiebox.api.profile(feedid)
+            return user
+
+        } catch (n) {
+            console.error(n)
+            return false
+        }
+    }
+
+    async get(msgid) {
+        var msg = await hermiebox.api.get(msgid)
+        return msg
+    }
+
+    async setAvatarCache(feed, data) {
+        let s = {}
+        s[`avatar-${feed}`] = data
+        return browser.storage.local.set(s)
+    }
+
+    async getCachedAvatar(feed) {
+        return browser.storage.local.get(`avatar-${feed}`)
+    }
+
+    async avatar(feed) {
+        if (avatarCache[feed]) {
+            return avatarCache[feed]
+        }
+        try {
+            let avatar = await hermiebox.api.avatar(feed)
+            // await this.setAvatarCache(feed, avatar)
+            avatarCache[feed] = avatar
+            return avatar
+        } catch (n) {
+            throw n
+        }
+
+    }
+
+    async blurbFromMsg(msgid, howManyChars) {
+        let retVal = msgid
+
+        try {
+            let data = await ssb.get(msgid)
+
+            if (data.content.type == "post") {
+                retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
+            }
+            return retVal
+        } catch (n) {
+            return retVal
+        }
+    }
+    plainTextFromMarkdown(text) {
+        // TODO: this doesn't belong here
+        let html = this.markdown(text)
+        let div = document.createElement("div")
+        div.innerHTML = html
+        return div.innerText
+    }
+
+    markdown(text) {
+
+        function replaceMsgID(match, id, offset, string) {
+            let eid = encodeURIComponent(`%${id}`);
+
+            return `<a class="thread-link" href="?thread=${eid}#/thread`;
+        }
+
+        function replaceChannel(match, id, offset, string) {
+            let eid = encodeURIComponent(id);
+
+            return `<a class="channel-link" href="?channel=${eid}#/channel`;
+        }
+
+
+        function replaceFeedID(match, id, offset, string) {
+            let eid = encodeURIComponent(`@${id}`);
+            return "<a class=\"profile-link\" href=\"?feed=" + eid + "#/profile";
+        }
+
+
+        function replaceImageLinks(match, id, offset, string) {
+            return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+        }
+
+
+        function replaceImages(match, id, offset, string) {
+            return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+        }
+
+        let html = hermiebox.modules.ssbMarkdown.block(text)
+        html = html
+            .replace(/<pre>/gi, "<pre class=\"code\">")
+            .replace(/<a href="#([^"]*)/gi, replaceChannel)
+            .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+            .replace(/target="_blank"/gi, "")
+            .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+            .replace(/<img src="&([^"]*)/gi, replaceImages)
+            .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
+
+        return html
+    }
+
+    ref() {
+        return hermiebox.modules.ssbRef
+    }
+
+    getTimestamp(msg) {
+        const arrivalTimestamp = msg.timestamp;
+        const declaredTimestamp = msg.value.timestamp;
+        return Math.min(arrivalTimestamp, declaredTimestamp);
+    }
+
+    getRootMsgId(msg) {
+        if (msg && msg.value && msg.value.content) {
+            const root = msg.value.content.root;
+            if (hermiebox.modules.ssbRef.isMsgId(root)) {
+                return root;
+            }
+        }
+    }
+
+    newPost(data) {
+        return new Promise((resolve, reject) => {
+            let msgToPost = { type: "post", text: data.text }
+
+            const commonFields = [
+                "root",
+                "branch",
+                "channel",
+                "fork",
+                "contentWarning"
             ]
-          }) : pull(
-            sbot.links({ dest: id, values: true, rel: 'root' }),
-            pull.filter(function (msg) {
-              var c = msg && msg.value && msg.value.content
-              return c && c.type === 'post' && c.root === id
-            }),
-            pull.unique('key')
-          ),
-          this.filterTypes(),
-          this.filterWithUserFilters(),
-          this.filterLimit(),
-          pull.collect((err, msgs) => {
-            if (err) reject(err)
-            resolve(sort([rootMsg].concat(msgs)))
-          })
-        )
-      })
-    })
-  }
 
-  mentions(feed, lt) {
-    return new Promise((resolve, reject) => {
-      const createBacklinkStream = id => {
-        var filterQuery = {
-          $filter: {
-            dest: id
-          }
-        };
-    
-        if (lt) {
-          filterQuery.$filter.value = { timestamp: { $lt: lt } };
-        }
-    
-        return sbot.backlinks.read({
-          query: [filterQuery],
-          index: "DTA", // use asserted timestamps
-          reverse: true,
-        });
-      };
-    
-      const uniqueRoots = msg => {
-        return pull.filter(msg => {
-          let msgKey = msg.key;
-          if (msg.value.content.type !== "post") {
-            return true;
-          }
-          let rootKey = msg.value.content.root || false;
-          if (rootKey) {
-            if (msgs.some(m => m.value.content.root === rootKey)) {
-              return false;
-            }
-          }
-          return true;
-        });
-      };
-    
-      const mentionUser = msg => {
-        return pull.filter(msg => {
-          if (msg.value.content.type !== "post") {
-            return true;
-          }
-          let mentions = msg.value.content.mentions || [];
-          if (mentions.some(m => m.link == sbot.id)) {
-            return true;
-          }
-          return false;
-        });
-      };
-
-      pull(
-        createBacklinkStream(sbot.id),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
-        pull.collect((err, msgs) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msgs)
-          }
-        })
-      );
-    })
-  }
-
-  async profile(feedid) {
-    try {
-      var user = await hermiebox.api.profile(feedid)
-      return user
-
-    } catch (n) {
-      console.error(n)
-      return false
-    }
-  }
-
-  async get(msgid) {
-    var msg = await hermiebox.api.get(msgid)
-    return msg
-  }
-
-  async setAvatarCache(feed, data) {
-    let s = {}
-    s[`avatar-${feed}`] = data
-    return browser.storage.local.set(s)
-  }
-
-  async getCachedAvatar(feed) {
-    return browser.storage.local.get(`avatar-${feed}`)
-  }
-
-  async avatar(feed) {
-    if (avatarCache[feed]) {
-      return avatarCache[feed]
-    }
-    try {
-      let avatar = await hermiebox.api.avatar(feed)
-      // await this.setAvatarCache(feed, avatar)
-      avatarCache[feed] = avatar
-      return avatar
-    } catch (n) {
-      throw n
-    }
-
-  }
-
-  async blurbFromMsg(msgid, howManyChars) {
-    let retVal = msgid
-
-    try {
-      let data = await ssb.get(msgid)
-
-      if (data.content.type == "post") {
-        retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
-      }
-      return retVal
-    } catch (n) {
-      return retVal
-    }
-  }
-  plainTextFromMarkdown(text) {
-    // TODO: this doesn't belong here
-    let html = this.markdown(text)
-    let div = document.createElement("div")
-    div.innerHTML = html
-    return div.innerText
-  }
-
-  markdown(text) {
-
-    function replaceMsgID(match, id, offset, string) {
-      let eid = encodeURIComponent(`%${id}`);
-
-      return `<a class="thread-link" href="?thread=${eid}#/thread`;
-    }
-
-    function replaceChannel(match, id, offset, string) {
-      let eid = encodeURIComponent(id);
-
-      return `<a class="channel-link" href="?channel=${eid}#/channel`;
-    }
-
-
-    function replaceFeedID(match, id, offset, string) {
-      let eid = encodeURIComponent(`@${id}`);
-      return "<a class=\"profile-link\" href=\"?feed=" + eid + "#/profile";
-    }
-
-
-    function replaceImageLinks(match, id, offset, string) {
-      return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
-    }
-
-
-    function replaceImages(match, id, offset, string) {
-      return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
-    }
-
-    let html = hermiebox.modules.ssbMarkdown.block(text)
-    html = html
-      .replace(/<pre>/gi, "<pre class=\"code\">")
-      .replace(/<a href="#([^"]*)/gi, replaceChannel)
-      .replace(/<a href="@([^"]*)/gi, replaceFeedID)
-      .replace(/target="_blank"/gi, "")
-      .replace(/<a href="%([^"]*)/gi, replaceMsgID)
-      .replace(/<img src="&([^"]*)/gi, replaceImages)
-      .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
-
-    return html
-  }
-
-  ref() {
-    return hermiebox.modules.ssbRef
-  }
-
-  getTimestamp(msg) {
-    const arrivalTimestamp = msg.timestamp;
-    const declaredTimestamp = msg.value.timestamp;
-    return Math.min(arrivalTimestamp, declaredTimestamp);
-  }
-
-  getRootMsgId(msg) {
-    if (msg && msg.value && msg.value.content) {
-      const root = msg.value.content.root;
-      if (hermiebox.modules.ssbRef.isMsgId(root)) {
-        return root;
-      }
-    }
-  }
-
-  newPost(data) {
-    return new Promise((resolve, reject) => {
-      let msgToPost = { type: "post", text: data.text }
-
-      const commonFields = [
-        "root",
-        "branch",
-        "channel",
-        "fork",
-        "contentWarning"
-      ]
-
-      commonFields.forEach(f => {
-        if (typeof data[f] !== "undefined") {
-          msgToPost[f] = data[f]
-        }
-      })
-
-      msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || []
-      msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
-
-      const sbot = hermiebox.sbot || false
-
-      console.log("post", msgToPost)
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
-        })
-      } else {
-        reject("There is no sbot connection")
-      }
-    })
-  }
-
-  follow(userId) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
-
-      if (sbot) {
-        sbot.publish({
-          type: "contact",
-          contact: userId,
-          following: true
-        }, (err, msg) => {
-          // 'msg' includes the hash-id and headers
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
-        })
-      }
-    })
-  }
-
-
-  getBlob(blobid) {
-    return hermiebox.api.getBlob(blobid)
-  }
-
-  votes(msgid) {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot
-
-      if (sbot) {
-        pull(
-          sbot.links({ dest: msgid, rel: "vote", values: true }),
-          pull.collect((err, msgs) => {
-            if (err) {
-              reject(err)
-            } else {
-              resolve(msgs)
-            }
-          })
-        )
-      }
-    })
-  }
-
-  like(msgid) {
-    return new Promise((resolve, reject) => {
-
-      const sbot = hermiebox.sbot || false
-
-      const msgToPost = {
-        "type": "vote",
-        "vote": {
-          "link": msgid,
-          "value": 1,
-          "expression": "Like"
-        }
-      }
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
-        })
-      }
-    })
-  }
-
-  unlike(msgid) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
-
-      const msgToPost = {
-        "type": "vote",
-        "vote": {
-          "link": msgid,
-          "value": 0,
-          "expression": "Unlike"
-        }
-      }
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
-        })
-      }
-    })
-  }
-
-  channels() {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
-
-      if (sbot) {
-        console.log("querying channels")
-        pull(
-          sbot.query.read({
-            query: [
-              { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
-              {
-                "$reduce": {
-                  "channel": ["value", "content", "channel"],
-                  "count": { "$count": true },
-                  "timestamp": { "$max": ["value", "timestamp"] }
+            commonFields.forEach(f => {
+                if (typeof data[f] !== "undefined") {
+                    msgToPost[f] = data[f]
                 }
-              },
-              { "$sort": [["timestamp"], ["count"]] }
-            ],
-            limit: 20
-          }),
-          pull.collect(function (err, data) {
-            console.log("channels", data)
-            if (err) {
-              reject(err)
+            })
+
+            msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || []
+            msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
+
+            const sbot = hermiebox.sbot || false
+
+            console.log("post", msgToPost)
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
             } else {
-              resolve(data)
+                reject("There is no sbot connection")
             }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
-
-  channel(channel, opts) {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
-      let query = {
-        "$filter": {
-          value: {
-            content: { channel }
-          }
-        }
-      }
-
-      if (opts.lt) {
-        query.$filter.value.timestamp = { $lt: opts.lt }
-      }
-
-      if (sbot) {
-        pull(
-          sbot.query.read({
-            query: [
-              query
-            ],
-            reverse: true
-          }),
-          this.filterTypes(),
-          this.filterWithUserFilters(),
-          this.filterLimit(),
-          pull.collect(function (err, data) {
-            if (err) {
-              reject(err)
-            } else {
-              resolve(data)
-            }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
-
-  channelSubscribe(channel) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
-
-      const msgToPost = {
-        "type": "channel",
-        "channel": channel,
-        "subscribed": true
-      }
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
         })
-      }
-    })
-  }
+    }
 
-  channelUnsubscribe(channel) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
+    follow(userId) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
 
-      const msgToPost = {
-        "type": "channel",
-        "channel": channel,
-        "subscribed": false
-      }
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
+            if (sbot) {
+                sbot.publish({
+                    type: "contact",
+                    contact: userId,
+                    following: true
+                }, (err, msg) => {
+                    // 'msg' includes the hash-id and headers
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
         })
-      }
-    })
-  }
+    }
 
-  channelSubscribed(channel, feed) {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
 
-      if (sbot) {
-        if (!feed) {
-          feed = sbot.id
-        }
+    getBlob(blobid) {
+        return hermiebox.api.getBlob(blobid)
+    }
 
-        let query = {
-          "$filter": {
-            value: {
-              author: feed,
-              content: {
-                type: "channel",
-                channel
-              }
+    votes(msgid) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot
+
+            if (sbot) {
+                pull(
+                    sbot.links({ dest: msgid, rel: "vote", values: true }),
+                    pull.collect((err, msgs) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(msgs)
+                        }
+                    })
+                )
             }
-          }
-        }
-
-
-        pull(
-          sbot.query.read({
-            query: [
-              query
-            ],
-            reverse: true
-          }),
-          pull.collect(function (err, data) {
-            if (err) {
-              reject(err)
-            } else {
-              if (data.length > 0) {
-                resolve(data[0].value.content.subscribed || false)
-              } else {
-                resolve(false)
-              }
-            }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
-
-  subscribedChannels(channel, feed) {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
-
-      if (sbot) {
-        if (!feed) {
-          feed = sbot.id
-        }
-
-        let query = {
-          "$filter": {
-            value: {
-              author: feed,
-              content: {
-                type: "channel"
-              }
-            }
-          },
-          "$map": {
-            channel: ["value", "content", "channel"],
-            subscribed: ["value", "content", "subscribed"]
-          },
-          "$sort": [["value", "timestamp"]]
-        }
-
-
-        pull(
-          sbot.query.read({
-            query: [
-              query
-            ],
-            reverse: true
-          }),
-          pull.collect(function (err, data) {
-            if (err) {
-              reject(err)
-            } else {
-              resolve(data)
-            }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
-
-  follow(feed) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
-
-      const msgToPost = {
-        "type": "contact",
-        "contact": feed,
-        "following": true
-      }
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
         })
-      }
-    })
-  }
+    }
 
-  unfollow(feed) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
+    like(msgid) {
+        return new Promise((resolve, reject) => {
 
-      const msgToPost = {
-        "type": "contact",
-        "contact": feed,
-        "following": false
-      }
+            const sbot = hermiebox.sbot || false
 
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
+            const msgToPost = {
+                "type": "vote",
+                "vote": {
+                    "link": msgid,
+                    "value": 1,
+                    "expression": "Like"
+                }
+            }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
         })
-      }
-    })
-  }
+    }
 
-  block(feed) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
+    unlike(msgid) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
 
-      const msgToPost = {
-        "type": "contact",
-        "contact": feed,
-        "blocking": true
-      }
+            const msgToPost = {
+                "type": "vote",
+                "vote": {
+                    "link": msgid,
+                    "value": 0,
+                    "expression": "Unlike"
+                }
+            }
 
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
         })
-      }
-    })
-  }
+    }
 
-  unblock(feed) {
-    return new Promise((resolve, reject) => {
-      const sbot = hermiebox.sbot || false
+    channels() {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
 
-      const msgToPost = {
-        "type": "contact",
-        "contact": feed,
-        "blocking": false
-      }
-
-      if (sbot) {
-        sbot.publish(msgToPost, function (err, msg) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(msg)
-          }
+            if (sbot) {
+                console.log("querying channels")
+                pull(
+                    sbot.query.read({
+                        query: [
+                            { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
+                            {
+                                "$reduce": {
+                                    "channel": ["value", "content", "channel"],
+                                    "count": { "$count": true },
+                                    "timestamp": { "$max": ["value", "timestamp"] }
+                                }
+                            },
+                            { "$sort": [["timestamp"], ["count"]] }
+                        ],
+                        limit: 20
+                    }),
+                    pull.collect(function (err, data) {
+                        console.log("channels", data)
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(data)
+                        }
+                    })
+                )
+            } else {
+                reject("no sbot")
+            }
         })
-      }
-    })
-  }
+    }
 
-  following(feed, byWhom) {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
-
-      if (sbot) {
-        if (!byWhom) {
-          byWhom = sbot.id
-        }
-
-        let query = {
-          "$filter": {
-            value: {
-              author: byWhom,
-              content: {
-                type: "contact",
-                contact: feed,
-                following: { $is: "boolean" }
-              }
+    channel(channel, opts) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
+            let query = {
+                "$filter": {
+                    value: {
+                        content: { channel }
+                    }
+                }
             }
-          }
-        }
 
+            if (opts.lt) {
+                query.$filter.value.timestamp = { $lt: opts.lt }
+            }
 
-        pull(
-          sbot.query.read({
-            query: [
-              query
-            ],
-            reverse: true
-          }),
-          pull.collect(function (err, data) {
-            if (err) {
-              reject(err)
+            if (sbot) {
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ],
+                        reverse: true
+                    }),
+                    this.filterTypes(),
+                    this.filterWithUserFilters(),
+                    this.filterLimit(),
+                    pull.collect(function (err, data) {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(data)
+                        }
+                    })
+                )
             } else {
-              if (data.length > 0) {
-                resolve(data[0].value.content.following || false)
-              } else {
-                resolve(false)
-              }
+                reject("no sbot")
             }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
+        })
+    }
 
-  blocking(feed, byWhom) {
-    return new Promise((resolve, reject) => {
-      let pull = hermiebox.modules.pullStream
-      let sbot = hermiebox.sbot || false
+    channelSubscribe(channel) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
 
-      if (sbot) {
-        if (!byWhom) {
-          byWhom = sbot.id
-        }
-
-        let query = {
-          "$filter": {
-            value: {
-              author: byWhom,
-              content: {
-                type: "contact",
-                contact: feed,
-                blocking: { $is: "boolean" }
-              }
+            const msgToPost = {
+                "type": "channel",
+                "channel": channel,
+                "subscribed": true
             }
-          }
-        }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
+        })
+    }
+
+    channelUnsubscribe(channel) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
+
+            const msgToPost = {
+                "type": "channel",
+                "channel": channel,
+                "subscribed": false
+            }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
+        })
+    }
+
+    channelSubscribed(channel, feed) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
+
+            if (sbot) {
+                if (!feed) {
+                    feed = sbot.id
+                }
+
+                let query = {
+                    "$filter": {
+                        value: {
+                            author: feed,
+                            content: {
+                                type: "channel",
+                                channel
+                            }
+                        }
+                    }
+                }
 
 
-        pull(
-          sbot.query.read({
-            query: [
-              query
-            ],
-            reverse: true
-          }),
-          pull.collect(function (err, data) {
-            if (err) {
-              reject(err)
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ],
+                        reverse: true
+                    }),
+                    pull.collect(function (err, data) {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            if (data.length > 0) {
+                                resolve(data[0].value.content.subscribed || false)
+                            } else {
+                                resolve(false)
+                            }
+                        }
+                    })
+                )
             } else {
-              if (data.length > 0) {
-                resolve(data[0].value.content.blocking || false)
-              } else {
-                resolve(false)
-              }
+                reject("no sbot")
             }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
+        })
+    }
 
-  query(filter, reverse, map, reduce) {
-    return new Promise((resolve, reject) => {
-      if (sbot) {
+    subscribedChannels(channel, feed) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
 
-        let query = {
-          "$filter": filter
-        }
+            if (sbot) {
+                if (!feed) {
+                    feed = sbot.id
+                }
 
-        if (map) {
-          query.$map = map
-        }
+                let query = {
+                    "$filter": {
+                        value: {
+                            author: feed,
+                            content: {
+                                type: "channel"
+                            }
+                        }
+                    },
+                    "$map": {
+                        channel: ["value", "content", "channel"],
+                        subscribed: ["value", "content", "subscribed"]
+                    },
+                    "$sort": [["value", "timestamp"]]
+                }
 
-        if (reduce) {
-          query.$reduce = reduce
-        }
 
-        if (typeof reverse == "undefined") {
-          reverse = true
-        }
-
-        pull(
-          sbot.query.read({
-            query: [
-              query
-            ],
-            reverse: reverse
-          }),
-          this.filterTypes(),
-          this.filterLimit(),
-          pull.collect( (err, data) => {
-            if (err) {
-              reject(err)
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ],
+                        reverse: true
+                    }),
+                    pull.collect(function (err, data) {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(data)
+                        }
+                    })
+                )
             } else {
-              resolve(data)
+                reject("no sbot")
             }
-          })
-        )
-      } else {
-        reject("no sbot")
-      }
-    })
-  }
+        })
+    }
+
+    follow(feed) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
+
+            const msgToPost = {
+                "type": "contact",
+                "contact": feed,
+                "following": true
+            }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
+        })
+    }
+
+    unfollow(feed) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
+
+            const msgToPost = {
+                "type": "contact",
+                "contact": feed,
+                "following": false
+            }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
+        })
+    }
+
+    block(feed) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
+
+            const msgToPost = {
+                "type": "contact",
+                "contact": feed,
+                "blocking": true
+            }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
+        })
+    }
+
+    unblock(feed) {
+        return new Promise((resolve, reject) => {
+            const sbot = hermiebox.sbot || false
+
+            const msgToPost = {
+                "type": "contact",
+                "contact": feed,
+                "blocking": false
+            }
+
+            if (sbot) {
+                sbot.publish(msgToPost, function (err, msg) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msg)
+                    }
+                })
+            }
+        })
+    }
+
+    following(feed, byWhom) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
+
+            if (sbot) {
+                if (!byWhom) {
+                    byWhom = sbot.id
+                }
+
+                let query = {
+                    "$filter": {
+                        value: {
+                            author: byWhom,
+                            content: {
+                                type: "contact",
+                                contact: feed,
+                                following: { $is: "boolean" }
+                            }
+                        }
+                    }
+                }
+
+
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ],
+                        reverse: true
+                    }),
+                    pull.collect(function (err, data) {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            if (data.length > 0) {
+                                resolve(data[0].value.content.following || false)
+                            } else {
+                                resolve(false)
+                            }
+                        }
+                    })
+                )
+            } else {
+                reject("no sbot")
+            }
+        })
+    }
+
+    blocking(feed, byWhom) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
+
+            if (sbot) {
+                if (!byWhom) {
+                    byWhom = sbot.id
+                }
+
+                let query = {
+                    "$filter": {
+                        value: {
+                            author: byWhom,
+                            content: {
+                                type: "contact",
+                                contact: feed,
+                                blocking: { $is: "boolean" }
+                            }
+                        }
+                    }
+                }
+
+
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ],
+                        reverse: true
+                    }),
+                    pull.collect(function (err, data) {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            if (data.length > 0) {
+                                resolve(data[0].value.content.blocking || false)
+                            } else {
+                                resolve(false)
+                            }
+                        }
+                    })
+                )
+            } else {
+                reject("no sbot")
+            }
+        })
+    }
+
+    query(filter, reverse, map, reduce) {
+        return new Promise((resolve, reject) => {
+            if (sbot) {
+
+                let query = {
+                    "$filter": filter
+                }
+
+                if (map) {
+                    query.$map = map
+                }
+
+                if (reduce) {
+                    query.$reduce = reduce
+                }
+
+                if (typeof reverse == "undefined") {
+                    reverse = true
+                }
+
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ],
+                        reverse: reverse
+                    }),
+                    this.filterTypes(),
+                    this.filterLimit(),
+                    pull.collect((err, data) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(data)
+                        }
+                    })
+                )
+            } else {
+                reject("no sbot")
+            }
+        })
+    }
 }
 
 
@@ -8250,8 +8275,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPref", function() { return getPref; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setConnectionConfiguration", function() { return setConnectionConfiguration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPref", function() { return setPref; });
-/* harmony import */ var svelte_store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/store */ "./node_modules/svelte/store.mjs");
-/* harmony import */ var _ssb_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ssb.js */ "./src/ui/ssb.js");
+/* harmony import */ var svelte_store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/store */ "./node_modules/svelte/store/index.mjs");
+/* harmony import */ var _ssb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ssb */ "./src/ui/ssb.js");
 /* harmony import */ var query_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! query-string */ "./node_modules/query-string/index.js");
 /* harmony import */ var query_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(query_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _views_Public_svelte__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./views/Public.svelte */ "./src/ui/views/Public.svelte");
@@ -8391,7 +8416,7 @@ const loadConfiguration = async () => {
 
 const connect = async () => {
   console.log("Connecting to sbot...")
-  window.ssb = new _ssb_js__WEBPACK_IMPORTED_MODULE_1__["SSB"]();
+  window.ssb = new _ssb__WEBPACK_IMPORTED_MODULE_1__["SSB"]();
 
   try {
     await ssb.connect(savedData.keys)
@@ -8406,7 +8431,7 @@ const connect = async () => {
 const reconnect = () => {
   return new Promise((resolve, reject) => {
     const tryConnect = (data) => {
-      window.ssb = new _ssb_js__WEBPACK_IMPORTED_MODULE_1__["SSB"]();
+      window.ssb = new _ssb__WEBPACK_IMPORTED_MODULE_1__["SSB"]();
 
       ssb
         .connect(data.keys)
@@ -8483,18 +8508,19 @@ const setPref = (key, value) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _messageTypes_MessageRenderer_svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../messageTypes/MessageRenderer.svelte */ "./src/ui/messageTypes/MessageRenderer.svelte");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
-/* src\ui\views\Channel.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Channel.svelte generated by Svelte v3.7.1 */
 
+const { Object: Object_1 } = svelte_internal__WEBPACK_IMPORTED_MODULE_0__["globals"];
 
 
 
 
 function get_each_context(ctx, list, i) {
-	const child_ctx = Object.create(ctx);
+	const child_ctx = Object_1.create(ctx);
 	child_ctx.msg = list[i];
 	return child_ctx;
 }
@@ -8508,7 +8534,7 @@ function create_if_block_1(ctx) {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("Error: ");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.error);
-			div.className = "toast toast-error";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-error");
 		},
 
 		m(target, anchor) {
@@ -8561,11 +8587,11 @@ function create_else_block(ctx) {
 			li1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("li");
 			a1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			a1.innerHTML = `<div class="page-item-subtitle">Next</div>`;
-			a0.href = "#/public";
-			li0.className = "page-item page-previous";
-			a1.href = "#/public";
-			li1.className = "page-item page-next";
-			ul.className = "pagination";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li0, "class", "page-item page-previous");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a1, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li1, "class", "page-item page-next");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(ul, "class", "pagination");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a0, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goPrevious))),
@@ -8577,7 +8603,7 @@ function create_else_block(ctx) {
 			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].m(target, anchor);
 
 			if (each_1_else) {
-				each_1_else.m(target, null);
+				each_1_else.m(target, anchor);
 			}
 
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, t0, anchor);
@@ -8611,13 +8637,13 @@ function create_else_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+			for (var i = 0; i < each_value.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(each_blocks[i]);
 
 			current = true;
 		},
 
 		o(local) {
-			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+			for (i = 0; i < each_blocks.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(each_blocks[i]);
 
 			current = false;
 		},
@@ -8644,7 +8670,7 @@ function create_if_block(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "loading loading-lg";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading loading-lg");
 		},
 
 		m(target, anchor) {
@@ -8716,13 +8742,13 @@ function create_each_block(key_1, ctx) {
 
 		i(local) {
 			if (current) return;
-			messagerenderer.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(messagerenderer.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			messagerenderer.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(messagerenderer.$$.fragment, local);
 			current = false;
 		},
 
@@ -8731,7 +8757,7 @@ function create_each_block(key_1, ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(first);
 			}
 
-			messagerenderer.$destroy(detaching);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(messagerenderer, detaching);
 		}
 	};
 }
@@ -8779,15 +8805,15 @@ function create_fragment(ctx) {
 			t8 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block1.c();
 			if_block1_anchor = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["empty"])();
-			div0.className = "column";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "column");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "checkbox");
-			i.className = "form-icon";
-			label.className = "form-switch float-right";
-			button.className = "btn btn-link float-right";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label, "class", "form-switch float-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn btn-link float-right");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "href", button_href_value = "?channel=" + ctx.channel + "#/compose");
-			div1.className = "column";
-			div2.className = "columns";
-			div3.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "column");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "columns");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "container");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "change", ctx.input_change_handler),
@@ -8846,11 +8872,9 @@ function create_fragment(ctx) {
 				if_blocks[current_block_type_index].p(changed, ctx);
 			} else {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_blocks[previous_block_index].d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_blocks[previous_block_index], 1, 1, () => {
 					if_blocks[previous_block_index] = null;
 				});
-				if_block1.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 
 				if_block1 = if_blocks[current_block_type_index];
@@ -8858,19 +8882,19 @@ function create_fragment(ctx) {
 					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block1.c();
 				}
-				if_block1.i(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1, 1);
 				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
 			}
 		},
 
 		i(local) {
 			if (current) return;
-			if (if_block1) if_block1.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1);
 			current = true;
 		},
 
 		o(local) {
-			if (if_block1) if_block1.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block1);
 			current = false;
 		},
 
@@ -8900,7 +8924,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $routeParams;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
 	
 
@@ -8998,11 +9022,7 @@ class Channel extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Channel);
-
 
 /***/ }),
 
@@ -9015,11 +9035,11 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_views_Channels_svelte_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/ui/views/Channels.svelte.css */ "./src/ui/views/Channels.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_views_Channels_svelte_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_views_Channels_svelte_css__WEBPACK_IMPORTED_MODULE_2__);
-/* src\ui\views\Channels.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Channels.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -9101,7 +9121,7 @@ function create_if_block(ctx) {
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			p = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("p");
 			p.textContent = "This is a complex query, it might take a while... Channels will appear as we find them";
-			div.className = "loading";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading");
 		},
 
 		m(target, anchor) {
@@ -9136,7 +9156,7 @@ function create_each_block(ctx) {
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("#");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(t1_value);
 			t2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
-			span.className = "channel label label-secondary m-1 svelte-1or0a5q";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(span, "class", "channel label label-secondary m-1 svelte-1or0a5q");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(span, "click", click_handler);
 		},
 
@@ -9283,11 +9303,7 @@ class Channels extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompo
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Channels);
-
 
 
 
@@ -9332,16 +9348,16 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
 /* harmony import */ var drag_and_drop_files__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! drag-and-drop-files */ "./node_modules/drag-and-drop-files/ondrop.js");
 /* harmony import */ var drag_and_drop_files__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(drag_and_drop_files__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var svelte_transition__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! svelte/transition */ "./node_modules/svelte/transition.mjs");
+/* harmony import */ var svelte_transition__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! svelte/transition */ "./node_modules/svelte/transition/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var _parts_AvatarChip_svelte__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../parts/AvatarChip.svelte */ "./src/ui/parts/AvatarChip.svelte");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_views_Compose_svelte_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./src/ui/views/Compose.svelte.css */ "./src/ui/views/Compose.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_views_Compose_svelte_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_views_Compose_svelte_css__WEBPACK_IMPORTED_MODULE_6__);
-/* src\ui\views\Compose.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Compose.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -9358,7 +9374,7 @@ function create_if_block_12(ctx) {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("You are forking: ");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.fork);
-			div.className = "toast toast-warning";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-warning");
 		},
 
 		m(target, anchor) {
@@ -9433,9 +9449,9 @@ function create_else_block_1(ctx) {
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("Your message has been posted. Do you want to\r\n            ");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("Check it out?");
-			a.target = "_blank";
-			a.href = a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread";
-			div.className = "toast toast-success";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "target", "_blank");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-success");
 		},
 
 		m(target, anchor) {
@@ -9447,7 +9463,7 @@ function create_else_block_1(ctx) {
 
 		p(changed, ctx) {
 			if ((changed.msg) && a_href_value !== (a_href_value = "?thread=" + ctx.encodeURIComponent(ctx.msg.key) + "#/thread")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -9467,7 +9483,7 @@ function create_if_block_11(ctx) {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.msg);
-			div.className = "toast toast-error";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-error");
 		},
 
 		m(target, anchor) {
@@ -9491,7 +9507,7 @@ function create_if_block_11(ctx) {
 
 // (301:6) {:else}
 function create_else_block(ctx) {
-	var div4, h2, t1, t2, raw_value = ctx.ssb.markdown(ctx.content), raw_before, raw_after, t3, div0, t4, div3, div1, t6, div2, button0, t8, button1, dispose;
+	var div4, h2, t1, t2, html_tag, raw_value = ctx.ssb.markdown(ctx.content), t3, div0, t4, div3, div1, t6, div2, button0, t8, button1, dispose;
 
 	var if_block = (ctx.channel || ctx.root || ctx.branch || ctx.contentWarning.length > 0) && create_if_block_5(ctx);
 
@@ -9503,8 +9519,6 @@ function create_else_block(ctx) {
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if (if_block) if_block.c();
 			t2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
-			raw_before = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
-			raw_after = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])('noscript');
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			div0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
@@ -9520,14 +9534,15 @@ function create_else_block(ctx) {
 			t8 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			button1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button1.textContent = "Post";
-			div0.className = "divider";
-			div1.className = "column col-md-12 col-lg-10";
-			button0.className = "btn";
-			button1.className = "btn btn-primary";
+			html_tag = new svelte_internal__WEBPACK_IMPORTED_MODULE_0__["HtmlTag"](raw_value, t3);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "divider");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "column col-md-12 col-lg-10");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button0, "class", "btn");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button1, "class", "btn btn-primary");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(button1, "loading", ctx.posting);
-			div2.className = "column col-md-12 col-lg-2";
-			div3.className = "columns";
-			div4.className = "column col-md-12";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "column col-md-12 col-lg-2");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "columns");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div4, "class", "column col-md-12");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button0, "click", ctx.click_handler),
@@ -9541,9 +9556,7 @@ function create_else_block(ctx) {
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, t1);
 			if (if_block) if_block.m(div4, null);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, t2);
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, raw_before);
-			raw_before.insertAdjacentHTML("afterend", raw_value);
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, raw_after);
+			html_tag.m(div4);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, t3);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, div0);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, t4);
@@ -9571,8 +9584,7 @@ function create_else_block(ctx) {
 			}
 
 			if ((changed.content) && raw_value !== (raw_value = ctx.ssb.markdown(ctx.content))) {
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach_between"])(raw_before, raw_after);
-				raw_before.insertAdjacentHTML("afterend", raw_value);
+				html_tag.p(raw_value);
 			}
 
 			if (changed.posting) {
@@ -9638,27 +9650,27 @@ function create_if_block(ctx) {
 			t14 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			button2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button2.textContent = "Preview";
-			label0.className = "form-label";
-			label0.htmlFor = "channel";
-			input0.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label0, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label0, "for", "channel");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "type", "text");
-			input0.id = "channel";
-			input0.placeholder = "channel";
-			label1.className = "form-label";
-			label1.htmlFor = "content";
-			textarea.className = "form-input svelte-olsuyr";
-			textarea.id = "content";
-			textarea.placeholder = "Type in your post";
-			textarea.rows = "10";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "id", "channel");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "placeholder", "channel");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label1, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label1, "for", "content");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "class", "form-input svelte-olsuyr");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "id", "content");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "placeholder", "Type in your post");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "rows", "10");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["toggle_class"])(textarea, "file-on-top", ctx.fileOnTop);
-			button0.className = "btn btn-link";
-			div0.className = "d-block m-2";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button0, "class", "btn btn-link");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "d-block m-2");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "type", "file");
-			input1.id = "fileInput";
-			input1.className = "svelte-olsuyr";
-			button1.className = "btn";
-			button2.className = "btn btn-primary float-right";
-			div1.className = "form-group";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "id", "fileInput");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "class", "svelte-olsuyr");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button1, "class", "btn");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button2, "class", "btn btn-primary float-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "form-group");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input0, "input", ctx.input0_input_handler),
@@ -9726,21 +9738,18 @@ function create_if_block(ctx) {
 			if (ctx.replyfeed) {
 				if (if_block1) {
 					if_block1.p(changed, ctx);
-					if_block1.i(1);
+					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1, 1);
 				} else {
 					if_block1 = create_if_block_3(ctx);
 					if_block1.c();
-					if_block1.i(1);
+					Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1, 1);
 					if_block1.m(div1, t4);
 				}
 			} else if (if_block1) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_block1.d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block1, 1, 1, () => {
 					if_block1 = null;
 				});
-
-				if_block1.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 			}
 
@@ -9764,9 +9773,7 @@ function create_if_block(ctx) {
 			}
 
 			if (ctx.ipfsDaemonRunning) {
-				if (if_block3) {
-					if_block3.p(changed, ctx);
-				} else {
+				if (!if_block3) {
 					if_block3 = create_if_block_1(ctx);
 					if_block3.c();
 					if_block3.m(div1, t14);
@@ -9779,7 +9786,7 @@ function create_if_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			if (if_block1) if_block1.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1);
 
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["add_render_callback"])(() => {
 				if (div1_outro) div1_outro.end(1);
@@ -9791,12 +9798,10 @@ function create_if_block(ctx) {
 		},
 
 		o(local) {
-			if (if_block1) if_block1.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block1);
 			if (div1_intro) div1_intro.invalidate();
 
-			if (local) {
-				div1_outro = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["create_out_transition"])(div1, svelte_transition__WEBPACK_IMPORTED_MODULE_3__["slide"], {});
-			}
+			div1_outro = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["create_out_transition"])(div1, svelte_transition__WEBPACK_IMPORTED_MODULE_3__["slide"], {});
 
 			current = false;
 		},
@@ -10064,12 +10069,12 @@ function create_if_block_4(ctx) {
 			label.textContent = "In reply to";
 			t_1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			input = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("input");
-			label.className = "form-label";
-			label.htmlFor = "reply-to";
-			input.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label, "for", "reply-to");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "text");
-			input.id = "reply-to";
-			input.placeholder = "in reply to";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "id", "reply-to");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "placeholder", "in reply to");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "input", ctx.input_input_handler);
 		},
 
@@ -10110,7 +10115,7 @@ function create_if_block_3(ctx) {
 			span = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("span");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("Click the avatar to add a link to the message:\r\n                ");
 			avatarchip.$$.fragment.c();
-			div.className = "mt-2";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "mt-2");
 		},
 
 		m(target, anchor) {
@@ -10129,13 +10134,13 @@ function create_if_block_3(ctx) {
 
 		i(local) {
 			if (current) return;
-			avatarchip.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(avatarchip.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			avatarchip.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(avatarchip.$$.fragment, local);
 			current = false;
 		},
 
@@ -10144,7 +10149,7 @@ function create_if_block_3(ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(div);
 			}
 
-			avatarchip.$destroy();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(avatarchip);
 		}
 	};
 }
@@ -10157,8 +10162,8 @@ function create_if_block_2(ctx) {
 		c() {
 			input = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "text");
-			input.size = "50";
-			input.placeholder = "Describe your content warning (leave empty to no use it)";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "size", "50");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "placeholder", "Describe your content warning (leave empty to no use it)");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "input", ctx.input_input_handler_1);
 		},
 
@@ -10193,9 +10198,9 @@ function create_if_block_1(ctx) {
 			button = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button.textContent = "Attach File using IPFS";
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "file");
-			input.id = "fileInputIPFS";
-			input.className = "svelte-olsuyr";
-			button.className = "btn";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "id", "fileInputIPFS");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "class", "svelte-olsuyr");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input, "input", ctx.attachFileIPFS),
@@ -10208,8 +10213,6 @@ function create_if_block_1(ctx) {
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, t, anchor);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["insert"])(target, button, anchor);
 		},
-
-		p: svelte_internal__WEBPACK_IMPORTED_MODULE_0__["noop"],
 
 		d(detaching) {
 			if (detaching) {
@@ -10255,9 +10258,9 @@ function create_fragment(ctx) {
 			if (if_block1) if_block1.c();
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block2.c();
-			div0.className = "column";
-			div1.className = "columns";
-			div2.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "column");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "columns");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "container");
 		},
 
 		m(target, anchor) {
@@ -10305,11 +10308,9 @@ function create_fragment(ctx) {
 				if_blocks[current_block_type_index].p(changed, ctx);
 			} else {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_blocks[previous_block_index].d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_blocks[previous_block_index], 1, 1, () => {
 					if_blocks[previous_block_index] = null;
 				});
-				if_block2.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 
 				if_block2 = if_blocks[current_block_type_index];
@@ -10317,19 +10318,19 @@ function create_fragment(ctx) {
 					if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block2.c();
 				}
-				if_block2.i(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block2, 1);
 				if_block2.m(div0, null);
 			}
 		},
 
 		i(local) {
 			if (current) return;
-			if (if_block2) if_block2.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block2);
 			current = true;
 		},
 
 		o(local) {
-			if (if_block2) if_block2.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block2);
 			current = false;
 		},
 
@@ -10348,7 +10349,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $routeParams;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_4__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_4__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
 	
 
@@ -10620,11 +10621,7 @@ class Compose extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Compose);
-
 
 
 
@@ -10669,8 +10666,8 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
-/* src\ui\views\Default.svelte generated by Svelte v3.4.4 */
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
+/* src\ui\views\Default.svelte generated by Svelte v3.7.1 */
 
 
 function create_fragment(ctx) {
@@ -10679,7 +10676,7 @@ function create_fragment(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "empty";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "empty");
 		},
 
 		m(target, anchor) {
@@ -10705,11 +10702,7 @@ class Default extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Default);
-
 
 /***/ }),
 
@@ -10722,9 +10715,9 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\views\ErrorView.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\ErrorView.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -10736,7 +10729,7 @@ function create_if_block_1(ctx) {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.msg);
-			div.className = div_class_value = "toast " + ctx.toastClass;
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", div_class_value = "toast " + ctx.toastClass);
 		},
 
 		m(target, anchor) {
@@ -10750,7 +10743,7 @@ function create_if_block_1(ctx) {
 			}
 
 			if ((changed.toastClass) && div_class_value !== (div_class_value = "toast " + ctx.toastClass)) {
-				div.className = div_class_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", div_class_value);
 			}
 		},
 
@@ -10771,7 +10764,7 @@ function create_if_block(ctx) {
 			li = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("li");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(t_value);
-			a.href = "#";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", "#");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.cta.action)));
 		},
 
@@ -10836,8 +10829,8 @@ function create_fragment(ctx) {
 			      </a>
 			      to the Patchfox repository.
 			    `;
-			pre.className = "code";
-			div.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(pre, "class", "code");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "container");
 		},
 
 		m(target, anchor) {
@@ -10911,7 +10904,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $routeParams;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_1__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_1__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
 	document.title = `Patchfox - Error`;
 
@@ -10967,11 +10960,7 @@ class ErrorView extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteComp
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (ErrorView);
-
 
 /***/ }),
 
@@ -10984,11 +10973,11 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _messageTypes_MessageRenderer_svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../messageTypes/MessageRenderer.svelte */ "./src/ui/messageTypes/MessageRenderer.svelte");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
-/* src\ui\views\Mentions.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Mentions.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -11027,14 +11016,14 @@ function create_else_block(ctx) {
 			li1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("li");
 			a1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			a1.innerHTML = `<div class="page-item-subtitle">Next</div>`;
-			a0.href = "#/public";
-			li0.className = "page-item page-previous";
-			a1.href = "#/public";
-			li1.className = "page-item page-next";
-			ul.className = "pagination";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li0, "class", "page-item page-previous");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a1, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li1, "class", "page-item page-next");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(ul, "class", "pagination");
 
 			dispose = [
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a0, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.click_handler))),
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a0, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(click_handler))),
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a1, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.click_handler_1)))
 			];
 		},
@@ -11062,13 +11051,13 @@ function create_else_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+			for (var i = 0; i < each_value.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(each_blocks[i]);
 
 			current = true;
 		},
 
 		o(local) {
-			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+			for (i = 0; i < each_blocks.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(each_blocks[i]);
 
 			current = false;
 		},
@@ -11093,7 +11082,7 @@ function create_if_block(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "loading loading-lg";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading loading-lg");
 		},
 
 		m(target, anchor) {
@@ -11143,13 +11132,13 @@ function create_each_block(key_1, ctx) {
 
 		i(local) {
 			if (current) return;
-			messagerenderer.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(messagerenderer.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			messagerenderer.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(messagerenderer.$$.fragment, local);
 			current = false;
 		},
 
@@ -11158,7 +11147,7 @@ function create_each_block(key_1, ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(first);
 			}
 
-			messagerenderer.$destroy(detaching);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(messagerenderer, detaching);
 		}
 	};
 }
@@ -11184,12 +11173,11 @@ function create_fragment(ctx) {
 	return {
 		c() {
 			div_2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div_2.innerHTML = `<div class="columns"><h4 class="column">Mentions</h4>
-			    <div class="column"></div></div>`;
+			div_2.innerHTML = `<div class="columns"><h4 class="column">Mentions</h4> <div class="column"></div></div>`;
 			t_2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block.c();
 			if_block_anchor = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["empty"])();
-			div_2.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div_2, "class", "container");
 		},
 
 		m(target, anchor) {
@@ -11207,11 +11195,9 @@ function create_fragment(ctx) {
 				if_blocks[current_block_type_index].p(changed, ctx);
 			} else {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_blocks[previous_block_index].d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_blocks[previous_block_index], 1, 1, () => {
 					if_blocks[previous_block_index] = null;
 				});
-				if_block.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 
 				if_block = if_blocks[current_block_type_index];
@@ -11219,19 +11205,19 @@ function create_fragment(ctx) {
 					if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block.c();
 				}
-				if_block.i(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block, 1);
 				if_block.m(if_block_anchor.parentNode, if_block_anchor);
 			}
 		},
 
 		i(local) {
 			if (current) return;
-			if (if_block) if_block.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block);
 			current = true;
 		},
 
 		o(local) {
-			if (if_block) if_block.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block);
 			current = false;
 		},
 
@@ -11248,6 +11234,10 @@ function create_fragment(ctx) {
 			}
 		}
 	};
+}
+
+function click_handler() {
+	return history.back();
 }
 
 function instance($$self, $$props, $$invalidate) {
@@ -11290,15 +11280,11 @@ function instance($$self, $$props, $$invalidate) {
     });
   });
 
-	function click_handler() {
-		return history.back();
-	}
-
 	function click_handler_1() {
 	          Object(_utils_js__WEBPACK_IMPORTED_MODULE_2__["navigate"])('/mentions', { lt: msgs[msgs.length - 1].rts });
 	        }
 
-	return { msgs, click_handler, click_handler_1 };
+	return { msgs, click_handler_1 };
 }
 
 class Mentions extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteComponent"] {
@@ -11308,11 +11294,7 @@ class Mentions extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompo
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Mentions);
-
 
 /***/ }),
 
@@ -11325,10 +11307,10 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _messageTypes_MessageRenderer_svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../messageTypes/MessageRenderer.svelte */ "./src/ui/messageTypes/MessageRenderer.svelte");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\views\Profile.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Profile.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -11377,12 +11359,13 @@ function create_then_block(ctx) {
 	let info = {
 		ctx,
 		current: null,
+		token: null,
 		pending: create_pending_block_1,
 		then: create_then_block_1,
 		catch: create_catch_block,
 		value: 'data',
 		error: 'n',
-		blocks: Array(3)
+		blocks: [,,,]
 	};
 
 	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["handle_promise"])(promise = ctx.messagePromise, info);
@@ -11408,13 +11391,13 @@ function create_then_block(ctx) {
 			div4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 
 			info.block.c();
-			img.className = "img-responsive";
-			img.src = img_src_value = "http://localhost:8989/blobs/get/" + ctx.image;
-			img.alt = ctx.feed;
-			div0.className = "container";
-			div1.className = "column col-6";
-			div2.className = "column col-6";
-			div3.className = "columns";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "class", "img-responsive");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", img_src_value = "http://localhost:8989/blobs/get/" + ctx.image);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "alt", ctx.feed);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "container");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "column col-6");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "column col-6");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "columns");
 		},
 
 		m(target, anchor) {
@@ -11447,11 +11430,11 @@ function create_then_block(ctx) {
 		p(changed, new_ctx) {
 			ctx = new_ctx;
 			if ((!current || changed.image) && img_src_value !== (img_src_value = "http://localhost:8989/blobs/get/" + ctx.image)) {
-				img.src = img_src_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "src", img_src_value);
 			}
 
 			if (!current || changed.feed) {
-				img.alt = ctx.feed;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(img, "alt", ctx.feed);
 			}
 
 			if (!current || changed.name) {
@@ -11490,14 +11473,14 @@ function create_then_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			info.block.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(info.block);
 			current = true;
 		},
 
 		o(local) {
 			for (let i = 0; i < 3; i += 1) {
 				const block = info.blocks[i];
-				if (block) block.o();
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(block);
 			}
 
 			current = false;
@@ -11516,6 +11499,7 @@ function create_then_block(ctx) {
 			}
 
 			info.block.d();
+			info.token = null;
 			info = null;
 		}
 	};
@@ -11544,16 +11528,16 @@ function create_if_block(ctx) {
 			t5 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("\r\n                blocking");
 			t6 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			div2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div0.className = "divider";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "divider");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "type", "checkbox");
-			i0.className = "form-icon";
-			label0.className = "form-switch form-inline";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i0, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label0, "class", "form-switch form-inline");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "type", "checkbox");
-			i1.className = "form-icon";
-			label1.className = "form-switch form-inline";
-			div1.className = "form-group";
-			div2.className = "divider";
-			div3.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i1, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label1, "class", "form-switch form-inline");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "form-group");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "divider");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "container");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input0, "change", ctx.input0_change_handler),
@@ -11661,9 +11645,9 @@ function create_then_block_1(ctx) {
 			li = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("li");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			a.innerHTML = `<div class="page-item-subtitle">Load More</div>`;
-			a.href = "#/public";
-			li.className = "page-item page-next";
-			ul.className = "pagination";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li, "class", "page-item page-next");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(ul, "class", "pagination");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.click_handler)));
 		},
 
@@ -11687,13 +11671,13 @@ function create_then_block_1(ctx) {
 
 		i(local) {
 			if (current) return;
-			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+			for (var i = 0; i < each_value.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(each_blocks[i]);
 
 			current = true;
 		},
 
 		o(local) {
-			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+			for (i = 0; i < each_blocks.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(each_blocks[i]);
 
 			current = false;
 		},
@@ -11742,13 +11726,13 @@ function create_each_block(key_1, ctx) {
 
 		i(local) {
 			if (current) return;
-			messagerenderer.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(messagerenderer.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			messagerenderer.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(messagerenderer.$$.fragment, local);
 			current = false;
 		},
 
@@ -11757,7 +11741,7 @@ function create_each_block(key_1, ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(first);
 			}
 
-			messagerenderer.$destroy(detaching);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(messagerenderer, detaching);
 		}
 	};
 }
@@ -11769,7 +11753,7 @@ function create_pending_block_1(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "loading";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading");
 		},
 
 		m(target, anchor) {
@@ -11795,7 +11779,7 @@ function create_pending_block(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "loading loading-lg";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading loading-lg");
 		},
 
 		m(target, anchor) {
@@ -11820,12 +11804,13 @@ function create_fragment(ctx) {
 	let info = {
 		ctx,
 		current: null,
+		token: null,
 		pending: create_pending_block,
 		then: create_then_block,
 		catch: create_catch_block_1,
 		value: 'null',
 		error: 'n',
-		blocks: Array(3)
+		blocks: [,,,]
 	};
 
 	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["handle_promise"])(promise = ctx.aboutPromise && ctx.avatarPromise, info);
@@ -11835,7 +11820,7 @@ function create_fragment(ctx) {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 
 			info.block.c();
-			div.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "container");
 		},
 
 		m(target, anchor) {
@@ -11861,14 +11846,14 @@ function create_fragment(ctx) {
 
 		i(local) {
 			if (current) return;
-			info.block.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(info.block);
 			current = true;
 		},
 
 		o(local) {
 			for (let i = 0; i < 3; i += 1) {
 				const block = info.blocks[i];
-				if (block) block.o();
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(block);
 			}
 
 			current = false;
@@ -11880,6 +11865,7 @@ function create_fragment(ctx) {
 			}
 
 			info.block.d();
+			info.token = null;
 			info = null;
 		}
 	};
@@ -11890,7 +11876,7 @@ let profile = false;
 function instance($$self, $$props, $$invalidate) {
 	let $routeParams;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
 	
 
@@ -12032,11 +12018,7 @@ class Profile extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompon
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Profile);
-
 
 /***/ }),
 
@@ -12049,18 +12031,19 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _messageTypes_MessageRenderer_svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../messageTypes/MessageRenderer.svelte */ "./src/ui/messageTypes/MessageRenderer.svelte");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
-/* src\ui\views\Public.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Public.svelte generated by Svelte v3.7.1 */
 
+const { Object: Object_1 } = svelte_internal__WEBPACK_IMPORTED_MODULE_0__["globals"];
 
 
 
 
 function get_each_context(ctx, list, i) {
-	const child_ctx = Object.create(ctx);
+	const child_ctx = Object_1.create(ctx);
 	child_ctx.msg = list[i];
 	return child_ctx;
 }
@@ -12074,7 +12057,7 @@ function create_if_block_1(ctx) {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("Error: ");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.error);
-			div.className = "toast toast-error";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-error");
 		},
 
 		m(target, anchor) {
@@ -12120,11 +12103,11 @@ function create_else_block(ctx) {
 			li1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("li");
 			a1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			a1.innerHTML = `<div class="page-item-subtitle">Next</div>`;
-			a0.href = "#/public";
-			li0.className = "page-item page-previous";
-			a1.href = "#/public";
-			li1.className = "page-item page-next";
-			ul.className = "pagination";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a0, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li0, "class", "page-item page-previous");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a1, "href", "#/public");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(li1, "class", "page-item page-next");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(ul, "class", "pagination");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(a0, "click", Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["stop_propagation"])(Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["prevent_default"])(ctx.goPrevious))),
@@ -12155,13 +12138,13 @@ function create_else_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+			for (var i = 0; i < each_value.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(each_blocks[i]);
 
 			current = true;
 		},
 
 		o(local) {
-			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+			for (i = 0; i < each_blocks.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(each_blocks[i]);
 
 			current = false;
 		},
@@ -12186,7 +12169,7 @@ function create_if_block(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "loading loading-lg";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading loading-lg");
 		},
 
 		m(target, anchor) {
@@ -12236,13 +12219,13 @@ function create_each_block(key_1, ctx) {
 
 		i(local) {
 			if (current) return;
-			messagerenderer.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(messagerenderer.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			messagerenderer.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(messagerenderer.$$.fragment, local);
 			current = false;
 		},
 
@@ -12251,7 +12234,7 @@ function create_each_block(key_1, ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(first);
 			}
 
-			messagerenderer.$destroy(detaching);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(messagerenderer, detaching);
 		}
 	};
 }
@@ -12279,14 +12262,13 @@ function create_fragment(ctx) {
 	return {
 		c() {
 			div_2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div_2.innerHTML = `<div class="columns"><h4 class="column">Public Feed</h4>
-			    <div class="column"></div></div>`;
+			div_2.innerHTML = `<div class="columns"><h4 class="column">Public Feed</h4> <div class="column"></div></div>`;
 			t2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if (if_block0) if_block0.c();
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block1.c();
 			if_block1_anchor = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["empty"])();
-			div_2.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div_2, "class", "container");
 		},
 
 		m(target, anchor) {
@@ -12319,11 +12301,9 @@ function create_fragment(ctx) {
 				if_blocks[current_block_type_index].p(changed, ctx);
 			} else {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_blocks[previous_block_index].d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_blocks[previous_block_index], 1, 1, () => {
 					if_blocks[previous_block_index] = null;
 				});
-				if_block1.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 
 				if_block1 = if_blocks[current_block_type_index];
@@ -12331,19 +12311,19 @@ function create_fragment(ctx) {
 					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block1.c();
 				}
-				if_block1.i(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1, 1);
 				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
 			}
 		},
 
 		i(local) {
 			if (current) return;
-			if (if_block1) if_block1.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1);
 			current = true;
 		},
 
 		o(local) {
-			if (if_block1) if_block1.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block1);
 			current = false;
 		},
 
@@ -12373,7 +12353,7 @@ let dropdownActive = false;
 function instance($$self, $$props, $$invalidate) {
 	let $routeParams;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
 	
 
@@ -12429,11 +12409,7 @@ class Public extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompone
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Public);
-
 
 /***/ }),
 
@@ -12446,13 +12422,13 @@ if (false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! svelte */ "./node_modules/svelte/index.mjs");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
 /* harmony import */ var _abusePrevention_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../abusePrevention.js */ "./src/ui/abusePrevention.js");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_views_Settings_svelte_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./src/ui/views/Settings.svelte.css */ "./src/ui/views/Settings.svelte.css");
 /* harmony import */ var C_Users_andre_prog_ssbc_patchfox_src_ui_views_Settings_svelte_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(C_Users_andre_prog_ssbc_patchfox_src_ui_views_Settings_svelte_css__WEBPACK_IMPORTED_MODULE_4__);
-/* src\ui\views\Settings.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Settings.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -12471,8 +12447,8 @@ function create_else_block(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.innerHTML = `<p class="label">You don't have any filter yet.</p>`;
-			div.className = "column col-12";
+			div.innerHTML = `<p class="label">You don't have any filter yet.</p> `;
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "column col-12");
 		},
 
 		m(target, anchor) {
@@ -12497,9 +12473,9 @@ function create_if_block_3(ctx) {
 			t0 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("From ");
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(t1_value);
-			a.href = a_href_value = "?feed=" + ctx.filter.feed + "#/profile";
-			a.target = "_blank";
-			a.className = "feed svelte-1e0jkdi";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?feed=" + ctx.filter.feed + "#/profile");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "target", "_blank");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "class", "feed svelte-1e0jkdi");
 		},
 
 		m(target, anchor) {
@@ -12515,7 +12491,7 @@ function create_if_block_3(ctx) {
 			}
 
 			if ((changed.currentFilters) && a_href_value !== (a_href_value = "?feed=" + ctx.filter.feed + "#/profile")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -12538,9 +12514,9 @@ function create_if_block_2(ctx) {
 			a = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("a");
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("#");
 			t2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(t2_value);
-			a.href = a_href_value = "?channel=" + ctx.filter.feed + "#/channel";
-			a.target = "_blank";
-			a.className = "feed svelte-1e0jkdi";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?channel=" + ctx.filter.feed + "#/channel");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "target", "_blank");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "class", "feed svelte-1e0jkdi");
 		},
 
 		m(target, anchor) {
@@ -12557,7 +12533,7 @@ function create_if_block_2(ctx) {
 			}
 
 			if ((changed.currentFilters) && a_href_value !== (a_href_value = "?channel=" + ctx.filter.feed + "#/channel")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 		},
 
@@ -12635,7 +12611,7 @@ function create_if_block(ctx) {
 
 // (362:4) {#each currentFilters as filter}
 function create_each_block(ctx) {
-	var div5, div4, div1, div0, t0_value = ctx.filter.action, t0, t1, div2, ul, t2, t3, t4, t5, div3, button, dispose;
+	var div5, div4, div1, div0, t0_value = ctx.filter.action, t0, t1, div2, ul, t2, t3, t4, t5, div3, button, t7, dispose;
 
 	var if_block0 = (ctx.filter.feed) && create_if_block_3(ctx);
 
@@ -12670,14 +12646,15 @@ function create_each_block(ctx) {
 			div3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
 			button = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("button");
 			button.textContent = "Delete";
-			div0.className = "card-title h5";
-			div1.className = "card-header";
-			div2.className = "card-body";
-			button.className = "btn";
+			t7 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "card-title h5");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "card-header");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "card-body");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "class", "btn");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button, "aria-label", "Delete");
-			div3.className = "card-footer";
-			div4.className = "card filter svelte-1e0jkdi";
-			div5.className = "column col-6";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div3, "class", "card-footer");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div4, "class", "card filter svelte-1e0jkdi");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div5, "class", "column col-6");
 			dispose = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(button, "click", click_handler);
 		},
 
@@ -12700,6 +12677,7 @@ function create_each_block(ctx) {
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, t5);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div4, div3);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div3, button);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["append"])(div5, t7);
 		},
 
 		p(changed, new_ctx) {
@@ -13048,110 +13026,110 @@ function create_fragment(ctx) {
 			br4 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("br");
 			t133 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			br5 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("br");
-			label0.className = "form-label";
-			label0.htmlFor = "secret-file";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label0, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label0, "for", "secret-file");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "type", "file");
-			input0.className = "form-input";
-			input0.id = "secret-file";
-			label1.className = "form-label";
-			label1.htmlFor = "remote";
-			input1.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "class", "form-input");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input0, "id", "secret-file");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label1, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label1, "for", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "type", "text");
-			input1.id = "remote";
-			input1.placeholder = "remote";
-			label2.className = "form-label";
-			label2.htmlFor = "secret";
-			textarea.className = "form-input";
-			textarea.id = "secret";
-			textarea.placeholder = "Your secret";
-			textarea.rows = "8";
-			button0.className = "btn btn-primary float-right";
-			form0.className = "form-group";
-			label3.className = "form-label";
-			label3.htmlFor = "limit";
-			input2.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "id", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input1, "placeholder", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label2, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label2, "for", "secret");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "class", "form-input");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "id", "secret");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "placeholder", "Your secret");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(textarea, "rows", "8");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button0, "class", "btn btn-primary float-right");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(form0, "class", "form-group");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label3, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label3, "for", "limit");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input2, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input2, "type", "number");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input3, "type", "checkbox");
-			i5.className = "form-icon";
-			label4.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i5, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label4, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input4, "type", "checkbox");
-			i6.className = "form-icon";
-			label5.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i6, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label5, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input5, "type", "checkbox");
-			i7.className = "form-icon";
-			label6.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i7, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label6, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input6, "type", "checkbox");
-			i8.className = "form-icon";
-			label7.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i8, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label7, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input7, "type", "checkbox");
-			i9.className = "form-icon";
-			label8.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i9, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label8, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input8, "type", "checkbox");
-			i10.className = "form-icon";
-			label9.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i10, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label9, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input9, "type", "checkbox");
-			i11.className = "form-icon";
-			label10.className = "form-switch";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i11, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label10, "class", "form-switch");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input10, "type", "checkbox");
-			i12.className = "form-icon";
-			label11.className = "form-switch";
-			div0.className = "divider";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i12, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label11, "class", "form-switch");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "divider");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input11, "type", "checkbox");
-			i13.className = "form-icon";
-			label12.className = "form-switch";
-			label13.className = "form-label";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i13, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label12, "class", "form-switch");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label13, "class", "form-label");
 			ctx.$$binding_groups[1].push(input12);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input12, "type", "radio");
-			input12.name = "column-size";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input12, "name", "column-size");
 			input12.__value = "short";
 			input12.value = input12.__value;
-			i14.className = "form-icon";
-			label14.className = "form-radio";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i14, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label14, "class", "form-radio");
 			ctx.$$binding_groups[1].push(input13);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input13, "type", "radio");
-			input13.name = "column-size";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input13, "name", "column-size");
 			input13.__value = "long";
 			input13.value = input13.__value;
-			i15.className = "form-icon";
-			label15.className = "form-radio";
-			form1.className = "form-group";
-			div1.className = "columns";
-			div2.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i15, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label15, "class", "form-radio");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(form1, "class", "form-group");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div1, "class", "columns");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div2, "class", "container");
 			ctx.$$binding_groups[0].push(input14);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input14, "type", "radio");
-			input14.name = "filter-action";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input14, "name", "filter-action");
 			input14.__value = "hide";
 			input14.value = input14.__value;
-			i16.className = "form-icon";
-			label16.className = "form-radio";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i16, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label16, "class", "form-radio");
 			ctx.$$binding_groups[0].push(input15);
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input15, "type", "radio");
-			input15.name = "filter-action";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input15, "name", "filter-action");
 			input15.__value = "blur";
 			input15.value = input15.__value;
-			i17.className = "form-icon";
-			label17.className = "form-radio";
-			label18.className = "form-label";
-			label18.htmlFor = "remote";
-			input16.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(i17, "class", "form-icon");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label17, "class", "form-radio");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label18, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label18, "for", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input16, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input16, "type", "text");
-			input16.placeholder = "Channel";
-			label19.className = "form-label";
-			label19.htmlFor = "remote";
-			input17.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input16, "placeholder", "Channel");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label19, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label19, "for", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input17, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input17, "type", "text");
-			input17.placeholder = "Feed";
-			label20.className = "form-label";
-			label20.htmlFor = "remote";
-			input18.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input17, "placeholder", "Feed");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label20, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label20, "for", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input18, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input18, "type", "text");
-			input18.placeholder = "Keywords separated by commas";
-			label21.className = "form-label";
-			label21.htmlFor = "remote";
-			input19.className = "form-input";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input18, "placeholder", "Keywords separated by commas");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label21, "class", "form-label");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(label21, "for", "remote");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input19, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input19, "type", "date");
-			input19.placeholder = "When should this filter expiry";
-			button1.className = "btn btn-primary";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input19, "placeholder", "When should this filter expiry");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button1, "class", "btn btn-primary");
 
 			dispose = [
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["listen"])(input0, "change", ctx.selectedFile),
@@ -13894,11 +13872,7 @@ class Settings extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompo
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Settings);
-
 
 
 
@@ -13943,10 +13917,10 @@ if(false) {}
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal.mjs");
+/* harmony import */ var svelte_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svelte/internal */ "./node_modules/svelte/internal/index.mjs");
 /* harmony import */ var _messageTypes_MessageRenderer_svelte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../messageTypes/MessageRenderer.svelte */ "./src/ui/messageTypes/MessageRenderer.svelte");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/ui/utils.js");
-/* src\ui\views\Thread.svelte generated by Svelte v3.4.4 */
+/* src\ui\views\Thread.svelte generated by Svelte v3.7.1 */
 
 
 
@@ -13969,8 +13943,8 @@ function create_if_block_1(ctx) {
 			t1 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.msgid);
 			t2 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])("\r\n    : ");
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["text"])(ctx.error);
-			a.href = a_href_value = "?thread=" + ctx.msgid + "#/thread";
-			div.className = "toast toast-error";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value = "?thread=" + ctx.msgid + "#/thread");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "toast toast-error");
 		},
 
 		m(target, anchor) {
@@ -13988,7 +13962,7 @@ function create_if_block_1(ctx) {
 			}
 
 			if ((changed.msgid) && a_href_value !== (a_href_value = "?thread=" + ctx.msgid + "#/thread")) {
-				a.href = a_href_value;
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(a, "href", a_href_value);
 			}
 
 			if (changed.error) {
@@ -14042,13 +14016,13 @@ function create_else_block(ctx) {
 
 		i(local) {
 			if (current) return;
-			for (var i = 0; i < each_value.length; i += 1) each_blocks[i].i();
+			for (var i = 0; i < each_value.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(each_blocks[i]);
 
 			current = true;
 		},
 
 		o(local) {
-			for (i = 0; i < each_blocks.length; i += 1) each_blocks[i].o();
+			for (i = 0; i < each_blocks.length; i += 1) Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(each_blocks[i]);
 
 			current = false;
 		},
@@ -14070,7 +14044,7 @@ function create_if_block(ctx) {
 	return {
 		c() {
 			div = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["element"])("div");
-			div.className = "loading loading-lg";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "loading loading-lg");
 		},
 
 		m(target, anchor) {
@@ -14120,13 +14094,13 @@ function create_each_block(key_1, ctx) {
 
 		i(local) {
 			if (current) return;
-			messagerenderer.$$.fragment.i(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(messagerenderer.$$.fragment, local);
 
 			current = true;
 		},
 
 		o(local) {
-			messagerenderer.$$.fragment.o(local);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(messagerenderer.$$.fragment, local);
 			current = false;
 		},
 
@@ -14135,7 +14109,7 @@ function create_each_block(key_1, ctx) {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["detach"])(first);
 			}
 
-			messagerenderer.$destroy(detaching);
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["destroy_component"])(messagerenderer, detaching);
 		}
 	};
 }
@@ -14172,8 +14146,8 @@ function create_fragment(ctx) {
 			t3 = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["space"])();
 			if_block1.c();
 			if_block1_anchor = Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["empty"])();
-			small.className = "label hide-sm";
-			div.className = "container";
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(small, "class", "label hide-sm");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div, "class", "container");
 		},
 
 		m(target, anchor) {
@@ -14214,11 +14188,9 @@ function create_fragment(ctx) {
 				if_blocks[current_block_type_index].p(changed, ctx);
 			} else {
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["group_outros"])();
-				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["on_outro"])(() => {
-					if_blocks[previous_block_index].d(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_blocks[previous_block_index], 1, 1, () => {
 					if_blocks[previous_block_index] = null;
 				});
-				if_block1.o(1);
 				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["check_outros"])();
 
 				if_block1 = if_blocks[current_block_type_index];
@@ -14226,19 +14198,19 @@ function create_fragment(ctx) {
 					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 					if_block1.c();
 				}
-				if_block1.i(1);
+				Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1, 1);
 				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
 			}
 		},
 
 		i(local) {
 			if (current) return;
-			if (if_block1) if_block1.i();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_in"])(if_block1);
 			current = true;
 		},
 
 		o(local) {
-			if (if_block1) if_block1.o();
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["transition_out"])(if_block1);
 			current = false;
 		},
 
@@ -14266,7 +14238,7 @@ function create_fragment(ctx) {
 function instance($$self, $$props, $$invalidate) {
 	let $routeParams;
 
-	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
+	Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["component_subscribe"])($$self, _utils_js__WEBPACK_IMPORTED_MODULE_2__["routeParams"], $$value => { $routeParams = $$value; $$invalidate('$routeParams', $routeParams); });
 
 	
   let msgs = false;
@@ -14304,11 +14276,7 @@ class Thread extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__["SvelteCompone
 	}
 }
 
-
-if (false) {}
-
 /* harmony default export */ __webpack_exports__["default"] = (Thread);
-
 
 /***/ }),
 

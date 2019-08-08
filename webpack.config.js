@@ -34,31 +34,23 @@ const commonConfig = {
     performance: {
         maxEntrypointSize: Infinity,
         maxAssetSize: 4194304 // https://github.com/mozilla/addons-linter/pull/892
-    }
+    },
 }
 
-const ssbPlatformConfig = merge(commonConfig, {
+const bgConfig = merge(commonConfig, {
     target: "web",
-    name: "ssb",
+    name: "background",
     entry: {
-        ssb: ["./src/platform/ssb/ssb.js"]
-    },
-    node: {
-        global: false, // https://github.com/webpack/webpack/issues/5627#issuecomment-394309966
-        Buffer: true,
-        fs: 'empty',
-        tls: 'empty',
-        cluster: 'empty' // expected by js-ipfs dependency: node_modules/prom-client/lib/cluster.js
+        background: ["./src/background/background.js"]
     },
     module: {
-        rules: [
-            {
-                exclude: /node_modules/,
-                test: /\.js$/,
-                use: ['babel-loader']
+        rules: [{
+            test: /\.js$/,
+            use: {
+                loader: 'babel-loader'
             }
-        ]
-    },
+        }]
+    }
 });
 
 const uiConfig = merge(commonConfig, {
@@ -90,7 +82,7 @@ const uiConfig = merge(commonConfig, {
                     loader: 'svelte-loader',
                     options: {
                         emitCss: true,
-                        hotReload: true
+                        hotReload: false,
                     }
                 }
             },
@@ -124,5 +116,5 @@ const uiConfig = merge(commonConfig, {
 
 module.exports = [
     uiConfig,
-    ssbPlatformConfig
+    bgConfig
 ]

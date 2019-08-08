@@ -1,7 +1,7 @@
 import Patchfox from "./Patchfox.svelte";
 
 import {
-    loadConfiguration,  
+    loadConfiguration,
     navigate,
     intercept,
 } from "./utils.js";
@@ -10,7 +10,7 @@ const main = async () => {
     window.ssb = false;
 
     intercept()
-    
+
     try {
         await loadConfiguration()
 
@@ -30,7 +30,6 @@ const main = async () => {
     const patchfox = new Patchfox({
         target: document.body
     });
-
 }
 
 main()
