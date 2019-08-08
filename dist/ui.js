@@ -3577,7 +3577,7 @@ function create_fragment(ctx) {
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(section0, "class", "navbar-section hide-sm");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "class", "form-input");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "type", "text");
-			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "placeholder", "search");
+			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(input, "placeholder", "Channel or Feed ID");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(button0, "class", "btn btn-primary input-group-btn");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(div0, "class", "input-group input-inline");
 			Object(svelte_internal__WEBPACK_IMPORTED_MODULE_0__["attr"])(section1, "class", "navbar-section hide-sm");
@@ -12968,7 +12968,7 @@ function create_fragment(ctx) {
 			  the displaying of messages and images in Patchfox itself. If you create a
 			  filter and open a different client, they won't be working there. If you want
 			  to learn more about
-			  <a href="/docs/index.html#/features/filter">
+			  <a href="/docs/index.html#/features/filters">
 			    filters, click here to go to the documentation.
 			  </a>
 			  You can create as many filters as you want.

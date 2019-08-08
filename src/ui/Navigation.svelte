@@ -105,7 +105,7 @@
   </section>
    <section class="navbar-section hide-sm">
     <div class="input-group input-inline">
-      <input class="form-input" type="text" bind:value={query} placeholder="search">
+      <input class="form-input" type="text" bind:value={query} placeholder="Channel or Feed ID">
       <button class="btn btn-primary input-group-btn" on:click={goSearch}>Go</button>
     </div>
   </section>

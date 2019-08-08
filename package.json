@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "8.0.0",
+  "version": "2019.8.1",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",

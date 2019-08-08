@@ -352,7 +352,7 @@
   the displaying of messages and images in Patchfox itself. If you create a
   filter and open a different client, they won't be working there. If you want
   to learn more about
-  <a href="/docs/index.html#/features/filter">
+  <a href="/docs/index.html#/features/filters">
     filters, click here to go to the documentation.
   </a>
   You can create as many filters as you want.
