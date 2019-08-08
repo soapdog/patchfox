@@ -2,9 +2,12 @@
   "description": "Patchfox is a Secure Scuttlebutt client",
   "manifest_version": 2,
   "name": "Patchfox",
-  "version": "2019.7.1",
+  "version": "2019.8.1",
   "icons": {
-    "32": "images/icon_backpackgreen.png"
+    "512": "images/patchfox_512.png",
+    "96": "images/patchfox_96.png",
+    "32": "images/patchfox_32.png"
+
   },
   "applications": {
     "gecko": {
@@ -16,7 +19,7 @@
   "background": {
     "scripts": [
       "vendor/hermiebox.js",
-      "background-bundle.js"
+      "background.js"
     ]
   },
   "options_ui": {
@@ -25,7 +28,7 @@
   },
   "browser_action": {
     "default_icon": {
-      "32": "images/icon_backpackgreen.png"
+      "32": "images/patchfox_32.png"
     },
     "default_popup": "popup/popup.html"
   },
@@ -58,7 +61,7 @@
   ],
   "sidebar_action": {
     "default_icon": {
-      "32": "images/icon_backpackgreen.png"
+      "32": "images/patchfox_32.png"
     },
     "default_title": "Patchfox",
     "default_panel": "/index.html",
