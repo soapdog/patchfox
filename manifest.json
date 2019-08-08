@@ -4,9 +4,9 @@
   "name": "Patchfox",
   "version": "2019.8.1",
   "icons": {
-    "512": "images/patchfox_512.png",
-    "96": "images/patchfox_96.png",
-    "32": "images/patchfox_32.png"
+    "512": "images/patchfox_pixel_512.png",
+    "96": "images/patchfox_pixel_96.png",
+    "128": "images/patchfox_pixel_128.png"
 
   },
   "applications": {
