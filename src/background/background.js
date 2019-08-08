@@ -38,11 +38,14 @@ browser.runtime.onInstalled.addListener(installedOrUpdated)
 let contactWorker
 
 const backgroundMain = async () => {
-    contactWorker = new SharedWorker('worker-contact-cache-bundle.js')
+    console.log("starting worker")
+    contactWorker = new SharedWorker('contactWorker.js')
+    console.log("worker", contactWorker)
     contactWorker.port.onmessage = e => {
         console.log("[[ contact worker ]]", e)
     }
-    contactWorker.port.postMessage({command: "connect", hermiebox})
+    contactWorker.port.postMessage({command: "connect"})
 }
 
+console.log("background started")
 backgroundMain()

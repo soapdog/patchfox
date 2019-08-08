@@ -12,27 +12,23 @@
  * 
  * Remember to add all workers to the rollup config.
  */
+import ssb from "../platform/ssb/ssb"
 
-import {
-    loadConfiguration,
-    connect,
-    keepPinging
-} from "../utils"
-
-import { SSB } from "../ssb.js"
-import ssbClient from "ssb-client"
 
 onconnect = function (e) {
     let port = e.ports[0];
 
     // do not start on connect. Receive hermiebox as a message. Hope for the best
 
-    window.hermiebox = hermiebox
-    console.log("hermiebox", hermiebox)
+    console.log("n", ssb)
+  
 
     const main = async () => {
         port.postMessage("hi!")
+        console.log("can haz client?", ssb)
     }
 
     main()
 }
+
+console.log("worker", ssb)

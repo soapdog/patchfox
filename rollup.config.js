@@ -73,8 +73,7 @@ export default [{
     watch: {
         clearScreen: false
     }
-},
-{
+}, {
     input: "src/workers/contactCache.js",
     output: {
         sourcemap: true,
@@ -87,9 +86,7 @@ export default [{
             dev: !production,
         }),
         resolve(),
-        commonjs({
-            exclude: ["static/**/*"]
-        }),
+        commonjs(),
         json(),
         production && terser(),
     ],

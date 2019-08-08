@@ -2,27 +2,39 @@
   "name": "patchfox",
   "version": "8.0.0",
   "devDependencies": {
-    "crayon": "^2.0.6",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "browserify": "^16.3.0",
+    "copy-webpack-plugin": "^5.0.4",
     "drag-and-drop-files": "0.0.1",
     "is-my-json-valid": "^2.20.0",
     "lodash": "^4.17.15",
     "pull-stream": "^3.6.13",
     "query-string": "^6.5.0",
-    "rollup": "^1.10.1",
-    "rollup-plugin-commonjs": "^9.3.4",
-    "rollup-plugin-copy": "^2.0.1",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-livereload": "^1.0.1",
-    "rollup-plugin-node-resolve": "^4.2.3",
-    "rollup-plugin-svelte": "^5.0.3",
-    "rollup-plugin-terser": "^4.0.4",
+    "simple-progress-webpack-plugin": "^1.1.2",
     "ssb-client": "^4.7.7",
     "svelte": "^3.0.0",
-    "timeago-simple": "^1.2.4"
+    "timeago-simple": "^1.2.4",
+    "webpack-merge": "^4.2.1"
   },
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "webpack",
+    "production": "cross-env NODE_ENV=production webpack",
+    "dev": "webpack -w"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "css-loader": "^2.1.1",
+    "fs": "0.0.1-security",
+    "mini-css-extract-plugin": "^0.6.0",
+    "net": "^1.0.2",
+    "serve": "^11.0.0",
+    "style-loader": "^0.23.1",
+    "svelte": "^3.0.0",
+    "svelte-loader": "2.13.3",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0"
+  }
 }

@@ -4,10 +4,7 @@
   "name": "Patchfox",
   "version": "2019.7.1",
   "icons": {
-    "512": "images/patchfox_512.png",
-    "96": "images/patchfox_96.png",
-    "32": "images/patchfox_32.png"
-
+    "32": "images/icon_backpackgreen.png"
   },
   "applications": {
     "gecko": {
@@ -19,7 +16,7 @@
   "background": {
     "scripts": [
       "vendor/hermiebox.js",
-      "background.js"
+      "background-bundle.js"
     ]
   },
   "options_ui": {
@@ -28,7 +25,7 @@
   },
   "browser_action": {
     "default_icon": {
-      "32": "images/patchfox_32.png"
+      "32": "images/icon_backpackgreen.png"
     },
     "default_popup": "popup/popup.html"
   },
@@ -61,7 +58,7 @@
   ],
   "sidebar_action": {
     "default_icon": {
-      "32": "images/patchfox_32.png"
+      "32": "images/icon_backpackgreen.png"
     },
     "default_title": "Patchfox",
     "default_panel": "/index.html",
