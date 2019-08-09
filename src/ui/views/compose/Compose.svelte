@@ -2,8 +2,8 @@
   import { onMount } from "svelte";
   import drop from "drag-and-drop-files";
   import { slide } from "svelte/transition";
-  import { navigate, routeParams, reconnect, getPref } from "../utils.js";
-  import AvatarChip from "../parts/AvatarChip.svelte";
+  import { navigate, routeParams, reconnect, getPref } from "../../utils.js";
+  import AvatarChip from "../../parts/AvatarChip.svelte";
 
   let showPreview = false;
   let msg = false;
@@ -21,6 +21,7 @@
   let fileReader = hermiebox.modules.pullFileReader;
   let sbot = hermiebox.sbot;
   let ipfsDaemonRunning = false;
+  let datDaemonRunning = false;
 
   document.title = `Patchfox - compose`;
 
@@ -33,12 +34,20 @@
 
     drop(document.getElementById("content"), files => readFileAndAttach(files));
     checkIpfsDaemon();
+    checkDatDaemon();
   });
 
   const checkIpfsDaemon = () => {
     let port = getPref("ipfsPort", 5001);
     fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
       ipfsDaemonRunning = true;
+    });
+  };
+
+   const checkDatDaemon = () => {
+    let port = getPref("datPort", 5001);
+    fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
+      datDaemonRunning = true;
     });
   };
 
@@ -177,6 +186,10 @@
     document.getElementById("fileInputIPFS").click();
   };
 
+  const attachFileDATTrigger = () => {
+    document.getElementById("fileInputDAT").click();
+  };
+
   const attachFile = ev => {
     const files = ev.target.files;
     readFileAndAttach(files);
@@ -185,6 +198,11 @@
   const attachFileIPFS = ev => {
     const files = ev.target.files;
     readFileAndAttachIPFS(files);
+  };
+
+  const attachFileDAT = ev => {
+    const files = ev.target.files;
+    readFileAndAttachDAT(files);
   };
 
   const readFileAndAttachIPFS = async files => {
@@ -292,6 +310,12 @@
             <input type="file" on:input={attachFileIPFS} id="fileInputIPFS" />
             <button class="btn" on:click={attachFileIPFSTrigger}>
               Attach File using IPFS
+            </button>
+          {/if}
+           {#if datDaemonRunning}
+            <input type="file" on:input={attachFileDAT} id="fileInputDAT" />
+            <button class="btn" on:click={attachFileDATTrigger}>
+              Attach File using Dat
             </button>
           {/if}
           <button class="btn btn-primary float-right" on:click={preview}>

@@ -4,7 +4,8 @@ import { SSB } from "./ssb";
 import queryString from "query-string";
 import Public from "./views/Public.svelte";
 import Default from "./views/Default.svelte";
-import Compose from "./views/Compose.svelte";
+import Compose from "./views/compose/Compose.svelte";
+import ComposeBlog from "./views/compose/ComposeBlog.svelte";
 import Thread from "./views/Thread.svelte";
 import Profile from "./views/Profile.svelte";
 import ErrorView from "./views/ErrorView.svelte";
@@ -63,6 +64,8 @@ export const navigate = (location, data) => {
 const routes = {
   "/thread": Thread,
   "/public": Public,
+  "/compose/post": Compose,
+  "/compose/blog": ComposeBlog,
   "/compose": Compose,
   "/profile": Profile,
   "/error": ErrorView,

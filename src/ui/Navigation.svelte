@@ -3,7 +3,7 @@
 
   let avatar = "/images/icon.png";
 
-  let query =""
+  let query = "";
 
   $: if ($connected) {
     ssb.avatar(ssb.feed).then(data => {
@@ -12,15 +12,16 @@
   }
 
   const goSettings = ev => navigate("/settings");
-  const goCompose = () => navigate("/compose");
+  const goCompose = () => navigate("/compose/post");
+  const goComposeBlog = () => navigate("/compose/blog");
   const goPublic = () => navigate("/public");
   const goChannels = () => navigate("/channels");
   const goMentions = () => navigate("/mentions");
 
   const goSearch = () => {
-    navigate("/intercept", {query})
-    intercept()
-  }
+    navigate("/intercept", { query });
+    intercept();
+  };
 
   const openSidebar = async ev => {
     let loc = window.location.href;
@@ -76,12 +77,30 @@
         <i class="avatar-presence {$connected ? 'online' : 'offline'}" />
       </figure>
     </a>
-    <a
-      href="#/compose"
-      class="btn btn-link"
-      on:click|stopPropagation|preventDefault={goCompose}>
-      Compose
-    </a>
+    <div class="dropdown">
+      <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
+        Compose
+        <i class="icon icon-caret" />
+      </a>
+      <ul class="menu">
+        <li class="menu-item">
+          <a
+            href="#/compose/post"
+            class="btn btn-link"
+            on:click|stopPropagation|preventDefault={goCompose}>
+            New Post
+          </a>
+        </li>
+        <li class="menu-item">
+          <a
+            href="#/compose/blog"
+            class="btn btn-link"
+            on:click|stopPropagation|preventDefault={goComposeBlog}>
+            New Blog Post
+          </a>
+        </li>
+      </ul>
+    </div>
     <a
       href="#/public"
       class="btn btn-link"
@@ -95,7 +114,7 @@
       Mentions
     </a>
     <a
-      href="#/channels" 
+      href="#/channels"
       class="btn btn-link"
       on:click|stopPropagation|preventDefault={goChannels}>
       Channels
@@ -103,10 +122,16 @@
     <a href="#/settings" class="btn btn-link" on:click={goSettings}>Settings</a>
     <a href="/docs/index.html" class="btn btn-link">Help</a>
   </section>
-   <section class="navbar-section hide-sm">
+  <section class="navbar-section hide-sm">
     <div class="input-group input-inline">
-      <input class="form-input" type="text" bind:value={query} placeholder="Channel or Feed ID">
-      <button class="btn btn-primary input-group-btn" on:click={goSearch}>Go</button>
+      <input
+        class="form-input"
+        type="text"
+        bind:value={query}
+        placeholder="Channel or Feed ID" />
+      <button class="btn btn-primary input-group-btn" on:click={goSearch}>
+        Go
+      </button>
     </div>
   </section>
   <section class="navbar-section show-sm bg-gray above">
