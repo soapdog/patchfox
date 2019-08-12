@@ -385,6 +385,57 @@ export class SSB {
         })
     }
 
+    newBlogPost(data) {
+        return new Promise((resolve, reject) => {
+            let msgToPost = { type: "blog" }
+            let blogContent = data.content
+
+            const commonFields = [
+                "channel",
+                "contentWarning",
+                "thumbnail",
+                "title",
+                "summary"
+            ]
+
+            commonFields.forEach(f => {
+                if (typeof data[f] !== "undefined" && data[f].length > 0) {
+                    msgToPost[f] = data[f]
+                }
+            })
+
+            const sbot = hermiebox.sbot || false
+
+            if (sbot) {
+                pull(
+                    pull.values([blogContent]),
+                    sbot.blobs.add(function (err, hash) {
+                        // 'hash' is the hash-id of the blob
+                        if (err) {
+                            reject("could not create blog post blob: " + err)
+                        } else {
+                            msgToPost.blog = hash;
+
+                            console.log("blog post", msgToPost)
+
+                            sbot.publish(msgToPost, function (err, msg) {
+                                if (err) {
+                                    reject(err)
+                                } else {
+                                    resolve(msg)
+                                }
+                            })
+                        }
+                    })
+                );
+
+
+            } else {
+                reject("There is no sbot connection")
+            }
+        })
+    }
+
     follow(userId) {
         return new Promise((resolve, reject) => {
             const sbot = hermiebox.sbot || false

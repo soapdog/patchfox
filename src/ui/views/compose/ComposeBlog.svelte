@@ -10,12 +10,11 @@
   let error = false;
   let posting = false;
 
-  let root = $routeParams.root;
-  let branch = $routeParams.branch;
   let channel = $routeParams.channel || "";
   let content = $routeParams.content || "";
-  let replyfeed = $routeParams.replyfeed || false;
-  let fork = $routeParams.fork;
+  let summary = $routeParams.summary || "";
+  let title = $routeParams.title || "";
+  let thumbnail = $routeParams.thumbnail;
   let fileOnTop = false;
   let pull = hermiebox.modules.pullStream;
   let fileReader = hermiebox.modules.pullFileReader;
@@ -23,7 +22,7 @@
   let ipfsDaemonRunning = false;
   let datDaemonRunning = false;
 
-  document.title = `Patchfox - compose`;
+  document.title = `Patchfox - compose new blog post`;
 
   onMount(() => {
     error = false;
@@ -44,7 +43,7 @@
     });
   };
 
-   const checkDatDaemon = () => {
+  const checkDatDaemon = () => {
     let port = getPref("datPort", 5001);
     fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
       datDaemonRunning = true;
@@ -106,12 +105,12 @@
       }
 
       try {
-        msg = await ssb.newPost({
-          text: content,
+        msg = await ssb.newBlogPost({
+          content,
+          summary,
           channel,
-          root,
-          branch,
-          fork,
+          title,
+          thumbnail,
           contentWarning: contentWarning.length > 0 ? contentWarning : undefined
         });
         posting = false;
@@ -133,13 +132,7 @@
               msg = "Connection to sbot reestablished. Try posting again";
             })
             .catch(err => {
-              window.location.search = `?root=${encodeURIComponent(
-                root
-              )}&branch=${encodeURIComponent(
-                branch
-              )}&content=${encodeURIComponent(
-                content
-              )}&channel=${encodeURIComponent(channel)}`;
+              saveToURL();
               msg = `Sorry, couldn't reconnect to sbot:${err}. Try reloading the page. Your content has been saved to the URL`;
             });
         }
@@ -152,22 +145,13 @@
   };
 
   const saveToURL = ev => {
-    window.location.search = `?root=${encodeURIComponent(
-      root
-    )}&branch=${encodeURIComponent(branch)}&content=${encodeURIComponent(
+    window.location.search = `?summary=${encodeURIComponent(
+      summary
+    )}&title=${encodeURIComponent(title)}&content=${encodeURIComponent(
       content
-    )}&channel=${encodeURIComponent(channel)}`;
-  };
-
-  const avatarClick = ev => {
-    let feed = ev.detail.feed;
-    let name = ev.detail.name;
-
-    if (content.length > 0) {
-      content += ` [${name}](${feed})`;
-    } else {
-      content = `[${name}](${feed})`;
-    }
+    )}&channel=${encodeURIComponent(channel)}&thumbnail=${encodeURIComponent(
+      thumbnail
+    )}`;
   };
 
   const dragOver = ev => {
@@ -182,6 +166,10 @@
     document.getElementById("fileInput").click();
   };
 
+  const attachThumbnailTrigger = () => {
+    document.getElementById("thumbnailInput").click();
+  };
+
   const attachFileIPFSTrigger = () => {
     document.getElementById("fileInputIPFS").click();
   };
@@ -193,6 +181,52 @@
   const attachFile = ev => {
     const files = ev.target.files;
     readFileAndAttach(files);
+  };
+
+  const attachThumbnail = ev => {
+    const files = ev.target.files;
+    readFileAndAttachThumbnail(files);
+  };
+
+  const readFileAndAttachThumbnail = files => {
+    error = false;
+    msg = "";
+
+    if (files.length == 0) {
+      console.log("this is not a file");
+      return false;
+    }
+
+    var first = files[0];
+    console.log(first);
+
+    if (!first.type.startsWith("image")) {
+      error = true;
+      msg = `You can use images as thumbnail, this file is a ${first.type}`;
+      return false;
+    }
+
+    if (first.size >= 5000000) {
+      error = true;
+      msg = `File too large: ${Math.floor(
+        first.size / 1048576,
+        2
+      )}mb when max size is 5mb`;
+      return false;
+    }
+
+    pull(
+      fileReader(first),
+      sbot.blobs.add(function(err, hash) {
+        // 'hash' is the hash-id of the blob
+        if (err) {
+          error = true;
+          msg = "Couldn't add file: " + err + " as thumbnail";
+        } else {
+          thumbnail = hash;
+        }
+      })
+    );
   };
 
   const attachFileIPFS = ev => {
@@ -232,20 +266,21 @@
   input[type="file"] {
     display: none;
   }
+
+  .thumbnail-preview {
+    max-height: 200px;
+  }
 </style>
 
 <div class="container">
   <div class="columns">
     <div class="column">
-      {#if fork}
-        <div class="toast toast-warning">You are forking: {fork}</div>
-      {/if}
       {#if msg}
         {#if error}
           <div class="toast toast-error">{msg}</div>
         {:else}
           <div class="toast toast-success">
-            Your message has been posted. Do you want to
+            Your blog post has been posted. Do you want to
             <a
               target="_blank"
               href="?thread={encodeURIComponent(msg.key)}#/thread">
@@ -264,30 +299,31 @@
             placeholder="channel"
             bind:value={channel} />
 
-          {#if branch}
-            <label class="form-label" for="reply-to">In reply to</label>
-            <input
-              class="form-input"
-              type="text"
-              id="reply-to"
-              placeholder="in reply to"
-              bind:value={branch} />
-          {/if}
+          <label class="form-label" for="title">Title</label>
+          <input
+            class="form-input"
+            type="text"
+            id="title"
+            placeholder="title"
+            bind:value={title} />
 
-          {#if replyfeed}
-            <div class="mt-2">
-              <span>
-                Click the avatar to add a link to the message:
-                <AvatarChip feed={replyfeed} on:avatarClick={avatarClick} />
-              </span>
-            </div>
-          {/if}
-          <label class="form-label" for="content">Message</label>
+          <label class="form-label" for="summary">Summary</label>
+          <textarea
+            class="form-input"
+            id="summary"
+            placeholder="Type in your summary"
+            rows="5"
+            on:dragover|preventDefault|stopPropagation={dragOver}
+            on:dragleave|preventDefault|stopPropagation={dragLeave}
+            class:file-on-top={fileOnTop}
+            bind:value={summary} />
+
+          <label class="form-label" for="content">Content</label>
           <textarea
             class="form-input"
             id="content"
-            placeholder="Type in your post"
-            rows="10"
+            placeholder="Type in your blog post content"
+            rows="20"
             on:dragover|preventDefault|stopPropagation={dragOver}
             on:dragleave|preventDefault|stopPropagation={dragLeave}
             class:file-on-top={fileOnTop}
@@ -301,9 +337,23 @@
                 type="text"
                 size="50"
                 bind:value={contentWarning}
-                placeholder="Describe your content warning (leave empty to no use it)" />
+                placeholder="Describe your content warning (leave empty to no
+                use it)" />
             {/if}
           </div>
+          {#if thumbnail}
+            <div class="d-block m-2">
+              <p>Thumbnail</p>
+              <img
+                class="thumbnail-preview"
+                src="http://localhost:8989/blobs/get/{thumbnail}"
+                alt="post thumbnail" />
+            </div>
+          {/if}
+          <input type="file" on:input={attachThumbnail} id="thumbnailInput" />
+          <button class="btn" on:click={attachThumbnailTrigger}>
+            Attach Thumbnail Image
+          </button>
           <input type="file" on:input={attachFile} id="fileInput" />
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
           {#if ipfsDaemonRunning}
@@ -312,7 +362,7 @@
               Attach File using IPFS
             </button>
           {/if}
-           {#if datDaemonRunning}
+          {#if datDaemonRunning}
             <input type="file" on:input={attachFileDAT} id="fileInputDAT" />
             <button class="btn" on:click={attachFileDATTrigger}>
               Attach File using Dat
@@ -325,7 +375,7 @@
       {:else}
         <div class="column col-md-12">
           <h2>Post preview</h2>
-          {#if channel || root || branch || contentWarning.length > 0}
+          {#if channel || contentWarning.length > 0 || title || thumbnail}
             <blockquote>
               {#if channel}
                 <p>
@@ -333,22 +383,31 @@
                   {channel.startsWith('#') ? channel.slice(1) : channel}
                 </p>
               {/if}
-              {#if root}
-                <p>
-                  <b>Root:</b>
-                  {root}
-                </p>
-              {/if}
-              {#if branch}
-                <p>
-                  <b>In Reply To:</b>
-                  {branch}
-                </p>
-              {/if}
               {#if contentWarning.length > 0}
                 <p>
                   <b>Content Warning:</b>
                   {contentWarning}
+                </p>
+              {/if}
+              {#if title}
+                <p>
+                  <b>title:</b>
+                  {title}
+                </p>
+              {/if}
+              {#if summary}
+                <p>
+                  <b>Summary:</b>
+                  {@html ssb.markdown(summary)}
+                </p>
+              {/if}
+              {#if thumbnail}
+                <p>
+                  <b>Thumbnail:</b>
+                  <img
+                    class="thumbnail-preview"
+                    src="http://localhost:8989/blobs/get/{thumbnail}"
+                    alt="post thumbnail" />
                 </p>
               {/if}
             </blockquote>
