@@ -1,4 +1,4 @@
-export const updateChecker = () => {
+const updateChecker = () => {
     function installedOrUpdated(details) {
         let url;
         let version = browser.runtime.getManifest().version;
@@ -22,4 +22,8 @@ export const updateChecker = () => {
     }
 
     browser.runtime.onInstalled.addListener(installedOrUpdated)
+}
+
+module.exports = {
+    updateChecker
 }

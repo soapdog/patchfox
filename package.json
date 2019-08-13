@@ -24,6 +24,7 @@
     "copy:manifest": "copyfiles manifest.json dist",
     "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
     "copy:docs": "copyfiles docs/**/* dist",
+    "build:background": "browserify -d  src/background/background.js -o dist/background.js",
     "build:ui": "browserify -d  src/ui/main.js -o dist/bundle.js",
     "build": "run-s copy:* build:*",
     "dev": "run-p start:dev build",
