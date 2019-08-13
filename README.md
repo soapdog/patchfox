@@ -21,12 +21,6 @@ And build the add-on with:
 $ npm run build
 ```
 
-If you want to develop with a watcher that rebuilds the add-on when file changes use:
-
-```
-$ npm run dev
-```
-
 ## Running
 
 Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from the `dist/` folder from this repository.
