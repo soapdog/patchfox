@@ -1,8 +1,8 @@
-import { getPref, setPref } from "./utils.js"
+const { getPref, setPref } = require("./prefs.js")
 
-export const getFilters = () => getPref("filters", [])
+const getFilters = () => getPref("filters", [])
 
-export const addFilter = (filter) => {
+const addFilter = (filter) => {
     let currentFilters = getFilters()
 
     currentFilters.push(filter)
@@ -10,13 +10,13 @@ export const addFilter = (filter) => {
     setPref("filters", currentFilters)
 }
 
-export const deleteFilter = (filter) => {
+const deleteFilter = (filter) => {
     let currentFilters = getFilters()
 
     setPref("filters", currentFilters.filter(f => f !== filter))
 }
 
-export const isMessageBlured = (msg) => {
+const isMessageBlured = (msg) => {
     let currentFilters = getFilters().filter(f => f.action == "blur")
     if (currentFilters.length > 0) {
         let res = currentFilters.map((f) => isMessageFiltered(msg, f, "blur"))
@@ -27,7 +27,7 @@ export const isMessageBlured = (msg) => {
 }
 
 
-export const isMessageHidden = (msg) => {
+const isMessageHidden = (msg) => {
     let currentFilters = getFilters().filter(f => f.action == "hide")
     if (currentFilters.length > 0) {
         let res = currentFilters.map((f) => isMessageFiltered(msg, f, "hide"))
@@ -37,7 +37,7 @@ export const isMessageHidden = (msg) => {
     }
 }
 
-export const isMessageFiltered = (msg, filter, action) => {
+const isMessageFiltered = (msg, filter, action) => {
     let filterResults = []
     if (filter.action !== action) {
         return true
@@ -81,4 +81,13 @@ export const isMessageFiltered = (msg, filter, action) => {
 
     console.log("res", !filterResults.some(n => n == true))
     return !filterResults.some(n => n == true)
+}
+
+module.exports = {
+    getFilters,
+    isMessageBlured,
+    isMessageFiltered,
+    isMessageHidden,
+    addFilter,
+    deleteFilter
 }

@@ -1,5 +1,5 @@
 <script>
-  import { navigate, routeLocation } from "../utils.js";
+  const { navigate, routeLocation } = require("../utils.js");
 
   export let msg;
 

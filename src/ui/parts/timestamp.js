@@ -1,8 +1,8 @@
-import timeago from "timeago-simple";
+const timeago = require("timeago-simple")
 
 const timestamp = t => {
 
     return timeago.simple(new Date(t))
 }
 
-export default timestamp;
+module.exports = {timestamp}

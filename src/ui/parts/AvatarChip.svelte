@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  const { createEventDispatcher } = require("svelte");
   export let feed;
 
   let image = false;

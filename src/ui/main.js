@@ -1,10 +1,11 @@
-import Patchfox from "./Patchfox.svelte";
+const Patchfox = require("./Patchfox.svelte");
 
-import {
-    loadConfiguration,
+const {
     navigate,
     intercept,
-} from "./utils.js";
+} =  require("./utils.js");
+
+const { loadConfiguration } = require("./prefs.js")
 
 const main = async () => {
     window.ssb = false;

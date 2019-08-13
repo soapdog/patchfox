@@ -1,5 +1,5 @@
 
-import {updateChecker} from "./updateChecker";
+const {updateChecker} =  require("./updateChecker");
 
 console.log("starting background script")
 updateChecker();

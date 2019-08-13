@@ -1,6 +1,6 @@
 <script>
-  import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
-  import { navigate, routeParams } from "../utils.js";
+  const MessageRenderer = require("../messageTypes/MessageRenderer.svelte");
+  const { navigate, routeParams } = require("../utils.js");
   let msgs = false;
   let error = false;
   let msgid;
