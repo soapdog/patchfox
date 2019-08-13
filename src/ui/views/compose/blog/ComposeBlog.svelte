@@ -3,7 +3,7 @@
   const drop = require("drag-and-drop-files");
   const { slide } = require("svelte/transition");
   const { navigate, routeParams, reconnect } = require("../../../utils.js");
-  const { getPref } = require("../../../prefs.js")
+  const { getPref } = require("../../../prefs.js");
   const AvatarChip = require("../../../parts/AvatarChip.svelte");
   const Preview = require("./Preview.svelte");
 
@@ -397,6 +397,7 @@
               <button
                 class="btn btn-primary"
                 class:loading={posting}
+                disabled={!error && typeof msg.key == 'string'}
                 on:click={post}>
                 Post
               </button>

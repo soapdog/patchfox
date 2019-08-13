@@ -370,6 +370,7 @@
               <button
                 class="btn btn-primary"
                 class:loading={posting}
+                disabled={!error && typeof msg.key == "string"}
                 on:click={post}>
                 Post
               </button>
