@@ -1,7 +1,8 @@
 <script>
-  import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
-  import { navigate, routeParams, getPref } from "../utils.js";
-  import { onMount, onDestroy } from "svelte";
+  const MessageRenderer = require("../messageTypes/MessageRenderer.svelte");
+  const { navigate, routeParams } = require("../utils.js");
+  const { getPref } = require("../prefs.js")
+  const { onMount, onDestroy } = require("svelte");
 
   let msgs = false;
   let error = $routeParams.error || false;

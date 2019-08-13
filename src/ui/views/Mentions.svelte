@@ -1,7 +1,8 @@
 <script>
-  import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
-  import { navigate, routeParams, getPref } from "../utils.js";
-  import { onDestroy, onMount } from "svelte";
+  const MessageRenderer = require("../messageTypes/MessageRenderer.svelte");
+  const { navigate, routeParams } = require("../utils.js");
+  const { getPref } = require("../prefs.js");
+  const { onDestroy, onMount } = require("svelte");
 
   let msgs = [];
   let unsub;
@@ -12,14 +13,13 @@
 
   const pull = hermiebox.modules.pullStream;
   const sbot = hermiebox.sbot;
-  
 
   const loadMentions = () => {
     console.log("Loading mentions...", lt);
     window.scrollTo(0, 0);
     msgs = [];
-    ssb.mentions(ssb.feed, lt).then(ms => msgs = ms)
-  }; 
+    ssb.mentions(ssb.feed, lt).then(ms => (msgs = ms));
+  };
 
   onDestroy(() => {
     unsub();

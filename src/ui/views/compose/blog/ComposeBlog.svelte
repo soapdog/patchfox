@@ -1,9 +1,11 @@
 <script>
-  import { onMount } from "svelte";
-  import drop from "drag-and-drop-files";
-  import { slide } from "svelte/transition";
-  import { navigate, routeParams, reconnect, getPref } from "../../utils.js";
-  import AvatarChip from "../../parts/AvatarChip.svelte";
+  const { onMount } = require("svelte");
+  const drop = require("drag-and-drop-files");
+  const { slide } = require("svelte/transition");
+  const { navigate, routeParams, reconnect } = require("../../../utils.js");
+  const { getPref } = require("../../../prefs.js")
+  const AvatarChip = require("../../../parts/AvatarChip.svelte");
+  const Preview = require("./Preview.svelte");
 
   let showPreview = false;
   let msg = false;
@@ -374,46 +376,13 @@
         </div>
       {:else}
         <div class="column col-md-12">
-          <h2>Post preview</h2>
-          {#if channel || contentWarning.length > 0 || title || thumbnail}
-            <blockquote>
-              {#if channel}
-                <p>
-                  <b>Channel:</b>
-                  {channel.startsWith('#') ? channel.slice(1) : channel}
-                </p>
-              {/if}
-              {#if contentWarning.length > 0}
-                <p>
-                  <b>Content Warning:</b>
-                  {contentWarning}
-                </p>
-              {/if}
-              {#if title}
-                <p>
-                  <b>title:</b>
-                  {title}
-                </p>
-              {/if}
-              {#if summary}
-                <p>
-                  <b>Summary:</b>
-                  {@html ssb.markdown(summary)}
-                </p>
-              {/if}
-              {#if thumbnail}
-                <p>
-                  <b>Thumbnail:</b>
-                  <img
-                    class="thumbnail-preview"
-                    src="http://localhost:8989/blobs/get/{thumbnail}"
-                    alt="post thumbnail" />
-                </p>
-              {/if}
-            </blockquote>
-          {/if}
-          {@html ssb.markdown(content)}
-
+          <Preview
+            {channel}
+            {title}
+            {summary}
+            {content}
+            {contentWarning}
+            {thumbnail} />
           <div class="divider" />
           <div class="columns">
             <div class="column col-md-12 col-lg-10">

@@ -1,9 +1,10 @@
 <script>
-  import { onMount } from "svelte";
-  import drop from "drag-and-drop-files";
-  import { slide } from "svelte/transition";
-  import { navigate, routeParams, reconnect, getPref } from "../../utils.js";
-  import AvatarChip from "../../parts/AvatarChip.svelte";
+  const { onMount } = require("svelte");
+  const drop = require("drag-and-drop-files");
+  const { slide } = require("svelte/transition");
+  const { navigate, routeParams, reconnect } = require("../../utils.js");
+  const { getPref } = require("../../prefs.js");
+  const AvatarChip = require("../../parts/AvatarChip.svelte");
 
   let showPreview = false;
   let msg = false;

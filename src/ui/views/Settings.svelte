@@ -1,13 +1,17 @@
 <script>
-  import { onMount } from "svelte";
-  import {
+  const { onMount } = require("svelte");
+  const { navigate } = require("../utils.js");
+  const {
     getPref,
     setPref,
-    setConnectionConfiguration,
-    navigate
-  } from "../utils.js";
-  import { getFilters, addFilter, deleteFilter } from "../abusePrevention.js";
- 
+    setConnectionConfiguration
+  } = require("../prefs.js");
+  const {
+    getFilters,
+    addFilter,
+    deleteFilter
+  } = require("../abusePrevention.js");
+
   let keys = {};
   let remote = "";
   let limit = getPref("limit", 10);
@@ -368,10 +372,26 @@
           <div class="card-body">
             <ul>
               {#if filter.feed}
-                <li>From <a href="?feed={filter.feed}#/profile" target="_blank" class="feed">{filter.feed}</a></li>
+                <li>
+                  From
+                  <a
+                    href="?feed={filter.feed}#/profile"
+                    target="_blank"
+                    class="feed">
+                    {filter.feed}
+                  </a>
+                </li>
               {/if}
               {#if filter.channel}
-                <li>On channel <a href="?channel={filter.feed}#/channel" target="_blank" class="feed">#{filter.channel}</a></li>
+                <li>
+                  On channel
+                  <a
+                    href="?channel={filter.feed}#/channel"
+                    target="_blank"
+                    class="feed">
+                    #{filter.channel}
+                  </a>
+                </li>
               {/if}
               {#if filter.keywords.length > 0}
                 <i>

@@ -1,17 +1,17 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
-  import {
+  const { onMount, onDestroy } = require("svelte");
+  const {
     connected,
     route,
     navigate,
     currentView,
     connect,
     reconnect,
-    getPref,
     routeLocation,
     keepPinging 
-  } from "./utils.js";
-  import Navigation from "./Navigation.svelte";
+  } = require("./utils.js");
+  const { getPref } = require("./prefs.js")
+  const Navigation = require("./Navigation.svelte");
 
   let useShortColumn = getPref("columnSize", "short") == "short";
   console.log("columnSize", useShortColumn)

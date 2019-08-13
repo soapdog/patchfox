@@ -29,8 +29,8 @@
  */
 
 
-import { getPref } from "./utils"
-import { isMessageHidden } from "./abusePrevention"
+const { getPref } = require("./prefs.js")
+const { isMessageHidden } =  require("./abusePrevention.js")
 
 const pull = hermiebox.modules.pullStream
 const sort = hermiebox.modules.ssbSort
@@ -39,7 +39,7 @@ let sbot = false
 
 let avatarCache = {}
 
-export class SSB {
+class SSB {
 
     log(pMsg, pVal = "") {
         console.log(`[SSB API] - ${pMsg}`, pVal)
@@ -72,7 +72,7 @@ export class SSB {
             "channel": "showTypeChannel"
         }
 
-        let showUnknown = getPref("showTypeUnknown", false)
+        let showUnknown = false
 
         if (showUnknown) {
             return pull.filter(() => true);
@@ -579,7 +579,9 @@ export class SSB {
                     value: {
                         content: { channel }
                     }
-                }
+                },
+                "$sort": [["value", "timestamp"]]
+
             }
 
             if (opts.lt) {
@@ -980,3 +982,5 @@ export class SSB {
         })
     }
 }
+
+module.exports.SSB = SSB

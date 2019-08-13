@@ -1,5 +1,5 @@
 <script>
-  import { connected, navigate, routeLocation, intercept } from "./utils.js";
+  const { connected, navigate, routeLocation, intercept } = require("./utils.js");
 
   let avatar = "/images/icon.png";
 

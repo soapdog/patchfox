@@ -1,5 +1,5 @@
 <script>
-  import { navigate } from "../utils.js";
+  const { navigate } = require("../utils.js");
   export let msg;
 
   let expression = msg.value.content.vote.expression;

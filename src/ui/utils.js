@@ -1,28 +1,27 @@
-import { writable, derived } from "svelte/store";
-import { SSB } from "./ssb";
+const { writable, derived } = require("svelte/store")
+const { SSB } = require("./ssb")
+const { savedKeys } = require("./prefs.js")
 
-import queryString from "query-string";
-import Public from "./views/Public.svelte";
-import Default from "./views/Default.svelte";
-import Compose from "./views/compose/Compose.svelte";
-import ComposeBlog from "./views/compose/ComposeBlog.svelte";
-import Thread from "./views/Thread.svelte";
-import Profile from "./views/Profile.svelte";
-import ErrorView from "./views/ErrorView.svelte";
-import Channels from "./views/Channels.svelte"
-import Channel from "./views/Channel.svelte"
-import Settings from "./views/Settings.svelte"
-import Mentions from "./views/Mentions.svelte"
+const queryString = require("query-string")
+const Public = require("./views/Public.svelte")
+const Default = require("./views/Default.svelte")
+const Compose = require("./views/compose/Compose.svelte")
+const ComposeBlog = require("./views/compose/blog/ComposeBlog.svelte")
+const Thread = require("./views/Thread.svelte")
+const Profile = require("./views/Profile.svelte")
+const ErrorView = require("./views/ErrorView.svelte")
+const Channels = require("./views/Channels.svelte")
+const Channel = require("./views/Channel.svelte")
+const Settings = require("./views/Settings.svelte")
+const Mentions = require("./views/Mentions.svelte")
 
-let savedData = {}
-
-export const parseLocation = () => {
+const parseLocation = () => {
   let data = queryString.parse(window.location.search)
   let loc = window.location.hash.slice(1).replace("?", "")
   return { data, location: loc }
 };
 
-export const intercept = () => {
+const intercept = () => {
   let r = parseLocation()
   if (r.location == "/intercept" && r.data.query) {
     let hash = r.data.query.replace("ssb:", "")
@@ -44,15 +43,15 @@ export const intercept = () => {
   }
 }
 
-export const connected = writable(false);
+const connected = writable(false);
 
 // maybe in the future, migrate routing system to:
 // https://github.com/ItalyPaleAle/svelte-spa-router
-export const route = writable(parseLocation());
-export const routeParams = derived(route, $route => $route.data)
-export const routeLocation = derived(route, $route => $route.location)
+const route = writable(parseLocation());
+const routeParams = derived(route, $route => $route.data)
+const routeLocation = derived(route, $route => $route.location)
 
-export const navigate = (location, data) => {
+const navigate = (location, data) => {
   data = data || {}
   route.set({ location, data });
   let dataAsQuery = queryString.stringify(data);
@@ -78,7 +77,7 @@ const routes = {
 
 
 
-export const currentView = derived([connected, route], ([$connected, $route]) => {
+const currentView = derived([connected, route], ([$connected, $route]) => {
   let r = $route.location
   if ($connected) {
     if (routes.hasOwnProperty(r)) {
@@ -111,27 +110,12 @@ const cantConnect = () => {
   window.location = "/docs/index.html#/troubleshooting/no-connection";
 };
 
-export const loadConfiguration = async () => {
-  console.log("Loading configuration...")
-  try {
-    let data = await browser.storage.local.get()
-
-    if (data.hasOwnProperty("keys")) {
-      savedData = data
-    } else {
-      throw "Configuration is missing"
-    }
-  } catch (n) {
-    throw "Configuration is missing"
-  }
-}
-
-export const connect = async () => {
+const connect = async () => {
   console.log("Connecting to sbot...")
   window.ssb = new SSB();
 
   try {
-    await ssb.connect(savedData.keys)
+    await ssb.connect(savedKeys())
     connected.set(true);
   } catch (err) {
     console.error("can't connect", err);
@@ -140,7 +124,7 @@ export const connect = async () => {
   }
 }
 
-export const reconnect = () => {
+const reconnect = () => {
   return new Promise((resolve, reject) => {
     const tryConnect = (data) => {
       window.ssb = new SSB();
@@ -164,7 +148,7 @@ export const reconnect = () => {
   })
 }
 
-export const keepPinging = () => {
+const keepPinging = () => {
   let interval = setInterval(() => {
     if (hermiebox.sbot) {
       hermiebox.sbot.whoami((err, v) => {
@@ -181,29 +165,18 @@ export const keepPinging = () => {
   }, 5000);
 }
 
-// Preferences
+module.exports = {
+  connected,
+  parseLocation,
+  routeParams,
+  intercept,
+  connect,
+  route,
+  routeParams,
+  routeLocation,
+  navigate,
+  currentView,
+  reconnect,
+  keepPinging,
 
-export const getPref = (key, defaultValue) => {
-  if (savedData.preferences) {
-    if (savedData.preferences.hasOwnProperty(key)) {
-      return savedData.preferences[key]
-    }
-  }
-  return defaultValue
-}
-
-export const setConnectionConfiguration = ({ keys, remote, manifest }) => {
-  savedData.keys = keys
-  savedData.remote = remote
-  savedData.manifest = manifest
-
-  browser.storage.local.set(savedData)
-
-}
-
-export const setPref = (key, value) => {
-  savedData.preferences = savedData.preferences || {}
-  savedData.preferences[key] = value
-
-  browser.storage.local.set(savedData)
 }

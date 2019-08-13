@@ -1,17 +1,17 @@
 <script>
-  import PostMsg from "./PostMsg.svelte";
-  import GenericMsg from "./GenericMsg.svelte";
-  import VoteMsg from "./VoteMsg.svelte";
-  import PrivateMsg from "./PrivateMsg.svelte";
-  import ContactMsg from "./ContactMsg.svelte";
-  import ChannelMsg from "./ChannelMsg.svelte";
-  import AboutMsg from "./AboutMsg.svelte";
-  import PubMsg from "./PubMsg.svelte";
-  import BlogMsg from "./BlogMsg.svelte";
-  import AvatarChip from "../parts/AvatarChip.svelte";
-  import timestamp from "../parts/timestamp.js";
-  import { navigate } from "../utils.js";
-  import { isMessageBlured } from "../abusePrevention.js";
+  const PostMsg = require("./PostMsg.svelte");
+  const GenericMsg = require("./GenericMsg.svelte");
+  const VoteMsg = require("./VoteMsg.svelte");
+  const PrivateMsg = require("./PrivateMsg.svelte");
+  const ContactMsg = require("./ContactMsg.svelte");
+  const ChannelMsg = require("./ChannelMsg.svelte");
+  const AboutMsg = require("./AboutMsg.svelte");
+  const PubMsg = require("./PubMsg.svelte");
+  const BlogMsg = require("./BlogMsg.svelte");
+  const AvatarChip = require("../parts/AvatarChip.svelte");
+  const {timestamp} = require("../parts/timestamp.js");
+  const { navigate } = require("../utils.js");
+  const { isMessageBlured } = require("../abusePrevention.js");
 
   export let msg;
 
