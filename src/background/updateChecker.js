@@ -4,7 +4,7 @@ const updateChecker = () => {
         let version = browser.runtime.getManifest().version;
         let previousVersion = details.previousVersion;
         switch (details.reason) {
-            case "update": s
+            case "update":
                 if (version !== previousVersion) {
                     url = browser.extension.getURL(`/docs/index.html#/release_notes/${version}`);
                     browser.tabs.create({

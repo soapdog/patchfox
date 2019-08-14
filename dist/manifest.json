@@ -57,7 +57,8 @@
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "clipboardRead"
+    "clipboardRead",
+    "contextMenus"
   ],
   "sidebar_action": {
     "default_icon": {
