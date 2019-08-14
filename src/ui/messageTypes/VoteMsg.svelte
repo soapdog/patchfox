@@ -2,7 +2,7 @@
   const { navigate } = require("../utils.js");
   export let msg;
 
-  let expression = msg.value.content.vote.expression;
+  let expression = msg.value.content.vote.expression || "liked";
   let msgid = msg.value.content.vote.link;
   let encodedid = encodeURIComponent(msgid);
   let label = msgid;
