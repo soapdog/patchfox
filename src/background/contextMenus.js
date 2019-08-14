@@ -33,12 +33,7 @@ function initializeContextMenus() {
     browser.contextMenus.onClicked.addListener(function (info, tab) {
         switch (info.menuItemId) {
             case "text-selection-to-clipboard-as-quotation":
-                console.log(info.selectionText);
-                console.log(info)
-
-                let title = tab.title
-
-                let template = `> ${info.selectionText}\n&mdash; _Source: [${title}](${info.pageUrl})_`
+                let template = `> ${info.selectionText}\n&mdash; _Source: [${tab.title}](${info.pageUrl})_`
                 copyToClipboard(template, template)
                 break;
         }
