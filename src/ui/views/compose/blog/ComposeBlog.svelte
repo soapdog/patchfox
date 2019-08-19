@@ -46,10 +46,7 @@
   };
 
   const checkDatDaemon = () => {
-    let port = getPref("datPort", 5001);
-    fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
-      datDaemonRunning = true;
-    });
+    datDaemonRunning = false;
   };
 
   const readFileAndAttach = files => {
