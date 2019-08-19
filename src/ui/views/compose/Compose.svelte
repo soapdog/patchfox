@@ -307,13 +307,13 @@
           </div>
           <input type="file" on:input={attachFile} id="fileInput" />
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
-          {#if ipfsDaemonRunning}
+          {#if getPref("platform-ipfs-enabled", "yes") === "yes" && ipfsDaemonRunning}
             <input type="file" on:input={attachFileIPFS} id="fileInputIPFS" />
             <button class="btn" on:click={attachFileIPFSTrigger}>
               Attach File using IPFS
             </button>
           {/if}
-           {#if datDaemonRunning}
+           {#if getPref("platform-dat-enabled", "yes") === "yes" && datDaemonRunning}
             <input type="file" on:input={attachFileDAT} id="fileInputDAT" />
             <button class="btn" on:click={attachFileDATTrigger}>
               Attach File using Dat

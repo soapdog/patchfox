@@ -4,15 +4,19 @@
   const DisplayPreferences = require("./DisplayPreferences.svelte");
   const Filters = require("./Filters.svelte");
   const ContentWarnings = require("./ContentWarnings.svelte");
+  const PlatformDAT = require("./PlatformDAT.svelte");
+  const PlatformIPFS = require("./PlatformIPFS.svelte");
 
   const views = {
     identityAndConnection: IdentityAndConnection,
     displayPreferences: DisplayPreferences,
     filters: Filters,
-    contentWarnings: ContentWarnings
+    contentWarnings: ContentWarnings,
+    platformDAT: PlatformDAT,
+    platformIPFS: PlatformIPFS
   };
 
-  let currentView = "contentWarnings";
+  let currentView = "identityAndConnection";
 
   const handleMenuChange = ev => {
     currentView = ev.detail.currentView;
