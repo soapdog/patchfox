@@ -1,5 +1,10 @@
 <script>
-  const { connected, navigate, routeLocation, intercept } = require("./utils.js");
+  const {
+    connected,
+    navigate,
+    routeLocation,
+    intercept
+  } = require("./utils.js");
 
   let avatar = "/images/icon.png";
 
@@ -64,6 +69,11 @@
     border-bottom: solid 2px rgb(2, 146, 50);
     outline: none;
   }
+
+  .throw-things-to-the-right {
+    width: 100%;
+    text-align: right;
+  }
 </style>
 
 <header class="navbar">
@@ -71,14 +81,14 @@
     <a href="#/sidebar" class="btn btn-link" on:click={openSidebar}>
       <i class="icon icon-minus text-black" />
     </a>
-    <a href="#" class="navbar-brand mr-2 p-1" on:click={openMyProfile}>
+    <a href="#/profile" class="navbar-brand mr-2 p-1" on:click={openMyProfile}>
       <figure class="avatar avatar-lg">
         <img src={avatar} alt="L" />
         <i class="avatar-presence {$connected ? 'online' : 'offline'}" />
       </figure>
     </a>
     <div class="dropdown">
-      <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
+      <a href="#/compose" class="btn btn-link dropdown-toggle" tabindex="0">
         Compose
         <i class="icon icon-caret" />
       </a>
@@ -122,16 +132,19 @@
     <a href="#/settings" class="btn btn-link" on:click={goSettings}>Settings</a>
     <a href="/docs/index.html" class="btn btn-link">Help</a>
   </section>
+  <section class="navbar-center" />
   <section class="navbar-section hide-sm">
-    <div class="input-group input-inline">
-      <input
-        class="form-input"
-        type="text"
-        bind:value={query}
-        placeholder="Channel or Feed ID" />
-      <button class="btn btn-primary input-group-btn" on:click={goSearch}>
-        Go
-      </button>
+    <div class="throw-things-to-the-right">
+      <div class="input-group input-inline">
+        <input
+          class="form-input"
+          type="text"
+          bind:value={query}
+          placeholder="Channel or Feed ID" />
+        <button class="btn btn-primary input-group-btn" on:click={goSearch}>
+          Go
+        </button>
+      </div>
     </div>
   </section>
   <section class="navbar-section show-sm bg-gray above">

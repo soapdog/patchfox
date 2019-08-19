@@ -8,13 +8,13 @@
     connect,
     reconnect,
     routeLocation,
-    keepPinging 
+    keepPinging
   } = require("./utils.js");
-  const { getPref } = require("./prefs.js")
+  const { getPref } = require("./prefs.js");
   const Navigation = require("./Navigation.svelte");
 
   let useShortColumn = getPref("columnSize", "short") == "short";
-  console.log("columnSize", useShortColumn)
+  console.log("columnSize", useShortColumn);
 
   onMount(async () => {
     try {
@@ -59,7 +59,7 @@
 <style>
   .reduced-line-length {
     max-width: 840px;
-    margin: auto; 
+    margin: auto;
   }
 </style>
 
@@ -67,10 +67,11 @@
   on:popstate={popState}
   on:error={handleUncaughtException}
   on:hashchange={hashChange} />
+
 <div class="container bg-gray">
+  <Navigation />
   <div class="columns">
     <div class="column" class:reduced-line-length={useShortColumn}>
-      <Navigation />
       <svelte:component this={$currentView} />
     </div>
   </div>
