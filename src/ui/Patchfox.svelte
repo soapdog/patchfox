@@ -8,7 +8,8 @@
     connect,
     reconnect,
     routeLocation,
-    keepPinging
+    keepPinging,
+    loadCaches,
   } = require("./utils.js");
   const { getPref } = require("./prefs.js");
   const Navigation = require("./Navigation.svelte");
@@ -19,6 +20,7 @@
   onMount(async () => {
     try {
       await connect();
+      await loadCaches();
 
       keepPinging();
     } catch (n) {

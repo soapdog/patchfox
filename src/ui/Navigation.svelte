@@ -24,8 +24,13 @@
   const goMentions = () => navigate("/mentions");
 
   const goSearch = () => {
-    navigate("/intercept", { query });
-    intercept();
+    let c = query[0];
+    if (c === "#" || c === "@" || c === "&") {
+      navigate("/intercept", { query });
+      intercept();
+    } else {
+      navigate("/search", { query });
+    }
   };
 
   const openSidebar = async ev => {

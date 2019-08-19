@@ -14,6 +14,7 @@ const Channels = require("./views/Channels.svelte")
 const Channel = require("./views/Channel.svelte")
 const Mentions = require("./views/Mentions.svelte")
 const Settings = require("./views/Settings/Settings.svelte")
+const Search = require("./views/Search.svelte");
 
 const parseLocation = () => {
   let data = queryString.parse(window.location.search)
@@ -72,6 +73,7 @@ const routes = {
   "/channel": Channel,
   "/settings": Settings,
   "/mentions": Mentions,
+  "/search": Search,
   "*": Default
 };
 
@@ -148,6 +150,10 @@ const reconnect = () => {
   })
 }
 
+const loadCaches = async () => {
+  await ssb.loadCaches();
+}
+
 const keepPinging = () => {
   let interval = setInterval(() => {
     if (hermiebox.sbot) {
@@ -178,5 +184,5 @@ module.exports = {
   currentView,
   reconnect,
   keepPinging,
-
+  loadCaches
 }

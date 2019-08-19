@@ -38,11 +38,14 @@
   }
 
   const goNext = () => {
+    let lt = msgs[msgs.length - 1].value.timestamp;
+    msgs = false;
     navigate("/public", {
-      lt: msgs[msgs.length - 1].value.timestamp
+      lt
     });
   };
   const goPrevious = () => {
+    msgs = false;
     history.back();
   };
 </script>

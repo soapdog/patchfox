@@ -30,7 +30,7 @@
 
 
 const { getPref } = require("./prefs.js")
-const { isMessageHidden } =  require("./abusePrevention.js")
+const { isMessageHidden } = require("./abusePrevention.js")
 
 const pull = hermiebox.modules.pullStream
 const sort = hermiebox.modules.ssbSort
@@ -221,6 +221,78 @@ class SSB {
         })
     }
 
+    search(query, lt) {
+        return new Promise((resolve, reject) => {
+            let q = query.toLowerCase();
+            pull(
+                pull(sbot => sbot.search.query({ q, limit: 500 })),
+                this.filterTypes(),
+                this.filterWithUserFilters(),
+                this.filterLimit(),
+                pull.collect((err, msgs) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(msgs)
+                    }
+                })
+            );
+        })
+    }
+
+    searchWithCallback(query, cb) {
+        const matchesQuery = searchFilter(query.split(" "))
+        const opts = { reverse: true,  live: true, private: true }
+
+        function searchFilter(terms) {
+            return function (msg) {
+                if (msg.sync) return true
+                const c = msg && msg.value && msg.value.content
+                return c && (
+                    msg.key === terms[0] || andSearch(terms.map(function (term) {
+                        return new RegExp('\\b' + term + '\\b', 'i')
+                    }), [c.text, c.name, c.title])
+                )
+            }
+        }
+
+        function andSearch(terms, inputs) {
+            for (let i = 0; i < terms.length; i++) {
+                let match = false
+                for (let j = 0; j < inputs.length; j++) {
+                    if (terms[i].test(inputs[j])) match = true
+                }
+                // if a term was not matched by anything, filter this one
+                if (!match) return false
+            }
+            return true
+        }
+
+        return new Promise((resolve, reject) => {
+            if (sbot) {
+                try {
+                    let q = query.toLowerCase();
+                    pull(
+                        sbot.createLogStream(opts),
+                        pull.filter(matchesQuery),
+                        this.filterTypes(),
+                        this.filterWithUserFilters(),
+                        this.filterLimit(),
+                        pull.drain((msg) => {
+                            if (!msg.sync) {
+                                cb(msg)
+                            }
+                        }, () => resolve())
+                    );
+                } catch (e) {
+                    reject(e)
+                }
+            } else {
+                reject("no sbot")
+            }
+        })
+    }
+
     async profile(feedid) {
         try {
             var user = await hermiebox.api.profile(feedid)
@@ -248,17 +320,38 @@ class SSB {
     }
 
     async avatar(feed) {
-        if (avatarCache[feed]) {
-            return avatarCache[feed]
-        }
-        try {
+        const getAvatarAux = async feed => {
             let avatar = await hermiebox.api.avatar(feed)
             // await this.setAvatarCache(feed, avatar)
             avatarCache[feed] = avatar
+            localStorage.setItem(`profile-${feed}`, JSON.stringify(avatar))
             return avatar
+        }
+
+        if (avatarCache[feed]) {
+            setTimeout(() => getAvatarAux(feed), 300) // update cache...
+            return avatarCache[feed]
+        }
+        try {
+            return getAvatarAux(feed)
         } catch (n) {
             throw n
         }
+
+    }
+
+    async loadCaches() {
+        console.time("avatar cache")
+        let allSavedData = { ...localStorage }
+        delete allSavedData["/.ssb/secret"]
+        let keys = Object.keys(allSavedData)
+        keys.forEach(k => {
+            let key = k.replace("profile-", "")
+            avatarCache[key] = JSON.parse(allSavedData[k])
+        })
+
+        console.timeEnd("avatar cache")
+        console.log(`cached ${Object.keys(avatarCache).length} users`)
 
     }
 
