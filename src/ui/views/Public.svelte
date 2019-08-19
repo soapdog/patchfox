@@ -7,6 +7,7 @@
   let msgs = false;
   let error = $routeParams.error || false;
   let dropdownActive = false;
+  let promise;
 
   let opts = {};
 
@@ -24,7 +25,7 @@
       opts.limit = parseInt(opts.limit);
     }
 
-    let promise = ssb
+    promise = ssb
       .public(opts)
       .then(ms => {
         msgs = ms;
@@ -67,9 +68,10 @@
 {#if error}
   <div class="toast toast-error">Error: {error}</div>
 {/if}
-{#if !msgs}
+{#await promise}
   <div class="loading loading-lg" />
-{:else}
+{:then}
+{#if msgs.length > 0}
   {#each msgs as msg (msg.key)}
     <MessageRenderer {msg} />
   {/each}
@@ -86,3 +88,4 @@
     </li>
   </ul>
 {/if}
+{/await}
