@@ -12,8 +12,8 @@ const Profile = require("./views/Profile.svelte")
 const ErrorView = require("./views/ErrorView.svelte")
 const Channels = require("./views/Channels.svelte")
 const Channel = require("./views/Channel.svelte")
-const Settings = require("./views/Settings.svelte")
 const Mentions = require("./views/Mentions.svelte")
+const Settings = require("./views/Settings/Settings.svelte")
 
 const parseLocation = () => {
   let data = queryString.parse(window.location.search)

@@ -1,12 +1,13 @@
 <script>
   const { navigate } = require("../utils.js");
+  const { getPref } = require("../prefs.js")
 
   export let msg;
-
+  let contentWarningsExpandByDefault = getPref("content-warnings-expand", "collapsed")
   let content = ssb.markdown(msg.value.content.text);
   let liked = false;
   let hasContentWarning = msg.value.content.contentWarning || false;
-  let showContentWarning = true;
+  let showContentWarning = contentWarningsExpandByDefault === "collapsed";
 
   ssb.votes(msg.key).then(ms => {
     ms.forEach(m => {
