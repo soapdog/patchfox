@@ -1,17 +1,19 @@
 <script>
-  import MessageRenderer from "../messageTypes/MessageRenderer.svelte";
-  import { navigate, routeParams } from "../utils.js";
+  const MessageRenderer =  require("../messageTypes/MessageRenderer.svelte");
+  const { navigate, routeParams } = require( "../utils.js");
   let profile = false;
 
   let description = false;
   let following = false;
   let blocking = false;
-  let image,
-    feed,
-    lastMsgs = [],
-    lastAbout;
+  let image;
+  let feed;
+  let lastMsgs = [];
+  let lastAbout;
+  let avatarPromise;
+  let messagePromise;
+  let aboutPromise;
 
-  // todo: move back into using stores.
   feed = $routeParams.feed;
 
   if (!feed) {
@@ -24,13 +26,13 @@
 
   console.log("fetching", feed);
 
-  let avatarPromise = ssb.avatar(feed).then(data => {
+  avatarPromise = ssb.avatar(feed).then(data => {
     name = data.name;
     image = data.image;
     document.title = `Patchfox - Feed: ${name}`;
   });
 
-  let aboutPromise = ssb.profile(feed).then(data => {
+  aboutPromise = ssb.profile(feed).then(data => {
     lastAbout = data.about.reverse().find(m => {
       let a = m.value.content;
       return a.hasOwnProperty("description");
@@ -43,11 +45,11 @@
     window.scrollTo(0, 0);
   });
 
-  let messagePromise = ssb
+  messagePromise = ssb
     .query(
       {
         value: {
-          author: feed 
+          author: feed
         }
       },
       10
@@ -85,14 +87,12 @@
   // not reloading.
   const loadMoreMessages = lt => {
     messagePromise = ssb
-      .query(
-        {
-          value: {
-            author: feed,
-            timestamp: { $lt: lt }
-          }
+      .query({
+        value: {
+          author: feed,
+          timestamp: { $lt: lt }
         }
-      )
+      })
       .then(msgs => {
         lastMsgs = msgs;
         window.scrollTo(0, 0);

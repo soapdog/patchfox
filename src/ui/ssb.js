@@ -38,6 +38,7 @@ const sort = hermiebox.modules.ssbSort
 let sbot = false
 
 let avatarCache = {}
+let msgCache = {}
 
 class SSB {
 
@@ -359,11 +360,15 @@ class SSB {
         let retVal = msgid
 
         try {
+            if (msgCache[msgid]) {
+                return msgCache[msgid]
+            }
             let data = await ssb.get(msgid)
 
             if (data.content.type == "post") {
                 retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
             }
+            msgCache[msgid] = retVal
             return retVal
         } catch (n) {
             return retVal

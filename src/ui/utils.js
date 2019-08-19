@@ -56,6 +56,8 @@ const navigate = (location, data) => {
   data = data || {}
   route.set({ location, data });
   let dataAsQuery = queryString.stringify(data);
+  let url = `/index.html?${dataAsQuery}#${location}`;
+  console.log("navigate url", url)
   history.pushState({ location, data }, `Patchfox - ${location}`, `/index.html?${dataAsQuery}#${location}`);
   console.log(`Navigate ${location}`, data);
 };
