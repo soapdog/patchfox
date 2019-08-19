@@ -1,13 +1,14 @@
 <script>
   const MessageRenderer = require("../messageTypes/MessageRenderer.svelte");
   const { navigate, routeParams } = require("../utils.js");
-  const { getPref } = require("../prefs.js")
+  const { getPref } = require("../prefs.js");
   const { onMount, onDestroy } = require("svelte");
 
   let msgs = false;
   let error = $routeParams.error || false;
   let channel = $routeParams.channel || false;
   let subscribed = false;
+  let promise;
 
   if (!channel) {
     console.log("can't navigate to unnamed channel, going back to public");
@@ -35,7 +36,7 @@
       opts.limit = parseInt(opts.limit);
     }
 
-    let promise = ssb
+    promise = ssb
       .channel(channel, opts)
       .then(ms => {
         console.log("msg", ms);
@@ -59,9 +60,11 @@
   };
 
   const goNext = () => {
+    let lt = msgs[msgs.length - 1].value.timestamp;
+    msgs = [];
     navigate("/channel", {
       channel,
-      lt: msgs[msgs.length - 1].rts
+      lt
     });
   };
   const goPrevious = () => {
@@ -80,7 +83,7 @@
 <div class="container">
   <div class="columns">
     <div class="column">
-      <h4>Channel: #{channel} </h4>
+      <h4>Channel: #{channel}</h4>
     </div>
     <div class="column">
       <label class="form-switch float-right">
@@ -103,9 +106,9 @@
 {#if error}
   <div class="toast toast-error">Error: {error}</div>
 {/if}
-{#if !msgs}
+{#await promise}
   <div class="loading loading-lg" />
-{:else}
+{:then}
   {#each msgs as msg (msg.key)}
     <MessageRenderer {msg} />
   {:else}
@@ -123,4 +126,4 @@
       </a>
     </li>
   </ul>
-{/if}
+{/await}

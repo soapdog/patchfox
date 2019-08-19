@@ -145,9 +145,9 @@
           class="form-input"
           type="text"
           bind:value={query}
-          placeholder="Channel or Feed ID" />
+          placeholder="I'm slow, be gentle" />
         <button class="btn btn-primary input-group-btn" on:click={goSearch}>
-          Go
+          Search
         </button>
       </div>
     </div>

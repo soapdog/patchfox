@@ -11,7 +11,6 @@
 
   let opts = {};
 
-  // todo: move back into using stores.
   $: {
     Object.assign(opts, $routeParams);
 
@@ -30,6 +29,8 @@
       .then(ms => {
         msgs = ms;
         window.scrollTo(0, 0);
+        delete opts.lt;
+        delete opts.limit;
       })
       .catch(n => {
         if (!error) {
@@ -71,21 +72,21 @@
 {#await promise}
   <div class="loading loading-lg" />
 {:then}
-{#if msgs.length > 0}
-  {#each msgs as msg (msg.key)}
-    <MessageRenderer {msg} />
-  {/each}
-  <ul class="pagination">
-    <li class="page-item page-previous">
-      <a href="#/public" on:click|stopPropagation|preventDefault={goPrevious}>
-        <div class="page-item-subtitle">Previous</div>
-      </a>
-    </li>
-    <li class="page-item page-next">
-      <a href="#/public" on:click|stopPropagation|preventDefault={goNext}>
-        <div class="page-item-subtitle">Next</div>
-      </a>
-    </li>
-  </ul>
-{/if}
+  {#if msgs.length > 0}
+    {#each msgs as msg (msg.key)}
+      <MessageRenderer {msg} />
+    {/each}
+    <ul class="pagination">
+      <li class="page-item page-previous">
+        <a href="#/public" on:click|stopPropagation|preventDefault={goPrevious}>
+          <div class="page-item-subtitle">Previous</div>
+        </a>
+      </li>
+      <li class="page-item page-next">
+        <a href="#/public" on:click|stopPropagation|preventDefault={goNext}>
+          <div class="page-item-subtitle">Next</div>
+        </a>
+      </li>
+    </ul>
+  {/if}
 {/await}

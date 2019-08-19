@@ -225,8 +225,9 @@ class SSB {
     search(query, lt) {
         return new Promise((resolve, reject) => {
             let q = query.toLowerCase();
+            let limit = parseInt( getPref("limit", 10))
             pull(
-                pull(sbot => sbot.search.query({ q, limit: 500 })),
+                pull(sbot => sbot.search.query({ q, limit })),
                 this.filterTypes(),
                 this.filterWithUserFilters(),
                 this.filterLimit(),
@@ -412,6 +413,14 @@ class SSB {
             return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
         }
 
+        function replaceVideos(match, id, offset, string) {
+            return "<video controls class=\"is-video-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+        }
+
+        function replaceAudios(match, id, offset, string) {
+            return "<audio controls class=\"is-audio-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+        }
+
         let html = hermiebox.modules.ssbMarkdown.block(text)
         html = html
             .replace(/<pre>/gi, "<pre class=\"code\">")
@@ -420,6 +429,8 @@ class SSB {
             .replace(/target="_blank"/gi, "")
             .replace(/<a href="%([^"]*)/gi, replaceMsgID)
             .replace(/<img src="&([^"]*)/gi, replaceImages)
+            .replace(/<video controls src="&([^"]*)/gi, replaceVideos)
+            .replace(/<audio controls src="&([^"]*)/gi, replaceAudios)
             .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
 
         return html
