@@ -102,7 +102,7 @@
     <div class="toast toast-error">Can't load blogpost: {toastMsg}</div>
   {/if}
   {#if hasContentWarning}
-    <div class="toast toast-warning">
+    <div class="toast toast-primary">
       <p>
         <b>Content Warning:</b>
         {msg.value.content.contentWarning}
