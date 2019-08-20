@@ -519,7 +519,16 @@ class SSB {
                 }
             })
 
-            const sbot = hermiebox.sbot || false
+          msgToPost.mentions = hermiebox.modules.ssbMentions(blogContent) || []
+
+          if (msgToPost.contentWarning && msgToPost.contentWarning.length > 0) {
+            let moreMentions = hermiebox.modules.ssbMentions(msgToPost.contentWarning)
+            msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
+          }
+
+          msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
+
+          const sbot = hermiebox.sbot || false
 
             if (sbot) {
                 pull(

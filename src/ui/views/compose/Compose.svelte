@@ -120,7 +120,7 @@
         msg = `Couldn't post your message: ${n}`;
         window.scrollTo(0, 0);
 
-        if (msg.message == "stream is closed") {
+        if (msg.message === "stream is closed") {
           msg += ". We lost connection to sbot. We'll try to restablish it...";
 
           reconnect()

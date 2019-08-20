@@ -13,6 +13,7 @@
   let toast = false;
   let toastMsg = "";
   let post = summary;
+  let hasContentWarning = content.contentWarning && content.contentWarning.length > 0;
 
   let liked = false;
 
@@ -73,7 +74,7 @@
     navigate("/thread", { thread: branchId });
   };
 
-  if ($routeLocation == "/thread") {
+  if (!hasContentWarning && $routeLocation === "/thread") {
     setTimeout(displayBlogPost, 100);
   }
 </script>
@@ -99,6 +100,14 @@
 
   {#if toast}
     <div class="toast toast-error">Can't load blogpost: {toastMsg}</div>
+  {/if}
+  {#if hasContentWarning}
+    <div class="toast toast-warning">
+      <p>
+        <b>Content Warning:</b>
+        {msg.value.content.contentWarning}
+      </p>
+    </div>
   {/if}
   {#if showBlogpost}
     {@html post}
