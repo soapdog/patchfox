@@ -421,7 +421,13 @@ class SSB {
             return "<audio controls class=\"is-audio-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
         }
 
-        let html = hermiebox.modules.ssbMarkdown.block(text)
+        let opts = {
+            toUrl: ref => {
+                console.log("ref", ref)
+                return ref
+            }
+        }
+        let html = hermiebox.modules.ssbMarkdown.block(text, opts)
         html = html
             .replace(/<pre>/gi, "<pre class=\"code\">")
             .replace(/<a href="#([^"]*)/gi, replaceChannel)
