@@ -8,12 +8,12 @@ const Default = require("./views/Default.svelte")
 const Compose = require("./views/compose/Compose.svelte")
 const ComposeBlog = require("./views/compose/blog/ComposeBlog.svelte")
 const Thread = require("./views/Thread.svelte")
-const Profile = require("./views/Profile.svelte")
+const Profile = require("./views/profile/Profile.svelte")
 const ErrorView = require("./views/ErrorView.svelte")
 const Channels = require("./views/Channels.svelte")
 const Channel = require("./views/Channel.svelte")
 const Mentions = require("./views/Mentions.svelte")
-const Settings = require("./views/Settings/Settings.svelte")
+const Settings = require("./views/settings/Settings.svelte")
 const Search = require("./views/Search.svelte");
 
 const parseLocation = () => {
@@ -38,7 +38,7 @@ const intercept = () => {
         window.location = `/index.html?feed=${encodeURIComponent(hash)}#/profile`
         break
       case "#":
-        window.location = `/index.html?channel=${hash.replace("#","")}#/channel` 
+        window.location = `/index.html?channel=${hash.replace("#", "")}#/channel`
         break
     }
   }

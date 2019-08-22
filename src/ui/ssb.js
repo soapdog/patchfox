@@ -225,7 +225,7 @@ class SSB {
     search(query, lt) {
         return new Promise((resolve, reject) => {
             let q = query.toLowerCase();
-            let limit = parseInt( getPref("limit", 10))
+            let limit = parseInt(getPref("limit", 10))
             pull(
                 pull(sbot => sbot.search.query({ q, limit })),
                 this.filterTypes(),
@@ -244,7 +244,7 @@ class SSB {
 
     searchWithCallback(query, cb) {
         const matchesQuery = searchFilter(query.split(" "))
-        const opts = { reverse: true,  live: true, private: true }
+        const opts = { reverse: true, live: true, private: true }
 
         function searchFilter(terms) {
             return function (msg) {
@@ -423,7 +423,6 @@ class SSB {
 
         let opts = {
             toUrl: ref => {
-                console.log("ref", ref)
                 return ref
             }
         }
@@ -482,8 +481,8 @@ class SSB {
             msgToPost.mentions = hermiebox.modules.ssbMentions(msgToPost.text) || []
 
             if (msgToPost.contentWarning && msgToPost.contentWarning.length > 0) {
-              let moreMentions = hermiebox.modules.ssbMentions(msgToPost.contentWarning)
-              msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
+                let moreMentions = hermiebox.modules.ssbMentions(msgToPost.contentWarning)
+                msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
             }
 
             msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
@@ -525,16 +524,16 @@ class SSB {
                 }
             })
 
-          msgToPost.mentions = hermiebox.modules.ssbMentions(blogContent) || []
+            msgToPost.mentions = hermiebox.modules.ssbMentions(blogContent) || []
 
-          if (msgToPost.contentWarning && msgToPost.contentWarning.length > 0) {
-            let moreMentions = hermiebox.modules.ssbMentions(msgToPost.contentWarning)
-            msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
-          }
+            if (msgToPost.contentWarning && msgToPost.contentWarning.length > 0) {
+                let moreMentions = hermiebox.modules.ssbMentions(msgToPost.contentWarning)
+                msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
+            }
 
-          msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
+            msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
 
-          const sbot = hermiebox.sbot || false
+            const sbot = hermiebox.sbot || false
 
             if (sbot) {
                 pull(
@@ -562,27 +561,6 @@ class SSB {
 
             } else {
                 reject("There is no sbot connection")
-            }
-        })
-    }
-
-    follow(userId) {
-        return new Promise((resolve, reject) => {
-            const sbot = hermiebox.sbot || false
-
-            if (sbot) {
-                sbot.publish({
-                    type: "contact",
-                    contact: userId,
-                    following: true
-                }, (err, msg) => {
-                    // 'msg' includes the hash-id and headers
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(msg)
-                    }
-                })
             }
         })
     }
@@ -1099,6 +1077,45 @@ class SSB {
                     this.filterTypes(),
                     this.filterLimit(),
                     pull.collect((err, data) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(data)
+                        }
+                    })
+                )
+            } else {
+                reject("no sbot")
+            }
+        })
+    }
+
+
+    friendship(source, dest) {
+        return new Promise((resolve, reject) => {
+            let pull = hermiebox.modules.pullStream
+            let sbot = hermiebox.sbot || false
+
+            if (sbot) {
+                let query = {
+                    "$filter": {
+                        value: {
+                            author: source,
+                            content: {
+                                type: "contact"
+                            }
+                        }
+                    }
+                }
+
+
+                pull(
+                    sbot.query.read({
+                        query: [
+                            query
+                        ]
+                    }),
+                    pull.collect((err,data) => {
                         if (err) {
                             reject(err)
                         } else {

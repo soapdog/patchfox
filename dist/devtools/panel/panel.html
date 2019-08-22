@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>BiwaScheme REPL</title>
+    <link rel="stylesheet" href="../xterm/dist/xterm.css" />
+    <script src="../xterm/dist/xterm.js"></script>
+    <script src="../xterm/dist/addons/fit/fit.js"></script>
+    <script src="../xterm/dist/addons/search/search.js"></script>
+    <script src="../xterm/dist/addons/webLinks/webLinks.js"></script>
+
+    <style type="text/css">
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        div#bs-repl {
+            border: 1px solid black;
+            padding: 1em;
+            width: 100%;
+        }
+
+        div#bs-console {
+            border: 1px solid black;
+            padding: 1em;
+            margin-top: 1em;
+        }
+
+        div#bs-opecode {
+            border: 1px solid black;
+            padding: 1em;
+            margin-top: 1em;
+        }
+
+        span.dump_opecode {
+            color: orange;
+        }
+
+        span.dump_constant {
+            color: red;
+        }
+
+        div.bs-snippet {
+            white-space: pre;
+            cursor: pointer;
+        }
+
+        div.bs-snippet:hover {
+            white-space: pre;
+            cursor: pointer;
+            background-color: darkseagreen;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="terminal"></div>
+
+    <script type="text/javascript" src="biwascheme-0.6.9-min.js"></script>
+    <script type="text/javascript" src="panel.js"></script>
+
+</body>
+
+</html>
