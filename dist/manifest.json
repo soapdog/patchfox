@@ -30,7 +30,7 @@
     "default_icon": {
       "32": "images/patchfox_32.png"
     },
-    "default_popup": "popup/popup.html"
+    "default_popup": "browserAction.html"
   },
   "commands": {
     "_execute_browser_action": {

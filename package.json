@@ -11,6 +11,7 @@
     "lodash": "^4.17.15",
     "net": "^1.0.2",
     "npm-run-all": "^4.1.5",
+    "pubsub-js": "^1.7.0",
     "pull-stream": "^3.6.14",
     "query-string": "^6.8.2",
     "rimraf": "^2.6.3",
@@ -24,9 +25,13 @@
     "copy:manifest": "copyfiles manifest.json dist",
     "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
     "copy:docs": "copyfiles docs/**/* dist",
-    "build:background": "browserify -d  src/background/background.js -o dist/background.js",
-    "build:ui": "browserify -d  src/ui/main.js -o dist/bundle.js",
-    "build": "run-s copy:* build:*"
+    "copy:index": "copyfiles -u 1 src/index.html dist",
+    "copy:browserAction": "copyfiles -E -u 3 src/core/browserAction/browserAction.html dist",
+    "build:browserAction": "browserify -d  src/core/browserAction/browserAction.js -o dist/browserAction.js",
+    "build:background": "browserify -d  src/core/background/background.js -o dist/background.js",
+    "build:addon": "browserify -d  src/main.js -o dist/bundle.js",
+    "build": "run-s copy:* build:*",
+    "clean-build": "run-s clean build"
   },
   "browserify": {
     "transform": [
