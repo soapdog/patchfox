@@ -1,20 +1,36 @@
-const kernel = require("./kernel/kernel.js");
-const platforms = require("./platforms/platforms.js");
-const runtimes = require("./runtimes/runtimes.js");
+const kernel = require("./kernel/kernel.js")
+const platforms = require("./platforms/platforms.js")
+const runtimes = require("./runtimes/runtimes.js")
 
 if (window) {
-    window.patchfox = {};
-    Object.assign(window.patchfox, kernel);
-    Object.assign(window.patchfox, platforms); 
-    Object.assign(window.patchfox, runtimes); 
+    window.patchfox = {}
+    Object.assign(window.patchfox, kernel)
+    Object.assign(window.patchfox, platforms) 
+    Object.assign(window.patchfox, runtimes)
 }
 
-function start() {
-    console.log("plz start patchfox")
-    // load configuration.
-    // connect.
+const start = async () => {
+    // try {
+    // await kernel.loadConfiguration()
+    // let s = new platforms.SSB()
+    // window.ssb = await s.connect()
+    // // load configuration.
+    // // connect.
+    // return ssb.id
+    // } catch(n) {
+    //     switch (n) {
+    //         case "Configuration is missing":
+    //             // window.open("/docs/index.html#/troubleshooting/no-configuration")
+    //             browser.runtime.openOptionsPage()
+    //             break
+    //         default:
+    //             throw n
+    //             break
+    //     }
+    // }
 }
 
 module.exports = {
-    start
+    start,
+    platforms
 }

@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2019.8.2",
+  "version": "2019.9.1",
   "devDependencies": {
     "browserify": "^16.5.0",
     "copyfiles": "^2.1.1",
@@ -15,6 +15,8 @@
     "pull-stream": "^3.6.14",
     "query-string": "^6.8.2",
     "rimraf": "^2.6.3",
+    "scssify": "^3.0.1",
+    "spectre.css": "^0.5.8",
     "ssb-client": "^4.7.8",
     "svelte": "^3.7.1",
     "sveltify": "^3.0.0",
@@ -45,7 +47,8 @@
             "dev": true
           }
         }
-      ]
+      ],
+      [ "scssify"]
     ]
   },
   "dependencies": {

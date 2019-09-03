@@ -1,0 +1,168 @@
+/** variables **/
+$page-bg: #666;
+$base-font-size: 14px; // becomes 1rem
+$menu-silver: rgba(235, 235, 235, 0.8); // #eee;
+$menu-border: $menu-silver; // #dedede;
+$menu-focused: #1e88e5;
+$menu-separator: #ccc;
+$menu-text-color: #333;
+$menu-shortcut-color: #999;
+$menu-focused-text-color: #fff;
+$menu-text-color-disabled: #999;
+$menu-border-width: 1px;
+$menu-shadow: 2px 2px 3px -3px $menu-text-color;
+$menu-content-padding: 0.25rem 1rem 0.25rem 1.75rem;
+$menu-border-radius: 0.5rem;
+$menu-top-padding: 0.25rem;
+
+/** styles **/
+/* commons */
+// html {
+//     font-size: $base-font-size;
+// }
+
+// body {
+//     margin: 0;
+//     padding: 0;
+//     font-family: sans-serif;
+//     font-size: $base-font-size;
+//     background-color: $page-bg;
+//     background-size: cover;
+//     background-repeat: no-repeat;
+// }
+
+/* nav-bar styling */
+.flyout-nav {
+    ul {
+        margin: 0;
+        padding: $menu-top-padding 0;
+        position: absolute;
+        display: none;
+        list-style-type: none;
+        white-space: nowrap;
+        background: $menu-silver;
+        border: $menu-border-width solid $menu-border;
+        box-shadow: $menu-shadow;
+        border-radius: $menu-border-radius;
+        transform: translateY(-$menu-top-padding);
+    }
+
+    li {
+        position: relative;
+        display: block;
+
+        // separator item
+        &.separator {
+            margin-bottom: $menu-top-padding;
+            border-bottom: $menu-border-width solid $menu-separator;
+            padding-bottom: $menu-top-padding;
+        }
+
+        // the menu items - text, shortcut info and hover effect (blue bg)
+        a {
+            text-decoration: none;
+            color: $menu-text-color;
+            position: relative;
+            display: table;
+            width: 100%;
+
+            .global-menu-item,
+            .shortcut {
+                display: table-cell;
+                padding: $menu-content-padding;
+            }
+
+            .shortcut {
+                text-align: right;
+                color: $menu-shortcut-color;
+            }
+
+            label {
+                cursor: pointer;
+            }
+
+            // for menu items that are toggles
+            input[type='checkbox'] {
+                display: none;
+            }
+
+            input[type='checkbox']:checked + .global-menu-item {
+                &:before {
+                    content: '✔️';
+                    position: absolute;
+                    top: 0;
+                    left: 0.35rem;
+                }
+            }
+
+            &:hover {
+                background: $menu-focused;
+                .global-menu-item,
+                .shortcut {
+                    color: $menu-focused-text-color;
+                }
+            }
+        }
+
+        // show a submenu available indicator icon...
+        // note: this can be written in a easier way without having to rely
+        // on .has-children added to markup when the :has() selector
+        // implementation is available in the browser)
+        &.has-children > a {
+            margin-right: 2.5rem;
+            &:after {
+                content: '▶';
+                text-align: right;
+                position: absolute;
+                right: 0;
+                padding: $menu-content-padding;
+            }
+        }
+
+        // don't let disabled options be hover-able/clickable and color them different
+        &.disabled {
+            .global-menu-item,
+            .shortcut {
+                color: $menu-text-color-disabled;
+            }
+            pointer-events: none;
+        }
+
+        // show the next level drop-down on the right at the same height
+        &:hover {
+            & > ul {
+                display: block;
+                top: -$menu-border-width; // handle the offset caused by border
+                left: 100%;
+            }
+        }
+    }
+
+    // overrides for first-level behaviour (bar)
+    & > ul {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: 100%;
+        border-bottom: $menu-border-width solid $menu-border;
+        box-shadow: $menu-shadow;
+        border-radius: 0;
+        padding: 0;
+        transform: translateY(0);
+
+        // minor theming styling adjustments
+        & > li > a > .global-menu-item {
+            padding-left: 1rem;
+        }
+
+        // first-level drop-down should appear below at the same left position
+        & > li:hover > ul {
+            top: 100%;
+            left: -$menu-border-width; // handle the offset caused by border
+            border-radius: 0 0 $menu-border-radius $menu-border-radius;
+            padding-top: 0;
+            transform: translateY(0);
+        }
+    }
+}

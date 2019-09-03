@@ -1,6 +1,5 @@
 const prefs = require("./prefs.js");
 const utils = require("./utils.js");
-const abusePrevention = require("./abusePrevention.js");
 const PubSub = require("pubsub-js");
 const events = require("./events.js")
 const _ = require("lodash");
@@ -33,20 +32,44 @@ function addEventIdentifier(obj) {
     Object.assign(window.patchfox.events, obj)
 }
 
+function systemPackages() {
+    return _.filter(patchfox.packages, p => p.system)
+}
+
+function menus() {
+    let packagesWithGlobalMenuEntries = _.filter(patchfox.packages, p => p.menu)
+    return packagesWithGlobalMenuEntries.map(p => {
+        return {
+            name: p.name,
+            menu: p.menu
+        }
+    }) 
+}
+
+function goToPackage(package) {
+    // TODO: implement this.
+}
+
+function triggerMenu(menuItem) {
+    let {package, event} = menuItem
+    goToPackage(package)
+    emitSync(event)
+}
 
 module.exports = {
     // package related
     package,
     packages,
+    systemPackages,
+    // menu related (aka navigation)
+    menus,
+    triggerMenu,
     // event related
     emit,
     listen,
     events,
     addEventIdentifier,
-    // prefs
-    setPref: prefs.setPref,
-    getPref: prefs.getPref,
+    ...prefs,
     // aux
-    utils,
-    abusePrevention
+    utils
 }

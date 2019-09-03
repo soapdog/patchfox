@@ -6,8 +6,8 @@
  */
 
 
-const { getPref } = require("../../kernel/prefs.js")
-const { isMessageHidden } = require("../../kernel/abusePrevention.js")
+const { getPref, savedKeys } = require("../../kernel/prefs.js")
+const { isMessageHidden } = require("./abusePrevention.js")
 
 const pull = require("pull-stream")
 const sort = require("ssb-sort")
@@ -31,11 +31,9 @@ class SSB {
   }
 
   connect(keys) {
-    // var server = await hermiebox.api.connect(pKeys)
-    // this.log("you are", server.id)
-    // this.feed = server.id
-    // sbot = server
-
+    if (!keys) {
+      keys = savedKeys()
+    }
     return new Promise(function (resolve, reject) {
       if (sbot) {
         resolve(sbot)
