@@ -5,6 +5,7 @@ const events = require("./events.js")
 const _ = require("lodash");
 
 let packages = {};
+let coreMenu = [];
 
 function package(pkg) {
     let name = pkg.name
@@ -24,6 +25,10 @@ function listen(event, listener) {
     return token;
 }
 
+function stopListening(token) {
+    PubSub.unsubscribe(token)
+}
+
 function addEventIdentifier(obj) {
     // hack: mutating globals for fun and profit
     // I'll regret this later.
@@ -37,13 +42,12 @@ function systemPackages() {
 }
 
 function menus() {
+    let result = coreMenu;
     let packagesWithGlobalMenuEntries = _.filter(patchfox.packages, p => p.menu)
-    return packagesWithGlobalMenuEntries.map(p => {
-        return {
-            name: p.name,
-            menu: p.menu
-        }
-    }) 
+    packagesWithGlobalMenuEntries.forEach(p => {
+        result.push(p.menu)
+    })
+    return _.flatten(result)
 }
 
 function goToPackage(package) {
@@ -51,8 +55,10 @@ function goToPackage(package) {
 }
 
 function triggerMenu(menuItem) {
-    let {package, event} = menuItem
-    goToPackage(package)
+    let { package, event } = menuItem
+    if (package) {
+        goToPackage(package)
+    }
     emitSync(event)
 }
 
@@ -69,6 +75,7 @@ module.exports = {
     listen,
     events,
     addEventIdentifier,
+    stopListening,
     ...prefs,
     // aux
     utils

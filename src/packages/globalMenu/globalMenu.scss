@@ -31,6 +31,10 @@ $menu-top-padding: 0.25rem;
 //     background-repeat: no-repeat;
 // }
 
+#wm-current-package {
+    padding-top: 40px;
+}
+
 /* nav-bar styling */
 .flyout-nav {
     ul {
@@ -45,6 +49,7 @@ $menu-top-padding: 0.25rem;
         box-shadow: $menu-shadow;
         border-radius: $menu-border-radius;
         transform: translateY(-$menu-top-padding);
+        z-index: 99999;
     }
 
     li {
@@ -116,6 +121,7 @@ $menu-top-padding: 0.25rem;
                 position: absolute;
                 right: 0;
                 padding: $menu-content-padding;
+                display: inline;
             }
         }
 

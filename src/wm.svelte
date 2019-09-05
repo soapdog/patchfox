@@ -16,9 +16,13 @@
     margin: auto;
   }
 
-  .wm-current-package {
-    border: solid 4px blue;
+  .wm-backdrop {
+    background-image: url("/images/bg.jpg");
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
   }
+
 </style>
 
 <svelte:window
@@ -30,7 +34,7 @@
   {#each systemPackages as pkg}
     <svelte:component this={pkg.view} />
   {/each}
-  <div class="wm-current-package">
+  <div id="wm-current-package">
     <!-- <svelte:component this={$currentView} /> -->
   </div>
 </div>
