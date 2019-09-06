@@ -10,8 +10,7 @@
 
     const saveConfiguration = ev => {
         setConnectionConfiguration({remote, keys: JSON.parse(keys), manifest});
-        // todo: go somewhere
-        console.log("salvou")
+        location.reload();
     };
 
     const selectedFile = ev => {

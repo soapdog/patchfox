@@ -6,8 +6,8 @@
  */
 
 
-const { getPref, savedKeys } = require("../../kernel/prefs.js")
-const { isMessageHidden } = require("./abusePrevention.js")
+const {getPref, savedKeys} = require("../../kernel/prefs.js")
+const {isMessageHidden} = require("./abusePrevention.js")
 
 const pull = require("pull-stream")
 const sort = require("ssb-sort")
@@ -25,12 +25,13 @@ let avatarCache = {}
 let msgCache = {}
 
 class SSB {
-
   log(pMsg, pVal = "") {
     console.log(`[SSB API] - ${pMsg}`, pVal)
   }
 
   connect(keys) {
+    let port = 8989;
+
     if (!keys) {
       keys = savedKeys()
     }
@@ -50,7 +51,7 @@ class SSB {
             reject(err)
           } else {
             sbot = server
-            this.log("you are", server.id)
+            console.log("you are", server.id)
             resolve(server)
           }
         })
@@ -96,7 +97,6 @@ class SSB {
   }
 
 
-
   public(opts) {
     return new Promise((resolve, reject) => {
 
@@ -127,7 +127,7 @@ class SSB {
     return new Promise((resolve, reject) => {
       sbot.get(id, (err, value) => {
         if (err) return cb(err)
-        var rootMsg = { key: id, value: value }
+        var rootMsg = {key: id, value: value}
         pull(
           sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
             query: [
@@ -144,7 +144,7 @@ class SSB {
               }
             ]
           }) : pull(
-            sbot.links({ dest: id, values: true, rel: 'root' }),
+            sbot.links({dest: id, values: true, rel: 'root'}),
             pull.filter(function (msg) {
               var c = msg && msg.value && msg.value.content
               return c && c.type === 'post' && c.root === id
@@ -173,7 +173,7 @@ class SSB {
         };
 
         if (lt) {
-          filterQuery.$filter.value = { timestamp: { $lt: lt } };
+          filterQuery.$filter.value = {timestamp: {$lt: lt}};
         }
 
         return sbot.backlinks.read({
@@ -233,7 +233,7 @@ class SSB {
       let q = query.toLowerCase();
       let limit = parseInt(getPref("limit", 10))
       pull(
-        pull(sbot => sbot.search.query({ q, limit })),
+        pull(sbot => sbot.search.query({q, limit})),
         this.filterTypes(),
         this.filterWithUserFilters(),
         this.filterLimit(),
@@ -250,7 +250,7 @@ class SSB {
 
   searchWithCallback(query, cb) {
     const matchesQuery = searchFilter(query.split(" "))
-    const opts = { reverse: true, live: true, private: true }
+    const opts = {reverse: true, live: true, private: true}
 
     function searchFilter(terms) {
       return function (msg) {
@@ -353,14 +353,14 @@ class SSB {
   get(msgid) {
     return new Promise((resolve, reject) => {
       if (sbot.ooo) {
-        sbot.get({ id: id, raw: true, ooo: false, private: true }, (err, data) => {
+        sbot.get({id: id, raw: true, ooo: false, private: true}, (err, data) => {
           if (err) reject(err)
           resolve(data)
         })
       } else {
         if (!sbot.private) {
           // if no sbot.private, assume we have newer sbot that supports private:true
-          return sbot.get({ id: id, private: true }, (err, data) => {
+          return sbot.get({id: id, private: true}, (err, data) => {
             if (err) reject(err)
             resolve(data)
           })
@@ -420,7 +420,7 @@ class SSB {
 
   async loadCaches() {
     console.time("avatar cache")
-    let allSavedData = { ...localStorage }
+    let allSavedData = {...localStorage}
     delete allSavedData["/.ssb/secret"]
     let keys = Object.keys(allSavedData)
     keys.forEach(k => {
@@ -451,6 +451,7 @@ class SSB {
       return retVal
     }
   }
+
   plainTextFromMarkdown(text) {
     // TODO: this doesn't belong here
     let html = this.markdown(text)
@@ -534,7 +535,7 @@ class SSB {
 
   newPost(data) {
     return new Promise((resolve, reject) => {
-      let msgToPost = { type: "post", text: data.text }
+      let msgToPost = {type: "post", text: data.text}
 
       const commonFields = [
         "root",
@@ -577,7 +578,7 @@ class SSB {
 
   newBlogPost(data) {
     return new Promise((resolve, reject) => {
-      let msgToPost = { type: "blog" }
+      let msgToPost = {type: "blog"}
       let blogContent = data.content
 
       const commonFields = [
@@ -659,7 +660,7 @@ class SSB {
     return new Promise((resolve, reject) => {
       if (sbot) {
         pull(
-          sbot.links({ dest: msgid, rel: "vote", values: true }),
+          sbot.links({dest: msgid, rel: "vote", values: true}),
           pull.collect((err, msgs) => {
             if (err) {
               reject(err)
@@ -725,15 +726,15 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
+              {"$filter": {"value": {"content": {"channel": {"$is": "string"}, "type": "post"}}}},
               {
                 "$reduce": {
                   "channel": ["value", "content", "channel"],
-                  "count": { "$count": true },
-                  "timestamp": { "$max": ["value", "timestamp"] }
+                  "count": {"$count": true},
+                  "timestamp": {"$max": ["value", "timestamp"]}
                 }
               },
-              { "$sort": [["timestamp"], ["count"]] }
+              {"$sort": [["timestamp"], ["count"]]}
             ],
             limit: 20
           }),
@@ -758,7 +759,7 @@ class SSB {
       let query = {
         "$filter": {
           value: {
-            content: { channel }
+            content: {channel}
           }
         },
         "$sort": [["value", "timestamp"]]
@@ -766,7 +767,7 @@ class SSB {
       }
 
       if (opts.lt) {
-        query.$filter.value.timestamp = { $lt: opts.lt }
+        query.$filter.value.timestamp = {$lt: opts.lt}
       }
 
       if (sbot) {
@@ -1019,7 +1020,7 @@ class SSB {
               content: {
                 type: "contact",
                 contact: feed,
-                following: { $is: "boolean" }
+                following: {$is: "boolean"}
               }
             }
           }
@@ -1067,7 +1068,7 @@ class SSB {
               content: {
                 type: "contact",
                 contact: feed,
-                blocking: { $is: "boolean" }
+                blocking: {$is: "boolean"}
               }
             }
           }

@@ -1,7 +1,4 @@
 <script>
-    // this came from: https://codepen.io/abhishekcghosh/pen/qzmEWd
-
-    let menus = patchfox.menus();
     let groups = patchfox.menuGroups();
     let groupKeys = Object.keys(groups);
     console.log("groups", groups);
@@ -12,41 +9,43 @@
     })
 </script>
 
-<nav class="flyout-nav">
-    <ul>
-      {#if currentPackage}
-          <li>
-              <a><span class="global-menu-item"><b>{currentPackage}</b></span></a>
-          </li>
-      {/if}
-      {#each groupKeys as key}
+<style>
+    .main-menu {
+        z-index: 999999;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+</style>
 
-          <li>
-              <a href="#">
-                  <span class="global-menu-item">{key}</span>
-              </a>
-              <ul>
-                {#each groups[key] as menu, i}
-                  {#each menu.items as item}
-                      <li>
-                          <a
-                                  on:click={() => {
-                      console.log('trigger menu', item);
-                      patchfox.triggerMenu(item);
-                      }}>
-                          <span class="global-menu-item">{item.label}</span>
-                        {#if item.shortcut}
-                            <span class="shortcut">{item.shortcut}</span>
-                        {/if}
-                              </a>
-                      </li>
-                  {/each}
-                  {#if i < groups[key].length - 1}
-                      <li class="separator"></li>
-                  {/if}
-                {/each}
-              </ul>
-          </li>
-      {/each}
-    </ul>
-</nav>
+<div class="container">
+    <header class="main-menu navbar">
+        <section class="navbar-section">
+          {#each groupKeys as key}
+              <div class="dropdown">
+                  <a href="#/compose" class="btn btn-link dropdown-toggle" tabindex="0">
+                    {key}
+                      <i class="icon icon-caret"/>
+                  </a>
+                  <ul class="menu">
+                    {#each groups[key] as menu, i}
+                      {#each menu.items as item}
+                          <li class="menu-item">
+                              <a
+                                      href="#"
+                                      class="btn btn-link"
+                                      on:click|stopPropagation|preventDefault={() => {
+                          console.log('trigger menu', item);
+                          patchfox.triggerMenu(item);
+                          }}>
+                              {item.label}
+                                      </a>
+                          </li>
+                      {/each}
+                    {/each}
+                  </ul>
+              </div>
+          {/each}
+        </section>
+    </header>
+</div>

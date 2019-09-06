@@ -31,7 +31,7 @@
     "copy:browserAction": "copyfiles -E -u 3 src/core/browserAction/browserAction.html dist",
     "build:browserAction": "browserify src/core/browserAction/browserAction.js -o dist/browserAction.js",
     "build:background": "browserify src/core/background/background.js -o dist/background.js",
-    "build:addon": "browserify src/main.js -o dist/bundle.js",
+    "build:addon": "browserify -d src/main.js -o dist/bundle.js",
     "build": "run-s copy:* build:*",
     "clean-build": "run-s clean build"
   },

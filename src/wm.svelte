@@ -1,9 +1,17 @@
 <script>
     const _ = require("lodash");
+
     const popState = () => {
     };
 
-    const handleUncaughtException = () => {
+    const handleUncaughtException = (n) => {
+        patchfox.emit("package:go", {
+            pkg: "errorHandler",
+            data: {
+                currentPackage,
+                error: n
+            }
+        });
     };
 
     const hashChange = () => {
@@ -12,13 +20,16 @@
     let systemPackages = patchfox.systemPackages();
     let useShortColumn = true;
     let currentView = false;
+    let currentPackage = false;
+    let args = {};
 
     patchfox.listen("package:go", (event, {pkg, view, data}) => {
-                console.log("data", data)
                 if (patchfox.packages[pkg]) {
                     let packageToOpen = patchfox.packages[pkg];
                     if (typeof view !== "undefined") {
                         if (typeof packageToOpen[view] !== "undefined") {
+                            args = data;
+                            currentPackage = packageToOpen;
                             currentView = packageToOpen[view];
                             patchfox.emit("package:changed", packageToOpen);
                         } else {
@@ -26,6 +37,8 @@
                         }
                     } else if (typeof packageToOpen.view !== "undefined") {
                         // opening default view
+                        args = data;
+                        currentPackage = packageToOpen;
                         currentView = packageToOpen.view;
                         patchfox.emit("package:changed", packageToOpen);
                     } else {
@@ -48,11 +61,14 @@
     .wm-backdrop {
         background-image: url("/images/bg.jpg");
         background-size: cover;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
     }
 
-
+    #wm-current-package {
+        padding-top: 50px;
+    }
 </style>
 
 <svelte:window
@@ -60,13 +76,16 @@
         on:error={handleUncaughtException}
         on:hashchange={hashChange}/>
 
-    <div class="root wm-backdrop">
-      {#each systemPackages as pkg}
+<div class="root wm-backdrop">
+  {#each systemPackages as pkg}
       <svelte:component this={pkg.view}/>
-      {/each}
-        <div id="wm-current-package" class="container">
+  {/each}
+    <div class="container reduced-line-length">
+        <div id="wm-current-package">
           {#if currentView}
-              <svelte:component this={currentView}/>
+              <svelte:component this={currentView} {...args}/>
           {/if}
         </div>
+
     </div>
+</div>

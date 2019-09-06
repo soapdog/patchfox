@@ -1,0 +1,88 @@
+<script>
+  const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
+  const { getPrefs } = require("../../core/kernel/prefs.js");
+  const { onMount } = require("svelte");
+
+  let msgs = false;
+  let error =  false;
+  let dropdownActive = false;
+  let promise;
+
+  let opts = {};
+
+  $: {
+    Object.assign(opts, {});
+
+    document.title = `Patchfox - Public`;
+
+    if (opts.hasOwnProperty("lt")) {
+      opts.lt = parseInt(opts.lt);
+    }
+
+    if (opts.hasOwnProperty("limit")) {
+      opts.limit = parseInt(opts.limit);
+    }
+
+    promise = ssb
+      .public(opts)
+      .then(ms => {
+        msgs = ms;
+        window.scrollTo(0, 0);
+        delete opts.lt;
+        delete opts.limit;
+      })
+      .catch(n => {
+        if (!error) {
+          console.error("errrrooooor", n);
+        }
+      });
+  }
+
+  const goNext = () => {
+    let lt = msgs[msgs.length - 1].value.timestamp;
+    msgs = false;
+  };
+  const goPrevious = () => {
+    msgs = false;
+    history.back();
+  };
+</script>
+
+<style>
+  .menu-right {
+    right: 0px;
+    left: unset;
+    min-width: 300px;
+  }
+</style>
+
+<div class="container">
+  <div class="columns">
+    <h4 class="column">Public Feed</h4>
+    <div class="column" />
+  </div>
+</div>
+{#if error}
+  <div class="toast toast-error">Error: {error}</div>
+{/if}
+{#await promise}
+  <div class="loading loading-lg" />
+{:then}
+  {#if msgs.length > 0}
+    {#each msgs as msg (msg.key)}
+      <MessageRenderer {msg} />
+    {/each}
+    <ul class="pagination">
+      <li class="page-item page-previous">
+        <a href="#/public" on:click|stopPropagation|preventDefault={goPrevious}>
+          <div class="page-item-subtitle">Previous</div>
+        </a>
+      </li>
+      <li class="page-item page-next">
+        <a href="#/public" on:click|stopPropagation|preventDefault={goNext}>
+          <div class="page-item-subtitle">Next</div>
+        </a>
+      </li>
+    </ul>
+  {/if}
+{/await}
