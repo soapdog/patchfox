@@ -97530,64 +97530,66 @@ const _ = require("lodash");
 let packages = {};
 
 function package(pkg) {
-    let name = pkg.name
-    _.set(packages, name, pkg)
+  let name = pkg.name
+  _.set(packages, name, pkg)
 }
 
 function emit(event, data) {
-    PubSub.publish(event, data)
+  PubSub.publish(event, data)
 }
 
 function emitSync(event, data) {
-    PubSub.publishSync(event, data)
+  PubSub.publishSync(event, data)
 }
 
 function listen(event, listener) {
-    let token = PubSub.subscribe(event, listener);
-    return token;
+  let token = PubSub.subscribe(event, listener);
+  return token;
 }
 
 function stopListening(token) {
-    PubSub.unsubscribe(token)
+  PubSub.unsubscribe(token)
 }
 
 function addEventIdentifier(obj) {
-    // hack: mutating globals for fun and profit
-    // I'll regret this later.
-    // warning: this can clobber existing events if the
-    // keys collide. Maybe force it into a namespace?
-    Object.assign(window.patchfox.events, obj)
+  // hack: mutating globals for fun and profit
+  // I'll regret this later.
+  // warning: this can clobber existing events if the
+  // keys collide. Maybe force it into a namespace?
+  Object.assign(window.patchfox.events, obj)
 }
 
 function systemPackages() {
-    return _.filter(patchfox.packages, p => p.system)
+  return _.filter(patchfox.packages, p => p.system)
 }
 
-
-function goToPackage(package) {
-  // TODO: implement this.
+function go(pkg, view, data) {
+  PubSub.publishSync("package:go", {pkg, view, data})
 }
 
 module.exports = {
-    // package related
-    package,
-    packages,
-    systemPackages,
-    // menu related (aka navigation)
-    ...menus,
-    // event related
-    emit,
-    listen,
-    events,
-    addEventIdentifier,
-    stopListening,
-    ...prefs,
-    // aux
-    utils
+  // package related
+  package,
+  packages,
+  systemPackages,
+  go,
+  // menu related (aka navigation)
+  ...menus,
+  // event related
+  emit,
+  emitSync,
+  listen,
+  events,
+  addEventIdentifier,
+  stopListening,
+  ...prefs,
+  // aux
+  utils
 }
 
 },{"./events.js":643,"./menus.js":645,"./prefs.js":646,"./utils.js":647,"lodash":342,"pubsub-js":470}],645:[function(require,module,exports){
 const _ = require("lodash");
+const PubSub = require("pubsub-js");
 
 function menus() {
   let result = [];
@@ -97612,11 +97614,8 @@ function menuGroups() {
 }
 
 function triggerMenu(menuItem,) {
-  let { package, event, data } = menuItem
-  if (package) {
-    goToPackage(package)
-  }
-  emitSync(event, data)
+  let { event, data } = menuItem
+  PubSub.publishSync(event, data)
 }
 
 module.exports = {
@@ -97625,7 +97624,7 @@ module.exports = {
   triggerMenu
 }
 
-},{"lodash":342}],646:[function(require,module,exports){
+},{"lodash":342,"pubsub-js":470}],646:[function(require,module,exports){
 /**
  * Prefs
  * 
@@ -99077,7 +99076,7 @@ core.start().then(() => {
         target: document.body
     });
 });
-},{"./core/core.js":642,"./packages/packages.js":661,"./themes/themes.js":663,"./wm.svelte":664}],654:[function(require,module,exports){
+},{"./core/core.js":642,"./packages/packages.js":661,"./themes/themes.js":672,"./wm.svelte":673}],654:[function(require,module,exports){
 patchfox.package({
   name: "githubIntegration",
   menu: [
@@ -99105,7 +99104,7 @@ patchfox.package({
 });
 
 },{"./globalMenu.scss":656,"./globalMenu.svelte":657}],656:[function(require,module,exports){
-var css = "﻿#wm-current-package{padding-top:40px}.flyout-nav ul{margin:0;padding:.25rem 0;position:absolute;display:none;list-style-type:none;white-space:nowrap;background:rgba(235,235,235,0.8);border:1px solid rgba(235,235,235,0.8);box-shadow:2px 2px 3px -3px #333;border-radius:.5rem;transform:translateY(-.25rem);z-index:99999}.flyout-nav li{position:relative;display:block}.flyout-nav li.separator{margin-bottom:.25rem;border-bottom:1px solid #ccc;padding-bottom:.25rem}.flyout-nav li a{text-decoration:none;color:#333;position:relative;display:table;width:100%}.flyout-nav li a .global-menu-item,.flyout-nav li a .shortcut{display:table-cell;padding:0.25rem 1rem 0.25rem 1.75rem}.flyout-nav li a .shortcut{text-align:right;color:#999}.flyout-nav li a label{cursor:pointer}.flyout-nav li a input[type='checkbox']{display:none}.flyout-nav li a input[type='checkbox']:checked+.global-menu-item:before{content:'✔️';position:absolute;top:0;left:0.35rem}.flyout-nav li a:hover{background:#1e88e5}.flyout-nav li a:hover .global-menu-item,.flyout-nav li a:hover .shortcut{color:#fff}.flyout-nav li.has-children>a{margin-right:2.5rem}.flyout-nav li.has-children>a:after{content:'▶';text-align:right;position:absolute;right:0;padding:0.25rem 1rem 0.25rem 1.75rem;display:inline}.flyout-nav li.disabled{pointer-events:none}.flyout-nav li.disabled .global-menu-item,.flyout-nav li.disabled .shortcut{color:#999}.flyout-nav li:hover>ul{display:block;top:-1px;left:100%}.flyout-nav>ul{display:flex;flex-flow:row nowrap;justify-content:flex-start;align-items:stretch;width:100%;border-bottom:1px solid rgba(235,235,235,0.8);box-shadow:2px 2px 3px -3px #333;border-radius:0;padding:0;transform:translateY(0)}.flyout-nav>ul>li>a>.global-menu-item{padding-left:1rem}.flyout-nav>ul>li:hover>ul{top:100%;left:-1px;border-radius:0 0 .5rem .5rem;padding-top:0;transform:translateY(0)}\n"
+var css = "﻿.flyout-nav ul{margin:0;padding:.25rem 0;position:absolute;display:none;list-style-type:none;white-space:nowrap;background:rgba(235,235,235,0.8);border:1px solid rgba(235,235,235,0.8);box-shadow:2px 2px 3px -3px #333;border-radius:.5rem;transform:translateY(-.25rem);z-index:99999}.flyout-nav li{position:relative;display:block}.flyout-nav li.separator{margin-bottom:.25rem;border-bottom:1px solid #ccc;padding-bottom:.25rem}.flyout-nav li a{text-decoration:none;color:#333;position:relative;display:table;width:100%}.flyout-nav li a .global-menu-item,.flyout-nav li a .shortcut{display:table-cell;padding:0.25rem 1rem 0.25rem 1.75rem}.flyout-nav li a .shortcut{text-align:right;color:#999}.flyout-nav li a label{cursor:pointer}.flyout-nav li a input[type='checkbox']{display:none}.flyout-nav li a input[type='checkbox']:checked+.global-menu-item:before{content:'✔️';position:absolute;top:0;left:0.35rem}.flyout-nav li a:hover{background:#1e88e5}.flyout-nav li a:hover .global-menu-item,.flyout-nav li a:hover .shortcut{color:#fff}.flyout-nav li.has-children>a{margin-right:2.5rem}.flyout-nav li.has-children>a:after{content:'▶';text-align:right;position:absolute;right:0;padding:0.25rem 1rem 0.25rem 1.75rem;display:inline}.flyout-nav li.disabled{pointer-events:none}.flyout-nav li.disabled .global-menu-item,.flyout-nav li.disabled .shortcut{color:#999}.flyout-nav li:hover>ul{display:block;top:-1px;left:100%}.flyout-nav>ul{display:flex;flex-flow:row nowrap;justify-content:flex-start;align-items:stretch;width:100%;border-bottom:1px solid rgba(235,235,235,0.8);box-shadow:2px 2px 3px -3px #333;border-radius:0;padding:0;transform:translateY(0)}.flyout-nav>ul>li>a>.global-menu-item{padding-left:1rem}.flyout-nav>ul>li:hover>ul{top:100%;left:-1px;border-radius:0 0 .5rem .5rem;padding-top:0;transform:translateY(0)}\n"
 module.exports = require('scssify').createStyle(css, {})
 },{"scssify":575}],657:[function(require,module,exports){
 /* globalMenu.svelte generated by Svelte v3.7.1 */
@@ -99126,6 +99125,7 @@ const {
 	listen,
 	noop,
 	safe_not_equal,
+	set_data,
 	space,
 	text
 } = require("svelte/internal");
@@ -99153,7 +99153,47 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (27:30) {#if item.shortcut}
+// (17:6) {#if currentPackage}
+function create_if_block_2(ctx) {
+	var li, a, span, b, t;
+
+	return {
+		c: function create() {
+			li = element("li");
+			a = element("a");
+			span = element("span");
+			b = element("b");
+			t = text(ctx.currentPackage);
+			add_location(b, file, 18, 48, 517);
+			attr(span, "class", "global-menu-item");
+			add_location(span, file, 18, 17, 486);
+			add_location(a, file, 18, 14, 483);
+			add_location(li, file, 17, 10, 464);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, li, anchor);
+			append(li, a);
+			append(a, span);
+			append(span, b);
+			append(b, t);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.currentPackage) {
+				set_data(t, ctx.currentPackage);
+			}
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(li);
+			}
+		}
+	};
+}
+
+// (38:24) {#if item.shortcut}
 function create_if_block_1(ctx) {
 	var span, t_value = ctx.item.shortcut, t;
 
@@ -99162,7 +99202,7 @@ function create_if_block_1(ctx) {
 			span = element("span");
 			t = text(t_value);
 			attr(span, "class", "shortcut");
-			add_location(span, file, 27, 30, 950);
+			add_location(span, file, 38, 28, 1236);
 		},
 
 		m: function mount(target, anchor) {
@@ -99180,7 +99220,7 @@ function create_if_block_1(ctx) {
 	};
 }
 
-// (19:18) {#each menu.items as item}
+// (30:18) {#each menu.items as item}
 function create_each_block_2(ctx) {
 	var li, a, span, t0_value = ctx.item.label, t0, t1, dispose;
 
@@ -99199,9 +99239,9 @@ function create_each_block_2(ctx) {
 			t1 = space();
 			if (if_block) if_block.c();
 			attr(span, "class", "global-menu-item");
-			add_location(span, file, 25, 30, 819);
-			add_location(a, file, 20, 26, 591);
-			add_location(li, file, 19, 22, 560);
+			add_location(span, file, 36, 26, 1113);
+			add_location(a, file, 31, 26, 899);
+			add_location(li, file, 30, 22, 868);
 			dispose = listen(a, "click", click_handler);
 		},
 
@@ -99241,7 +99281,7 @@ function create_each_block_2(ctx) {
 	};
 }
 
-// (33:18) {#if i < groups[key].length - 1}
+// (44:18) {#if i < groups[key].length - 1}
 function create_if_block(ctx) {
 	var li;
 
@@ -99249,7 +99289,7 @@ function create_if_block(ctx) {
 		c: function create() {
 			li = element("li");
 			attr(li, "class", "separator");
-			add_location(li, file, 33, 18, 1186);
+			add_location(li, file, 44, 22, 1474);
 		},
 
 		m: function mount(target, anchor) {
@@ -99264,7 +99304,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (18:16) {#each groups[key] as menu, i}
+// (29:16) {#each groups[key] as menu, i}
 function create_each_block_1(ctx) {
 	var t, if_block_anchor;
 
@@ -99349,7 +99389,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (12:6) {#each groupKeys as key}
+// (22:6) {#each groupKeys as key}
 function create_each_block(ctx) {
 	var li, a, span, t0_value = ctx.key, t0, t1, ul, t2;
 
@@ -99376,11 +99416,11 @@ function create_each_block(ctx) {
 
 			t2 = space();
 			attr(span, "class", "global-menu-item");
-			add_location(span, file, 14, 18, 364);
+			add_location(span, file, 25, 18, 672);
 			attr(a, "href", "#");
-			add_location(a, file, 13, 14, 333);
-			add_location(ul, file, 16, 14, 441);
-			add_location(li, file, 12, 10, 314);
+			add_location(a, file, 24, 14, 641);
+			add_location(ul, file, 27, 14, 749);
+			add_location(li, file, 23, 10, 622);
 		},
 
 		m: function mount(target, anchor) {
@@ -99432,7 +99472,9 @@ function create_each_block(ctx) {
 }
 
 function create_fragment(ctx) {
-	var nav, ul;
+	var nav, ul, t;
+
+	var if_block = (ctx.currentPackage) && create_if_block_2(ctx);
 
 	var each_value = ctx.groupKeys;
 
@@ -99446,13 +99488,15 @@ function create_fragment(ctx) {
 		c: function create() {
 			nav = element("nav");
 			ul = element("ul");
+			if (if_block) if_block.c();
+			t = space();
 
 			for (var i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
-			add_location(ul, file, 10, 4, 268);
+			add_location(ul, file, 15, 4, 422);
 			attr(nav, "class", "flyout-nav");
-			add_location(nav, file, 9, 0, 239);
+			add_location(nav, file, 14, 0, 393);
 		},
 
 		l: function claim(nodes) {
@@ -99462,6 +99506,8 @@ function create_fragment(ctx) {
 		m: function mount(target, anchor) {
 			insert(target, nav, anchor);
 			append(nav, ul);
+			if (if_block) if_block.m(ul, null);
+			append(ul, t);
 
 			for (var i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].m(ul, null);
@@ -99469,6 +99515,19 @@ function create_fragment(ctx) {
 		},
 
 		p: function update(changed, ctx) {
+			if (ctx.currentPackage) {
+				if (if_block) {
+					if_block.p(changed, ctx);
+				} else {
+					if_block = create_if_block_2(ctx);
+					if_block.c();
+					if_block.m(ul, t);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
+			}
+
 			if (changed.groups || changed.groupKeys) {
 				each_value = ctx.groupKeys;
 
@@ -99499,27 +99558,35 @@ function create_fragment(ctx) {
 				detach(nav);
 			}
 
+			if (if_block) if_block.d();
+
 			destroy_each(each_blocks, detaching);
 		}
 	};
 }
 
-function instance($$self) {
+function instance($$self, $$props, $$invalidate) {
 	// this came from: https://codepen.io/abhishekcghosh/pen/qzmEWd
 
     let menus = patchfox.menus();
     let groups = patchfox.menuGroups();
     let groupKeys = Object.keys(groups);
     console.log("groups", groups);
+    let currentPackage = false;
+
+    patchfox.listen("package:changed", (event, pkg) => {
+        $$invalidate('currentPackage', currentPackage = pkg.title || pkg.name || false);
+    })
 
 	function click_handler({ item }) {
-	                            console.log('trigger menu', item);
-	                            patchfox.triggerMenu(item);
-	                          }
+	                      console.log('trigger menu', item);
+	                      patchfox.triggerMenu(item);
+	                      }
 
 	return {
 		groups,
 		groupKeys,
+		currentPackage,
 		patchfox,
 		console,
 		click_handler
@@ -99724,17 +99791,2735 @@ module.exports = Launcher;
 },{"svelte":627,"svelte/internal":628}],661:[function(require,module,exports){
 require("./launcher/launcher.js");
 require("./globalMenu/globalMenu.js");
+require("./settings/settings.js");
 require("./helpMenu/helpMenu.js");
 require("./githubIntegration/githubIntegration.js");
 
-},{"./githubIntegration/githubIntegration.js":654,"./globalMenu/globalMenu.js":655,"./helpMenu/helpMenu.js":658,"./launcher/launcher.js":659}],662:[function(require,module,exports){
+},{"./githubIntegration/githubIntegration.js":654,"./globalMenu/globalMenu.js":655,"./helpMenu/helpMenu.js":658,"./launcher/launcher.js":659,"./settings/settings.js":670}],662:[function(require,module,exports){
+/* ContentWarnings.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	space,
+	text
+} = require("svelte/internal");
+
+const file = "ContentWarnings.svelte";
+
+function create_fragment(ctx) {
+	var h1, t1, form, label0, t3, label1, input0, t4, i0, t5, t6, label2, input1, t7, i1, t8, dispose;
+
+	return {
+		c: function create() {
+			h1 = element("h1");
+			h1.textContent = "Content Warnings";
+			t1 = space();
+			form = element("form");
+			label0 = element("label");
+			label0.textContent = "Should Content Warnings by collapsed or expanded by default?";
+			t3 = space();
+			label1 = element("label");
+			input0 = element("input");
+			t4 = space();
+			i0 = element("i");
+			t5 = text("\n    Collapsed");
+			t6 = space();
+			label2 = element("label");
+			input1 = element("input");
+			t7 = space();
+			i1 = element("i");
+			t8 = text("\n    Expanded");
+			attr(h1, "class", "title");
+			add_location(h1, file, 5, 0, 134);
+			attr(label0, "class", "form-label");
+			add_location(label0, file, 7, 2, 202);
+			ctx.$$binding_groups[0].push(input0);
+			attr(input0, "type", "radio");
+			attr(input0, "name", "column-size");
+			input0.__value = "collapsed";
+			input0.value = input0.__value;
+			add_location(input0, file, 11, 4, 338);
+			attr(i0, "class", "form-icon");
+			add_location(i0, file, 17, 4, 531);
+			attr(label1, "class", "form-radio");
+			add_location(label1, file, 10, 2, 307);
+			ctx.$$binding_groups[0].push(input1);
+			attr(input1, "type", "radio");
+			attr(input1, "name", "column-size");
+			input1.__value = "expanded";
+			input1.value = input1.__value;
+			add_location(input1, file, 21, 4, 613);
+			attr(i1, "class", "form-icon");
+			add_location(i1, file, 27, 4, 805);
+			attr(label2, "class", "form-radio");
+			add_location(label2, file, 20, 2, 582);
+			attr(form, "class", "form-group");
+			add_location(form, file, 6, 0, 174);
+
+			dispose = [
+				listen(input0, "change", ctx.input0_change_handler),
+				listen(input0, "change", ctx.change_handler),
+				listen(input1, "change", ctx.input1_change_handler),
+				listen(input1, "change", ctx.change_handler_1)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, h1, anchor);
+			insert(target, t1, anchor);
+			insert(target, form, anchor);
+			append(form, label0);
+			append(form, t3);
+			append(form, label1);
+			append(label1, input0);
+
+			input0.checked = input0.__value === ctx.expandByDefault;
+
+			append(label1, t4);
+			append(label1, i0);
+			append(label1, t5);
+			append(form, t6);
+			append(form, label2);
+			append(label2, input1);
+
+			input1.checked = input1.__value === ctx.expandByDefault;
+
+			append(label2, t7);
+			append(label2, i1);
+			append(label2, t8);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.expandByDefault) input0.checked = input0.__value === ctx.expandByDefault;
+			if (changed.expandByDefault) input1.checked = input1.__value === ctx.expandByDefault;
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(h1);
+				detach(t1);
+				detach(form);
+			}
+
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input0), 1);
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input1), 1);
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const { getPref, setPref } = patchfox;
+  let expandByDefault = getPref("content-warnings-expand", "collapsed");
+
+	const $$binding_groups = [[]];
+
+	function input0_change_handler() {
+		expandByDefault = this.__value;
+		$$invalidate('expandByDefault', expandByDefault);
+	}
+
+	function change_handler() {
+		return setPref('content-warnings-expand', expandByDefault);
+	}
+
+	function input1_change_handler() {
+		expandByDefault = this.__value;
+		$$invalidate('expandByDefault', expandByDefault);
+	}
+
+	function change_handler_1() {
+		return setPref('content-warnings-expand', expandByDefault);
+	}
+
+	return {
+		setPref,
+		expandByDefault,
+		input0_change_handler,
+		change_handler,
+		input1_change_handler,
+		change_handler_1,
+		$$binding_groups
+	};
+}
+
+class ContentWarnings extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = ContentWarnings;
+
+},{"svelte/internal":628}],663:[function(require,module,exports){
+/* DisplayPreferences.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	space,
+	text,
+	to_number
+} = require("svelte/internal");
+
+const file = "DisplayPreferences.svelte";
+
+function create_fragment(ctx) {
+	var h1, t1, form, label0, t3, label1, input0, t4, i0, t5, t6, label2, input1, t7, i1, t8, t9, label3, t11, input2, t12, br0, t13, span, t14, a, t15, i2, t17, label4, input3, t18, i3, t19, b0, t21, t22, label5, input4, t23, i4, t24, b1, t26, t27, label6, input5, t28, i5, t29, b2, t31, t32, label7, input6, t33, i6, t34, b3, t36, t37, label8, input7, t38, i7, t39, b4, t41, t42, label9, input8, t43, i8, t44, b5, t46, t47, label10, input9, t48, i9, t49, b6, t51, t52, label11, input10, t53, i10, t54, b7, t56, t57, div, t58, label12, input11, t59, i11, t60, b8, t62, t63, br1, dispose;
+
+	return {
+		c: function create() {
+			h1 = element("h1");
+			h1.textContent = "Display Preferences";
+			t1 = space();
+			form = element("form");
+			label0 = element("label");
+			label0.textContent = "Feed column size. There is research that says that a short column size makes\n    for a more pleasant reading experience, still some users prefer to use the\n    full screen space. Your choice is between reading through long text lines or\n    short ones.";
+			t3 = space();
+			label1 = element("label");
+			input0 = element("input");
+			t4 = space();
+			i0 = element("i");
+			t5 = text("\n    Short column");
+			t6 = space();
+			label2 = element("label");
+			input1 = element("input");
+			t7 = space();
+			i1 = element("i");
+			t8 = text("\n    Long column");
+			t9 = space();
+			label3 = element("label");
+			label3.textContent = "Messages per page";
+			t11 = space();
+			input2 = element("input");
+			t12 = space();
+			br0 = element("br");
+			t13 = space();
+			span = element("span");
+			t14 = text("Which message types you want to see?\n    ");
+			a = element("a");
+			t15 = text("Click here for more information about\n      ");
+			i2 = element("i");
+			i2.textContent = "Message Types";
+			t17 = space();
+			label4 = element("label");
+			input3 = element("input");
+			t18 = space();
+			i3 = element("i");
+			t19 = space();
+			b0 = element("b");
+			b0.textContent = "About";
+			t21 = text("\n    (aka people setting avatars and descriptions; gatherings)");
+			t22 = space();
+			label5 = element("label");
+			input4 = element("input");
+			t23 = space();
+			i4 = element("i");
+			t24 = space();
+			b1 = element("b");
+			b1.textContent = "Blog";
+			t26 = text("\n    (Longform text posts)");
+			t27 = space();
+			label6 = element("label");
+			input5 = element("input");
+			t28 = space();
+			i5 = element("i");
+			t29 = space();
+			b2 = element("b");
+			b2.textContent = "Channel";
+			t31 = text("\n    (People subscribing to channels)");
+			t32 = space();
+			label7 = element("label");
+			input6 = element("input");
+			t33 = space();
+			i6 = element("i");
+			t34 = space();
+			b3 = element("b");
+			b3.textContent = "Contact";
+			t36 = text("\n    (People following each other)");
+			t37 = space();
+			label8 = element("label");
+			input7 = element("input");
+			t38 = space();
+			i7 = element("i");
+			t39 = space();
+			b4 = element("b");
+			b4.textContent = "Posts";
+			t41 = text("\n    (Common content post, leave this on or it is not that fun)");
+			t42 = space();
+			label9 = element("label");
+			input8 = element("input");
+			t43 = space();
+			i8 = element("i");
+			t44 = space();
+			b5 = element("b");
+			b5.textContent = "Pub";
+			t46 = text("\n    (Pub servers announcements)");
+			t47 = space();
+			label10 = element("label");
+			input9 = element("input");
+			t48 = space();
+			i9 = element("i");
+			t49 = space();
+			b6 = element("b");
+			b6.textContent = "Private";
+			t51 = text("\n    (Private messages; You won't be able to read them, but you'll see their\n    encrypted content passing by)");
+			t52 = space();
+			label11 = element("label");
+			input10 = element("input");
+			t53 = space();
+			i10 = element("i");
+			t54 = space();
+			b7 = element("b");
+			b7.textContent = "Vote";
+			t56 = text("\n    (People liking/digging stuff)");
+			t57 = space();
+			div = element("div");
+			t58 = space();
+			label12 = element("label");
+			input11 = element("input");
+			t59 = space();
+			i11 = element("i");
+			t60 = space();
+			b8 = element("b");
+			b8.textContent = "Unknown";
+			t62 = text("\n    (Show messages Patchfox doesn't understand as their raw content)");
+			t63 = space();
+			br1 = element("br");
+			attr(h1, "class", "title");
+			add_location(h1, file, 19, 0, 733);
+			attr(label0, "class", "form-label");
+			add_location(label0, file, 21, 1, 803);
+			ctx.$$binding_groups[0].push(input0);
+			attr(input0, "type", "radio");
+			attr(input0, "name", "column-size");
+			input0.__value = "short";
+			input0.value = input0.__value;
+			add_location(input0, file, 28, 4, 1131);
+			attr(i0, "class", "form-icon");
+			add_location(i0, file, 34, 4, 1297);
+			attr(label1, "class", "form-radio");
+			add_location(label1, file, 27, 2, 1100);
+			ctx.$$binding_groups[0].push(input1);
+			attr(input1, "type", "radio");
+			attr(input1, "name", "column-size");
+			input1.__value = "long";
+			input1.value = input1.__value;
+			add_location(input1, file, 38, 4, 1382);
+			attr(i1, "class", "form-icon");
+			add_location(i1, file, 44, 4, 1547);
+			attr(label2, "class", "form-radio");
+			add_location(label2, file, 37, 2, 1351);
+			attr(label3, "class", "form-label");
+			attr(label3, "for", "limit");
+			add_location(label3, file, 47, 2, 1600);
+			attr(input2, "class", "form-input");
+			attr(input2, "type", "number");
+			add_location(input2, file, 48, 2, 1666);
+			add_location(br0, file, 54, 2, 1789);
+			add_location(i2, file, 59, 6, 1960);
+			attr(a, "target", "_blank");
+			attr(a, "href", "/docs/index.html#/message_types/");
+			add_location(a, file, 57, 4, 1850);
+			add_location(span, file, 55, 2, 1798);
+			attr(input3, "type", "checkbox");
+			add_location(input3, file, 63, 4, 2034);
+			attr(i3, "class", "form-icon");
+			add_location(i3, file, 69, 4, 2188);
+			add_location(b0, file, 70, 4, 2216);
+			attr(label4, "class", "form-switch");
+			add_location(label4, file, 62, 2, 2002);
+			attr(input4, "type", "checkbox");
+			add_location(input4, file, 74, 4, 2336);
+			attr(i4, "class", "form-icon");
+			add_location(i4, file, 80, 4, 2487);
+			add_location(b1, file, 81, 4, 2515);
+			attr(label5, "class", "form-switch");
+			add_location(label5, file, 73, 2, 2304);
+			attr(input5, "type", "checkbox");
+			add_location(input5, file, 85, 4, 2598);
+			attr(i5, "class", "form-icon");
+			add_location(i5, file, 91, 4, 2758);
+			add_location(b2, file, 92, 4, 2786);
+			attr(label6, "class", "form-switch");
+			add_location(label6, file, 84, 2, 2566);
+			attr(input6, "type", "checkbox");
+			add_location(input6, file, 96, 4, 2883);
+			attr(i6, "class", "form-icon");
+			add_location(i6, file, 102, 4, 3043);
+			add_location(b3, file, 103, 4, 3071);
+			attr(label7, "class", "form-switch");
+			add_location(label7, file, 95, 2, 2851);
+			attr(input7, "type", "checkbox");
+			add_location(input7, file, 107, 4, 3165);
+			attr(i7, "class", "form-icon");
+			add_location(i7, file, 113, 4, 3316);
+			add_location(b4, file, 114, 4, 3344);
+			attr(label8, "class", "form-switch");
+			add_location(label8, file, 106, 2, 3133);
+			attr(input8, "type", "checkbox");
+			add_location(input8, file, 118, 4, 3465);
+			attr(i8, "class", "form-icon");
+			add_location(i8, file, 124, 4, 3613);
+			add_location(b5, file, 125, 4, 3641);
+			attr(label9, "class", "form-switch");
+			add_location(label9, file, 117, 2, 3433);
+			attr(input9, "type", "checkbox");
+			add_location(input9, file, 130, 4, 3730);
+			attr(i9, "class", "form-icon");
+			add_location(i9, file, 136, 4, 3890);
+			add_location(b6, file, 137, 4, 3918);
+			attr(label10, "class", "form-switch");
+			add_location(label10, file, 129, 2, 3698);
+			attr(input10, "type", "checkbox");
+			add_location(input10, file, 143, 4, 4089);
+			attr(i10, "class", "form-icon");
+			add_location(i10, file, 149, 4, 4240);
+			add_location(b7, file, 150, 4, 4268);
+			attr(label11, "class", "form-switch");
+			add_location(label11, file, 142, 2, 4057);
+			attr(div, "class", "divider");
+			add_location(div, file, 153, 2, 4327);
+			attr(input11, "type", "checkbox");
+			add_location(input11, file, 155, 4, 4385);
+			attr(i11, "class", "form-icon");
+			add_location(i11, file, 161, 4, 4545);
+			add_location(b8, file, 162, 4, 4573);
+			attr(label12, "class", "form-switch");
+			add_location(label12, file, 154, 2, 4353);
+			add_location(br1, file, 165, 2, 4670);
+			attr(form, "class", "form-group");
+			add_location(form, file, 20, 0, 776);
+
+			dispose = [
+				listen(input0, "change", ctx.input0_change_handler),
+				listen(input0, "change", ctx.change_handler),
+				listen(input1, "change", ctx.input1_change_handler),
+				listen(input1, "change", ctx.change_handler_1),
+				listen(input2, "input", ctx.input2_input_handler),
+				listen(input2, "change", ctx.change_handler_2),
+				listen(input3, "change", ctx.input3_change_handler),
+				listen(input3, "change", ctx.change_handler_3),
+				listen(input4, "change", ctx.input4_change_handler),
+				listen(input4, "change", ctx.change_handler_4),
+				listen(input5, "change", ctx.input5_change_handler),
+				listen(input5, "change", ctx.change_handler_5),
+				listen(input6, "change", ctx.input6_change_handler),
+				listen(input6, "change", ctx.change_handler_6),
+				listen(input7, "change", ctx.input7_change_handler),
+				listen(input7, "change", ctx.change_handler_7),
+				listen(input8, "change", ctx.input8_change_handler),
+				listen(input8, "change", ctx.change_handler_8),
+				listen(input9, "change", ctx.input9_change_handler),
+				listen(input9, "change", ctx.change_handler_9),
+				listen(input10, "change", ctx.input10_change_handler),
+				listen(input10, "change", ctx.change_handler_10),
+				listen(input11, "change", ctx.input11_change_handler),
+				listen(input11, "change", ctx.change_handler_11)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, h1, anchor);
+			insert(target, t1, anchor);
+			insert(target, form, anchor);
+			append(form, label0);
+			append(form, t3);
+			append(form, label1);
+			append(label1, input0);
+
+			input0.checked = input0.__value === ctx.columnSize;
+
+			append(label1, t4);
+			append(label1, i0);
+			append(label1, t5);
+			append(form, t6);
+			append(form, label2);
+			append(label2, input1);
+
+			input1.checked = input1.__value === ctx.columnSize;
+
+			append(label2, t7);
+			append(label2, i1);
+			append(label2, t8);
+			append(form, t9);
+			append(form, label3);
+			append(form, t11);
+			append(form, input2);
+
+			input2.value = ctx.limit;
+
+			append(form, t12);
+			append(form, br0);
+			append(form, t13);
+			append(form, span);
+			append(span, t14);
+			append(span, a);
+			append(a, t15);
+			append(a, i2);
+			append(form, t17);
+			append(form, label4);
+			append(label4, input3);
+
+			input3.checked = ctx.showTypeAbout;
+
+			append(label4, t18);
+			append(label4, i3);
+			append(label4, t19);
+			append(label4, b0);
+			append(label4, t21);
+			append(form, t22);
+			append(form, label5);
+			append(label5, input4);
+
+			input4.checked = ctx.showTypeBlog;
+
+			append(label5, t23);
+			append(label5, i4);
+			append(label5, t24);
+			append(label5, b1);
+			append(label5, t26);
+			append(form, t27);
+			append(form, label6);
+			append(label6, input5);
+
+			input5.checked = ctx.showTypeChannel;
+
+			append(label6, t28);
+			append(label6, i5);
+			append(label6, t29);
+			append(label6, b2);
+			append(label6, t31);
+			append(form, t32);
+			append(form, label7);
+			append(label7, input6);
+
+			input6.checked = ctx.showTypeContact;
+
+			append(label7, t33);
+			append(label7, i6);
+			append(label7, t34);
+			append(label7, b3);
+			append(label7, t36);
+			append(form, t37);
+			append(form, label8);
+			append(label8, input7);
+
+			input7.checked = ctx.showTypePost;
+
+			append(label8, t38);
+			append(label8, i7);
+			append(label8, t39);
+			append(label8, b4);
+			append(label8, t41);
+			append(form, t42);
+			append(form, label9);
+			append(label9, input8);
+
+			input8.checked = ctx.showTypePub;
+
+			append(label9, t43);
+			append(label9, i8);
+			append(label9, t44);
+			append(label9, b5);
+			append(label9, t46);
+			append(form, t47);
+			append(form, label10);
+			append(label10, input9);
+
+			input9.checked = ctx.showTypePrivate;
+
+			append(label10, t48);
+			append(label10, i9);
+			append(label10, t49);
+			append(label10, b6);
+			append(label10, t51);
+			append(form, t52);
+			append(form, label11);
+			append(label11, input10);
+
+			input10.checked = ctx.showTypeVote;
+
+			append(label11, t53);
+			append(label11, i10);
+			append(label11, t54);
+			append(label11, b7);
+			append(label11, t56);
+			append(form, t57);
+			append(form, div);
+			append(form, t58);
+			append(form, label12);
+			append(label12, input11);
+
+			input11.checked = ctx.showTypeUnknown;
+
+			append(label12, t59);
+			append(label12, i11);
+			append(label12, t60);
+			append(label12, b8);
+			append(label12, t62);
+			append(form, t63);
+			append(form, br1);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.columnSize) input0.checked = input0.__value === ctx.columnSize;
+			if (changed.columnSize) input1.checked = input1.__value === ctx.columnSize;
+			if (changed.limit) input2.value = ctx.limit;
+			if (changed.showTypeAbout) input3.checked = ctx.showTypeAbout;
+			if (changed.showTypeBlog) input4.checked = ctx.showTypeBlog;
+			if (changed.showTypeChannel) input5.checked = ctx.showTypeChannel;
+			if (changed.showTypeContact) input6.checked = ctx.showTypeContact;
+			if (changed.showTypePost) input7.checked = ctx.showTypePost;
+			if (changed.showTypePub) input8.checked = ctx.showTypePub;
+			if (changed.showTypePrivate) input9.checked = ctx.showTypePrivate;
+			if (changed.showTypeVote) input10.checked = ctx.showTypeVote;
+			if (changed.showTypeUnknown) input11.checked = ctx.showTypeUnknown;
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(h1);
+				detach(t1);
+				detach(form);
+			}
+
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input0), 1);
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input1), 1);
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const { getPref, setPref } = patchfox;
+  let limit = getPref("limit", 10);
+  let columnSize = getPref("columnSize", "short");
+
+  document.title = "Patchfox - Settings - Display Preferences";
+
+  // message type filters
+  let showTypeUnknown = getPref("showTypeUnknown", false);
+  let showTypeAbout = getPref("showTypeAbout", true);
+  let showTypeBlog = getPref("showTypeBlog", true);
+  let showTypeChannel = getPref("showTypeChannel", true);
+  let showTypeContact = getPref("showTypeContact", true);
+  let showTypePost = getPref("showTypePost", true);
+  let showTypePrivate = getPref("showTypePrivate", true);
+  let showTypePub = getPref("showTypePub", true);
+  let showTypeVote = getPref("showTypeVote", true);
+
+	const $$binding_groups = [[]];
+
+	function input0_change_handler() {
+		columnSize = this.__value;
+		$$invalidate('columnSize', columnSize);
+	}
+
+	function change_handler() {
+		return setPref('columnSize', columnSize);
+	}
+
+	function input1_change_handler() {
+		columnSize = this.__value;
+		$$invalidate('columnSize', columnSize);
+	}
+
+	function change_handler_1() {
+		return setPref('columnSize', columnSize);
+	}
+
+	function input2_input_handler() {
+		limit = to_number(this.value);
+		$$invalidate('limit', limit);
+	}
+
+	function change_handler_2() {
+		return setPref('limit', limit);
+	}
+
+	function input3_change_handler() {
+		showTypeAbout = this.checked;
+		$$invalidate('showTypeAbout', showTypeAbout);
+	}
+
+	function change_handler_3(ev) {
+	        setPref('showTypeAbout', showTypeAbout);
+	      }
+
+	function input4_change_handler() {
+		showTypeBlog = this.checked;
+		$$invalidate('showTypeBlog', showTypeBlog);
+	}
+
+	function change_handler_4(ev) {
+	        setPref('showTypeBlog', showTypeBlog);
+	      }
+
+	function input5_change_handler() {
+		showTypeChannel = this.checked;
+		$$invalidate('showTypeChannel', showTypeChannel);
+	}
+
+	function change_handler_5(ev) {
+	        setPref('showTypeChannel', showTypeChannel);
+	      }
+
+	function input6_change_handler() {
+		showTypeContact = this.checked;
+		$$invalidate('showTypeContact', showTypeContact);
+	}
+
+	function change_handler_6(ev) {
+	        setPref('showTypeContact', showTypeContact);
+	      }
+
+	function input7_change_handler() {
+		showTypePost = this.checked;
+		$$invalidate('showTypePost', showTypePost);
+	}
+
+	function change_handler_7(ev) {
+	        setPref('showTypePost', showTypePost);
+	      }
+
+	function input8_change_handler() {
+		showTypePub = this.checked;
+		$$invalidate('showTypePub', showTypePub);
+	}
+
+	function change_handler_8(ev) {
+	        setPref('showTypePub', showTypePub);
+	      }
+
+	function input9_change_handler() {
+		showTypePrivate = this.checked;
+		$$invalidate('showTypePrivate', showTypePrivate);
+	}
+
+	function change_handler_9(ev) {
+	        setPref('showTypePrivate', showTypePrivate);
+	      }
+
+	function input10_change_handler() {
+		showTypeVote = this.checked;
+		$$invalidate('showTypeVote', showTypeVote);
+	}
+
+	function change_handler_10(ev) {
+	        setPref('showTypeVote', showTypeVote);
+	      }
+
+	function input11_change_handler() {
+		showTypeUnknown = this.checked;
+		$$invalidate('showTypeUnknown', showTypeUnknown);
+	}
+
+	function change_handler_11(ev) {
+	        setPref('showTypeUnknown', showTypeUnknown);
+	      }
+
+	return {
+		setPref,
+		limit,
+		columnSize,
+		showTypeUnknown,
+		showTypeAbout,
+		showTypeBlog,
+		showTypeChannel,
+		showTypeContact,
+		showTypePost,
+		showTypePrivate,
+		showTypePub,
+		showTypeVote,
+		input0_change_handler,
+		change_handler,
+		input1_change_handler,
+		change_handler_1,
+		input2_input_handler,
+		change_handler_2,
+		input3_change_handler,
+		change_handler_3,
+		input4_change_handler,
+		change_handler_4,
+		input5_change_handler,
+		change_handler_5,
+		input6_change_handler,
+		change_handler_6,
+		input7_change_handler,
+		change_handler_7,
+		input8_change_handler,
+		change_handler_8,
+		input9_change_handler,
+		change_handler_9,
+		input10_change_handler,
+		change_handler_10,
+		input11_change_handler,
+		change_handler_11,
+		$$binding_groups
+	};
+}
+
+class DisplayPreferences extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = DisplayPreferences;
+
+},{"svelte/internal":628}],664:[function(require,module,exports){
+/* Filters.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	destroy_each,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	set_data,
+	space,
+	text
+} = require("svelte/internal");
+
+const file = "Filters.svelte";
+
+function get_each_context(ctx, list, i) {
+	const child_ctx = Object.create(ctx);
+	child_ctx.filter = list[i];
+	return child_ctx;
+}
+
+// (129:4) {:else}
+function create_else_block(ctx) {
+	var div, p, t_1;
+
+	return {
+		c: function create() {
+			div = element("div");
+			p = element("p");
+			p.textContent = "You don't have any filter yet.";
+			t_1 = space();
+			attr(p, "class", "label");
+			add_location(p, file, 130, 8, 3922);
+			attr(div, "class", "column col-12");
+			add_location(div, file, 129, 6, 3886);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, div, anchor);
+			append(div, p);
+			append(div, t_1);
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(div);
+			}
+		}
+	};
+}
+
+// (84:14) {#if filter.feed}
+function create_if_block_3(ctx) {
+	var li, t0, a, t1_value = ctx.filter.feed, t1, a_href_value;
+
+	return {
+		c: function create() {
+			li = element("li");
+			t0 = text("From\n                  ");
+			a = element("a");
+			t1 = text(t1_value);
+			attr(a, "href", a_href_value = "?feed=" + ctx.filter.feed + "#/profile");
+			attr(a, "target", "_blank");
+			attr(a, "class", "feed");
+			add_location(a, file, 86, 18, 2643);
+			add_location(li, file, 84, 16, 2597);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, li, anchor);
+			append(li, t0);
+			append(li, a);
+			append(a, t1);
+		},
+
+		p: function update(changed, ctx) {
+			if ((changed.currentFilters) && t1_value !== (t1_value = ctx.filter.feed)) {
+				set_data(t1, t1_value);
+			}
+
+			if ((changed.currentFilters) && a_href_value !== (a_href_value = "?feed=" + ctx.filter.feed + "#/profile")) {
+				attr(a, "href", a_href_value);
+			}
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(li);
+			}
+		}
+	};
+}
+
+// (95:14) {#if filter.channel}
+function create_if_block_2(ctx) {
+	var li, t0, a, t1, t2_value = ctx.filter.channel, t2, a_href_value;
+
+	return {
+		c: function create() {
+			li = element("li");
+			t0 = text("On channel\n                  ");
+			a = element("a");
+			t1 = text("#");
+			t2 = text(t2_value);
+			attr(a, "href", a_href_value = "?channel=" + ctx.filter.feed + "#/channel");
+			attr(a, "target", "_blank");
+			attr(a, "class", "feed");
+			add_location(a, file, 97, 18, 2974);
+			add_location(li, file, 95, 16, 2922);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, li, anchor);
+			append(li, t0);
+			append(li, a);
+			append(a, t1);
+			append(a, t2);
+		},
+
+		p: function update(changed, ctx) {
+			if ((changed.currentFilters) && t2_value !== (t2_value = ctx.filter.channel)) {
+				set_data(t2, t2_value);
+			}
+
+			if ((changed.currentFilters) && a_href_value !== (a_href_value = "?channel=" + ctx.filter.feed + "#/channel")) {
+				attr(a, "href", a_href_value);
+			}
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(li);
+			}
+		}
+	};
+}
+
+// (106:14) {#if filter.keywords.length > 0}
+function create_if_block_1(ctx) {
+	var i, li, t0, t1_value = ctx.filter.keywords.join(', '), t1;
+
+	return {
+		c: function create() {
+			i = element("i");
+			li = element("li");
+			t0 = text("Containing: ");
+			t1 = text(t1_value);
+			add_location(li, file, 107, 18, 3294);
+			add_location(i, file, 106, 16, 3272);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, i, anchor);
+			append(i, li);
+			append(li, t0);
+			append(li, t1);
+		},
+
+		p: function update(changed, ctx) {
+			if ((changed.currentFilters) && t1_value !== (t1_value = ctx.filter.keywords.join(', '))) {
+				set_data(t1, t1_value);
+			}
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(i);
+			}
+		}
+	};
+}
+
+// (111:14) {#if filter.expires}
+function create_if_block(ctx) {
+	var li, t0, t1_value = ctx.filter.expires, t1;
+
+	return {
+		c: function create() {
+			li = element("li");
+			t0 = text("Expiring in ");
+			t1 = text(t1_value);
+			add_location(li, file, 111, 16, 3436);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, li, anchor);
+			append(li, t0);
+			append(li, t1);
+		},
+
+		p: function update(changed, ctx) {
+			if ((changed.currentFilters) && t1_value !== (t1_value = ctx.filter.expires)) {
+				set_data(t1, t1_value);
+			}
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(li);
+			}
+		}
+	};
+}
+
+// (76:4) {#each currentFilters as filter}
+function create_each_block(ctx) {
+	var div5, div4, div1, div0, t0_value = ctx.filter.action, t0, t1, div2, ul, t2, t3, t4, t5, div3, button, t7, dispose;
+
+	var if_block0 = (ctx.filter.feed) && create_if_block_3(ctx);
+
+	var if_block1 = (ctx.filter.channel) && create_if_block_2(ctx);
+
+	var if_block2 = (ctx.filter.keywords.length > 0) && create_if_block_1(ctx);
+
+	var if_block3 = (ctx.filter.expires) && create_if_block(ctx);
+
+	function click_handler() {
+		return ctx.click_handler(ctx);
+	}
+
+	return {
+		c: function create() {
+			div5 = element("div");
+			div4 = element("div");
+			div1 = element("div");
+			div0 = element("div");
+			t0 = text(t0_value);
+			t1 = space();
+			div2 = element("div");
+			ul = element("ul");
+			if (if_block0) if_block0.c();
+			t2 = space();
+			if (if_block1) if_block1.c();
+			t3 = space();
+			if (if_block2) if_block2.c();
+			t4 = space();
+			if (if_block3) if_block3.c();
+			t5 = space();
+			div3 = element("div");
+			button = element("button");
+			button.textContent = "Delete";
+			t7 = space();
+			attr(div0, "class", "card-title h5");
+			add_location(div0, file, 79, 12, 2432);
+			attr(div1, "class", "card-header");
+			add_location(div1, file, 78, 10, 2394);
+			add_location(ul, file, 82, 12, 2544);
+			attr(div2, "class", "card-body");
+			add_location(div2, file, 81, 10, 2508);
+			attr(button, "class", "btn");
+			attr(button, "aria-label", "Delete");
+			add_location(button, file, 116, 12, 3577);
+			attr(div3, "class", "card-footer");
+			add_location(div3, file, 115, 10, 3539);
+			attr(div4, "class", "card filter");
+			add_location(div4, file, 77, 8, 2358);
+			attr(div5, "class", "column col-6");
+			add_location(div5, file, 76, 6, 2323);
+			dispose = listen(button, "click", click_handler);
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, div5, anchor);
+			append(div5, div4);
+			append(div4, div1);
+			append(div1, div0);
+			append(div0, t0);
+			append(div4, t1);
+			append(div4, div2);
+			append(div2, ul);
+			if (if_block0) if_block0.m(ul, null);
+			append(ul, t2);
+			if (if_block1) if_block1.m(ul, null);
+			append(ul, t3);
+			if (if_block2) if_block2.m(ul, null);
+			append(ul, t4);
+			if (if_block3) if_block3.m(ul, null);
+			append(div4, t5);
+			append(div4, div3);
+			append(div3, button);
+			append(div5, t7);
+		},
+
+		p: function update(changed, new_ctx) {
+			ctx = new_ctx;
+			if ((changed.currentFilters) && t0_value !== (t0_value = ctx.filter.action)) {
+				set_data(t0, t0_value);
+			}
+
+			if (ctx.filter.feed) {
+				if (if_block0) {
+					if_block0.p(changed, ctx);
+				} else {
+					if_block0 = create_if_block_3(ctx);
+					if_block0.c();
+					if_block0.m(ul, t2);
+				}
+			} else if (if_block0) {
+				if_block0.d(1);
+				if_block0 = null;
+			}
+
+			if (ctx.filter.channel) {
+				if (if_block1) {
+					if_block1.p(changed, ctx);
+				} else {
+					if_block1 = create_if_block_2(ctx);
+					if_block1.c();
+					if_block1.m(ul, t3);
+				}
+			} else if (if_block1) {
+				if_block1.d(1);
+				if_block1 = null;
+			}
+
+			if (ctx.filter.keywords.length > 0) {
+				if (if_block2) {
+					if_block2.p(changed, ctx);
+				} else {
+					if_block2 = create_if_block_1(ctx);
+					if_block2.c();
+					if_block2.m(ul, t4);
+				}
+			} else if (if_block2) {
+				if_block2.d(1);
+				if_block2 = null;
+			}
+
+			if (ctx.filter.expires) {
+				if (if_block3) {
+					if_block3.p(changed, ctx);
+				} else {
+					if_block3 = create_if_block(ctx);
+					if_block3.c();
+					if_block3.m(ul, null);
+				}
+			} else if (if_block3) {
+				if_block3.d(1);
+				if_block3 = null;
+			}
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(div5);
+			}
+
+			if (if_block0) if_block0.d();
+			if (if_block1) if_block1.d();
+			if (if_block2) if_block2.d();
+			if (if_block3) if_block3.d();
+			dispose();
+		}
+	};
+}
+
+function create_fragment(ctx) {
+	var h1, t1, p0, t3, h50, t5, p1, t6, a, t8, t9, div1, div0, t10, h51, t12, form_group, label0, input0, t13, i0, t14, t15, label1, input1, t16, i1, t17, t18, label2, t20, input2, t21, label3, t23, input3, t24, label4, t26, input4, t27, label5, t29, input5, t30, br0, t31, button, t33, br1, t34, br2, dispose;
+
+	var each_value = ctx.currentFilters;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+	}
+
+	var each_1_else = null;
+
+	if (!each_value.length) {
+		each_1_else = create_else_block(ctx);
+		each_1_else.c();
+	}
+
+	return {
+		c: function create() {
+			h1 = element("h1");
+			h1.textContent = "Filters";
+			t1 = space();
+			p0 = element("p");
+			p0.textContent = "Use the features from this section to tailor your Patchfox experience to suit\n  your needs.";
+			t3 = space();
+			h50 = element("h5");
+			h50.textContent = "Filters";
+			t5 = space();
+			p1 = element("p");
+			t6 = text("Use filters to hide messages and blur images. Use any combination of channel,\n  feeds and keywords (separated by commas) to create your triggers and make SSB\n  the platform you want. Be aware that these filters are saved to your browser,\n  they are not shared on the feed, they don't affect gossiping, they only affect\n  the displaying of messages and images in Patchfox itself. If you create a\n  filter and open a different client, they won't be working there. If you want\n  to learn more about\n  ");
+			a = element("a");
+			a.textContent = "filters, click here to go to the documentation.";
+			t8 = text("\n  You can create as many filters as you want.");
+			t9 = space();
+			div1 = element("div");
+			div0 = element("div");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			t10 = space();
+			h51 = element("h5");
+			h51.textContent = "New Filter";
+			t12 = space();
+			form_group = element("form-group");
+			label0 = element("label");
+			input0 = element("input");
+			t13 = space();
+			i0 = element("i");
+			t14 = text("\n    Hide Message");
+			t15 = space();
+			label1 = element("label");
+			input1 = element("input");
+			t16 = space();
+			i1 = element("i");
+			t17 = text("\n    Blur Images");
+			t18 = space();
+			label2 = element("label");
+			label2.textContent = "Channel";
+			t20 = space();
+			input2 = element("input");
+			t21 = space();
+			label3 = element("label");
+			label3.textContent = "Feed";
+			t23 = space();
+			input3 = element("input");
+			t24 = space();
+			label4 = element("label");
+			label4.textContent = "Keywords";
+			t26 = space();
+			input4 = element("input");
+			t27 = space();
+			label5 = element("label");
+			label5.textContent = "Expiration Date";
+			t29 = space();
+			input5 = element("input");
+			t30 = space();
+			br0 = element("br");
+			t31 = space();
+			button = element("button");
+			button.textContent = "Add Filter";
+			t33 = space();
+			br1 = element("br");
+			t34 = space();
+			br2 = element("br");
+			attr(h1, "class", "title");
+			add_location(h1, file, 54, 0, 1421);
+			add_location(p0, file, 55, 0, 1452);
+			add_location(h50, file, 59, 0, 1555);
+			attr(a, "href", "/docs/index.html#/features/filters");
+			add_location(a, file, 68, 2, 2076);
+			add_location(p1, file, 60, 0, 1572);
+			attr(div0, "class", "columns");
+			add_location(div0, file, 74, 2, 2258);
+			attr(div1, "class", "container");
+			add_location(div1, file, 73, 0, 2232);
+			add_location(h51, file, 135, 0, 4015);
+			ctx.$$binding_groups[0].push(input0);
+			attr(input0, "type", "radio");
+			attr(input0, "name", "filter-action");
+			input0.__value = "hide";
+			input0.value = input0.__value;
+			add_location(input0, file, 138, 4, 4081);
+			attr(i0, "class", "form-icon");
+			add_location(i0, file, 143, 4, 4192);
+			attr(label0, "class", "form-radio");
+			add_location(label0, file, 137, 2, 4050);
+			ctx.$$binding_groups[0].push(input1);
+			attr(input1, "type", "radio");
+			attr(input1, "name", "filter-action");
+			input1.__value = "blur";
+			input1.value = input1.__value;
+			add_location(input1, file, 147, 4, 4277);
+			attr(i1, "class", "form-icon");
+			add_location(i1, file, 152, 4, 4388);
+			attr(label1, "class", "form-radio");
+			add_location(label1, file, 146, 2, 4246);
+			attr(label2, "class", "form-label");
+			attr(label2, "for", "remote");
+			add_location(label2, file, 155, 2, 4441);
+			attr(input2, "class", "form-input");
+			attr(input2, "type", "text");
+			attr(input2, "placeholder", "Channel");
+			add_location(input2, file, 156, 2, 4498);
+			attr(label3, "class", "form-label");
+			attr(label3, "for", "remote");
+			add_location(label3, file, 161, 2, 4606);
+			attr(input3, "class", "form-input");
+			attr(input3, "type", "text");
+			attr(input3, "placeholder", "Feed");
+			add_location(input3, file, 162, 2, 4660);
+			attr(label4, "class", "form-label");
+			attr(label4, "for", "remote");
+			add_location(label4, file, 167, 2, 4762);
+			attr(input4, "class", "form-input");
+			attr(input4, "type", "text");
+			attr(input4, "placeholder", "Keywords separated by commas");
+			add_location(input4, file, 168, 2, 4820);
+			attr(label5, "class", "form-label");
+			attr(label5, "for", "remote");
+			add_location(label5, file, 173, 2, 4950);
+			attr(input5, "class", "form-input");
+			attr(input5, "type", "date");
+			attr(input5, "placeholder", "When should this filter expiry");
+			add_location(input5, file, 174, 2, 5015);
+			add_location(form_group, file, 136, 0, 4035);
+			add_location(br0, file, 180, 0, 5157);
+			attr(button, "class", "btn btn-primary");
+			add_location(button, file, 181, 0, 5164);
+			add_location(br1, file, 182, 0, 5240);
+			add_location(br2, file, 183, 0, 5247);
+
+			dispose = [
+				listen(input0, "change", ctx.input0_change_handler),
+				listen(input1, "change", ctx.input1_change_handler),
+				listen(input2, "input", ctx.input2_input_handler),
+				listen(input3, "input", ctx.input3_input_handler),
+				listen(input4, "input", ctx.input4_input_handler),
+				listen(input5, "input", ctx.input5_input_handler),
+				listen(button, "click", ctx.addNewFilter)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, h1, anchor);
+			insert(target, t1, anchor);
+			insert(target, p0, anchor);
+			insert(target, t3, anchor);
+			insert(target, h50, anchor);
+			insert(target, t5, anchor);
+			insert(target, p1, anchor);
+			append(p1, t6);
+			append(p1, a);
+			append(p1, t8);
+			insert(target, t9, anchor);
+			insert(target, div1, anchor);
+			append(div1, div0);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div0, null);
+			}
+
+			if (each_1_else) {
+				each_1_else.m(div0, null);
+			}
+
+			insert(target, t10, anchor);
+			insert(target, h51, anchor);
+			insert(target, t12, anchor);
+			insert(target, form_group, anchor);
+			append(form_group, label0);
+			append(label0, input0);
+
+			input0.checked = input0.__value === ctx.filterAction;
+
+			append(label0, t13);
+			append(label0, i0);
+			append(label0, t14);
+			append(form_group, t15);
+			append(form_group, label1);
+			append(label1, input1);
+
+			input1.checked = input1.__value === ctx.filterAction;
+
+			append(label1, t16);
+			append(label1, i1);
+			append(label1, t17);
+			append(form_group, t18);
+			append(form_group, label2);
+			append(form_group, t20);
+			append(form_group, input2);
+
+			input2.value = ctx.filterChannel;
+
+			append(form_group, t21);
+			append(form_group, label3);
+			append(form_group, t23);
+			append(form_group, input3);
+
+			input3.value = ctx.filterFeed;
+
+			append(form_group, t24);
+			append(form_group, label4);
+			append(form_group, t26);
+			append(form_group, input4);
+
+			input4.value = ctx.filterKeywords;
+
+			append(form_group, t27);
+			append(form_group, label5);
+			append(form_group, t29);
+			append(form_group, input5);
+
+			input5.value = ctx.filterExpiry;
+
+			insert(target, t30, anchor);
+			insert(target, br0, anchor);
+			insert(target, t31, anchor);
+			insert(target, button, anchor);
+			insert(target, t33, anchor);
+			insert(target, br1, anchor);
+			insert(target, t34, anchor);
+			insert(target, br2, anchor);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.currentFilters) {
+				each_value = ctx.currentFilters;
+
+				for (var i = 0; i < each_value.length; i += 1) {
+					const child_ctx = get_each_context(ctx, each_value, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, child_ctx);
+					} else {
+						each_blocks[i] = create_each_block(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(div0, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+				each_blocks.length = each_value.length;
+			}
+
+			if (each_value.length) {
+				if (each_1_else) {
+					each_1_else.d(1);
+					each_1_else = null;
+				}
+			} else if (!each_1_else) {
+				each_1_else = create_else_block(ctx);
+				each_1_else.c();
+				each_1_else.m(div0, null);
+			}
+
+			if (changed.filterAction) input0.checked = input0.__value === ctx.filterAction;
+			if (changed.filterAction) input1.checked = input1.__value === ctx.filterAction;
+			if (changed.filterChannel && (input2.value !== ctx.filterChannel)) input2.value = ctx.filterChannel;
+			if (changed.filterFeed && (input3.value !== ctx.filterFeed)) input3.value = ctx.filterFeed;
+			if (changed.filterKeywords && (input4.value !== ctx.filterKeywords)) input4.value = ctx.filterKeywords;
+			if (changed.filterExpiry) input5.value = ctx.filterExpiry;
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(h1);
+				detach(t1);
+				detach(p0);
+				detach(t3);
+				detach(h50);
+				detach(t5);
+				detach(p1);
+				detach(t9);
+				detach(div1);
+			}
+
+			destroy_each(each_blocks, detaching);
+
+			if (each_1_else) each_1_else.d();
+
+			if (detaching) {
+				detach(t10);
+				detach(h51);
+				detach(t12);
+				detach(form_group);
+			}
+
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input0), 1);
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input1), 1);
+
+			if (detaching) {
+				detach(t30);
+				detach(br0);
+				detach(t31);
+				detach(button);
+				detach(t33);
+				detach(br1);
+				detach(t34);
+				detach(br2);
+			}
+
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const { getPref, setPref } = patchfox;
+  const {
+    getFilters,
+    addFilter,
+    deleteFilter
+  } = require("../../core/platforms/ssb/abusePrevention.js");
+
+  // Abuse Prevention - filters
+  let currentFilters = getFilters();
+  let filterFeed = "";
+  let filterChannel = "";
+  let filterKeywords = "";
+  let filterExpiry = "";
+  let filterAction = "";
+
+  const addNewFilter = () => {
+    let keywords = filterKeywords
+      .split(",")
+      .map(v => v.trim())
+      .filter(v => v.length !== 0);
+
+    let filter = {};
+    filter.action = filterAction.length !== 0 ? filterAction : false;
+    filter.feed = filterFeed.length !== 0 ? filterFeed : false;
+    filter.channel = filterChannel.length !== 0 ? filterChannel : false;
+    filter.keywords = keywords;
+    filter.expires = filterExpiry.length !== 0 ? filterExpiry : false;
+
+    if (filter.channel && filter.channel.startsWith("#")) {
+      filter.channel = filter.channel.slice(1);
+    }
+
+    if (
+      filter.action &&
+      (filter.feed || filter.channel || filter.keywords.length > 0)
+    ) {
+      addFilter(filter);
+
+      $$invalidate('currentFilters', currentFilters = getFilters());
+
+      console.dir("filters", currentFilters);
+
+      $$invalidate('filterFeed', filterFeed = "");
+      $$invalidate('filterChannel', filterChannel = "");
+      $$invalidate('filterKeywords', filterKeywords = "");
+      $$invalidate('filterExpiry', filterExpiry = "");
+      $$invalidate('filterAction', filterAction = "");
+    } else {
+      alert("Fill at least filter action and one of feed, channel or keywords");
+    }
+  };
+
+	const $$binding_groups = [[]];
+
+	function click_handler({ filter }) {
+	                deleteFilter(filter);
+	                currentFilters = getFilters(); $$invalidate('currentFilters', currentFilters);
+	              }
+
+	function input0_change_handler() {
+		filterAction = this.__value;
+		$$invalidate('filterAction', filterAction);
+	}
+
+	function input1_change_handler() {
+		filterAction = this.__value;
+		$$invalidate('filterAction', filterAction);
+	}
+
+	function input2_input_handler() {
+		filterChannel = this.value;
+		$$invalidate('filterChannel', filterChannel);
+	}
+
+	function input3_input_handler() {
+		filterFeed = this.value;
+		$$invalidate('filterFeed', filterFeed);
+	}
+
+	function input4_input_handler() {
+		filterKeywords = this.value;
+		$$invalidate('filterKeywords', filterKeywords);
+	}
+
+	function input5_input_handler() {
+		filterExpiry = this.value;
+		$$invalidate('filterExpiry', filterExpiry);
+	}
+
+	return {
+		getFilters,
+		deleteFilter,
+		currentFilters,
+		filterFeed,
+		filterChannel,
+		filterKeywords,
+		filterExpiry,
+		filterAction,
+		addNewFilter,
+		click_handler,
+		input0_change_handler,
+		input1_change_handler,
+		input2_input_handler,
+		input3_input_handler,
+		input4_input_handler,
+		input5_input_handler,
+		$$binding_groups
+	};
+}
+
+class Filters extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = Filters;
+
+},{"../../core/platforms/ssb/abusePrevention.js":649,"svelte/internal":628}],665:[function(require,module,exports){
+/* IdentityAndConnection.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	space,
+	text
+} = require("svelte/internal");
+
+const file = "IdentityAndConnection.svelte";
+
+function create_fragment(ctx) {
+	var h1, t1, p0, b, t2, i0, t4, i1, t6, i2, t8, code0, t10, code1, t12, code2, t14, a, t16, t17, form, label0, t18, code3, t20, t21, input0, t22, label1, t24, input1, t25, label2, t27, textarea, t28, br, t29, button, t31, p1, dispose;
+
+	return {
+		c: function create() {
+			h1 = element("h1");
+			h1.textContent = "Identity & Connection";
+			t1 = space();
+			p0 = element("p");
+			b = element("b");
+			t2 = text("You can't use Patchfox until you fill your\n        ");
+			i0 = element("i");
+			i0.textContent = "Identity & Connection";
+			t4 = text("\n        information. Patchfox can infer the values for both\n        ");
+			i1 = element("i");
+			i1.textContent = "remote";
+			t6 = text("\n        and\n        ");
+			i2 = element("i");
+			i2.textContent = "secret";
+			t8 = text("\n        from your\n        ");
+			code0 = element("code");
+			code0.textContent = "~/.ssb/secret";
+			t10 = text("\n        file. The main problem is that the folder\n        ");
+			code1 = element("code");
+			code1.textContent = ".ssb";
+			t12 = text("\n        is hidden in most systems and it might be hard to find on your machine. If\n        you have used Secure Scuttlebutt before and already have an identity but\n        can't find a folder named\n        ");
+			code2 = element("code");
+			code2.textContent = ".ssb";
+			t14 = text("\n        inside your home folder, go to\n        ");
+			a = element("a");
+			a.textContent = "this link to learn more about how to display hidden folders and setup\n            Patchfox";
+			t16 = text("\n        .");
+			t17 = space();
+			form = element("form");
+			label0 = element("label");
+			t18 = text("Use the button below to select your secret file (usually located at\n        ");
+			code3 = element("code");
+			code3.textContent = "~/.ssb/secret";
+			t20 = text("\n        ).");
+			t21 = space();
+			input0 = element("input");
+			t22 = space();
+			label1 = element("label");
+			label1.textContent = "Remote";
+			t24 = space();
+			input1 = element("input");
+			t25 = space();
+			label2 = element("label");
+			label2.textContent = "Secret";
+			t27 = space();
+			textarea = element("textarea");
+			t28 = space();
+			br = element("br");
+			t29 = space();
+			button = element("button");
+			button.textContent = "Save Identity & Remote";
+			t31 = space();
+			p1 = element("p");
+			p1.textContent = "Saving identity and remote will cause a full page refresh.";
+			add_location(h1, file, 54, 0, 1600);
+			add_location(i0, file, 58, 8, 1706);
+			add_location(i1, file, 60, 8, 1807);
+			add_location(i2, file, 62, 8, 1841);
+			add_location(code0, file, 64, 8, 1881);
+			add_location(code1, file, 66, 8, 1966);
+			add_location(code2, file, 70, 8, 2190);
+			attr(a, "href", "/docs/index.html#/troubleshooting/no-configuration");
+			attr(a, "target", "_blank");
+			add_location(a, file, 72, 8, 2255);
+			add_location(b, file, 56, 4, 1643);
+			add_location(p0, file, 55, 0, 1635);
+			add_location(code3, file, 85, 8, 2665);
+			attr(label0, "class", "form-label");
+			attr(label0, "for", "secret-file");
+			add_location(label0, file, 83, 4, 2536);
+			attr(input0, "type", "file");
+			attr(input0, "class", "form-input");
+			attr(input0, "id", "secret-file");
+			add_location(input0, file, 88, 4, 2720);
+			attr(label1, "class", "form-label");
+			attr(label1, "for", "remote");
+			add_location(label1, file, 93, 4, 2854);
+			attr(input1, "class", "form-input");
+			attr(input1, "type", "text");
+			attr(input1, "id", "remote");
+			attr(input1, "placeholder", "remote");
+			add_location(input1, file, 94, 4, 2912);
+			attr(label2, "class", "form-label");
+			attr(label2, "for", "secret");
+			add_location(label2, file, 101, 4, 3070);
+			attr(textarea, "class", "form-input");
+			attr(textarea, "id", "secret");
+			attr(textarea, "placeholder", "Your secret");
+			attr(textarea, "rows", "8");
+			add_location(textarea, file, 102, 4, 3128);
+			add_location(br, file, 108, 4, 3288);
+			attr(button, "class", "btn btn-primary float-right");
+			add_location(button, file, 109, 4, 3298);
+			add_location(p1, file, 112, 4, 3421);
+			attr(form, "class", "form-group");
+			add_location(form, file, 82, 0, 2506);
+
+			dispose = [
+				listen(input0, "change", ctx.selectedFile),
+				listen(input1, "input", ctx.input1_input_handler),
+				listen(textarea, "input", ctx.textarea_input_handler),
+				listen(button, "click", ctx.saveConfiguration)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, h1, anchor);
+			insert(target, t1, anchor);
+			insert(target, p0, anchor);
+			append(p0, b);
+			append(b, t2);
+			append(b, i0);
+			append(b, t4);
+			append(b, i1);
+			append(b, t6);
+			append(b, i2);
+			append(b, t8);
+			append(b, code0);
+			append(b, t10);
+			append(b, code1);
+			append(b, t12);
+			append(b, code2);
+			append(b, t14);
+			append(b, a);
+			append(b, t16);
+			insert(target, t17, anchor);
+			insert(target, form, anchor);
+			append(form, label0);
+			append(label0, t18);
+			append(label0, code3);
+			append(label0, t20);
+			append(form, t21);
+			append(form, input0);
+			append(form, t22);
+			append(form, label1);
+			append(form, t24);
+			append(form, input1);
+
+			input1.value = ctx.remote;
+
+			append(form, t25);
+			append(form, label2);
+			append(form, t27);
+			append(form, textarea);
+
+			textarea.value = ctx.keys;
+
+			append(form, t28);
+			append(form, br);
+			append(form, t29);
+			append(form, button);
+			append(form, t31);
+			append(form, p1);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.remote && (input1.value !== ctx.remote)) input1.value = ctx.remote;
+			if (changed.keys) textarea.value = ctx.keys;
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(h1);
+				detach(t1);
+				detach(p0);
+				detach(t17);
+				detach(form);
+			}
+
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const {
+        getPref,
+        setPref,
+        setConnectionConfiguration
+    } = patchfox;
+    let keys = {};
+    let remote = "";
+    document.title = "Patchfox - Settings - Identity And Connection";
+
+    const saveConfiguration = ev => {
+        setConnectionConfiguration({remote, keys: JSON.parse(keys), manifest});
+        // todo: go somewhere
+        console.log("salvou")
+    };
+
+    const selectedFile = ev => {
+        const secretFile = ev.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+            console.log(evt.target.result);
+            const contents = evt.target.result;
+            let secret = contents.split("\n").filter(function (line) {
+                return line.indexOf("#") != 0;
+            });
+            secret = JSON.parse(secret.join("\n"));
+            $$invalidate('remote', remote = `ws://localhost:8989~shs:${secret.id.slice(
+                    0,
+                    secret.id.indexOf("=") + 1
+            )}`);
+            updateUI({keys: secret, remote});
+        };
+        reader.readAsText(secretFile);
+    };
+
+    const updateUI = savedData => {
+        console.log("saved data from settings", savedData);
+        $$invalidate('remote', remote = savedData.remote || "");
+        if (savedData.keys) {
+            $$invalidate('keys', keys = JSON.stringify(savedData.keys, null, 2));
+        } else {
+            $$invalidate('keys', keys = "");
+        }
+    };
+
+    const onError = error => {
+        console.error("error on settings", error);
+    };
+
+    const gettingStoredSettings = browser.storage.local
+            .get()
+            .then(updateUI, onError);
+
+	function input1_input_handler() {
+		remote = this.value;
+		$$invalidate('remote', remote);
+	}
+
+	function textarea_input_handler() {
+		keys = this.value;
+		$$invalidate('keys', keys);
+	}
+
+	return {
+		keys,
+		remote,
+		saveConfiguration,
+		selectedFile,
+		input1_input_handler,
+		textarea_input_handler
+	};
+}
+
+class IdentityAndConnection extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = IdentityAndConnection;
+
+},{"svelte/internal":628}],666:[function(require,module,exports){
+/* Menu.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	space,
+	toggle_class
+} = require("svelte/internal");
+const { createEventDispatcher } = require("svelte");
+
+const file = "Menu.svelte";
+
+function create_fragment(ctx) {
+	var ul, li0, t0, li1, a0, t2, li2, a1, t4, li3, t5, li4, a2, t7, li5, a3, t9, li6, t10, li7, a4, dispose;
+
+	return {
+		c: function create() {
+			ul = element("ul");
+			li0 = element("li");
+			t0 = space();
+			li1 = element("li");
+			a0 = element("a");
+			a0.textContent = "Identity & Connection";
+			t2 = space();
+			li2 = element("li");
+			a1 = element("a");
+			a1.textContent = "Display Preferences";
+			t4 = space();
+			li3 = element("li");
+			t5 = space();
+			li4 = element("li");
+			a2 = element("a");
+			a2.textContent = "Filters";
+			t7 = space();
+			li5 = element("li");
+			a3 = element("a");
+			a3.textContent = "Content Warnings";
+			t9 = space();
+			li6 = element("li");
+			t10 = space();
+			li7 = element("li");
+			a4 = element("a");
+			a4.textContent = "IPFS";
+			attr(li0, "class", "divider");
+			attr(li0, "data-content", "GENERAL");
+			add_location(li0, file, 15, 2, 275);
+			attr(a0, "href", "#/settings");
+			toggle_class(a0, "active", ctx.currentView === 'identityAndConnection');
+			add_location(a0, file, 17, 4, 352);
+			attr(li1, "class", "menu-item");
+			add_location(li1, file, 16, 2, 324);
+			attr(a1, "href", "#/settings");
+			toggle_class(a1, "active", ctx.currentView === 'displayPreferences');
+			add_location(a1, file, 25, 4, 583);
+			attr(li2, "class", "menu-item");
+			add_location(li2, file, 24, 2, 555);
+			attr(li3, "class", "divider");
+			attr(li3, "data-content", "ABUSE PREVENTION");
+			add_location(li3, file, 32, 2, 774);
+			attr(a2, "href", "#/settings");
+			toggle_class(a2, "active", ctx.currentView === 'filters');
+			add_location(a2, file, 34, 4, 860);
+			attr(li4, "class", "menu-item");
+			add_location(li4, file, 33, 2, 832);
+			attr(a3, "href", "#/settings");
+			toggle_class(a3, "active", ctx.currentView === 'contentWarnings');
+			add_location(a3, file, 42, 4, 1045);
+			attr(li5, "class", "menu-item");
+			add_location(li5, file, 41, 2, 1017);
+			attr(li6, "class", "divider");
+			attr(li6, "data-content", "ADITIONAL PLATFORMS");
+			add_location(li6, file, 49, 2, 1227);
+			attr(a4, "href", "#/settings");
+			toggle_class(a4, "active", ctx.currentView === 'platformIPFS');
+			add_location(a4, file, 59, 4, 1514);
+			attr(li7, "class", "menu-item");
+			add_location(li7, file, 58, 2, 1486);
+			attr(ul, "class", "menu");
+			add_location(ul, file, 14, 0, 254);
+
+			dispose = [
+				listen(a0, "click", ctx.click_handler),
+				listen(a1, "click", ctx.click_handler_1),
+				listen(a2, "click", ctx.click_handler_2),
+				listen(a3, "click", ctx.click_handler_3),
+				listen(a4, "click", ctx.click_handler_4)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, ul, anchor);
+			append(ul, li0);
+			append(ul, t0);
+			append(ul, li1);
+			append(li1, a0);
+			append(ul, t2);
+			append(ul, li2);
+			append(li2, a1);
+			append(ul, t4);
+			append(ul, li3);
+			append(ul, t5);
+			append(ul, li4);
+			append(li4, a2);
+			append(ul, t7);
+			append(ul, li5);
+			append(li5, a3);
+			append(ul, t9);
+			append(ul, li6);
+			append(ul, t10);
+			append(ul, li7);
+			append(li7, a4);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.currentView) {
+				toggle_class(a0, "active", ctx.currentView === 'identityAndConnection');
+				toggle_class(a1, "active", ctx.currentView === 'displayPreferences');
+				toggle_class(a2, "active", ctx.currentView === 'filters');
+				toggle_class(a3, "active", ctx.currentView === 'contentWarnings');
+				toggle_class(a4, "active", ctx.currentView === 'platformIPFS');
+			}
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(ul);
+			}
+
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const dispatch = createEventDispatcher();
+
+  let { currentView = "" } = $$props;
+
+  const setView = currentView => {
+    dispatch("message", {
+      currentView
+    });
+  };
+
+	const writable_props = ['currentView'];
+	Object.keys($$props).forEach(key => {
+		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<Menu> was created with unknown prop '${key}'`);
+	});
+
+	function click_handler() {
+		return setView('identityAndConnection');
+	}
+
+	function click_handler_1() {
+		return setView('displayPreferences');
+	}
+
+	function click_handler_2() {
+		return setView('filters');
+	}
+
+	function click_handler_3() {
+		return setView('contentWarnings');
+	}
+
+	function click_handler_4() {
+		return setView('platformIPFS');
+	}
+
+	$$self.$set = $$props => {
+		if ('currentView' in $$props) $$invalidate('currentView', currentView = $$props.currentView);
+	};
+
+	return {
+		currentView,
+		setView,
+		click_handler,
+		click_handler_1,
+		click_handler_2,
+		click_handler_3,
+		click_handler_4
+	};
+}
+
+class Menu extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, ["currentView"]);
+	}
+
+	get currentView() {
+		throw new Error("<Menu>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+	}
+
+	set currentView(value) {
+		throw new Error("<Menu>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+	}
+}
+
+module.exports = Menu;
+
+},{"svelte":627,"svelte/internal":628}],667:[function(require,module,exports){
+/* PlatformDAT.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	space,
+	text
+} = require("svelte/internal");
+
+const file = "PlatformDAT.svelte";
+
+function create_fragment(ctx) {
+	var h1, t1, form, label0, t2, a, t4, t5, label1, input0, t6, i0, t7, t8, label2, input1, t9, i1, t10, dispose;
+
+	return {
+		c: function create() {
+			h1 = element("h1");
+			h1.textContent = "DAT";
+			t1 = space();
+			form = element("form");
+			label0 = element("label");
+			t2 = text("Enable support for ");
+			a = element("a");
+			a.textContent = "DAT";
+			t4 = text("?");
+			t5 = space();
+			label1 = element("label");
+			input0 = element("input");
+			t6 = space();
+			i0 = element("i");
+			t7 = text("\n    Yes");
+			t8 = space();
+			label2 = element("label");
+			input1 = element("input");
+			t9 = space();
+			i1 = element("i");
+			t10 = text("\n    No");
+			attr(h1, "class", "title");
+			add_location(h1, file, 5, 0, 119);
+			attr(a, "href", "https://dat.foundation/");
+			attr(a, "target", "_blank");
+			add_location(a, file, 8, 23, 224);
+			attr(label0, "class", "form-label");
+			add_location(label0, file, 7, 2, 174);
+			ctx.$$binding_groups[0].push(input0);
+			attr(input0, "type", "radio");
+			attr(input0, "name", "column-size");
+			input0.__value = "yes";
+			input0.value = input0.__value;
+			add_location(input0, file, 11, 4, 327);
+			attr(i0, "class", "form-icon");
+			add_location(i0, file, 17, 4, 499);
+			attr(label1, "class", "form-radio");
+			add_location(label1, file, 10, 2, 296);
+			ctx.$$binding_groups[0].push(input1);
+			attr(input1, "type", "radio");
+			attr(input1, "name", "column-size");
+			input1.__value = "no";
+			input1.value = input1.__value;
+			add_location(input1, file, 21, 4, 575);
+			attr(i1, "class", "form-icon");
+			add_location(i1, file, 27, 4, 746);
+			attr(label2, "class", "form-radio");
+			add_location(label2, file, 20, 2, 544);
+			attr(form, "class", "form-group");
+			add_location(form, file, 6, 0, 146);
+
+			dispose = [
+				listen(input0, "change", ctx.input0_change_handler),
+				listen(input0, "change", ctx.change_handler),
+				listen(input1, "change", ctx.input1_change_handler),
+				listen(input1, "change", ctx.change_handler_1)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, h1, anchor);
+			insert(target, t1, anchor);
+			insert(target, form, anchor);
+			append(form, label0);
+			append(label0, t2);
+			append(label0, a);
+			append(label0, t4);
+			append(form, t5);
+			append(form, label1);
+			append(label1, input0);
+
+			input0.checked = input0.__value === ctx.enableDAT;
+
+			append(label1, t6);
+			append(label1, i0);
+			append(label1, t7);
+			append(form, t8);
+			append(form, label2);
+			append(label2, input1);
+
+			input1.checked = input1.__value === ctx.enableDAT;
+
+			append(label2, t9);
+			append(label2, i1);
+			append(label2, t10);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.enableDAT) input0.checked = input0.__value === ctx.enableDAT;
+			if (changed.enableDAT) input1.checked = input1.__value === ctx.enableDAT;
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(h1);
+				detach(t1);
+				detach(form);
+			}
+
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input0), 1);
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input1), 1);
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const { getPref, setPref } = patchfox;
+  let enableDAT = getPref("platform-dat-enabled", "yes");
+
+	const $$binding_groups = [[]];
+
+	function input0_change_handler() {
+		enableDAT = this.__value;
+		$$invalidate('enableDAT', enableDAT);
+	}
+
+	function change_handler() {
+		return setPref('platform-dat-enabled', enableDAT);
+	}
+
+	function input1_change_handler() {
+		enableDAT = this.__value;
+		$$invalidate('enableDAT', enableDAT);
+	}
+
+	function change_handler_1() {
+		return setPref('platform-dat-enabled', enableDAT);
+	}
+
+	return {
+		setPref,
+		enableDAT,
+		input0_change_handler,
+		change_handler,
+		input1_change_handler,
+		change_handler_1,
+		$$binding_groups
+	};
+}
+
+class PlatformDAT extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = PlatformDAT;
+
+},{"svelte/internal":628}],668:[function(require,module,exports){
+/* PlatformIPFS.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	detach,
+	element,
+	init,
+	insert,
+	listen,
+	noop,
+	run_all,
+	safe_not_equal,
+	space,
+	text
+} = require("svelte/internal");
+
+const file = "PlatformIPFS.svelte";
+
+function create_fragment(ctx) {
+	var h1, t1, form, label0, t2, a, t4, t5, label1, input0, t6, i0, t7, t8, label2, input1, t9, i1, t10, dispose;
+
+	return {
+		c: function create() {
+			h1 = element("h1");
+			h1.textContent = "IPFS";
+			t1 = space();
+			form = element("form");
+			label0 = element("label");
+			t2 = text("Enable integration with ");
+			a = element("a");
+			a.textContent = "IPFS - The Interplanetary Filesystem";
+			t4 = text("?");
+			t5 = space();
+			label1 = element("label");
+			input0 = element("input");
+			t6 = space();
+			i0 = element("i");
+			t7 = text("\n    Yes");
+			t8 = space();
+			label2 = element("label");
+			input1 = element("input");
+			t9 = space();
+			i1 = element("i");
+			t10 = text("\n    No");
+			attr(h1, "class", "title");
+			add_location(h1, file, 5, 0, 121);
+			attr(a, "href", "https://ipfs.io");
+			attr(a, "target", "_blank");
+			add_location(a, file, 8, 28, 232);
+			attr(label0, "class", "form-label");
+			add_location(label0, file, 7, 2, 177);
+			ctx.$$binding_groups[0].push(input0);
+			attr(input0, "type", "radio");
+			attr(input0, "name", "column-size");
+			input0.__value = "yes";
+			input0.value = input0.__value;
+			add_location(input0, file, 11, 4, 360);
+			attr(i0, "class", "form-icon");
+			add_location(i0, file, 17, 4, 535);
+			attr(label1, "class", "form-radio");
+			add_location(label1, file, 10, 2, 329);
+			ctx.$$binding_groups[0].push(input1);
+			attr(input1, "type", "radio");
+			attr(input1, "name", "column-size");
+			input1.__value = "no";
+			input1.value = input1.__value;
+			add_location(input1, file, 21, 4, 611);
+			attr(i1, "class", "form-icon");
+			add_location(i1, file, 27, 4, 785);
+			attr(label2, "class", "form-radio");
+			add_location(label2, file, 20, 2, 580);
+			attr(form, "class", "form-group");
+			add_location(form, file, 6, 0, 149);
+
+			dispose = [
+				listen(input0, "change", ctx.input0_change_handler),
+				listen(input0, "change", ctx.change_handler),
+				listen(input1, "change", ctx.input1_change_handler),
+				listen(input1, "change", ctx.change_handler_1)
+			];
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, h1, anchor);
+			insert(target, t1, anchor);
+			insert(target, form, anchor);
+			append(form, label0);
+			append(label0, t2);
+			append(label0, a);
+			append(label0, t4);
+			append(form, t5);
+			append(form, label1);
+			append(label1, input0);
+
+			input0.checked = input0.__value === ctx.enableIPFS;
+
+			append(label1, t6);
+			append(label1, i0);
+			append(label1, t7);
+			append(form, t8);
+			append(form, label2);
+			append(label2, input1);
+
+			input1.checked = input1.__value === ctx.enableIPFS;
+
+			append(label2, t9);
+			append(label2, i1);
+			append(label2, t10);
+		},
+
+		p: function update(changed, ctx) {
+			if (changed.enableIPFS) input0.checked = input0.__value === ctx.enableIPFS;
+			if (changed.enableIPFS) input1.checked = input1.__value === ctx.enableIPFS;
+		},
+
+		i: noop,
+		o: noop,
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(h1);
+				detach(t1);
+				detach(form);
+			}
+
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input0), 1);
+			ctx.$$binding_groups[0].splice(ctx.$$binding_groups[0].indexOf(input1), 1);
+			run_all(dispose);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const { getPref, setPref } = patchfox;
+  let enableIPFS = getPref("platform-ipfs-enabled", "yes");
+
+	const $$binding_groups = [[]];
+
+	function input0_change_handler() {
+		enableIPFS = this.__value;
+		$$invalidate('enableIPFS', enableIPFS);
+	}
+
+	function change_handler() {
+		return setPref('platform-ipfs-enabled', enableIPFS);
+	}
+
+	function input1_change_handler() {
+		enableIPFS = this.__value;
+		$$invalidate('enableIPFS', enableIPFS);
+	}
+
+	function change_handler_1() {
+		return setPref('platform-ipfs-enabled', enableIPFS);
+	}
+
+	return {
+		setPref,
+		enableIPFS,
+		input0_change_handler,
+		change_handler,
+		input1_change_handler,
+		change_handler_1,
+		$$binding_groups
+	};
+}
+
+class PlatformIPFS extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = PlatformIPFS;
+
+},{"svelte/internal":628}],669:[function(require,module,exports){
+/* Settings.svelte generated by Svelte v3.7.1 */
+"use strict";
+
+const {
+	SvelteComponentDev,
+	add_location,
+	append,
+	attr,
+	check_outros,
+	destroy_component,
+	detach,
+	element,
+	group_outros,
+	init,
+	insert,
+	mount_component,
+	safe_not_equal,
+	space,
+	transition_in,
+	transition_out
+} = require("svelte/internal");
+
+const file = "Settings.svelte";
+
+function add_css() {
+	var style = element("style");
+	style.id = 'svelte-1e0jkdi-style';
+	style.textContent = "\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiU2V0dGluZ3Muc3ZlbHRlIiwic291cmNlcyI6WyJTZXR0aW5ncy5zdmVsdGUiXSwic291cmNlc0NvbnRlbnQiOlsiPHNjcmlwdD5cclxuICBjb25zdCBNZW51ID0gcmVxdWlyZShcIi4vTWVudS5zdmVsdGVcIik7XHJcbiAgY29uc3QgSWRlbnRpdHlBbmRDb25uZWN0aW9uID0gcmVxdWlyZShcIi4vSWRlbnRpdHlBbmRDb25uZWN0aW9uLnN2ZWx0ZVwiKTtcclxuICBjb25zdCBEaXNwbGF5UHJlZmVyZW5jZXMgPSByZXF1aXJlKFwiLi9EaXNwbGF5UHJlZmVyZW5jZXMuc3ZlbHRlXCIpO1xyXG4gIGNvbnN0IEZpbHRlcnMgPSByZXF1aXJlKFwiLi9GaWx0ZXJzLnN2ZWx0ZVwiKTtcclxuICBjb25zdCBDb250ZW50V2FybmluZ3MgPSByZXF1aXJlKFwiLi9Db250ZW50V2FybmluZ3Muc3ZlbHRlXCIpO1xyXG4gIGNvbnN0IFBsYXRmb3JtREFUID0gcmVxdWlyZShcIi4vUGxhdGZvcm1EQVQuc3ZlbHRlXCIpO1xyXG4gIGNvbnN0IFBsYXRmb3JtSVBGUyA9IHJlcXVpcmUoXCIuL1BsYXRmb3JtSVBGUy5zdmVsdGVcIik7XHJcblxyXG4gIGNvbnN0IHZpZXdzID0ge1xyXG4gICAgaWRlbnRpdHlBbmRDb25uZWN0aW9uOiBJZGVudGl0eUFuZENvbm5lY3Rpb24sXHJcbiAgICBkaXNwbGF5UHJlZmVyZW5jZXM6IERpc3BsYXlQcmVmZXJlbmNlcyxcclxuICAgIGZpbHRlcnM6IEZpbHRlcnMsXHJcbiAgICBjb250ZW50V2FybmluZ3M6IENvbnRlbnRXYXJuaW5ncyxcclxuICAgIHBsYXRmb3JtREFUOiBQbGF0Zm9ybURBVCxcclxuICAgIHBsYXRmb3JtSVBGUzogUGxhdGZvcm1JUEZTXHJcbiAgfTtcclxuXHJcbiAgbGV0IGN1cnJlbnRWaWV3ID0gXCJpZGVudGl0eUFuZENvbm5lY3Rpb25cIjtcclxuXHJcbiAgY29uc3QgaGFuZGxlTWVudUNoYW5nZSA9IGV2ID0+IHtcclxuICAgIGN1cnJlbnRWaWV3ID0gZXYuZGV0YWlsLmN1cnJlbnRWaWV3O1xyXG4gIH07XHJcbjwvc2NyaXB0PlxyXG5cclxuPHN0eWxlPlxyXG4gIC5maWx0ZXIge1xyXG4gICAgaGVpZ2h0OiAzMDBweDtcclxuICAgIG1hcmdpbi1ib3R0b206IDAuNHJlbTtcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbiAgfVxyXG5cclxuICAuZmVlZCB7XHJcbiAgICBtYXgtd2lkdGg6IDEwMCU7XHJcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xyXG4gIH1cclxuPC9zdHlsZT5cclxuXHJcbjxkaXYgY2xhc3M9XCJjb2x1bW5zXCI+XHJcbiAgPGRpdiBjbGFzcz1cImNvbHVtbiBjb2wtYXV0b1wiPlxyXG4gICAgPE1lbnUge2N1cnJlbnRWaWV3fSBvbjptZXNzYWdlPXtoYW5kbGVNZW51Q2hhbmdlfSAvPlxyXG4gIDwvZGl2PlxyXG4gIDxkaXYgY2xhc3M9XCJjb2x1bW5cIj5cclxuICAgIDxzdmVsdGU6Y29tcG9uZW50IHRoaXM9e3ZpZXdzW2N1cnJlbnRWaWV3XX0gLz5cclxuICA8L2Rpdj5cclxuPC9kaXY+XHJcbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiIn0= */";
+	append(document.head, style);
+}
+
+function create_fragment(ctx) {
+	var div2, div0, t, div1, current;
+
+	var menu = new ctx.Menu({
+		props: { currentView: ctx.currentView },
+		$$inline: true
+	});
+	menu.$on("message", ctx.handleMenuChange);
+
+	var switch_value = ctx.views[ctx.currentView];
+
+	function switch_props(ctx) {
+		return { $$inline: true };
+	}
+
+	if (switch_value) {
+		var switch_instance = new switch_value(switch_props(ctx));
+	}
+
+	return {
+		c: function create() {
+			div2 = element("div");
+			div0 = element("div");
+			menu.$$.fragment.c();
+			t = space();
+			div1 = element("div");
+			if (switch_instance) switch_instance.$$.fragment.c();
+			attr(div0, "class", "column col-auto");
+			add_location(div0, file, 39, 2, 1017);
+			attr(div1, "class", "column");
+			add_location(div1, file, 42, 2, 1118);
+			attr(div2, "class", "columns");
+			add_location(div2, file, 38, 0, 992);
+		},
+
+		l: function claim(nodes) {
+			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+		},
+
+		m: function mount(target, anchor) {
+			insert(target, div2, anchor);
+			append(div2, div0);
+			mount_component(menu, div0, null);
+			append(div2, t);
+			append(div2, div1);
+
+			if (switch_instance) {
+				mount_component(switch_instance, div1, null);
+			}
+
+			current = true;
+		},
+
+		p: function update(changed, ctx) {
+			var menu_changes = {};
+			if (changed.currentView) menu_changes.currentView = ctx.currentView;
+			menu.$set(menu_changes);
+
+			if (switch_value !== (switch_value = ctx.views[ctx.currentView])) {
+				if (switch_instance) {
+					group_outros();
+					const old_component = switch_instance;
+					transition_out(old_component.$$.fragment, 1, 0, () => {
+						destroy_component(old_component, 1);
+					});
+					check_outros();
+				}
+
+				if (switch_value) {
+					switch_instance = new switch_value(switch_props(ctx));
+
+					switch_instance.$$.fragment.c();
+					transition_in(switch_instance.$$.fragment, 1);
+					mount_component(switch_instance, div1, null);
+				} else {
+					switch_instance = null;
+				}
+			}
+		},
+
+		i: function intro(local) {
+			if (current) return;
+			transition_in(menu.$$.fragment, local);
+
+			if (switch_instance) transition_in(switch_instance.$$.fragment, local);
+
+			current = true;
+		},
+
+		o: function outro(local) {
+			transition_out(menu.$$.fragment, local);
+			if (switch_instance) transition_out(switch_instance.$$.fragment, local);
+			current = false;
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(div2);
+			}
+
+			destroy_component(menu);
+
+			if (switch_instance) destroy_component(switch_instance);
+		}
+	};
+}
+
+function instance($$self, $$props, $$invalidate) {
+	const Menu = require("./Menu.svelte");
+  const IdentityAndConnection = require("./IdentityAndConnection.svelte");
+  const DisplayPreferences = require("./DisplayPreferences.svelte");
+  const Filters = require("./Filters.svelte");
+  const ContentWarnings = require("./ContentWarnings.svelte");
+  const PlatformDAT = require("./PlatformDAT.svelte");
+  const PlatformIPFS = require("./PlatformIPFS.svelte");
+
+  const views = {
+    identityAndConnection: IdentityAndConnection,
+    displayPreferences: DisplayPreferences,
+    filters: Filters,
+    contentWarnings: ContentWarnings,
+    platformDAT: PlatformDAT,
+    platformIPFS: PlatformIPFS
+  };
+
+  let currentView = "identityAndConnection";
+
+  const handleMenuChange = ev => {
+    $$invalidate('currentView', currentView = ev.detail.currentView);
+  };
+
+	return {
+		Menu,
+		views,
+		currentView,
+		handleMenuChange
+	};
+}
+
+class Settings extends SvelteComponentDev {
+	constructor(options) {
+		super(options);
+		if (!document.getElementById("svelte-1e0jkdi-style")) add_css();
+		init(this, options, instance, create_fragment, safe_not_equal, []);
+	}
+}
+
+module.exports = Settings;
+
+},{"./ContentWarnings.svelte":662,"./DisplayPreferences.svelte":663,"./Filters.svelte":664,"./IdentityAndConnection.svelte":665,"./Menu.svelte":666,"./PlatformDAT.svelte":667,"./PlatformIPFS.svelte":668,"svelte/internal":628}],670:[function(require,module,exports){
+const view = require("./Settings.svelte");
+
+patchfox.package({
+  name: "settings",
+  title: "Settings",
+  view,
+  menu: {
+    group: "Patchfox",
+    items: [
+      {
+        label: "Settings",
+        event: "package:go",
+        data: {pkg: "settings"}
+      }
+    ]
+  }
+});
+
+},{"./Settings.svelte":669}],671:[function(require,module,exports){
 var css = "/*! Spectre.css v0.5.8 | MIT License | github.com/picturepan2/spectre */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:0.67em 0}figcaption,figure,main{display:block}hr{box-sizing:content-box;height:0;overflow:visible}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}address{font-style:normal}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:\"SF Mono\",\"Segoe UI Mono\",\"Roboto Mono\",Menlo,Courier,monospace;font-size:1em}dfn{font-style:italic}small{font-size:80%;font-weight:400}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type=\"button\"],[type=\"reset\"],[type=\"submit\"]{-webkit-appearance:button}button::-moz-focus-inner,[type=\"button\"]::-moz-focus-inner,[type=\"reset\"]::-moz-focus-inner,[type=\"submit\"]::-moz-focus-inner{border-style:none;padding:0}fieldset{border:0;margin:0;padding:0}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type=\"checkbox\"],[type=\"radio\"]{box-sizing:border-box;padding:0}[type=\"number\"]::-webkit-inner-spin-button,[type=\"number\"]::-webkit-outer-spin-button{height:auto}[type=\"search\"]{-webkit-appearance:textfield;outline-offset:-2px}[type=\"search\"]::-webkit-search-cancel-button,[type=\"search\"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item;outline:none}canvas{display:inline-block}template{display:none}[hidden]{display:none}*,*::before,*::after{box-sizing:inherit}html{box-sizing:border-box;font-size:20px;line-height:1.5;-webkit-tap-highlight-color:transparent}body{background:#fff;color:#3b4351;font-family:-apple-system,system-ui,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",sans-serif;font-size:.8rem;overflow-x:hidden;text-rendering:optimizeLegibility}a{color:#5755d9;outline:none;text-decoration:none}a:focus{box-shadow:0 0 0 0.1rem rgba(87,85,217,0.2)}a:focus,a:hover,a:active,a.active{color:#302ecd;text-decoration:underline}a:visited{color:#807fe2}h1,h2,h3,h4,h5,h6{color:inherit;font-weight:500;line-height:1.2;margin-bottom:.5em;margin-top:0}.h1,.h2,.h3,.h4,.h5,.h6{font-weight:500}h1,.h1{font-size:2rem}h2,.h2{font-size:1.6rem}h3,.h3{font-size:1.4rem}h4,.h4{font-size:1.2rem}h5,.h5{font-size:1rem}h6,.h6{font-size:.8rem}p{margin:0 0 1.2rem}a,ins,u{text-decoration-skip:ink edges}abbr[title]{border-bottom:.05rem dotted;cursor:help;text-decoration:none}kbd{border-radius:.1rem;line-height:1.25;padding:.1rem .2rem;background:#303742;color:#fff;font-size:.7rem}mark{background:#ffe9b3;color:#3b4351;border-bottom:.05rem solid #ffd367;border-radius:.1rem;padding:.05rem .1rem 0}blockquote{border-left:.1rem solid #dadee4;margin-left:0;padding:.4rem .8rem}blockquote p:last-child{margin-bottom:0}ul,ol{margin:.8rem 0 .8rem .8rem;padding:0}ul ul,ul ol,ol ul,ol ol{margin:.8rem 0 .8rem .8rem}ul li,ol li{margin-top:.4rem}ul{list-style:disc inside}ul ul{list-style-type:circle}ol{list-style:decimal inside}ol ol{list-style-type:lower-alpha}dl dt{font-weight:bold}dl dd{margin:.4rem 0 .8rem 0}html:lang(zh),html:lang(zh-Hans),.lang-zh,.lang-zh-hans{font-family:-apple-system,system-ui,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"PingFang SC\",\"Hiragino Sans GB\",\"Microsoft YaHei\",\"Helvetica Neue\",sans-serif}html:lang(zh-Hant),.lang-zh-hant{font-family:-apple-system,system-ui,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"PingFang TC\",\"Hiragino Sans CNS\",\"Microsoft JhengHei\",\"Helvetica Neue\",sans-serif}html:lang(ja),.lang-ja{font-family:-apple-system,system-ui,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Hiragino Sans\",\"Hiragino Kaku Gothic Pro\",\"Yu Gothic\",YuGothic,Meiryo,\"Helvetica Neue\",sans-serif}html:lang(ko),.lang-ko{font-family:-apple-system,system-ui,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Malgun Gothic\",\"Helvetica Neue\",sans-serif}:lang(zh) ins,:lang(zh) u,:lang(ja) ins,:lang(ja) u,.lang-cjk ins,.lang-cjk u{border-bottom:.05rem solid;text-decoration:none}:lang(zh) del+del,:lang(zh) del+s,:lang(zh) ins+ins,:lang(zh) ins+u,:lang(zh) s+del,:lang(zh) s+s,:lang(zh) u+ins,:lang(zh) u+u,:lang(ja) del+del,:lang(ja) del+s,:lang(ja) ins+ins,:lang(ja) ins+u,:lang(ja) s+del,:lang(ja) s+s,:lang(ja) u+ins,:lang(ja) u+u,.lang-cjk del+del,.lang-cjk del+s,.lang-cjk ins+ins,.lang-cjk ins+u,.lang-cjk s+del,.lang-cjk s+s,.lang-cjk u+ins,.lang-cjk u+u{margin-left:.125em}.table{border-collapse:collapse;border-spacing:0;width:100%;text-align:left}.table.table-striped tbody tr:nth-of-type(odd){background:#f7f8f9}.table tbody tr.active,.table.table-striped tbody tr.active{background:#eef0f3}.table.table-hover tbody tr:hover{background:#eef0f3}.table.table-scroll{display:block;overflow-x:auto;padding-bottom:.75rem;white-space:nowrap}.table td,.table th{border-bottom:.05rem solid #dadee4;padding:.6rem .4rem}.table th{border-bottom-width:.1rem}.btn{appearance:none;background:#fff;border:.05rem solid #5755d9;border-radius:.1rem;color:#5755d9;cursor:pointer;display:inline-block;font-size:.8rem;height:1.8rem;line-height:1.2rem;outline:none;padding:.25rem .4rem;text-align:center;text-decoration:none;transition:background .2s, border .2s, box-shadow .2s, color .2s;user-select:none;vertical-align:middle;white-space:nowrap}.btn:focus{box-shadow:0 0 0 0.1rem rgba(87,85,217,0.2)}.btn:focus,.btn:hover{background:#f1f1fc;border-color:#4b48d6;text-decoration:none}.btn:active,.btn.active{background:#4b48d6;border-color:#3634d2;color:#fff;text-decoration:none}.btn:active.loading::after,.btn.active.loading::after{border-bottom-color:#fff;border-left-color:#fff}.btn[disabled],.btn:disabled,.btn.disabled{cursor:default;opacity:.5;pointer-events:none}.btn.btn-primary{background:#5755d9;border-color:#4b48d6;color:#fff}.btn.btn-primary:focus,.btn.btn-primary:hover{background:#4240d4;border-color:#3634d2;color:#fff}.btn.btn-primary:active,.btn.btn-primary.active{background:#3a38d2;border-color:#302ecd;color:#fff}.btn.btn-primary.loading::after{border-bottom-color:#fff;border-left-color:#fff}.btn.btn-success{background:#32b643;border-color:#2faa3f;color:#fff}.btn.btn-success:focus{box-shadow:0 0 0 0.1rem rgba(50,182,67,0.2)}.btn.btn-success:focus,.btn.btn-success:hover{background:#30ae40;border-color:#2da23c;color:#fff}.btn.btn-success:active,.btn.btn-success.active{background:#2a9a39;border-color:#278e34;color:#fff}.btn.btn-success.loading::after{border-bottom-color:#fff;border-left-color:#fff}.btn.btn-error{background:#e85600;border-color:#d95000;color:#fff}.btn.btn-error:focus{box-shadow:0 0 0 0.1rem rgba(232,86,0,0.2)}.btn.btn-error:focus,.btn.btn-error:hover{background:#de5200;border-color:#cf4d00;color:#fff}.btn.btn-error:active,.btn.btn-error.active{background:#c44900;border-color:#b54300;color:#fff}.btn.btn-error.loading::after{border-bottom-color:#fff;border-left-color:#fff}.btn.btn-link{background:transparent;border-color:transparent;color:#5755d9}.btn.btn-link:focus,.btn.btn-link:hover,.btn.btn-link:active,.btn.btn-link.active{color:#302ecd}.btn.btn-sm{font-size:.7rem;height:1.4rem;padding:.05rem .3rem}.btn.btn-lg{font-size:.9rem;height:2rem;padding:.35rem .6rem}.btn.btn-block{display:block;width:100%}.btn.btn-action{width:1.8rem;padding-left:0;padding-right:0}.btn.btn-action.btn-sm{width:1.4rem}.btn.btn-action.btn-lg{width:2rem}.btn.btn-clear{background:transparent;border:0;color:currentColor;height:1rem;line-height:.8rem;margin-left:.2rem;margin-right:-2px;opacity:1;padding:.1rem;text-decoration:none;width:1rem}.btn.btn-clear:focus,.btn.btn-clear:hover{background:rgba(247,248,249,0.5);opacity:.95}.btn.btn-clear::before{content:\"\\2715\"}.btn-group{display:inline-flex;flex-wrap:wrap}.btn-group .btn{flex:1 0 auto}.btn-group .btn:first-child:not(:last-child){border-bottom-right-radius:0;border-top-right-radius:0}.btn-group .btn:not(:first-child):not(:last-child){border-radius:0;margin-left:-.05rem}.btn-group .btn:last-child:not(:first-child){border-bottom-left-radius:0;border-top-left-radius:0;margin-left:-.05rem}.btn-group .btn:focus,.btn-group .btn:hover,.btn-group .btn:active,.btn-group .btn.active{z-index:1}.btn-group.btn-group-block{display:flex}.btn-group.btn-group-block .btn{flex:1 0 0}.form-group:not(:last-child){margin-bottom:.4rem}fieldset{margin-bottom:.8rem}legend{font-size:.9rem;font-weight:500;margin-bottom:.8rem}.form-label{display:block;line-height:1.2rem;padding:.3rem 0}.form-label.label-sm{font-size:.7rem;padding:.1rem 0}.form-label.label-lg{font-size:.9rem;padding:.4rem 0}.form-input{appearance:none;background:#fff;background-image:none;border:.05rem solid #bcc3ce;border-radius:.1rem;color:#3b4351;display:block;font-size:.8rem;height:1.8rem;line-height:1.2rem;max-width:100%;outline:none;padding:.25rem .4rem;position:relative;transition:background .2s, border .2s, box-shadow .2s, color .2s;width:100%}.form-input:focus{box-shadow:0 0 0 0.1rem rgba(87,85,217,0.2);border-color:#5755d9}.form-input::placeholder{color:#bcc3ce}.form-input.input-sm{font-size:.7rem;height:1.4rem;padding:.05rem .3rem}.form-input.input-lg{font-size:.9rem;height:2rem;padding:.35rem .6rem}.form-input.input-inline{display:inline-block;vertical-align:middle;width:auto}.form-input[type=\"file\"]{height:auto}textarea.form-input,textarea.form-input.input-lg,textarea.form-input.input-sm{height:auto}.form-input-hint{color:#bcc3ce;font-size:.7rem;margin-top:.2rem}.has-success .form-input-hint,.is-success+.form-input-hint{color:#32b643}.has-error .form-input-hint,.is-error+.form-input-hint{color:#e85600}.form-select{appearance:none;border:.05rem solid #bcc3ce;border-radius:.1rem;color:inherit;font-size:.8rem;height:1.8rem;line-height:1.2rem;outline:none;padding:.25rem .4rem;vertical-align:middle;width:100%;background:#fff}.form-select:focus{box-shadow:0 0 0 0.1rem rgba(87,85,217,0.2);border-color:#5755d9}.form-select::-ms-expand{display:none}.form-select.select-sm{font-size:.7rem;height:1.4rem;padding:.05rem 1.1rem .05rem .3rem}.form-select.select-lg{font-size:.9rem;height:2rem;padding:.35rem 1.4rem .35rem .6rem}.form-select[size],.form-select[multiple]{height:auto;padding:.25rem .4rem}.form-select[size] option,.form-select[multiple] option{padding:.1rem .2rem}.form-select:not([multiple]):not([size]){background:#fff url(\"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%205'%3E%3Cpath%20fill='%23667189'%20d='M2%200L0%202h4zm0%205L0%203h4z'/%3E%3C/svg%3E\") no-repeat right 0.35rem center/0.4rem 0.5rem;padding-right:1.2rem}.has-icon-left,.has-icon-right{position:relative}.has-icon-left .form-icon,.has-icon-right .form-icon{height:.8rem;margin:0 .25rem;position:absolute;top:50%;transform:translateY(-50%);width:.8rem;z-index:2}.has-icon-left .form-icon{left:.05rem}.has-icon-left .form-input{padding-left:1.3rem}.has-icon-right .form-icon{right:.05rem}.has-icon-right .form-input{padding-right:1.3rem}.form-checkbox,.form-radio,.form-switch{display:block;line-height:1.2rem;margin:.2rem 0;min-height:1.4rem;padding:.1rem .4rem .1rem 1.2rem;position:relative}.form-checkbox input,.form-radio input,.form-switch input{clip:rect(0, 0, 0, 0);height:1px;margin:-1px;overflow:hidden;position:absolute;width:1px}.form-checkbox input:focus+.form-icon,.form-radio input:focus+.form-icon,.form-switch input:focus+.form-icon{box-shadow:0 0 0 0.1rem rgba(87,85,217,0.2);border-color:#5755d9}.form-checkbox input:checked+.form-icon,.form-radio input:checked+.form-icon,.form-switch input:checked+.form-icon{background:#5755d9;border-color:#5755d9}.form-checkbox .form-icon,.form-radio .form-icon,.form-switch .form-icon{border:.05rem solid #bcc3ce;cursor:pointer;display:inline-block;position:absolute;transition:background .2s, border .2s, box-shadow .2s, color .2s}.form-checkbox.input-sm,.form-radio.input-sm,.form-switch.input-sm{font-size:.7rem;margin:0}.form-checkbox.input-lg,.form-radio.input-lg,.form-switch.input-lg{font-size:.9rem;margin:.3rem 0}.form-checkbox .form-icon,.form-radio .form-icon{background:#fff;height:.8rem;left:0;top:.3rem;width:.8rem}.form-checkbox input:active+.form-icon,.form-radio input:active+.form-icon{background:#eef0f3}.form-checkbox .form-icon{border-radius:.1rem}.form-checkbox input:checked+.form-icon::before{background-clip:padding-box;border:.1rem solid #fff;border-left-width:0;border-top-width:0;content:\"\";height:9px;left:50%;margin-left:-3px;margin-top:-6px;position:absolute;top:50%;transform:rotate(45deg);width:6px}.form-checkbox input:indeterminate+.form-icon{background:#5755d9;border-color:#5755d9}.form-checkbox input:indeterminate+.form-icon::before{background:#fff;content:\"\";height:2px;left:50%;margin-left:-5px;margin-top:-1px;position:absolute;top:50%;width:10px}.form-radio .form-icon{border-radius:50%}.form-radio input:checked+.form-icon::before{background:#fff;border-radius:50%;content:\"\";height:6px;left:50%;position:absolute;top:50%;transform:translate(-50%, -50%);width:6px}.form-switch{padding-left:2rem}.form-switch .form-icon{background:#bcc3ce;background-clip:padding-box;border-radius:.45rem;height:.9rem;left:0;top:.25rem;width:1.6rem}.form-switch .form-icon::before{background:#fff;border-radius:50%;content:\"\";display:block;height:.8rem;left:0;position:absolute;top:0;transition:background .2s, border .2s, box-shadow .2s, color .2s, left .2s;width:.8rem}.form-switch input:checked+.form-icon::before{left:14px}.form-switch input:active+.form-icon::before{background:#f7f8f9}.input-group{display:flex}.input-group .input-group-addon{background:#f7f8f9;border:.05rem solid #bcc3ce;border-radius:.1rem;line-height:1.2rem;padding:.25rem .4rem;white-space:nowrap}.input-group .input-group-addon.addon-sm{font-size:.7rem;padding:.05rem .3rem}.input-group .input-group-addon.addon-lg{font-size:.9rem;padding:.35rem .6rem}.input-group .form-input,.input-group .form-select{flex:1 1 auto;width:1%}.input-group .input-group-btn{z-index:1}.input-group .form-input:first-child:not(:last-child),.input-group .form-select:first-child:not(:last-child),.input-group .input-group-addon:first-child:not(:last-child),.input-group .input-group-btn:first-child:not(:last-child){border-bottom-right-radius:0;border-top-right-radius:0}.input-group .form-input:not(:first-child):not(:last-child),.input-group .form-select:not(:first-child):not(:last-child),.input-group .input-group-addon:not(:first-child):not(:last-child),.input-group .input-group-btn:not(:first-child):not(:last-child){border-radius:0;margin-left:-.05rem}.input-group .form-input:last-child:not(:first-child),.input-group .form-select:last-child:not(:first-child),.input-group .input-group-addon:last-child:not(:first-child),.input-group .input-group-btn:last-child:not(:first-child){border-bottom-left-radius:0;border-top-left-radius:0;margin-left:-.05rem}.input-group .form-input:focus,.input-group .form-select:focus,.input-group .input-group-addon:focus,.input-group .input-group-btn:focus{z-index:2}.input-group .form-select{width:auto}.input-group.input-inline{display:inline-flex}.has-success .form-input,.form-input.is-success,.has-success .form-select,.form-select.is-success{background:#f9fdfa;border-color:#32b643}.has-success .form-input:focus,.form-input.is-success:focus,.has-success .form-select:focus,.form-select.is-success:focus{box-shadow:0 0 0 0.1rem rgba(50,182,67,0.2)}.has-error .form-input,.form-input.is-error,.has-error .form-select,.form-select.is-error{background:#fffaf7;border-color:#e85600}.has-error .form-input:focus,.form-input.is-error:focus,.has-error .form-select:focus,.form-select.is-error:focus{box-shadow:0 0 0 0.1rem rgba(232,86,0,0.2)}.has-error .form-checkbox .form-icon,.form-checkbox.is-error .form-icon,.has-error .form-radio .form-icon,.form-radio.is-error .form-icon,.has-error .form-switch .form-icon,.form-switch.is-error .form-icon{border-color:#e85600}.has-error .form-checkbox input:checked+.form-icon,.form-checkbox.is-error input:checked+.form-icon,.has-error .form-radio input:checked+.form-icon,.form-radio.is-error input:checked+.form-icon,.has-error .form-switch input:checked+.form-icon,.form-switch.is-error input:checked+.form-icon{background:#e85600;border-color:#e85600}.has-error .form-checkbox input:focus+.form-icon,.form-checkbox.is-error input:focus+.form-icon,.has-error .form-radio input:focus+.form-icon,.form-radio.is-error input:focus+.form-icon,.has-error .form-switch input:focus+.form-icon,.form-switch.is-error input:focus+.form-icon{box-shadow:0 0 0 0.1rem rgba(232,86,0,0.2);border-color:#e85600}.has-error .form-checkbox input:indeterminate+.form-icon,.form-checkbox.is-error input:indeterminate+.form-icon{background:#e85600;border-color:#e85600}.form-input:not(:placeholder-shown):invalid{border-color:#e85600}.form-input:not(:placeholder-shown):invalid:focus{box-shadow:0 0 0 0.1rem rgba(232,86,0,0.2);background:#fffaf7}.form-input:not(:placeholder-shown):invalid+.form-input-hint{color:#e85600}.form-input:disabled,.form-input.disabled,.form-select:disabled,.form-select.disabled{background-color:#eef0f3;cursor:not-allowed;opacity:.5}.form-input[readonly]{background-color:#f7f8f9}input:disabled+.form-icon,input.disabled+.form-icon{background:#eef0f3;cursor:not-allowed;opacity:.5}.form-switch input:disabled+.form-icon::before,.form-switch input.disabled+.form-icon::before{background:#fff}.form-horizontal{padding:.4rem 0}.form-horizontal .form-group{display:flex;flex-wrap:wrap}.form-inline{display:inline-block}.label{border-radius:.1rem;line-height:1.25;padding:.1rem .2rem;background:#eef0f3;color:#455060;display:inline-block}.label.label-rounded{border-radius:5rem;padding-left:.4rem;padding-right:.4rem}.label.label-primary{background:#5755d9;color:#fff}.label.label-secondary{background:#f1f1fc;color:#5755d9}.label.label-success{background:#32b643;color:#fff}.label.label-warning{background:#ffb700;color:#fff}.label.label-error{background:#e85600;color:#fff}code{border-radius:.1rem;line-height:1.25;padding:.1rem .2rem;background:#fcf2f2;color:#d73e48;font-size:85%}.code{border-radius:.1rem;color:#3b4351;position:relative}.code::before{color:#bcc3ce;content:attr(data-lang);font-size:.7rem;position:absolute;right:.4rem;top:.1rem}.code code{background:#f7f8f9;color:inherit;display:block;line-height:1.5;overflow-x:auto;padding:1rem;width:100%}.img-responsive{display:block;height:auto;max-width:100%}.img-fit-cover{object-fit:cover}.img-fit-contain{object-fit:contain}.video-responsive{display:block;overflow:hidden;padding:0;position:relative;width:100%}.video-responsive::before{content:\"\";display:block;padding-bottom:56.25%}.video-responsive iframe,.video-responsive object,.video-responsive embed{border:0;bottom:0;height:100%;left:0;position:absolute;right:0;top:0;width:100%}video.video-responsive{height:auto;max-width:100%}video.video-responsive::before{content:none}.video-responsive-4-3::before{padding-bottom:75%}.video-responsive-1-1::before{padding-bottom:100%}.figure{margin:0 0 .4rem 0}.figure .figure-caption{color:#66758c;margin-top:.4rem}.container{margin-left:auto;margin-right:auto;padding-left:.4rem;padding-right:.4rem;width:100%}.container.grid-xl{max-width:1296px}.container.grid-lg{max-width:976px}.container.grid-md{max-width:856px}.container.grid-sm{max-width:616px}.container.grid-xs{max-width:496px}.show-xs,.show-sm,.show-md,.show-lg,.show-xl{display:none !important}.columns{display:flex;flex-wrap:wrap;margin-left:-.4rem;margin-right:-.4rem}.columns.col-gapless{margin-left:0;margin-right:0}.columns.col-gapless>.column{padding-left:0;padding-right:0}.columns.col-oneline{flex-wrap:nowrap;overflow-x:auto}.column{flex:1;max-width:100%;padding-left:.4rem;padding-right:.4rem}.column.col-12,.column.col-11,.column.col-10,.column.col-9,.column.col-8,.column.col-7,.column.col-6,.column.col-5,.column.col-4,.column.col-3,.column.col-2,.column.col-1,.column.col-auto{flex:none}.col-12{width:100%}.col-11{width:91.66666667%}.col-10{width:83.33333333%}.col-9{width:75%}.col-8{width:66.66666667%}.col-7{width:58.33333333%}.col-6{width:50%}.col-5{width:41.66666667%}.col-4{width:33.33333333%}.col-3{width:25%}.col-2{width:16.66666667%}.col-1{width:8.33333333%}.col-auto{flex:0 0 auto;max-width:none;width:auto}.col-mx-auto{margin-left:auto;margin-right:auto}.col-ml-auto{margin-left:auto}.col-mr-auto{margin-right:auto}@media (max-width: 1280px){.col-xl-12,.col-xl-11,.col-xl-10,.col-xl-9,.col-xl-8,.col-xl-7,.col-xl-6,.col-xl-5,.col-xl-4,.col-xl-3,.col-xl-2,.col-xl-1,.col-xl-auto{flex:none}.col-xl-12{width:100%}.col-xl-11{width:91.66666667%}.col-xl-10{width:83.33333333%}.col-xl-9{width:75%}.col-xl-8{width:66.66666667%}.col-xl-7{width:58.33333333%}.col-xl-6{width:50%}.col-xl-5{width:41.66666667%}.col-xl-4{width:33.33333333%}.col-xl-3{width:25%}.col-xl-2{width:16.66666667%}.col-xl-1{width:8.33333333%}.col-xl-auto{width:auto}.hide-xl{display:none !important}.show-xl{display:block !important}}@media (max-width: 960px){.col-lg-12,.col-lg-11,.col-lg-10,.col-lg-9,.col-lg-8,.col-lg-7,.col-lg-6,.col-lg-5,.col-lg-4,.col-lg-3,.col-lg-2,.col-lg-1,.col-lg-auto{flex:none}.col-lg-12{width:100%}.col-lg-11{width:91.66666667%}.col-lg-10{width:83.33333333%}.col-lg-9{width:75%}.col-lg-8{width:66.66666667%}.col-lg-7{width:58.33333333%}.col-lg-6{width:50%}.col-lg-5{width:41.66666667%}.col-lg-4{width:33.33333333%}.col-lg-3{width:25%}.col-lg-2{width:16.66666667%}.col-lg-1{width:8.33333333%}.col-lg-auto{width:auto}.hide-lg{display:none !important}.show-lg{display:block !important}}@media (max-width: 840px){.col-md-12,.col-md-11,.col-md-10,.col-md-9,.col-md-8,.col-md-7,.col-md-6,.col-md-5,.col-md-4,.col-md-3,.col-md-2,.col-md-1,.col-md-auto{flex:none}.col-md-12{width:100%}.col-md-11{width:91.66666667%}.col-md-10{width:83.33333333%}.col-md-9{width:75%}.col-md-8{width:66.66666667%}.col-md-7{width:58.33333333%}.col-md-6{width:50%}.col-md-5{width:41.66666667%}.col-md-4{width:33.33333333%}.col-md-3{width:25%}.col-md-2{width:16.66666667%}.col-md-1{width:8.33333333%}.col-md-auto{width:auto}.hide-md{display:none !important}.show-md{display:block !important}}@media (max-width: 600px){.col-sm-12,.col-sm-11,.col-sm-10,.col-sm-9,.col-sm-8,.col-sm-7,.col-sm-6,.col-sm-5,.col-sm-4,.col-sm-3,.col-sm-2,.col-sm-1,.col-sm-auto{flex:none}.col-sm-12{width:100%}.col-sm-11{width:91.66666667%}.col-sm-10{width:83.33333333%}.col-sm-9{width:75%}.col-sm-8{width:66.66666667%}.col-sm-7{width:58.33333333%}.col-sm-6{width:50%}.col-sm-5{width:41.66666667%}.col-sm-4{width:33.33333333%}.col-sm-3{width:25%}.col-sm-2{width:16.66666667%}.col-sm-1{width:8.33333333%}.col-sm-auto{width:auto}.hide-sm{display:none !important}.show-sm{display:block !important}}@media (max-width: 480px){.col-xs-12,.col-xs-11,.col-xs-10,.col-xs-9,.col-xs-8,.col-xs-7,.col-xs-6,.col-xs-5,.col-xs-4,.col-xs-3,.col-xs-2,.col-xs-1,.col-xs-auto{flex:none}.col-xs-12{width:100%}.col-xs-11{width:91.66666667%}.col-xs-10{width:83.33333333%}.col-xs-9{width:75%}.col-xs-8{width:66.66666667%}.col-xs-7{width:58.33333333%}.col-xs-6{width:50%}.col-xs-5{width:41.66666667%}.col-xs-4{width:33.33333333%}.col-xs-3{width:25%}.col-xs-2{width:16.66666667%}.col-xs-1{width:8.33333333%}.col-xs-auto{width:auto}.hide-xs{display:none !important}.show-xs{display:block !important}}.hero{display:flex;flex-direction:column;justify-content:space-between;padding-bottom:4rem;padding-top:4rem}.hero.hero-sm{padding-bottom:2rem;padding-top:2rem}.hero.hero-lg{padding-bottom:8rem;padding-top:8rem}.hero .hero-body{padding:.4rem}.navbar{align-items:stretch;display:flex;flex-wrap:wrap;justify-content:space-between}.navbar .navbar-section{align-items:center;display:flex;flex:1 0 0}.navbar .navbar-section:not(:first-child):last-child{justify-content:flex-end}.navbar .navbar-center{align-items:center;display:flex;flex:0 0 auto}.navbar .navbar-brand{font-size:.9rem;text-decoration:none}.accordion input:checked ~ .accordion-header .icon,.accordion[open] .accordion-header .icon{transform:rotate(90deg)}.accordion input:checked ~ .accordion-body,.accordion[open] .accordion-body{max-height:50rem}.accordion .accordion-header{display:block;padding:.2rem .4rem}.accordion .accordion-header .icon{transition:transform .25s}.accordion .accordion-body{margin-bottom:.4rem;max-height:0;overflow:hidden;transition:max-height .25s}summary.accordion-header::-webkit-details-marker{display:none}.avatar{font-size:.8rem;height:1.6rem;width:1.6rem;background:#5755d9;border-radius:50%;color:rgba(255,255,255,0.85);display:inline-block;font-weight:300;line-height:1.25;margin:0;position:relative;vertical-align:middle}.avatar.avatar-xs{font-size:.4rem;height:.8rem;width:.8rem}.avatar.avatar-sm{font-size:.6rem;height:1.2rem;width:1.2rem}.avatar.avatar-lg{font-size:1.2rem;height:2.4rem;width:2.4rem}.avatar.avatar-xl{font-size:1.6rem;height:3.2rem;width:3.2rem}.avatar img{border-radius:50%;height:100%;position:relative;width:100%;z-index:1}.avatar .avatar-icon,.avatar .avatar-presence{background:#fff;bottom:14.64%;height:50%;padding:.1rem;position:absolute;right:14.64%;transform:translate(50%, 50%);width:50%;z-index:2}.avatar .avatar-presence{background:#bcc3ce;box-shadow:0 0 0 .1rem #fff;border-radius:50%;height:.5em;width:.5em}.avatar .avatar-presence.online{background:#32b643}.avatar .avatar-presence.busy{background:#e85600}.avatar .avatar-presence.away{background:#ffb700}.avatar[data-initial]::before{color:currentColor;content:attr(data-initial);left:50%;position:absolute;top:50%;transform:translate(-50%, -50%);z-index:1}.badge{position:relative;white-space:nowrap}.badge[data-badge]::after,.badge:not([data-badge])::after{background:#5755d9;background-clip:padding-box;border-radius:.5rem;box-shadow:0 0 0 0.1rem #fff;color:#fff;content:attr(data-badge);display:inline-block;transform:translate(-0.05rem, -0.5rem)}.badge[data-badge]::after{font-size:.7rem;height:.9rem;line-height:1;min-width:.9rem;padding:.1rem .2rem;text-align:center;white-space:nowrap}.badge:not([data-badge])::after,.badge[data-badge=\"\"]::after{height:6px;min-width:6px;padding:0;width:6px}.badge.btn::after{position:absolute;top:0;right:0;transform:translate(50%, -50%)}.badge.avatar::after{position:absolute;top:14.64%;right:14.64%;transform:translate(50%, -50%);z-index:100}.breadcrumb{list-style:none;margin:.2rem 0;padding:.2rem 0}.breadcrumb .breadcrumb-item{color:#66758c;display:inline-block;margin:0;padding:.2rem 0}.breadcrumb .breadcrumb-item:not(:last-child){margin-right:.2rem}.breadcrumb .breadcrumb-item:not(:last-child) a{color:#66758c}.breadcrumb .breadcrumb-item:not(:first-child)::before{color:#66758c;content:\"/\";padding-right:.4rem}.bar{background:#eef0f3;border-radius:.1rem;display:flex;flex-wrap:nowrap;height:.8rem;width:100%}.bar.bar-sm{height:.2rem}.bar .bar-item{background:#5755d9;color:#fff;display:block;font-size:.7rem;flex-shrink:0;line-height:.8rem;height:100%;position:relative;text-align:center;width:0}.bar .bar-item:first-child{border-bottom-left-radius:.1rem;border-top-left-radius:.1rem}.bar .bar-item:last-child{border-bottom-right-radius:.1rem;border-top-right-radius:.1rem;flex-shrink:1}.bar-slider{height:.1rem;margin:.4rem 0;position:relative}.bar-slider .bar-item{left:0;padding:0;position:absolute}.bar-slider .bar-item:not(:last-child):first-child{background:#eef0f3;z-index:1}.bar-slider .bar-slider-btn{background:#5755d9;border:0;border-radius:50%;height:.6rem;padding:0;position:absolute;right:0;top:50%;transform:translate(50%, -50%);width:.6rem}.bar-slider .bar-slider-btn:active{box-shadow:0 0 0 0.1rem #5755d9}.card{background:#fff;border:.05rem solid #dadee4;border-radius:.1rem;display:flex;flex-direction:column}.card .card-header,.card .card-body,.card .card-footer{padding:.8rem;padding-bottom:0}.card .card-header:last-child,.card .card-body:last-child,.card .card-footer:last-child{padding-bottom:.8rem}.card .card-body{flex:1 1 auto}.card .card-image{padding-top:.8rem}.card .card-image:first-child{padding-top:0}.card .card-image:first-child img{border-top-left-radius:.1rem;border-top-right-radius:.1rem}.card .card-image:last-child img{border-bottom-left-radius:.1rem;border-bottom-right-radius:.1rem}.chip{align-items:center;background:#eef0f3;border-radius:5rem;display:inline-flex;font-size:90%;height:1.2rem;line-height:.8rem;margin:.1rem;max-width:320px;overflow:hidden;padding:.2rem .4rem;text-decoration:none;text-overflow:ellipsis;vertical-align:middle;white-space:nowrap}.chip.active{background:#5755d9;color:#fff}.chip .avatar{margin-left:-.4rem;margin-right:.2rem}.chip .btn-clear{border-radius:50%;transform:scale(0.75)}.dropdown{display:inline-block;position:relative}.dropdown .menu{animation:slide-down .15s ease 1;display:none;left:0;max-height:50vh;overflow-y:auto;position:absolute;top:100%}.dropdown.dropdown-right .menu{left:auto;right:0}.dropdown.active .menu,.dropdown .dropdown-toggle:focus+.menu,.dropdown .menu:hover{display:block}.dropdown .btn-group .dropdown-toggle:nth-last-child(2){border-bottom-right-radius:.1rem;border-top-right-radius:.1rem}.empty{background:#f7f8f9;border-radius:.1rem;color:#66758c;text-align:center;padding:3.2rem 1.6rem}.empty .empty-icon{margin-bottom:.8rem}.empty .empty-title,.empty .empty-subtitle{margin:.4rem auto}.empty .empty-action{margin-top:.8rem}.menu{box-shadow:0 .05rem .2rem rgba(48,55,66,0.3);background:#fff;border-radius:.1rem;list-style:none;margin:0;min-width:180px;padding:.4rem;transform:translateY(.2rem);z-index:300}.menu.menu-nav{background:transparent;box-shadow:none}.menu .menu-item{margin-top:0;padding:0 .4rem;position:relative;text-decoration:none}.menu .menu-item>a{border-radius:.1rem;color:inherit;display:block;margin:0 -.4rem;padding:.2rem .4rem;text-decoration:none}.menu .menu-item>a:focus,.menu .menu-item>a:hover{background:#f1f1fc;color:#5755d9}.menu .menu-item>a:active,.menu .menu-item>a.active{background:#f1f1fc;color:#5755d9}.menu .menu-item .form-checkbox,.menu .menu-item .form-radio,.menu .menu-item .form-switch{margin:.1rem 0}.menu .menu-item+.menu-item{margin-top:.2rem}.menu .menu-badge{align-items:center;display:flex;height:100%;position:absolute;right:0;top:0}.menu .menu-badge .label{margin-right:.4rem}.modal{align-items:center;bottom:0;display:none;justify-content:center;left:0;opacity:0;overflow:hidden;padding:.4rem;position:fixed;right:0;top:0}.modal:target,.modal.active{display:flex;opacity:1;z-index:400}.modal:target .modal-overlay,.modal.active .modal-overlay{background:rgba(247,248,249,0.75);bottom:0;cursor:default;display:block;left:0;position:absolute;right:0;top:0}.modal:target .modal-container,.modal.active .modal-container{animation:slide-down .2s ease 1;z-index:1}.modal.modal-sm .modal-container{max-width:320px;padding:0 .4rem}.modal.modal-lg .modal-overlay{background:#fff}.modal.modal-lg .modal-container{box-shadow:none;max-width:960px}.modal-container{box-shadow:0 .2rem .5rem rgba(48,55,66,0.3);background:#fff;border-radius:.1rem;display:flex;flex-direction:column;max-height:75vh;max-width:640px;padding:0 .8rem;width:100%}.modal-container.modal-fullheight{max-height:100vh}.modal-container .modal-header{color:#303742;padding:.8rem}.modal-container .modal-body{overflow-y:auto;padding:.8rem;position:relative}.modal-container .modal-footer{padding:.8rem;text-align:right}.nav{display:flex;flex-direction:column;list-style:none;margin:.2rem 0}.nav .nav-item a{color:#66758c;padding:.2rem .4rem;text-decoration:none}.nav .nav-item a:focus,.nav .nav-item a:hover{color:#5755d9}.nav .nav-item.active>a{color:#505c6e;font-weight:bold}.nav .nav-item.active>a:focus,.nav .nav-item.active>a:hover{color:#5755d9}.nav .nav{margin-bottom:.4rem;margin-left:.8rem}.pagination{display:flex;list-style:none;margin:.2rem 0;padding:.2rem 0}.pagination .page-item{margin:.2rem .05rem}.pagination .page-item span{display:inline-block;padding:.2rem .2rem}.pagination .page-item a{border-radius:.1rem;display:inline-block;padding:.2rem .4rem;text-decoration:none}.pagination .page-item a:focus,.pagination .page-item a:hover{color:#5755d9}.pagination .page-item.disabled a{cursor:default;opacity:.5;pointer-events:none}.pagination .page-item.active a{background:#5755d9;color:#fff}.pagination .page-item.page-prev,.pagination .page-item.page-next{flex:1 0 50%}.pagination .page-item.page-next{text-align:right}.pagination .page-item .page-item-title{margin:0}.pagination .page-item .page-item-subtitle{margin:0;opacity:.5}.panel{border:.05rem solid #dadee4;border-radius:.1rem;display:flex;flex-direction:column}.panel .panel-header,.panel .panel-footer{flex:0 0 auto;padding:.8rem}.panel .panel-nav{flex:0 0 auto}.panel .panel-body{flex:1 1 auto;overflow-y:auto;padding:0 .8rem}.popover{display:inline-block;position:relative}.popover .popover-container{left:50%;opacity:0;padding:.4rem;position:absolute;top:0;transform:translate(-50%, -50%) scale(0);transition:transform .2s;width:320px;z-index:300}.popover *:focus+.popover-container,.popover:hover .popover-container{display:block;opacity:1;transform:translate(-50%, -100%) scale(1)}.popover.popover-right .popover-container{left:100%;top:50%}.popover.popover-right *:focus+.popover-container,.popover.popover-right:hover .popover-container{transform:translate(0, -50%) scale(1)}.popover.popover-bottom .popover-container{left:50%;top:100%}.popover.popover-bottom *:focus+.popover-container,.popover.popover-bottom:hover .popover-container{transform:translate(-50%, 0) scale(1)}.popover.popover-left .popover-container{left:0;top:50%}.popover.popover-left *:focus+.popover-container,.popover.popover-left:hover .popover-container{transform:translate(-100%, -50%) scale(1)}.popover .card{box-shadow:0 .2rem .5rem rgba(48,55,66,0.3);border:0}.step{display:flex;flex-wrap:nowrap;list-style:none;margin:.2rem 0;width:100%}.step .step-item{flex:1 1 0;margin-top:0;min-height:1rem;text-align:center;position:relative}.step .step-item:not(:first-child)::before{background:#5755d9;content:\"\";height:2px;left:-50%;position:absolute;top:9px;width:100%}.step .step-item a{color:#5755d9;display:inline-block;padding:20px 10px 0;text-decoration:none}.step .step-item a::before{background:#5755d9;border:.1rem solid #fff;border-radius:50%;content:\"\";display:block;height:.6rem;left:50%;position:absolute;top:.2rem;transform:translateX(-50%);width:.6rem;z-index:1}.step .step-item.active a::before{background:#fff;border:.1rem solid #5755d9}.step .step-item.active ~ .step-item::before{background:#dadee4}.step .step-item.active ~ .step-item a{color:#bcc3ce}.step .step-item.active ~ .step-item a::before{background:#dadee4}.tab{align-items:center;border-bottom:.05rem solid #dadee4;display:flex;flex-wrap:wrap;list-style:none;margin:.2rem 0 .15rem 0}.tab .tab-item{margin-top:0}.tab .tab-item a{border-bottom:.1rem solid transparent;color:inherit;display:block;margin:0 .4rem 0 0;padding:.4rem .2rem .3rem .2rem;text-decoration:none}.tab .tab-item a:focus,.tab .tab-item a:hover{color:#5755d9}.tab .tab-item.active a,.tab .tab-item a.active{border-bottom-color:#5755d9;color:#5755d9}.tab .tab-item.tab-action{flex:1 0 auto;text-align:right}.tab .tab-item .btn-clear{margin-top:-.2rem}.tab.tab-block .tab-item{flex:1 0 0;text-align:center}.tab.tab-block .tab-item a{margin:0}.tab.tab-block .tab-item .badge[data-badge]::after{position:absolute;right:.1rem;top:.1rem;transform:translate(0, 0)}.tab:not(.tab-block) .badge{padding-right:0}.tile{align-content:space-between;align-items:flex-start;display:flex}.tile .tile-icon,.tile .tile-action{flex:0 0 auto}.tile .tile-content{flex:1 1 auto}.tile .tile-content:not(:first-child){padding-left:.4rem}.tile .tile-content:not(:last-child){padding-right:.4rem}.tile .tile-title,.tile .tile-subtitle{line-height:1.2rem}.tile.tile-centered{align-items:center}.tile.tile-centered .tile-content{overflow:hidden}.tile.tile-centered .tile-title,.tile.tile-centered .tile-subtitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:0}.toast{background:rgba(48,55,66,0.95);border-color:#303742;border:.05rem solid #303742;border-radius:.1rem;color:#fff;display:block;padding:.4rem;width:100%}.toast.toast-primary{background:rgba(87,85,217,0.95);border-color:#5755d9}.toast.toast-success{background:rgba(50,182,67,0.95);border-color:#32b643}.toast.toast-warning{background:rgba(255,183,0,0.95);border-color:#ffb700}.toast.toast-error{background:rgba(232,86,0,0.95);border-color:#e85600}.toast a{color:#fff;text-decoration:underline}.toast a:focus,.toast a:hover,.toast a:active,.toast a.active{opacity:.75}.toast .btn-clear{margin:.1rem}.toast p:last-child{margin-bottom:0}.tooltip{position:relative}.tooltip::after{background:rgba(48,55,66,0.95);border-radius:.1rem;bottom:100%;color:#fff;content:attr(data-tooltip);display:block;font-size:.7rem;left:50%;max-width:320px;opacity:0;overflow:hidden;padding:.2rem .4rem;pointer-events:none;position:absolute;text-overflow:ellipsis;transform:translate(-50%, .4rem);transition:opacity .2s, transform .2s;white-space:pre;z-index:300}.tooltip:focus::after,.tooltip:hover::after{opacity:1;transform:translate(-50%, -.2rem)}.tooltip[disabled],.tooltip.disabled{pointer-events:auto}.tooltip.tooltip-right::after{bottom:50%;left:100%;transform:translate(-.2rem, 50%)}.tooltip.tooltip-right:focus::after,.tooltip.tooltip-right:hover::after{transform:translate(.2rem, 50%)}.tooltip.tooltip-bottom::after{bottom:auto;top:100%;transform:translate(-50%, -.4rem)}.tooltip.tooltip-bottom:focus::after,.tooltip.tooltip-bottom:hover::after{transform:translate(-50%, .2rem)}.tooltip.tooltip-left::after{bottom:50%;left:auto;right:100%;transform:translate(.4rem, 50%)}.tooltip.tooltip-left:focus::after,.tooltip.tooltip-left:hover::after{transform:translate(-.2rem, 50%)}@keyframes loading{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes slide-down{0%{opacity:0;transform:translateY(-1.6rem)}100%{opacity:1;transform:translateY(0)}}.text-primary{color:#5755d9 !important}a.text-primary:focus,a.text-primary:hover{color:#4240d4}a.text-primary:visited{color:#6c6ade}.text-secondary{color:#e5e5f9 !important}a.text-secondary:focus,a.text-secondary:hover{color:#d1d0f4}a.text-secondary:visited{color:#fafafe}.text-gray{color:#bcc3ce !important}a.text-gray:focus,a.text-gray:hover{color:#adb6c4}a.text-gray:visited{color:#cbd0d9}.text-light{color:#fff !important}a.text-light:focus,a.text-light:hover{color:#f2f2f2}a.text-light:visited{color:#fff}.text-dark{color:#3b4351 !important}a.text-dark:focus,a.text-dark:hover{color:#303742}a.text-dark:visited{color:#455060}.text-success{color:#32b643 !important}a.text-success:focus,a.text-success:hover{color:#2da23c}a.text-success:visited{color:#39c94b}.text-warning{color:#ffb700 !important}a.text-warning:focus,a.text-warning:hover{color:#e6a500}a.text-warning:visited{color:#ffbe1a}.text-error{color:#e85600 !important}a.text-error:focus,a.text-error:hover{color:#cf4d00}a.text-error:visited{color:#ff6003}.bg-primary{background:#5755d9 !important;color:#fff}.bg-secondary{background:#f1f1fc !important}.bg-dark{background:#303742 !important;color:#fff}.bg-gray{background:#f7f8f9 !important}.bg-success{background:#32b643 !important;color:#fff}.bg-warning{background:#ffb700 !important;color:#fff}.bg-error{background:#e85600 !important;color:#fff}.c-hand{cursor:pointer}.c-move{cursor:move}.c-zoom-in{cursor:zoom-in}.c-zoom-out{cursor:zoom-out}.c-not-allowed{cursor:not-allowed}.c-auto{cursor:auto}.d-block{display:block}.d-inline{display:inline}.d-inline-block{display:inline-block}.d-flex{display:flex}.d-inline-flex{display:inline-flex}.d-none,.d-hide{display:none !important}.d-visible{visibility:visible}.d-invisible{visibility:hidden}.text-hide{background:transparent;border:0;color:transparent;font-size:0;line-height:0;text-shadow:none}.text-assistive{border:0;clip:rect(0, 0, 0, 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.divider,.divider-vert{display:block;position:relative}.divider[data-content]::after,.divider-vert[data-content]::after{background:#fff;color:#bcc3ce;content:attr(data-content);display:inline-block;font-size:.7rem;padding:0 .4rem;transform:translateY(-.65rem)}.divider{border-top:.05rem solid #f1f3f5;height:.05rem;margin:.4rem 0}.divider[data-content]{margin:.8rem 0}.divider-vert{display:block;padding:.8rem}.divider-vert::before{border-left:.05rem solid #dadee4;bottom:.4rem;content:\"\";display:block;left:50%;position:absolute;top:.4rem;transform:translateX(-50%)}.divider-vert[data-content]::after{left:50%;padding:.2rem 0;position:absolute;top:50%;transform:translate(-50%, -50%)}.loading{color:transparent !important;min-height:.8rem;pointer-events:none;position:relative}.loading::after{animation:loading 500ms infinite linear;border:.1rem solid #5755d9;border-radius:50%;border-right-color:transparent;border-top-color:transparent;content:\"\";display:block;height:.8rem;left:50%;margin-left:-.4rem;margin-top:-.4rem;position:absolute;top:50%;width:.8rem;z-index:1}.loading.loading-lg{min-height:2rem}.loading.loading-lg::after{height:1.6rem;margin-left:-.8rem;margin-top:-.8rem;width:1.6rem}.clearfix::after{clear:both;content:\"\";display:table}.float-left{float:left !important}.float-right{float:right !important}.p-relative{position:relative !important}.p-absolute{position:absolute !important}.p-fixed{position:fixed !important}.p-sticky{position:sticky !important}.p-centered{display:block;float:none;margin-left:auto;margin-right:auto}.flex-centered{align-items:center;display:flex;justify-content:center}.m-0{margin:0 !important}.mb-0{margin-bottom:0 !important}.ml-0{margin-left:0 !important}.mr-0{margin-right:0 !important}.mt-0{margin-top:0 !important}.mx-0{margin-left:0 !important;margin-right:0 !important}.my-0{margin-bottom:0 !important;margin-top:0 !important}.m-1{margin:.2rem !important}.mb-1{margin-bottom:.2rem !important}.ml-1{margin-left:.2rem !important}.mr-1{margin-right:.2rem !important}.mt-1{margin-top:.2rem !important}.mx-1{margin-left:.2rem !important;margin-right:.2rem !important}.my-1{margin-bottom:.2rem !important;margin-top:.2rem !important}.m-2{margin:.4rem !important}.mb-2{margin-bottom:.4rem !important}.ml-2{margin-left:.4rem !important}.mr-2{margin-right:.4rem !important}.mt-2{margin-top:.4rem !important}.mx-2{margin-left:.4rem !important;margin-right:.4rem !important}.my-2{margin-bottom:.4rem !important;margin-top:.4rem !important}.p-0{padding:0 !important}.pb-0{padding-bottom:0 !important}.pl-0{padding-left:0 !important}.pr-0{padding-right:0 !important}.pt-0{padding-top:0 !important}.px-0{padding-left:0 !important;padding-right:0 !important}.py-0{padding-bottom:0 !important;padding-top:0 !important}.p-1{padding:.2rem !important}.pb-1{padding-bottom:.2rem !important}.pl-1{padding-left:.2rem !important}.pr-1{padding-right:.2rem !important}.pt-1{padding-top:.2rem !important}.px-1{padding-left:.2rem !important;padding-right:.2rem !important}.py-1{padding-bottom:.2rem !important;padding-top:.2rem !important}.p-2{padding:.4rem !important}.pb-2{padding-bottom:.4rem !important}.pl-2{padding-left:.4rem !important}.pr-2{padding-right:.4rem !important}.pt-2{padding-top:.4rem !important}.px-2{padding-left:.4rem !important;padding-right:.4rem !important}.py-2{padding-bottom:.4rem !important;padding-top:.4rem !important}.s-rounded{border-radius:.1rem}.s-circle{border-radius:50%}.text-left{text-align:left}.text-right{text-align:right}.text-center{text-align:center}.text-justify{text-align:justify}.text-lowercase{text-transform:lowercase}.text-uppercase{text-transform:uppercase}.text-capitalize{text-transform:capitalize}.text-normal{font-weight:normal}.text-bold{font-weight:bold}.text-italic{font-style:italic}.text-large{font-size:1.2em}.text-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.text-clip{overflow:hidden;text-overflow:clip;white-space:nowrap}.text-break{hyphens:auto;word-break:break-word;word-wrap:break-word}\n"
 module.exports = require('scssify').createStyle(css, {})
-},{"scssify":575}],663:[function(require,module,exports){
+},{"scssify":575}],672:[function(require,module,exports){
 require("./light/light.scss");
 
 module.exports = {}
-},{"./light/light.scss":662}],664:[function(require,module,exports){
+},{"./light/light.scss":671}],673:[function(require,module,exports){
 /* wm.svelte generated by Svelte v3.7.1 */
 "use strict";
 
@@ -99765,8 +102550,8 @@ const file = "wm.svelte";
 
 function add_css() {
 	var style = element("style");
-	style.id = 'svelte-1422gyg-style';
-	style.textContent = ".wm-backdrop.svelte-1422gyg{background-image:url(\"/images/bg.jpg\");background-size:cover;width:100vw;height:100vh}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid20uc3ZlbHRlIiwic291cmNlcyI6WyJ3bS5zdmVsdGUiXSwic291cmNlc0NvbnRlbnQiOlsiPHNjcmlwdD5cclxuICBjb25zdCBfID0gcmVxdWlyZShcImxvZGFzaFwiKTtcclxuICBjb25zdCBwb3BTdGF0ZSA9ICgpID0+IHt9O1xyXG5cclxuICBjb25zdCBoYW5kbGVVbmNhdWdodEV4Y2VwdGlvbiA9ICgpID0+IHt9O1xyXG5cclxuICBjb25zdCBoYXNoQ2hhbmdlID0gKCkgPT4ge307XHJcblxyXG4gIGxldCBzeXN0ZW1QYWNrYWdlcyA9IHBhdGNoZm94LnN5c3RlbVBhY2thZ2VzKCk7XHJcbiAgbGV0IHVzZVNob3J0Q29sdW1uID0gdHJ1ZTtcclxuPC9zY3JpcHQ+XHJcblxyXG48c3R5bGU+XHJcbiAgLnJlZHVjZWQtbGluZS1sZW5ndGgge1xyXG4gICAgbWF4LXdpZHRoOiA4NDBweDtcclxuICAgIG1hcmdpbjogYXV0bztcclxuICB9XHJcblxyXG4gIC53bS1iYWNrZHJvcCB7XHJcbiAgICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoXCIvaW1hZ2VzL2JnLmpwZ1wiKTtcclxuICAgIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XHJcbiAgICB3aWR0aDogMTAwdnc7XHJcbiAgICBoZWlnaHQ6IDEwMHZoO1xyXG4gIH1cclxuXHJcbjwvc3R5bGU+XHJcblxyXG48c3ZlbHRlOndpbmRvd1xyXG4gIG9uOnBvcHN0YXRlPXtwb3BTdGF0ZX1cclxuICBvbjplcnJvcj17aGFuZGxlVW5jYXVnaHRFeGNlcHRpb259XHJcbiAgb246aGFzaGNoYW5nZT17aGFzaENoYW5nZX0gLz5cclxuXHJcbjxkaXYgY2xhc3M9XCJyb290IHdtLWJhY2tkcm9wXCI+XHJcbiAgeyNlYWNoIHN5c3RlbVBhY2thZ2VzIGFzIHBrZ31cclxuICAgIDxzdmVsdGU6Y29tcG9uZW50IHRoaXM9e3BrZy52aWV3fSAvPlxyXG4gIHsvZWFjaH1cclxuICA8ZGl2IGlkPVwid20tY3VycmVudC1wYWNrYWdlXCI+XHJcbiAgICA8IS0tIDxzdmVsdGU6Y29tcG9uZW50IHRoaXM9eyRjdXJyZW50Vmlld30gLz4gLS0+XHJcbiAgPC9kaXY+XHJcbjwvZGl2PlxyXG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBa0JFLFlBQVksZUFBQyxDQUFDLEFBQ1osZ0JBQWdCLENBQUUsSUFBSSxnQkFBZ0IsQ0FBQyxDQUN2QyxlQUFlLENBQUUsS0FBSyxDQUN0QixLQUFLLENBQUUsS0FBSyxDQUNaLE1BQU0sQ0FBRSxLQUFLLEFBQ2YsQ0FBQyJ9 */";
+	style.id = 'svelte-w7hehp-style';
+	style.textContent = ".wm-backdrop.svelte-w7hehp{background-image:url(\"/images/bg.jpg\");background-size:cover;width:100vw;height:100vh}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid20uc3ZlbHRlIiwic291cmNlcyI6WyJ3bS5zdmVsdGUiXSwic291cmNlc0NvbnRlbnQiOlsiPHNjcmlwdD5cbiAgICBjb25zdCBfID0gcmVxdWlyZShcImxvZGFzaFwiKTtcbiAgICBjb25zdCBwb3BTdGF0ZSA9ICgpID0+IHtcbiAgICB9O1xuXG4gICAgY29uc3QgaGFuZGxlVW5jYXVnaHRFeGNlcHRpb24gPSAoKSA9PiB7XG4gICAgfTtcblxuICAgIGNvbnN0IGhhc2hDaGFuZ2UgPSAoKSA9PiB7XG4gICAgfTtcblxuICAgIGxldCBzeXN0ZW1QYWNrYWdlcyA9IHBhdGNoZm94LnN5c3RlbVBhY2thZ2VzKCk7XG4gICAgbGV0IHVzZVNob3J0Q29sdW1uID0gdHJ1ZTtcbiAgICBsZXQgY3VycmVudFZpZXcgPSBmYWxzZTtcblxuICAgIHBhdGNoZm94Lmxpc3RlbihcInBhY2thZ2U6Z29cIiwgKGV2ZW50LCB7cGtnLCB2aWV3LCBkYXRhfSkgPT4ge1xuICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKFwiZGF0YVwiLCBkYXRhKVxuICAgICAgICAgICAgICAgIGlmIChwYXRjaGZveC5wYWNrYWdlc1twa2ddKSB7XG4gICAgICAgICAgICAgICAgICAgIGxldCBwYWNrYWdlVG9PcGVuID0gcGF0Y2hmb3gucGFja2FnZXNbcGtnXTtcbiAgICAgICAgICAgICAgICAgICAgaWYgKHR5cGVvZiB2aWV3ICE9PSBcInVuZGVmaW5lZFwiKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICBpZiAodHlwZW9mIHBhY2thZ2VUb09wZW5bdmlld10gIT09IFwidW5kZWZpbmVkXCIpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBjdXJyZW50VmlldyA9IHBhY2thZ2VUb09wZW5bdmlld107XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgcGF0Y2hmb3guZW1pdChcInBhY2thZ2U6Y2hhbmdlZFwiLCBwYWNrYWdlVG9PcGVuKTtcbiAgICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgdGhyb3cgYFBhY2thZ2UgZXJyb3I6IFBhY2thZ2UgJHtwa2d9IGhhcyBubyB2aWV3IG5hbWVkOiAke3ZpZXd9LmA7XG4gICAgICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAodHlwZW9mIHBhY2thZ2VUb09wZW4udmlldyAhPT0gXCJ1bmRlZmluZWRcIikge1xuICAgICAgICAgICAgICAgICAgICAgICAgLy8gb3BlbmluZyBkZWZhdWx0IHZpZXdcbiAgICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnRWaWV3ID0gcGFja2FnZVRvT3Blbi52aWV3O1xuICAgICAgICAgICAgICAgICAgICAgICAgcGF0Y2hmb3guZW1pdChcInBhY2thZ2U6Y2hhbmdlZFwiLCBwYWNrYWdlVG9PcGVuKTtcbiAgICAgICAgICAgICAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICAgICAgICAgICAgICAgIC8vIHBhY2thZ2UgaXMgbm90IGEgdmlld2FibGUgcGFja2FnZS5cbiAgICAgICAgICAgICAgICAgICAgICAgIHRocm93IGBQYWNrYWdlIGVycm9yOiBQYWNrYWdlICR7cGtnfSBkb2Vzbid0IGNvbnRhaW4gYSBkZWZhdWx0IHZpZXcgYW5kIGNhbid0IGJlIHNob3duYDtcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICAgICAgICAgIHRocm93IGBQYWNrYWdlIGVycm9yOiBObyBwYWNrYWdlIHdpdGggbmFtZSAke3BrZ30uYFxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH1cbiAgICApXG48L3NjcmlwdD5cblxuPHN0eWxlPlxuICAgIC5yZWR1Y2VkLWxpbmUtbGVuZ3RoIHtcbiAgICAgICAgbWF4LXdpZHRoOiA4NDBweDtcbiAgICAgICAgbWFyZ2luOiBhdXRvO1xuICAgIH1cblxuICAgIC53bS1iYWNrZHJvcCB7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IHVybChcIi9pbWFnZXMvYmcuanBnXCIpO1xuICAgICAgICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xuICAgICAgICB3aWR0aDogMTAwdnc7XG4gICAgICAgIGhlaWdodDogMTAwdmg7XG4gICAgfVxuXG4gICAgXG48L3N0eWxlPlxuXG48c3ZlbHRlOndpbmRvd1xuICAgICAgICBvbjpwb3BzdGF0ZT17cG9wU3RhdGV9XG4gICAgICAgIG9uOmVycm9yPXtoYW5kbGVVbmNhdWdodEV4Y2VwdGlvbn1cbiAgICAgICAgb246aGFzaGNoYW5nZT17aGFzaENoYW5nZX0vPlxuXG4gICAgPGRpdiBjbGFzcz1cInJvb3Qgd20tYmFja2Ryb3BcIj5cbiAgICAgIHsjZWFjaCBzeXN0ZW1QYWNrYWdlcyBhcyBwa2d9XG4gICAgICA8c3ZlbHRlOmNvbXBvbmVudCB0aGlzPXtwa2cudmlld30vPlxuICAgICAgey9lYWNofVxuICAgICAgICA8ZGl2IGlkPVwid20tY3VycmVudC1wYWNrYWdlXCIgY2xhc3M9XCJjb250YWluZXJcIj5cbiAgICAgICAgICB7I2lmIGN1cnJlbnRWaWV3fVxuICAgICAgICAgICAgICA8c3ZlbHRlOmNvbXBvbmVudCB0aGlzPXtjdXJyZW50Vmlld30vPlxuICAgICAgICAgIHsvaWZ9XG4gICAgICAgIDwvZGl2PlxuICAgIDwvZGl2PlxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQStDSSxZQUFZLGNBQUMsQ0FBQyxBQUNWLGdCQUFnQixDQUFFLElBQUksZ0JBQWdCLENBQUMsQ0FDdkMsZUFBZSxDQUFFLEtBQUssQ0FDdEIsS0FBSyxDQUFFLEtBQUssQ0FDWixNQUFNLENBQUUsS0FBSyxBQUNqQixDQUFDIn0= */";
 	append(document.head, style);
 }
 
@@ -99776,7 +102561,7 @@ function get_each_context(ctx, list, i) {
 	return child_ctx;
 }
 
-// (34:2) {#each systemPackages as pkg}
+// (64:6) {#each systemPackages as pkg}
 function create_each_block(ctx) {
 	var switch_instance_anchor, current;
 
@@ -99850,6 +102635,80 @@ function create_each_block(ctx) {
 	};
 }
 
+// (68:10) {#if currentView}
+function create_if_block(ctx) {
+	var switch_instance_anchor, current;
+
+	var switch_value = ctx.currentView;
+
+	function switch_props(ctx) {
+		return { $$inline: true };
+	}
+
+	if (switch_value) {
+		var switch_instance = new switch_value(switch_props(ctx));
+	}
+
+	return {
+		c: function create() {
+			if (switch_instance) switch_instance.$$.fragment.c();
+			switch_instance_anchor = empty();
+		},
+
+		m: function mount(target, anchor) {
+			if (switch_instance) {
+				mount_component(switch_instance, target, anchor);
+			}
+
+			insert(target, switch_instance_anchor, anchor);
+			current = true;
+		},
+
+		p: function update(changed, ctx) {
+			if (switch_value !== (switch_value = ctx.currentView)) {
+				if (switch_instance) {
+					group_outros();
+					const old_component = switch_instance;
+					transition_out(old_component.$$.fragment, 1, 0, () => {
+						destroy_component(old_component, 1);
+					});
+					check_outros();
+				}
+
+				if (switch_value) {
+					switch_instance = new switch_value(switch_props(ctx));
+
+					switch_instance.$$.fragment.c();
+					transition_in(switch_instance.$$.fragment, 1);
+					mount_component(switch_instance, switch_instance_anchor.parentNode, switch_instance_anchor);
+				} else {
+					switch_instance = null;
+				}
+			}
+		},
+
+		i: function intro(local) {
+			if (current) return;
+			if (switch_instance) transition_in(switch_instance.$$.fragment, local);
+
+			current = true;
+		},
+
+		o: function outro(local) {
+			if (switch_instance) transition_out(switch_instance.$$.fragment, local);
+			current = false;
+		},
+
+		d: function destroy(detaching) {
+			if (detaching) {
+				detach(switch_instance_anchor);
+			}
+
+			if (switch_instance) destroy_component(switch_instance, detaching);
+		}
+	};
+}
+
 function create_fragment(ctx) {
 	var div1, t, div0, current, dispose;
 
@@ -99865,6 +102724,8 @@ function create_fragment(ctx) {
 		each_blocks[i] = null;
 	});
 
+	var if_block = (ctx.currentView) && create_if_block(ctx);
+
 	return {
 		c: function create() {
 			div1 = element("div");
@@ -99875,10 +102736,12 @@ function create_fragment(ctx) {
 
 			t = space();
 			div0 = element("div");
+			if (if_block) if_block.c();
 			attr(div0, "id", "wm-current-package");
-			add_location(div0, file, 36, 2, 719);
-			attr(div1, "class", "root wm-backdrop svelte-1422gyg");
-			add_location(div1, file, 32, 0, 599);
+			attr(div0, "class", "container");
+			add_location(div0, file, 66, 8, 2070);
+			attr(div1, "class", "root wm-backdrop svelte-w7hehp");
+			add_location(div1, file, 62, 4, 1939);
 
 			dispose = [
 				listen(window, "popstate", ctx.popState),
@@ -99900,6 +102763,7 @@ function create_fragment(ctx) {
 
 			append(div1, t);
 			append(div1, div0);
+			if (if_block) if_block.m(div0, null);
 			current = true;
 		},
 
@@ -99925,12 +102789,31 @@ function create_fragment(ctx) {
 				for (i = each_value.length; i < each_blocks.length; i += 1) out(i);
 				check_outros();
 			}
+
+			if (ctx.currentView) {
+				if (if_block) {
+					if_block.p(changed, ctx);
+					transition_in(if_block, 1);
+				} else {
+					if_block = create_if_block(ctx);
+					if_block.c();
+					transition_in(if_block, 1);
+					if_block.m(div0, null);
+				}
+			} else if (if_block) {
+				group_outros();
+				transition_out(if_block, 1, 1, () => {
+					if_block = null;
+				});
+				check_outros();
+			}
 		},
 
 		i: function intro(local) {
 			if (current) return;
 			for (var i = 0; i < each_value.length; i += 1) transition_in(each_blocks[i]);
 
+			transition_in(if_block);
 			current = true;
 		},
 
@@ -99938,6 +102821,7 @@ function create_fragment(ctx) {
 			each_blocks = each_blocks.filter(Boolean);
 			for (let i = 0; i < each_blocks.length; i += 1) transition_out(each_blocks[i]);
 
+			transition_out(if_block);
 			current = false;
 		},
 
@@ -99948,6 +102832,7 @@ function create_fragment(ctx) {
 
 			destroy_each(each_blocks, detaching);
 
+			if (if_block) if_block.d();
 			run_all(dispose);
 		}
 	};
@@ -99955,28 +102840,58 @@ function create_fragment(ctx) {
 
 let useShortColumn = true;
 
-function instance($$self) {
+function instance($$self, $$props, $$invalidate) {
 	const _ = require("lodash");
-  const popState = () => {};
+    const popState = () => {
+    };
 
-  const handleUncaughtException = () => {};
+    const handleUncaughtException = () => {
+    };
 
-  const hashChange = () => {};
+    const hashChange = () => {
+    };
 
-  let systemPackages = patchfox.systemPackages();
+    let systemPackages = patchfox.systemPackages();
+    let currentView = false;
+
+    patchfox.listen("package:go", (event, {pkg, view, data}) => {
+                console.log("data", data)
+                if (patchfox.packages[pkg]) {
+                    let packageToOpen = patchfox.packages[pkg];
+                    if (typeof view !== "undefined") {
+                        if (typeof packageToOpen[view] !== "undefined") {
+                            $$invalidate('currentView', currentView = packageToOpen[view]);
+                            patchfox.emit("package:changed", packageToOpen);
+                        } else {
+                            throw `Package error: Package ${pkg} has no view named: ${view}.`;
+                        }
+                    } else if (typeof packageToOpen.view !== "undefined") {
+                        // opening default view
+                        $$invalidate('currentView', currentView = packageToOpen.view);
+                        patchfox.emit("package:changed", packageToOpen);
+                    } else {
+                        // package is not a viewable package.
+                        throw `Package error: Package ${pkg} doesn't contain a default view and can't be shown`;
+                    }
+                } else {
+                    throw `Package error: No package with name ${pkg}.`
+                }
+            }
+    )
 
 	return {
 		popState,
 		handleUncaughtException,
 		hashChange,
-		systemPackages
+		systemPackages,
+		currentView
 	};
 }
 
 class Wm extends SvelteComponentDev {
 	constructor(options) {
 		super(options);
-		if (!document.getElementById("svelte-1422gyg-style")) add_css();
+		if (!document.getElementById("svelte-w7hehp-style")) add_css();
 		init(this, options, instance, create_fragment, safe_not_equal, []);
 	}
 }

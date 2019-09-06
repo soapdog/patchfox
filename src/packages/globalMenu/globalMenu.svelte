@@ -5,11 +5,22 @@
     let groups = patchfox.menuGroups();
     let groupKeys = Object.keys(groups);
     console.log("groups", groups);
+    let currentPackage = false;
+
+    patchfox.listen("package:changed", (event, pkg) => {
+        currentPackage = pkg.title || pkg.name || false;
+    })
 </script>
 
 <nav class="flyout-nav">
     <ul>
+      {#if currentPackage}
+          <li>
+              <a><span class="global-menu-item"><b>{currentPackage}</b></span></a>
+          </li>
+      {/if}
       {#each groupKeys as key}
+
           <li>
               <a href="#">
                   <span class="global-menu-item">{key}</span>
@@ -19,19 +30,19 @@
                   {#each menu.items as item}
                       <li>
                           <a
-                            on:click={() => {
-                            console.log('trigger menu', item);
-                            patchfox.triggerMenu(item);
-                          }}>
-                              <span class="global-menu-item">{item.label}</span>
-                              {#if item.shortcut}
-                              <span class="shortcut">{item.shortcut}</span>
-                              {/if}
-                          </a>
+                                  on:click={() => {
+                      console.log('trigger menu', item);
+                      patchfox.triggerMenu(item);
+                      }}>
+                          <span class="global-menu-item">{item.label}</span>
+                        {#if item.shortcut}
+                            <span class="shortcut">{item.shortcut}</span>
+                        {/if}
+                              </a>
                       </li>
                   {/each}
                   {#if i < groups[key].length - 1}
-                  <li class="separator"></li>
+                      <li class="separator"></li>
                   {/if}
                 {/each}
               </ul>

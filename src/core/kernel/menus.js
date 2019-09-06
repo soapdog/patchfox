@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const PubSub = require("pubsub-js");
 
 function menus() {
   let result = [];
@@ -23,11 +24,8 @@ function menuGroups() {
 }
 
 function triggerMenu(menuItem,) {
-  let { package, event, data } = menuItem
-  if (package) {
-    goToPackage(package)
-  }
-  emitSync(event, data)
+  let { event, data } = menuItem
+  PubSub.publishSync(event, data)
 }
 
 module.exports = {
