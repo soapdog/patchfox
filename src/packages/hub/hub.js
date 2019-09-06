@@ -5,6 +5,7 @@ patchfox.package({
   name: "hub",
   publicView,
   threadView,
+  view: publicView,
   menu: {
     group: "Hub",
     items: [

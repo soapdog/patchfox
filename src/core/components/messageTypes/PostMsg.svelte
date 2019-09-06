@@ -36,14 +36,14 @@
     let root = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
-    navigate("/compose", { root, branch: msg.key, channel, replyfeed });
+      patchfox.go("compose", "post", { root, branch: msg.key, channel, replyfeed });
   };
 
   const fork = ev => {
     let originalRoot = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
-    navigate("/compose", {
+    patchfox.go("compose", "post", {
       root: msg.key,
       branch: msg.key,
       fork: originalRoot,
@@ -59,7 +59,7 @@
 
   const goBranch = ev => {
     let branchId = msg.value.content.branch || msg.key;
-    navigate("/thread", { thread: branchId });
+      patchfox.go("hub", "threadView", { thread: branchId });
   };
 </script>
 

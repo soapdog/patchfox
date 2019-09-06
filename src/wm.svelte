@@ -1,5 +1,6 @@
 <script>
     const _ = require("lodash");
+    const {getPref} = require("./core/kernel/prefs.js");
 
     const popState = () => {
     };
@@ -50,6 +51,8 @@
                 }
             }
     )
+
+    patchfox.go(getPref("default-package", "hub"))
 </script>
 
 <style>
