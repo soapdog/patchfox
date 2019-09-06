@@ -3,9 +3,10 @@ patchfox.package({
   menu: [
     {
       group: "Help",
+      label: "GitHub",
       items: [
         {
-          label: "GitHub Issues",
+          label: "View Issues",
           event: "url:open",
           data: "https://github.com/soapdog/patchfox/issues"
         }

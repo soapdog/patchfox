@@ -54,12 +54,12 @@
 
   const goRoot = ev => {
     let rootId = msg.value.content.root || msg.key;
-    patchfox.go("hub", "threadView", { thread: rootId });
+    patchfox.go("hub", "thread", { thread: rootId });
   };
 
   const goBranch = ev => {
     let branchId = msg.value.content.branch || msg.key;
-      patchfox.go("hub", "threadView", { thread: branchId });
+      patchfox.go("hub", "thread", { thread: branchId });
   };
 </script>
 

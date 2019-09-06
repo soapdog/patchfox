@@ -103,8 +103,6 @@ class SSB {
       opts = opts || {}
       opts.reverse = opts.reverse || true
 
-      console.log("opts", opts)
-
       pull(
         sbot.createFeedStream(opts),
         pull.filter(msg => msg && msg.value && msg.value.content),

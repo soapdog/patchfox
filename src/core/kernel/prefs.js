@@ -10,7 +10,6 @@ const loadConfiguration = async () => {
     console.log("Loading configuration...")
     try {
         let data = await browser.storage.local.get()
-        console.log("saved data",data)
 
         if (data.hasOwnProperty("keys")) {
             savedData = data
