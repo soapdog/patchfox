@@ -5,3 +5,7 @@ insert_final_newline = true
 [*.js]
 indent_style = space
 indent_size = 2
+
+[*.svelte]
+indent_style = space
+indent_size = 2

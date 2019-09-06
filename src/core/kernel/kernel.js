@@ -1,11 +1,11 @@
 const prefs = require("./prefs.js");
 const utils = require("./utils.js");
 const PubSub = require("pubsub-js");
-const events = require("./events.js")
+const events = require("./events.js");
+const menus = require("./menus.js");
 const _ = require("lodash");
 
 let packages = {};
-let coreMenu = [];
 
 function package(pkg) {
     let name = pkg.name
@@ -41,25 +41,9 @@ function systemPackages() {
     return _.filter(patchfox.packages, p => p.system)
 }
 
-function menus() {
-    let result = coreMenu;
-    let packagesWithGlobalMenuEntries = _.filter(patchfox.packages, p => p.menu)
-    packagesWithGlobalMenuEntries.forEach(p => {
-        result.push(p.menu)
-    })
-    return _.flatten(result)
-}
 
 function goToPackage(package) {
-    // TODO: implement this.
-}
-
-function triggerMenu(menuItem,) {
-    let { package, event, data } = menuItem
-    if (package) {
-        goToPackage(package)
-    }
-    emitSync(event, data)
+  // TODO: implement this.
 }
 
 module.exports = {
@@ -68,8 +52,7 @@ module.exports = {
     packages,
     systemPackages,
     // menu related (aka navigation)
-    menus,
-    triggerMenu,
+    ...menus,
     // event related
     emit,
     listen,
