@@ -1,21 +1,7 @@
 <script>
   // this came from: https://codepen.io/abhishekcghosh/pen/qzmEWd
-  const _ = require("lodash");
-  const { onDestroy } = require("svelte");
 
   let menus = patchfox.menus();
-  console.log("menus", menus);
-
-  let token = patchfox.listen("menu:help:documentation", () => {
-    console.log("launching docs");
-    window.open("/docs/index.html");
-  });
-
-  console.log("token", token);
-
-  onDestroy(() => {
-    patchfox.stopListening(token);
-  });
 </script>
 
 <nav class="flyout-nav">

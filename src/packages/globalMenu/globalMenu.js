@@ -12,21 +12,26 @@ patchfox.package({
             subMenu: [
                 {
                     label: "Documentation",
-                    event: "menu:help:documentation"
+                    event: "url:open",
+                    data: "/docs/index.html"
                 },
                 {
                     label: "Troubleshooting",
-                    event: "menu:help:troubleshooting"
+                    event: "url:open",
+                    data: "/docs/index.html#/troubleshooting/"
                 },
                 {
                     label: "Release Notes",
-                    event: "menu:help:release-notes"
+                    event: "url:open",
+                    data: "/docs/index.html#/release_notes/latest"
                 },
                 {
                     kind: "separator"
                 },
                 {
-                    label: "GitHub Issues"
+                    label: "GitHub Issues",
+                    event: "url:open",
+                    data: "https://github.com/soapdog/patchfox/issues"
                 }
             ]
         }

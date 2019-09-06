@@ -1,9 +1,11 @@
-const events = {
-    packages: {
-        beforeLoad: "packages:beforeLoad",
-        afterLoad: "packages:afterLoad",
-        failedSanityCheck: "packages:failedSanityCheck"
-    }
-};
+const PubSub = require("pubsub-js");
 
-module.exports = events
+
+const unloadEventUrlOpen = PubSub.subscribe("url:open", (msg, data) => {
+    console.log("opening url", data);
+    window.open(data);
+});
+
+module.exports = {
+    unloadEventUrlOpen
+}

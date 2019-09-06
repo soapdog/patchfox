@@ -54,12 +54,12 @@ function goToPackage(package) {
     // TODO: implement this.
 }
 
-function triggerMenu(menuItem) {
-    let { package, event } = menuItem
+function triggerMenu(menuItem,) {
+    let { package, event, data } = menuItem
     if (package) {
         goToPackage(package)
     }
-    emitSync(event)
+    emitSync(event, data)
 }
 
 module.exports = {
