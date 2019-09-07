@@ -32,9 +32,7 @@
         delete opts.limit;
       })
       .catch(n => {
-        if (!error) {
-          console.error("errrrooooor", n);
-        }
+        throw n
       });
   }
 

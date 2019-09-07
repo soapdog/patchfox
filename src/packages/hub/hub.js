@@ -15,7 +15,7 @@ patchfox.package({
         event: "package:go",
         data: {
           pkg: "hub",
-          view: "publicView"
+          view: "public"
         }
       }
     ]

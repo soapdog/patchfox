@@ -22,7 +22,7 @@
         <section class="navbar-section">
           {#each groupKeys as key}
               <div class="dropdown">
-                  <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
+                  <a class="btn btn-link dropdown-toggle" tabindex="0">
                     {key}
                       <i class="icon icon-caret"/>
                   </a>
@@ -34,14 +34,13 @@
                       {#each menu.items as item}
                           <li class="menu-item">
                               <a
-                                      href="#"
                                       class="btn btn-link"
                                       on:click|stopPropagation|preventDefault={() => {
-                          console.log('trigger menu', item);
-                          patchfox.triggerMenu(item);
-                          }}>
+                                        console.log('trigger menu', item);
+                                        patchfox.triggerMenu(item);
+                                      }}>
                               {item.label}
-                                      </a>
+                              </a>
                           </li>
                       {/each}
                     {/each}
