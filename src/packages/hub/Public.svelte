@@ -1,7 +1,5 @@
 <script>
   const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
-  const { getPrefs } = require("../../core/kernel/prefs.js");
-  const { onMount } = require("svelte");
 
   let msgs = false;
   let error =  false;

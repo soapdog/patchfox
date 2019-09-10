@@ -661,10 +661,8 @@ class SSB {
           sbot.links({dest: msgid, rel: "vote", values: true}),
           pull.collect((err, msgs) => {
             if (err) {
-              console.log(`no votes for ${msgid}`, err)
               reject(err)
             } else {
-              console.log(`votes for ${msgid}`, msgs)
               resolve(msgs)
             }
           })
