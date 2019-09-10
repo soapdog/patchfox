@@ -7,16 +7,14 @@
 
   document.title = `Patchfox - Mentions`;
 
-  let lt = false;
+  export let lt = false;
 
-  const loadMentions = () => {
+  $: {
     console.log("Loading mentions...", lt);
     window.scrollTo(0, 0);
     msgs = [];
     ssb.mentions(ssb.feed, lt).then(ms => (msgs = ms));
-  };
-
-  loadMentions();
+  }
 </script>
 
 <style>
@@ -51,7 +49,8 @@
       <a
         href="#/public"
         on:click|stopPropagation|preventDefault={() => {
-          navigate('/mentions', { lt: msgs[msgs.length - 1].rts });
+          let newLt = msgs[msgs.length - 1].timestamp;
+          patchfox.go("hub","mentions", {lt: newLt})
         }}>
         <div class="page-item-subtitle">Next</div>
       </a>

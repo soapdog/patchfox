@@ -2,23 +2,19 @@
   const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
 
   let msgs = false;
-  let error =  false;
+  let error = false;
   let dropdownActive = false;
   let promise;
 
-  let opts = {};
+  export let lt = false
+  export let limit = false
 
   $: {
-    Object.assign(opts, {});
-
     document.title = `Patchfox - Public`;
 
-    if (opts.hasOwnProperty("lt")) {
-      opts.lt = parseInt(opts.lt);
-    }
-
-    if (opts.hasOwnProperty("limit")) {
-      opts.limit = parseInt(opts.limit);
+    let opts = {}
+    if (lt) {
+      opts.lt = lt;
     }
 
     promise = ssb
@@ -26,17 +22,16 @@
       .then(ms => {
         msgs = ms;
         window.scrollTo(0, 0);
-        delete opts.lt;
-        delete opts.limit;
       })
       .catch(n => {
-        throw n
+        throw n;
       });
   }
 
   const goNext = () => {
     let lt = msgs[msgs.length - 1].value.timestamp;
     msgs = false;
+    patchfox.go("hub", "public", { lt });
   };
   const goPrevious = () => {
     msgs = false;

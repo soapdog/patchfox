@@ -15,6 +15,7 @@ const start = async () => {
     window.ssb = new platforms.SSB()
     let server =  await ssb.connect()
     window.ssb.feed = server.id
+    await ssb.loadCaches()
     return server.id
   } catch (n) {
     switch (n) {

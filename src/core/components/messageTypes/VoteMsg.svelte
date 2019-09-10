@@ -19,6 +19,10 @@
   const goThread = ev => {
     ev.stopPropagation();
     ev.preventDefault();
+    if (typeof msgid === "undefined") {
+      throw "Can't go to undefined message id"
+      return false
+    }
     if (ev.ctrlKey) {
       window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
     } else {

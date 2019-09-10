@@ -4,6 +4,7 @@
 
 
     const goPackage = ({pkg, view, data}) => {
+        currentView = false;
         if (patchfox.packages[pkg]) {
             let packageToOpen = patchfox.packages[pkg];
             if (typeof view !== "undefined") {
