@@ -89,7 +89,7 @@
     if (ev.ctrlKey) {
       window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
     } else {
-      //navigate("/profile", { feed });
+     patchfox.go("contacts","profile", { feed });
     }
   };
 </script>
