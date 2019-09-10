@@ -8,6 +8,7 @@
   let hasContentWarning = msg.value.content.contentWarning || false;
   let showContentWarning = contentWarningsExpandByDefault === "collapsed";
 
+  console.log("msg", msg)
   ssb.votes(msg.key).then(ms => {
     ms.forEach(m => {
       let author = m.value.author;

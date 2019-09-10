@@ -9,6 +9,9 @@
 
   ssb.blurbFromMsg(msgid, 100).then(blurb => {
     label = blurb;
+  }).catch(n => {
+    console.log("error retrieving blurb for", msgid)
+    console.error(n)
   });
 
   ssb.avatar(msg.value.author).then(data => (person = data.name));
@@ -19,7 +22,7 @@
     if (ev.ctrlKey) {
       window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
     } else {
-      navigate("/thread", { thread: msgid });
+      patchfox.go("hub", "thread", { thread: msgid });
     }
   };
 </script>

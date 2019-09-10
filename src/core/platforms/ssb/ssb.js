@@ -348,7 +348,7 @@ class SSB {
     })
   }
 
-  get(msgid) {
+  get(id) {
     return new Promise((resolve, reject) => {
       if (sbot.ooo) {
         sbot.get({id: id, raw: true, ooo: false, private: true}, (err, data) => {
@@ -433,7 +433,6 @@ class SSB {
 
   async blurbFromMsg(msgid, howManyChars) {
     let retVal = msgid
-
     try {
       if (msgCache[msgid]) {
         return msgCache[msgid]
@@ -446,6 +445,7 @@ class SSB {
       msgCache[msgid] = retVal
       return retVal
     } catch (n) {
+      console.error(`exploded for ${msgid}`, n)
       return retVal
     }
   }
@@ -661,8 +661,10 @@ class SSB {
           sbot.links({dest: msgid, rel: "vote", values: true}),
           pull.collect((err, msgs) => {
             if (err) {
+              console.log(`no votes for ${msgid}`, err)
               reject(err)
             } else {
+              console.log(`votes for ${msgid}`, msgs)
               resolve(msgs)
             }
           })

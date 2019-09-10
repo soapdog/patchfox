@@ -14,6 +14,7 @@ const start = async () => {
     await kernel.loadConfiguration()
     window.ssb = new platforms.SSB()
     let server =  await ssb.connect()
+    window.ssb.feed = server.id
     return server.id
   } catch (n) {
     switch (n) {

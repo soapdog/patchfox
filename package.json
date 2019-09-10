@@ -2,6 +2,7 @@
   "name": "patchfox",
   "version": "2019.9.1",
   "devDependencies": {
+    "augmented-ui": "^1.1.0",
     "browserify": "^16.5.0",
     "copyfiles": "^2.1.1",
     "cross-env": "^5.2.0",
@@ -26,6 +27,7 @@
     "clean": "rimraf dist",
     "copy:manifest": "copyfiles manifest.json dist",
     "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
+    "copy:augmented-ui": "copyfiles -E -u 2 node_modules/augmented-ui/augmented.css dist/css",
     "copy:docs": "copyfiles docs/**/* dist",
     "copy:index": "copyfiles -u 1 src/index.html dist",
     "copy:browserAction": "copyfiles -E -u 3 src/core/browserAction/browserAction.html dist",
@@ -48,7 +50,9 @@
           }
         }
       ],
-      [ "scssify"]
+      [
+        "scssify"
+      ]
     ]
   },
   "dependencies": {

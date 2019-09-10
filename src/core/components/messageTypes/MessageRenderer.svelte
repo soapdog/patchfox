@@ -125,7 +125,7 @@
   }
 </style>
 
-<div class="card m-2" class:private={privateMsgForYou} class:blured>
+<div class="card m-2" augmented-ui="br-clip exe" class:private={privateMsgForYou} class:blured>
   <div class="card-header">
     <div class="float-left">
       <div class="card-title">
