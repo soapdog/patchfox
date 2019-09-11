@@ -103,6 +103,8 @@ class SSB {
       opts = opts || {}
       opts.reverse = opts.reverse || true
 
+      console.dir(`public called with`, opts)
+
       pull(
         sbot.createFeedStream(opts),
         pull.filter(msg => msg && msg.value && msg.value.content),
@@ -124,7 +126,7 @@ class SSB {
   thread(id) {
     return new Promise((resolve, reject) => {
       sbot.get(id, (err, value) => {
-        if (err) return cb(err)
+        if (err) return reject(err)
         var rootMsg = {key: id, value: value}
         pull(
           sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({

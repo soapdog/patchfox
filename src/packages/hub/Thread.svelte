@@ -54,8 +54,8 @@
 </div>
 {#if error}
   <div class="toast toast-error">
-    Couldn't load thead
-    <a href="?thread={msgid}#/thread">{thread}</a>
+    Couldn't load thread
+    <a href="?thread={thread}#/thread">{thread}</a>
     : {error}
   </div>
 {/if}

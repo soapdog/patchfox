@@ -4,8 +4,7 @@ patchfox.package({
   name: "contacts",
   profile: profileView,
   menu: {
-    group: "Hub",
-    label: "Contacts",
+    group: "Contacts",
     items: [
       {
         label: "Your Profile",

@@ -66,6 +66,10 @@
   };
 </script>
 
+<style>
+
+</style>
+
 <div class="container">
   {#await aboutPromise && avatarPromise}
     <div class="loading loading-lg" />
@@ -85,7 +89,7 @@
           <span class="chip">❤ Thats You ❤</span>
         {/if}
         <h1>{name}</h1>
-        <pre>{feed}</pre>
+        <span class="chip">{feed}</span>
         {#if feed !== ssb.feed}
           <div class="container">
             <div class="divider" />
@@ -110,38 +114,38 @@
             <div class="divider" />
           </div>
         {/if}
+        {#await aboutPromise}
+        <div class="loading"></div>
+        {:then}
         <p>
           {@html ssb.markdown(description)}
         </p>
+        {/await}
       </div>
     </div>
     <br>
     <ul class="tab tab-block">
       <li class="tab-item" class:active={currentSubView === 'posts'}>
-        <a
-          href="/index.html?feed={feed}#/profile"
-          on:click={() => (currentSubView = 'posts')}>
+        <a href="#"
+          on:click|preventDefault={() => (currentSubView = 'posts')}>
           Posts
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'friends'}>
-        <a
-          href="/index.html?feed={feed}#/profile"
-          on:click={() => (currentSubView = 'friends')}>
+        <a href="#"
+          on:click|preventDefault={() => (currentSubView = 'friends')}>
           Friends
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'following'}>
-        <a
-          href="/index.html?feed={feed}#/profile"
-          on:click={() => (currentSubView = 'following')}>
+        <a href="#"
+          on:click|preventDefault={() => (currentSubView = 'following')}>
           Following
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'followers'}>
-        <a
-          href="/index.html?feed={feed}#/profile"
-          on:click={() => (currentSubView = 'followers')}>
+        <a href="#"
+          on:click|preventDefault={() => (currentSubView = 'followers')}>
           Followers
         </a>
       </li>

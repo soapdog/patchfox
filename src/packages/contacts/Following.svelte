@@ -1,7 +1,7 @@
 <script>
 console.log("start friendship request")
 console.time("friendship")
-let promise = ssb.friendship(ssb.id)
+let promise = ssb.friendship(ssb.feed)
     .then((data) => {
         console.log(data)
         console.timeEnd("friendship")
