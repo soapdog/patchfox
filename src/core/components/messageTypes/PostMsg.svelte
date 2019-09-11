@@ -109,7 +109,7 @@
       {#if msg.value.content.root}
         <span>
           <a
-            href="?thread={encodeURIComponent(msg.value.content.root)}#/thread"
+            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
             on:click|preventDefault={goRoot}>
             (root)
           </a>
@@ -118,7 +118,7 @@
       {#if msg.value.content.branch}
         <span>
           <a
-            href="?thread={encodeURIComponent(msg.value.content.branch)}#/thread"
+            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
             on:click|preventDefault={goBranch}>
             (in reply to)
           </a>

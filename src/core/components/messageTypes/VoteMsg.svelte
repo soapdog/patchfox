@@ -24,7 +24,7 @@
       return false
     }
     if (ev.ctrlKey) {
-      window.open(`?thread=${encodeURIComponent(msgid)}#/thread`);
+      window.open(`?pkg=hub&view=thread&thread=${encodeURIComponent(msgid)}`);
     } else {
       patchfox.go("hub", "thread", { thread: msgid });
     }
@@ -33,7 +33,7 @@
 
 <div class="card-body">
    {person} {expression}
-  <a href="/index.html?thread={encodedid}#/thread" on:click={goThread}>
+  <a href="?pkg=hub&view=thread&thread={encodedid}" on:click={goThread}>
      {label}
   </a>
 </div>

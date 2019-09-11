@@ -34,7 +34,8 @@
 <div class="card-body">
   {#if isThisAboutFeeds}
     {person} {verb}
-    <a href="?feed={otherLink}#/profile">
+    <a href="?pkg=contacts&view=profile&feed={otherLink}"
+      on:click|preventDefault={() => patchfox.go("contacts","profile", {feed: otherLink})}>
       {#if image}
         <div class="chip">
           <img src={image} class="avatar avatar-sm" alt={otherName} />

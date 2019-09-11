@@ -87,7 +87,7 @@
 
   const goProfile = ev => {
     if (ev.ctrlKey) {
-      window.open(`?feed=${encodeURIComponent(feed)}#/profile`);
+      window.open(`?pkg=contacs&view=profile&feed=${encodeURIComponent(feed)}#/profile`);
     } else {
      patchfox.go("contacts","profile", { feed });
     }
@@ -169,7 +169,7 @@
           <li class="menu-item">
 
             <a
-              href="?thread={encodeURIComponent(msg.key)}#/thread"
+              href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.key)}"
               target="_blank">
               <i class="icon icon-share" />
               Open in new tab

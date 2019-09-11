@@ -11,11 +11,11 @@
    const goChannel = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    navigate("/channel", { channel: msg.value.content.channel });
+    patchfox.go("hub","channel", { channel: msg.value.content.channel });
   };
 </script>
 
 <div class="card-body">
    {person} {verb}
-  <a href="?channel={channel}#/channel" on:click={goChannel}>#{channel}</a>
+  <a href="?pkg=hub&view=channel&channel={channel}" on:click={goChannel}>#{channel}</a>
 </div>

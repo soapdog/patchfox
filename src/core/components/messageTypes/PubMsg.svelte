@@ -12,11 +12,11 @@
   const goProfile = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    navigate("/profile", { feed: msg.value.content.address.key });
+    patchfox.go("contacts","profile", { feed: msg.value.content.address.key });
   };
 </script>
 
 <div class="card-body">
    {person} announced pub
-  <a href="/index.html?feed={encodedid}#/profile" on:click={goProfile}>{host}:{port}</a>
+  <a href="?pkg=contacts&view=profile&feed={encodedid}" on:click={goProfile}>{host}:{port}</a>
 </div>

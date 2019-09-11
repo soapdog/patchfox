@@ -465,19 +465,19 @@ class SSB {
     function replaceMsgID(match, id, offset, string) {
       let eid = encodeURIComponent(`%${id}`);
 
-      return `<a class="thread-link" href="?thread=${eid}#/thread`;
+      return `<a class="thread-link" href="?pkg=hub&view=thread&thread=${eid}`;
     }
 
     function replaceChannel(match, id, offset, string) {
       let eid = encodeURIComponent(id);
 
-      return `<a class="channel-link" href="?channel=${eid}#/channel`;
+      return `<a class="channel-link" href="?pkg=hub&view=channel&channel=${eid}`;
     }
 
 
     function replaceFeedID(match, id, offset, string) {
       let eid = encodeURIComponent(`@${id}`);
-      return "<a class=\"profile-link\" href=\"?feed=" + eid + "#/profile";
+      return "<a class=\"profile-link\" href=\"?pkg=contacts&view=profile&feed=" + eid;
     }
 
 

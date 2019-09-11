@@ -22,13 +22,13 @@
   const goProfile = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    navigate("/profile", { feed: msg.value.content.contact });
+    patchfox.go("contacts","profile", { feed: msg.value.content.contact });
   };
 </script>
 
 <div class="card-body">
    {person} {verb}
-  <a href="?feed={otherPersonFeed}#/profile" on:click={goProfile}>
+  <a href="?pkg=contacts&view=profile&feed={otherPersonFeed}" on:click={goProfile}>
      {otherPersonName}
   </a>
 </div>

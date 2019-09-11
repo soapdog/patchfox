@@ -60,20 +60,20 @@
   const reply = ev => {
     let rootId = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
-    navigate("/compose", { root: rootId, branch: msg.key, channel });
+    patchfox.go("compose","post", { root: rootId, branch: msg.key, channel });
   };
 
   const goRoot = ev => {
     let rootId = msg.value.content.root || msg.key;
-    navigate("/thread", { thread: rootId });
+    patchfox.go("hub","thread", { thread: rootId });
   };
 
   const goBranch = ev => {
     let branchId = msg.value.content.branch || msg.key;
-    navigate("/thread", { thread: branchId });
+    patchfox.go("hub","thread", { thread: branchId });
   };
 
-  if (!hasContentWarning && $routeLocation === "/thread") {
+  if (!hasContentWarning && false) {
     setTimeout(displayBlogPost, 100);
   }
 </script>
@@ -125,7 +125,7 @@
       {#if msg.value.content.root}
         <span>
           <a
-            href="?thread={encodeURIComponent(msg.value.content.root)}#/thread"
+            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
             on:click|preventDefault={goRoot}>
             (root)
           </a>
@@ -134,7 +134,7 @@
       {#if msg.value.content.branch}
         <span>
           <a
-            href="?thread={encodeURIComponent(msg.value.content.branch)}#/thread"
+            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
             on:click|preventDefault={goBranch}>
             (in reply to)
           </a>

@@ -50,7 +50,9 @@
     });
   };
 
-  const hashChange = () => {};
+  const hashChange = () => {
+      console.log("hash change...")
+  };
 
   let systemPackages = patchfox.systemPackages();
   let useShortColumn = true;
@@ -59,15 +61,18 @@
   let args = {};
 
   patchfox.listen("package:go", (event, { pkg, view, data }) => {
-    let state = { pkg, view, data: JSON.stringify(data) };
-    console.log("set state", state);
+    let state = { pkg, view, ...data };
     let qs = queryString.stringify(state);
-    console.log("qs", qs);
     history.pushState({ pkg, view, data }, "", `/index.html?${qs}`);
     goPackage({ pkg, view, data });
   });
 
-  patchfox.go(getPref("default-package", "hub"));
+  let qs = queryString.parse(location.search)
+  let pkg = qs.pkg || getPref("default-package", "hub")
+  let view = qs.view 
+  delete qs.pkg
+  delete qs.view
+  patchfox.go(pkg, view, qs);
 </script>
 
 <style>

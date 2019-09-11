@@ -4,7 +4,6 @@
   let error = false;
   export let thread;
 
-  console.log("hooks");
   window._SCHEME_HOOKS = {
     messages: {
       name: "messages",
