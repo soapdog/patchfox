@@ -18,12 +18,11 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "background": {
     "scripts": [
-      "vendor/hermiebox.js",
       "background.js"
     ]
   },
   "options_ui": {
-    "page":  "index.html#/settings",
+    "page":  "index.html?pkg=settings",
     "open_in_tab": true
   },
   "browser_action": {
@@ -43,7 +42,7 @@
     {
       "protocol": "ssb",
       "name": "Secure Scuttlebutt",
-      "uriTemplate": "/index.html?query=%s#/intercept"
+      "uriTemplate": "/index.html?pkg=intercept&query=%s"
     }
   ],
   "omnibox": { "keyword" : "ssb" },

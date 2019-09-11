@@ -6,6 +6,7 @@
   const ContentWarnings = require("./ContentWarnings.svelte");
   const PlatformDAT = require("./PlatformDAT.svelte");
   const PlatformIPFS = require("./PlatformIPFS.svelte");
+  const About = require("./About.svelte");
 
   const views = {
     identityAndConnection: IdentityAndConnection,
@@ -13,7 +14,8 @@
     filters: Filters,
     contentWarnings: ContentWarnings,
     platformDAT: PlatformDAT,
-    platformIPFS: PlatformIPFS
+    platformIPFS: PlatformIPFS,
+    about: About
   };
 
   let currentView = "identityAndConnection";

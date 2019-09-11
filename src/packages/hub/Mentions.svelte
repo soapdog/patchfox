@@ -13,7 +13,14 @@
     console.log("Loading mentions...", lt);
     window.scrollTo(0, 0);
     msgs = [];
-    ssb.mentions(ssb.feed, lt).then(ms => (msgs = ms));
+    ssb
+      .mentions(ssb.feed, lt)
+      .then(ms => (msgs = ms))
+      .catch(n =>
+        patchfox.go("errorHandler", {
+          error: n
+        })
+      );
   }
 </script>
 
@@ -50,7 +57,7 @@
         href="#/public"
         on:click|stopPropagation|preventDefault={() => {
           let newLt = msgs[msgs.length - 1].timestamp;
-          patchfox.go("hub","mentions", {lt: newLt})
+          patchfox.go('hub', 'mentions', { lt: newLt });
         }}>
         <div class="page-item-subtitle">Next</div>
       </a>

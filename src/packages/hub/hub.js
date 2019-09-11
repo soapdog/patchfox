@@ -1,6 +1,7 @@
 const publicView = require("./Public.svelte");
 const threadView = require("./Thread.svelte");
 const mentionsView = require("./Mentions.svelte");
+const channelView = require("./Channel.svelte");
 
 patchfox.package({
   name: "hub",
@@ -8,6 +9,7 @@ patchfox.package({
   thread: threadView,
   mentions: mentionsView,
   view: publicView,
+  channel: channelView,
   menu: {
     group: "Hub",
     label: "Feeds",

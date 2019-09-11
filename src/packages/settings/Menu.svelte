@@ -17,6 +17,14 @@
   <li class="menu-item">
     <a
       href="#/settings"
+      on:click={() => setView('about')}
+      class:active={currentView === 'about'}>
+      About Patchfox
+    </a>
+  </li>
+  <li class="menu-item">
+    <a
+      href="#/settings"
       on:click={() => setView('identityAndConnection')}
       class:active={currentView === 'identityAndConnection'}>
       Identity &amp; Connection

@@ -1,21 +1,21 @@
 
 function goPublic() {
   browser.tabs.create({
-    url: "/index.html#/public"
+    url: "/index.html?pkg=hub"
   });
   window.close();
 }
 
 function goCompose() {
   browser.tabs.create({
-    url: "/index.html#/compose"
+    url: "/index.html?pkg=compose&view=post"
   });
   window.close();
 }
 
 function goProfile() {
   browser.tabs.create({
-    url: "/index.html#/profile"
+    url: "/index.html?pkg=contacts&view=profile"
   });
   window.close();
 }
@@ -23,7 +23,7 @@ function goProfile() {
 
 function goMentions() {
   browser.tabs.create({
-    url: "/index.html#/mentions"
+    url: "/index.html?pkg=hub&view=mentions"
   });
   window.close();
 }
@@ -31,7 +31,7 @@ function goMentions() {
 
 function goChannels() {
   browser.tabs.create({
-    url: "/index.html#/chanels"
+    url: "/index.html?pkg=hub&view=channels"
   });
   window.close();
 }

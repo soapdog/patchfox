@@ -125,7 +125,7 @@
   }
 </style>
 
-<div class="card m-2" augmented-ui="br-clip exe" class:private={privateMsgForYou} class:blured>
+<div class="card m-2"  class:private={privateMsgForYou} class:blured>
   <div class="card-header">
     <div class="float-left">
       <div class="card-title">
@@ -151,9 +151,9 @@
       <span
         class="text-gray channel-display"
         on:click={() => {
-          // navigate('/channel', {
-          //   channel: msg.value.content.channel
-          // })
+           patchfox.go("hub","channel", {
+             channel: msg.value.content.channel
+           })
         }}>
         {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
       </span>

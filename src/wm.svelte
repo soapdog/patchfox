@@ -87,9 +87,6 @@
     min-height: 100vh;
   }
 
-  #wm-current-package {
-    padding-top: 50px;
-  }
 </style>
 
 <svelte:window
