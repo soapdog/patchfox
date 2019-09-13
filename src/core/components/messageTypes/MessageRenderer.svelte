@@ -1,16 +1,9 @@
 <script>
-  const PostMsg = require("./PostMsg.svelte");
   const GenericMsg = require("./GenericMsg.svelte");
-  const VoteMsg = require("./VoteMsg.svelte");
-  const PrivateMsg = require("./PrivateMsg.svelte");
-  const ContactMsg = require("./ContactMsg.svelte");
-  const ChannelMsg = require("./ChannelMsg.svelte");
-  const AboutMsg = require("./AboutMsg.svelte");
-  const PubMsg = require("./PubMsg.svelte");
-  const BlogMsg = require("./BlogMsg.svelte");
   const AvatarChip = require("../parts/AvatarChip.svelte");
   const {timestamp} = require("../parts/timestamp.js");
   const { isMessageBlured } = require("../../platforms/ssb/abusePrevention.js");
+  const _ = require("lodash");
 
   export let msg;
 
@@ -22,16 +15,20 @@
   let privateMsgForYou = false;
 
   let messageTypes = {
-    "*": GenericMsg,
-    post: PostMsg,
-    vote: VoteMsg,
-    private: PrivateMsg,
-    contact: ContactMsg,
-    channel: ChannelMsg,
-    about: AboutMsg,
-    pub: PubMsg,
-    blog: BlogMsg
+    "*": GenericMsg
   };
+
+  let packagesForMessageTypes = _.filter(patchfox.packages, p => p.messageTypes)
+
+  packagesForMessageTypes.forEach(p => {
+     p.messageTypes.forEach(mt => {
+       let key = mt.type
+       let view = mt.card
+       messageTypes[key] = view
+     })
+  });
+ 
+  
 
   let selectedRenderer;
 

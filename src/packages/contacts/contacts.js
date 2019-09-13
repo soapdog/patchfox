@@ -1,8 +1,20 @@
-const profileView = require("./Profile.svelte");
+const ProfileView = require("./Profile.svelte");
+const ContactCard = require("./ContactCard.svelte");
+const AboutCard = require("./AboutCard.svelte");
 
 patchfox.package({
   name: "contacts",
-  profile: profileView,
+  profile: ProfileView,
+  messageTypes: [
+    {
+      type: "contact",
+      card: ContactCard
+    },
+    {
+      type: "about",
+      card: AboutCard
+    }
+  ],
   menu: {
     group: "Contacts",
     items: [
