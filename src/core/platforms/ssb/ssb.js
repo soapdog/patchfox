@@ -350,9 +350,13 @@ class SSB {
 
   get(id) {
     return new Promise((resolve, reject) => {
+      if (typeof msgCache[id] !== "undefined") {
+        resolve(msgCache[id])
+      }
       if (sbot.ooo) {
         sbot.get({id: id, raw: true, ooo: false, private: true}, (err, data) => {
           if (err) reject(err)
+          msgCache[id] = data
           resolve(data)
         })
       } else {
@@ -360,11 +364,13 @@ class SSB {
           // if no sbot.private, assume we have newer sbot that supports private:true
           return sbot.get({id: id, private: true}, (err, data) => {
             if (err) reject(err)
+            msgCache[id] = data
             resolve(data)
           })
         }
         sbot.get(id, (err, data) => {
           if (err) reject(err)
+          msgCache[id] = data
           resolve(data)
         })
       }
