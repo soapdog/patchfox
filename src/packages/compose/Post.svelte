@@ -100,7 +100,7 @@
     if (!posting) {
       posting = true;
 
-      if (channel.startsWith("#")) {
+      if (channel && channel.startsWith("#")) {
         channel = channel.slice(1);
       }
 
