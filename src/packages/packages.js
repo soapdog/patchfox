@@ -7,6 +7,7 @@ require("./globalMenu/globalMenu.js");
 require("./settings/settings.js");
 require("./hub/hub.js");
 require("./post/post.js");
+require("./blog/blog.js");
 require("./contacts/contacts.js");
 require("./helpMenu/helpMenu.js");
 require("./githubIntegration/githubIntegration.js");

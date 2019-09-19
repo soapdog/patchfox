@@ -35,20 +35,7 @@
     // e.dataTransfer.getData('url'); from images in the browser window
 
     drop(document.getElementById("content"), files => readFileAndAttach(files));
-    checkIpfsDaemon();
-    checkDatDaemon();
   });
-
-  const checkIpfsDaemon = () => {
-    let port = getPref("ipfsPort", 5001);
-    fetch(`http://127.0.0.1:${port}/api/v0/config/show`).then(data => {
-      ipfsDaemonRunning = true;
-    });
-  };
-
-   const checkDatDaemon = () => {
-      datDaemonRunning = false;
-  };
 
   const readFileAndAttach = files => {
     error = false;
@@ -100,7 +87,7 @@
     if (!posting) {
       posting = true;
 
-      if (channel && channel.startsWith("#")) {
+      if (channel.length > 0 && channel.startsWith("#")) {
         channel = channel.slice(1);
       }
 
@@ -173,27 +160,10 @@
     document.getElementById("fileInput").click();
   };
 
-  const attachFileIPFSTrigger = () => {
-    document.getElementById("fileInputIPFS").click();
-  };
-
-  const attachFileDATTrigger = () => {
-    document.getElementById("fileInputDAT").click();
-  };
-
+ 
   const attachFile = ev => {
     const files = ev.target.files;
     readFileAndAttach(files);
-  };
-
-  const attachFileIPFS = ev => {
-    const files = ev.target.files;
-    readFileAndAttachIPFS(files);
-  };
-
-  const attachFileDAT = ev => {
-    const files = ev.target.files;
-    readFileAndAttachDAT(files);
   };
 
   const readFileAndAttachIPFS = async files => {
