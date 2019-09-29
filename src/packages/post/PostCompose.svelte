@@ -3,9 +3,9 @@
   const drop = require("drag-and-drop-files");
   const { slide } = require("svelte/transition");
   const AvatarChip = require("../../core/components/parts/AvatarChip.svelte");
-  const {getPref} = require("../../core/kernel/prefs.js");
-  const pull = require("pull-stream")
-  const fileReader = require("pull-file-reader")
+  const { getPref } = require("../../core/kernel/prefs.js");
+  const pull = require("pull-stream");
+  const fileReader = require("pull-file-reader");
 
   let showPreview = false;
   let msg = false;
@@ -14,9 +14,9 @@
 
   export let root = false;
   export let branch = false;
-  export let channel =  "";
-  export let content =  "";
-  export let replyfeed =  false;
+  export let channel = "";
+  export let content = "";
+  export let replyfeed = false;
   export let fork = false;
 
   let fileOnTop = false;
@@ -43,7 +43,6 @@
 
     if (files.length == 0) {
       fileOnTop = false;
-      console.log("this is not a file");
       return false;
     }
 
@@ -85,6 +84,7 @@
     ev.preventDefault();
 
     if (!posting) {
+      saveToURL();
       posting = true;
 
       if (channel.length > 0 && channel.startsWith("#")) {
@@ -110,16 +110,6 @@
 
         if (msg.message === "stream is closed") {
           msg += ". We lost connection to sbot. We'll try to restablish it...";
-
-              location.search = `?root=${encodeURIComponent(
-                root
-              )}&branch=${encodeURIComponent(
-                branch
-              )}&content=${encodeURIComponent(
-                content
-              )}&channel=${encodeURIComponent(channel)}`;
-              msg = `Sorry, couldn't reconnect to sbot:${err}. Try reloading the page. Your content has been saved to the URL`;
-           
         }
       }
     }
@@ -130,11 +120,15 @@
   };
 
   const saveToURL = ev => {
-   location.search = `?root=${encodeURIComponent(
-      root
-    )}&branch=${encodeURIComponent(branch)}&content=${encodeURIComponent(
-      content
-    )}&channel=${encodeURIComponent(channel)}`;
+    let data = {};
+    if (content) data.content = content;
+    if (channel) data.channel = channel;
+    if (root) data.root = root;
+    if (branch) data.branch = branch;
+    if (fork) data.fork = fork;
+    if (contentWarning.length > 0) data.contentWarning = contentWarning;
+
+    patchfox.emit("package:save:state", { pkg: "post", view: "compose", data });
   };
 
   const avatarClick = ev => {
@@ -160,7 +154,6 @@
     document.getElementById("fileInput").click();
   };
 
- 
   const attachFile = ev => {
     const files = ev.target.files;
     readFileAndAttach(files);
@@ -262,18 +255,19 @@
                 type="text"
                 size="50"
                 bind:value={contentWarning}
-                placeholder="Describe your content warning (leave empty to no use it)" />
+                placeholder="Describe your content warning (leave empty to no
+                use it)" />
             {/if}
           </div>
           <input type="file" on:input={attachFile} id="fileInput" />
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
-          {#if getPref("platform-ipfs-enabled", "yes") === "yes" && ipfsDaemonRunning}
+          {#if getPref('platform-ipfs-enabled', 'yes') === 'yes' && ipfsDaemonRunning}
             <input type="file" on:input={attachFileIPFS} id="fileInputIPFS" />
             <button class="btn" on:click={attachFileIPFSTrigger}>
               Attach File using IPFS
             </button>
           {/if}
-           {#if getPref("platform-dat-enabled", "yes") === "yes" && datDaemonRunning}
+          {#if getPref('platform-dat-enabled', 'yes') === 'yes' && datDaemonRunning}
             <input type="file" on:input={attachFileDAT} id="fileInputDAT" />
             <button class="btn" on:click={attachFileDATTrigger}>
               Attach File using Dat
@@ -330,7 +324,7 @@
               <button
                 class="btn btn-primary"
                 class:loading={posting}
-                disabled={!error && typeof msg.key == "string"}
+                disabled={!error && typeof msg.key == 'string'}
                 on:click={post}>
                 Post
               </button>

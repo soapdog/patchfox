@@ -60,7 +60,6 @@
     }
 
     var first = files[0];
-    console.log(first);
 
     if (!first.type.startsWith("image")) {
       error = true;

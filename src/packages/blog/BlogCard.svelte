@@ -42,7 +42,6 @@
 
   const displayBlogPost = ev => {
     loading = true;
-    console.log("loading blogpost", content.blog);
 
     ssb
       .getBlob(content.blog)

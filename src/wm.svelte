@@ -20,42 +20,27 @@
 
     await tick();
 
-    // if () //todo: broken
-
-    if (typeof patchfox.packages[pkg] !== "undefined") {
+    // four cases
+    try {
       let packageToOpen = patchfox.packages[pkg];
-      if (typeof view !== "undefined") {
-        if (typeof packageToOpen[view] !== "undefined") {
-          args = data;
-          currentPackage = packageToOpen;
-          currentView = packageToOpen[view];
-          patchfox.emit("package:changed", { packageToOpen, view, data });
-          return true;
-        } else {
-          throw `Package error: Package ${pkg} has no view named: ${view}.`;
-          return false;
-        }
-      } else if (typeof packageToOpen.view !== "undefined") {
-        // opening default view
+      let viewToOpen = view ? packageToOpen[view] : packageToOpen.view;
+
+      if (packageToOpen && viewToOpen) {
         args = data;
         currentPackage = packageToOpen;
-        currentView = packageToOpen.view;
+        currentView = viewToOpen;
         patchfox.emit("package:changed", { packageToOpen, view, data });
         return true;
-      } else {
-        // package is not a viewable package.
-        throw `Package error: Package ${pkg} doesn't contain a default view and can't be shown`;
-        return false;
       }
-    } else {
-      throw `Package error: No package with name ${pkg}.`;
+    } catch (e) {
+      throw `Can't go to package ${pkg} and view ${view}`
       return false;
     }
+
   };
 
   const popState = ev => {
     if (ev.state !== null) {
-      console.log("pop!");
       goPackage(ev.state);
     }
   };
@@ -78,6 +63,16 @@
     let qs = queryString.stringify(state);
     history.pushState({ pkg, view, data }, "", `/index.html?${qs}`);
     goPackage({ pkg, view, data });
+  });
+
+  patchfox.listen("package:save:state", (event, { pkg, view, data }) => {
+    if (typeof data === "undefined") {
+      data = {};
+    }
+  
+    let state = { pkg, view, ...data };
+    let qs = queryString.stringify(state);
+    history.pushState({ pkg, view, data }, "", `/index.html?${qs}`);
   });
 
   let qs = queryString.parse(location.search);

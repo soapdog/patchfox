@@ -17,7 +17,6 @@
         const secretFile = ev.target.files[0];
         const reader = new FileReader();
         reader.onload = function (evt) {
-            console.log(evt.target.result);
             const contents = evt.target.result;
             let secret = contents.split("\n").filter(function (line) {
                 return line.indexOf("#") != 0;

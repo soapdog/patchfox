@@ -21,8 +21,6 @@
 
   document.title = `Patchfox - Feed: ${feed}`;
 
-  console.log("fetching", feed);
-
   avatarPromise = ssb.avatar(feed).then(data => {
     name = data.name;
     image = data.image;

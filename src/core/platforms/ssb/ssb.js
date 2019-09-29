@@ -124,7 +124,6 @@ class SSB {
         this.filterWithUserFilters(),
         this.filterLimit(),
         pull.collect((err, msgs) => {
-          console.log("msgs", msgs)
           if (err) {
             reject(err)
           }
@@ -582,8 +581,6 @@ class SSB {
 
       msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
 
-      console.log("post", msgToPost)
-
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
           if (err) {
@@ -635,8 +632,6 @@ class SSB {
               reject("could not create blog post blob: " + err)
             } else {
               msgToPost.blog = hash;
-
-              console.log("blog post", msgToPost)
 
               sbot.publish(msgToPost, function (err, msg) {
                 if (err) {
@@ -744,7 +739,6 @@ class SSB {
   channels() {
     return new Promise((resolve, reject) => {
       if (sbot) {
-        console.log("querying channels")
         pull(
           sbot.query.read({
             query: [
@@ -761,7 +755,6 @@ class SSB {
             limit: 20
           }),
           pull.collect(function (err, data) {
-            console.log("channels", data)
             if (err) {
               reject(err)
             } else {
@@ -1122,9 +1115,13 @@ class SSB {
     })
   }
 
-  query(filter, reverse, map, reduce) {
+  query(filter, reverse, map, reduce, limit) {
     return new Promise((resolve, reject) => {
       if (sbot) {
+
+        if (typeof limit == "undefined") {
+          limit = true
+        }
 
         let query = {
           "$filter": filter
@@ -1150,7 +1147,7 @@ class SSB {
             reverse: reverse
           }),
           this.filterTypes(),
-          this.filterLimit(),
+          limit ? this.filterLimit() : pull.through(),
           pull.collect((err, data) => {
             if (err) {
               reject(err)

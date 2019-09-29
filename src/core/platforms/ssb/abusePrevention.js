@@ -54,7 +54,6 @@ const isMessageFiltered = (msg, filter, action) => {
 
     if (filter.feed) {
         if (filter.feed == msg.value.author) {
-            console.log("filtered due to feed")
             filterResults.push(true)
         } else {
             filterResults.push(false)
@@ -62,7 +61,6 @@ const isMessageFiltered = (msg, filter, action) => {
     }
 
     if (filter.channel) {
-        console.log("filtered due to channel")
         if (msg.value.content.channel && filter.channel == msg.value.content.channel) {
             filterResults.push(true)
         } else {
@@ -79,7 +77,6 @@ const isMessageFiltered = (msg, filter, action) => {
         filterResults.push(res)
     }
 
-    console.log("res", !filterResults.some(n => n == true))
     return !filterResults.some(n => n == true)
 }
 
