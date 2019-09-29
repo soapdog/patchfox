@@ -41,6 +41,9 @@
       .catch(n => {
         console.dir(n);
         error = n.message;
+        if (n.message.indexOf("stream is closed") !== -1) {
+          location.reload();
+        }
       });
   }
 </script>
