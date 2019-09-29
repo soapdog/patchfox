@@ -95,6 +95,8 @@
     ev.stopPropagation();
     ev.preventDefault();
 
+    saveToURL();
+
     if (!posting) {
       posting = true;
 
@@ -138,13 +140,18 @@
   };
 
   const saveToURL = ev => {
-    window.location.search = `?summary=${encodeURIComponent(
-      summary
-    )}&title=${encodeURIComponent(title)}&content=${encodeURIComponent(
-      content
-    )}&channel=${encodeURIComponent(channel)}&thumbnail=${encodeURIComponent(
-      thumbnail
-    )}`;
+    let data = {};
+    if (content) data.content = content;
+    if (channel) data.channel = channel;
+    if (root) data.root = root;
+    if (branch) data.branch = branch;
+    if (fork) data.fork = fork;
+    if (summary) data.summary = summary;
+    if (thumbnail) data.thumbnail = thumbnail;
+
+    if (contentWarning.length > 0) data.contentWarning = contentWarning;
+
+    patchfox.emit("package:save:state", { pkg: "post", view: "compose", data });
   };
 
   const dragOver = ev => {
