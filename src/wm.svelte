@@ -14,22 +14,22 @@
     console.log(event, data);
   });
 
-  const goPackage = async ({ pkg, view, data }) => {
+  const goPackage = ({ pkg, view, data }) => {
     currentView = false;
     args = {};
-
-    await tick();
-
     // four cases
     try {
       let packageToOpen = patchfox.packages[pkg];
       let viewToOpen = view ? packageToOpen[view] : packageToOpen.view;
+      let eventToSend = view ? `package:activate:${pkg}:${view}` : `package:activate:${pkg}:view`;
 
       if (packageToOpen && viewToOpen) {
         args = data;
         currentPackage = packageToOpen;
         currentView = viewToOpen;
         patchfox.emit("package:changed", { packageToOpen, view, data });
+        console.log("sending", eventToSend);
+        patchfox.emit(eventToSend, data);
         return true;
       }
     } catch (e) {
