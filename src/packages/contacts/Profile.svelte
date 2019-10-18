@@ -2,6 +2,7 @@
   const Posts = require("./Posts.svelte");
   const Following = require("./Following.svelte");
   const Followers = require("./Followers.svelte");
+  const Friends = require("./Friends.svelte");
 
   let profile = false;
 
@@ -16,13 +17,15 @@
   let subViews = {
     posts: Posts,
     following: Following,
-    followers: Followers
+    followers: Followers,
+    friends: Friends
   };
   let currentSubView = "posts";
 
   let name = feed;
   let followersCount = false;
   let followingCount = false;
+  let friendsCount = false;
 
   document.title = `Patchfox - Feed: ${feed}`;
 
@@ -69,7 +72,7 @@
   };
 
   const countCallback = ev => {
-    let { followers, following } = ev.detail;
+    let { followers, following, friends } = ev.detail;
 
     if (followers) {
       followersCount = followers;
@@ -77,6 +80,10 @@
 
     if (following) {
       followingCount = following;
+    }
+
+    if (friends) {
+      friendsCount = friends;
     }
   };
 </script>
@@ -150,6 +157,7 @@
           href="#"
           on:click|preventDefault={() => (currentSubView = 'friends')}>
           Friends
+          {#if friendsCount}({friendsCount}){/if}
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'following'}>
