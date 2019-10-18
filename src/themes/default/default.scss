@@ -1,0 +1,16 @@
+@import "../../../node_modules/spectre.css/src/spectre";
+
+.cyberpunk-container {
+    --aug-tr-width: 20%;
+    --aug-border: 5px;
+    --aug-inset: 5px;
+    --aug-border-bg: rgba(255,255,255,.5);
+    --aug-inset-bg: rgba(255,255,255,.5);
+    padding: 20px;
+    margin-top: 40px;
+}
+
+body {
+    background-image: url("/images/bg.jpg");
+    background-size: cover;
+}

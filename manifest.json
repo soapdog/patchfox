@@ -2,7 +2,7 @@
   "description": "Patchfox is a Secure Scuttlebutt client",
   "manifest_version": 2,
   "name": "Patchfox",
-  "version": "2019.8.2",
+  "version": "2019.9.1",
   "icons": {
     "512": "images/patchfox_pixel_512.png",
     "96": "images/patchfox_pixel_96.png",
@@ -18,19 +18,18 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "background": {
     "scripts": [
-      "vendor/hermiebox.js",
       "background.js"
     ]
   },
   "options_ui": {
-    "page":  "index.html#/settings",
+    "page":  "index.html?pkg=settings",
     "open_in_tab": true
   },
   "browser_action": {
     "default_icon": {
       "32": "images/patchfox_32.png"
     },
-    "default_popup": "popup/popup.html"
+    "default_popup": "browserAction.html"
   },
   "commands": {
     "_execute_browser_action": {
@@ -43,10 +42,11 @@
     {
       "protocol": "ssb",
       "name": "Secure Scuttlebutt",
-      "uriTemplate": "/index.html?query=%s#/intercept"
+      "uriTemplate": "/index.html?pkg=intercept&query=%s"
     }
   ],
   "omnibox": { "keyword" : "ssb" },
+  "devtools_page": "devtools/devtools-page.html",
   "permissions": [
     "http://localhost:8989/",
     "<all_urls>",

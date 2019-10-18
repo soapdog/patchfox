@@ -1,7 +1,8 @@
 {
   "name": "patchfox",
-  "version": "2019.8.2",
+  "version": "2019.9.1",
   "devDependencies": {
+    "augmented-ui": "^1.1.0",
     "browserify": "^16.5.0",
     "copyfiles": "^2.1.1",
     "cross-env": "^5.2.0",
@@ -11,9 +12,13 @@
     "lodash": "^4.17.15",
     "net": "^1.0.2",
     "npm-run-all": "^4.1.5",
+    "pubsub-js": "^1.7.0",
+    "pull-abortable": "^4.1.1",
     "pull-stream": "^3.6.14",
     "query-string": "^6.8.2",
     "rimraf": "^2.6.3",
+    "scssify": "^3.0.1",
+    "spectre.css": "^0.5.8",
     "ssb-client": "^4.7.8",
     "svelte": "^3.7.1",
     "sveltify": "^3.0.0",
@@ -23,10 +28,15 @@
     "clean": "rimraf dist",
     "copy:manifest": "copyfiles manifest.json dist",
     "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
+    "copy:augmented-ui": "copyfiles -E -u 2 node_modules/augmented-ui/augmented.css dist/css",
     "copy:docs": "copyfiles docs/**/* dist",
-    "build:background": "browserify -d  src/background/background.js -o dist/background.js",
-    "build:ui": "browserify -d  src/ui/main.js -o dist/bundle.js",
-    "build": "run-s copy:* build:*"
+    "copy:index": "copyfiles -u 1 src/index.html dist",
+    "copy:browserAction": "copyfiles -E -u 3 src/core/browserAction/browserAction.html dist",
+    "build:browserAction": "browserify src/core/browserAction/browserAction.js -o dist/browserAction.js",
+    "build:background": "browserify src/core/background/background.js -o dist/background.js",
+    "build:addon": "browserify -d src/main.js -o dist/bundle.js",
+    "build": "run-s copy:* build:*",
+    "clean-build": "run-s clean build"
   },
   "browserify": {
     "transform": [
@@ -40,6 +50,9 @@
             "dev": true
           }
         }
+      ],
+      [
+        "scssify"
       ]
     ]
   },
@@ -60,6 +73,7 @@
     "pull-reconnect": "0.0.3",
     "pull-split": "^0.2.0",
     "pull-utf8-decoder": "^1.0.2",
+    "scuttle-gathering": "^1.3.6",
     "ssb-avatar": "^0.2.0",
     "ssb-config": "^3.3.2",
     "ssb-feed": "^2.3.0",
