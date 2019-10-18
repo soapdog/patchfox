@@ -1,6 +1,8 @@
 <script>
   const Posts = require("./Posts.svelte");
   const Following = require("./Following.svelte");
+  const Followers = require("./Followers.svelte");
+
   let profile = false;
 
   let description = false;
@@ -13,11 +15,14 @@
   let aboutPromise;
   let subViews = {
     posts: Posts,
-    following: Following
+    following: Following,
+    followers: Followers
   };
   let currentSubView = "posts";
 
   let name = feed;
+  let followersCount = false;
+  let followingCount = false;
 
   document.title = `Patchfox - Feed: ${feed}`;
 
@@ -60,6 +65,18 @@
       ssb.follow(feed).catch(() => (following = false));
     } else {
       ssb.unfollow(feed).catch(() => (following = true));
+    }
+  };
+
+  const countCallback = ev => {
+    let { followers, following } = ev.detail;
+
+    if (followers) {
+      followersCount = followers;
+    }
+
+    if (following) {
+      followingCount = following;
     }
   };
 </script>
@@ -113,43 +130,50 @@
           </div>
         {/if}
         {#await aboutPromise}
-        <div class="loading"></div>
+          <div class="loading" />
         {:then}
-        <p>
-          {@html ssb.markdown(description)}
-        </p>
+          <p>
+            {@html ssb.markdown(description)}
+          </p>
         {/await}
       </div>
     </div>
-    <br>
+    <br />
     <ul class="tab tab-block">
       <li class="tab-item" class:active={currentSubView === 'posts'}>
-        <a href="#"
-          on:click|preventDefault={() => (currentSubView = 'posts')}>
+        <a href="#" on:click|preventDefault={() => (currentSubView = 'posts')}>
           Posts
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'friends'}>
-        <a href="#"
+        <a
+          href="#"
           on:click|preventDefault={() => (currentSubView = 'friends')}>
           Friends
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'following'}>
-        <a href="#"
+        <a
+          href="#"
           on:click|preventDefault={() => (currentSubView = 'following')}>
           Following
+          {#if followingCount}({followingCount}){/if}
         </a>
       </li>
       <li class="tab-item" class:active={currentSubView === 'followers'}>
-        <a href="#"
+        <a
+          href="#"
           on:click|preventDefault={() => (currentSubView = 'followers')}>
           Followers
+          {#if followersCount}({followersCount}){/if}
         </a>
       </li>
     </ul>
-    <br>
-    <svelte:component this={subViews[currentSubView]} {feed} />
+    <br />
+    <svelte:component
+      this={subViews[currentSubView]}
+      {feed}
+      on:count={countCallback} />
   {:catch n}
     <p>Error: {n.message}</p>
   {/await}

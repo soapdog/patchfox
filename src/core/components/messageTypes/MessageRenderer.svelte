@@ -129,7 +129,7 @@
         <div class="tile tile-centered feed-display" on:click={goProfile}>
           <div class="tile-icon">
             <div class="example-tile-icon">
-              <img src={image} class="avatar avatar-lg" alt={feed} />
+              <img src={image} class="avatar avatar-lg" alt={name} />
             </div>
           </div>
           <div class="tile-content">

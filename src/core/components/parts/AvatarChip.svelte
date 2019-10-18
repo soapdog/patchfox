@@ -23,7 +23,7 @@
 
 <style>
   .clickable:hover {
-    cursor: hand;
+    cursor: pointer;
   }
 </style>
 

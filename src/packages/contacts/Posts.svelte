@@ -58,7 +58,8 @@
       </li>
     </ul>
   {:catch n}
-    <p>Error fetching messages: {n.message}</p>
+    <p>Error fetching messages: {n.message}.</p>
+    <p>Try <a on:click={()=> location.reload()} href="{location}">reloading the page.</a></p>
 
   {/await}
 

@@ -23,34 +23,33 @@
     patchfox.go("contacts", "profile", { feed });
   };
 
-  console.time("loading following");
+  console.time("loading followers");
 
   onDestroy(() => abortable());
 
   pull(
     sbot.links({
-      source: feed,
+      dest: feed,
       rel: "contact",
       values: true,
       reverse: true
     }),
     (abortable = Abortable()),
-    pull.map(function(msg) {
-      return msg && msg.value && msg.value.content;
+    pull.map(msg => msg && msg.value),
+    pull.unique("author"),
+
+    pull.filter(function(value) {
+      return value.content && value.content.type === "contact";
     }),
-    pull.filter(function(content) {
-      return content && content.type === "contact";
+    pull.filter(function(value) {
+      return value.content.following === true;
     }),
-    pull.unique("contact"),
-    pull.filter(function(content) {
-      return content.following === true;
-    }),
-    pull.map("contact"),
+    pull.map("author"),
     pull.collect((err, ids) => {
       contacts = ids;
       loading = false;
-      dispatch("count", {following: contacts.length});
-      console.timeEnd("loading following");
+      dispatch("count", {followers: contacts.length});
+      console.timeEnd("loading followers");
     })
   );
 
