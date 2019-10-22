@@ -9,6 +9,7 @@ require("./hub/hub.js");
 require("./post/post.js");
 require("./blog/blog.js");
 require("./contacts/contacts.js");
+require("./calendar/calendar.js");
 require("./helpMenu/helpMenu.js");
 require("./githubIntegration/githubIntegration.js");
 require("./errorHandler/errorHandler.js");
