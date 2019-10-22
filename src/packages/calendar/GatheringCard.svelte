@@ -29,14 +29,14 @@
 
   const attend = () => {
     gathering.attending(msgid, true, (err, data) => {
-      console.log(err)
-      console.log(data)
+      console.log(err);
+      console.log(data);
       if (!err) {
         attending = true;
         notAttending = false;
       }
-    })
-  }
+    });
+  };
 
   const notAttend = () => {
     gathering.attending(msgid, false, (err, data) => {
@@ -44,8 +44,8 @@
         notAttending = true;
         attending = false;
       }
-    })
-  }
+    });
+  };
 </script>
 
 <style>
@@ -64,20 +64,36 @@
         src="http://localhost:8989/blobs/get/{encodeURIComponent(event.image.link)}"
         alt={event.image.name} />
     {/if}
-    <p>{event.description}</p>
+    {@html ssb.markdown(event.description)}
   {/if}
 </div>
 <div class="card-footer">
   <div class="columns col-gapless">
     <div class="column col-6">
       <div class="btn-group btn-group-block">
-        <button class="btn" on:click={notAttend} class:btn-primary={notAttending === true}>Not Attending</button>
-        <button class="btn" on:click={attend} class:btn-primary={attending === true}>Attending</button>
+        <button
+          class="btn"
+          on:click={notAttend}
+          class:btn-primary={notAttending === true}>
+          Not Attending
+        </button>
+        <button
+          class="btn"
+          on:click={attend}
+          class:btn-primary={attending === true}>
+          Attending
+        </button>
       </div>
     </div>
 
     <div class="column col-6 text-right">
-      <button class="btn" on:click={() => {}}>View details</button>
+      <button
+        class="btn"
+        on:click={() => {
+          patchfox.go('calendar', 'gathering', { msgid });
+        }}>
+        View details
+      </button>
     </div>
   </div>
 </div>
