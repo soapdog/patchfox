@@ -2,12 +2,15 @@
   const Scuttle = require("scuttle-gathering");
   const AvatarRound = require("../../core/components/parts/AvatarRound.svelte");
   const gathering = Scuttle(ssb.sbot);
+  const ics = require("ics");
+  const moment = require("moment");
 
   export let msgid;
 
   let msg;
   let person;
   let event = false;
+  let loadedAllData = false;
   let attending;
   let notAttending;
   ssb.get(msgid).then(data => {
@@ -22,6 +25,7 @@
       event = data;
       attending = event.isAttendee;
       notAttending = data.notAttendees.includes(ssb.sbot.id);
+      loadedAllData = true;
       console.log("event", event);
     }
   });
@@ -58,6 +62,50 @@
 
     patchfox.go("contacts", "profile", { feed });
   };
+
+  const exportToICS = ev => {
+    let el = document.createElement("div");
+    el.innerHTML = ssb.markdown(event.description);
+    let obj = {
+      title: event.title,
+      description: el.innerText
+    };
+
+    if (event.location) {
+      obj.location = event.location;
+    }
+
+    obj.start = moment(event.startDateTime.epoch)
+      .format("YYYY-M-D-H-m")
+      .split("-");
+
+    obj.duration = { hours: 1 };
+
+    let { error, value } = ics.createEvent(obj);
+
+    if (error) {
+      throw `Can't generate iCal ${error}`;
+    } else {
+      let blob = new Blob([value], { type: "text/calendar" });
+
+      const a = document.createElement("a");
+      a.style.display = "none";
+      document.body.appendChild(a);
+
+      // Set the HREF to a Blob representation of the data to be downloaded
+      a.href = window.URL.createObjectURL(blob);
+
+      // Use download attribute to set set desired file name
+      a.setAttribute("download", `${event.title}.ics`);
+
+      // Trigger the download by simulating click
+      a.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
+    }
+  };
 </script>
 
 <style>
@@ -71,6 +119,10 @@
 
   .card-body {
     padding-bottom: 15px;
+  }
+
+  .card-footer {
+    padding-right: 15px;
   }
 </style>
 
@@ -97,7 +149,10 @@
 
     {#each event.notAttendees as notAttendee}
       <span class="contains-avatar">
-        <AvatarRound dim=true feed={notAttendee} on:avatarClick={avatarClick} />
+        <AvatarRound
+          dim="true"
+          feed={notAttendee}
+          on:avatarClick={avatarClick} />
       </span>
     {:else}
       <p>This gathering has no people not attending it yet</p>
@@ -120,6 +175,11 @@
             Attending
           </button>
         </div>
+      </div>
+      <div class="column col-6 text-right">
+        <button class="btn" disabled={!loadedAllData} on:click={exportToICS}>
+          Export as iCal
+        </button>
       </div>
     </div>
   </div>
