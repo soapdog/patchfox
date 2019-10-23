@@ -4,20 +4,33 @@
   const gathering = Scuttle(ssb.sbot);
   const ics = require("ics");
   const moment = require("moment");
+  const { timestamp } = require("../../core/components/parts/timestamp.js");
+  const pull = require("pull-stream");
+  const paramap = require("pull-paramap");
+  const toPull = require("pull-promise");
 
   export let msgid;
 
   let msg;
-  let person;
+  let name;
+  let feed;
   let event = false;
   let loadedAllData = false;
   let attending;
   let notAttending;
+  let image;
+
   ssb.get(msgid).then(data => {
     msg = data;
-    person = msg.author;
+    feed = msg.author;
+    name = feed;
 
-    ssb.avatar(msg.author).then(data => (person = data.name));
+    ssb.avatar(feed).then(data => {
+      if (data.image !== null) {
+        image = `http://localhost:8989/blobs/get/${data.image}`;
+      }
+      name = data.name;
+    });
   });
 
   gathering.get(msgid, (err, data) => {
@@ -63,48 +76,74 @@
     patchfox.go("contacts", "profile", { feed });
   };
 
-  const exportToICS = ev => {
-    let el = document.createElement("div");
-    el.innerHTML = ssb.markdown(event.description);
-    let obj = {
-      title: event.title,
-      description: el.innerText
-    };
-
-    if (event.location) {
-      obj.location = event.location;
-    }
-
-    obj.start = moment(event.startDateTime.epoch)
-      .format("YYYY-M-D-H-m")
-      .split("-");
-
-    obj.duration = { hours: 1 };
-
-    let { error, value } = ics.createEvent(obj);
-
-    if (error) {
-      throw `Can't generate iCal ${error}`;
+  const goProfile = ev => {
+    if (ev.ctrlKey) {
+      window.open(
+        `?pkg=contacs&view=profile&feed=${encodeURIComponent(feed)}#/profile`
+      );
     } else {
-      let blob = new Blob([value], { type: "text/calendar" });
-
-      const a = document.createElement("a");
-      a.style.display = "none";
-      document.body.appendChild(a);
-
-      // Set the HREF to a Blob representation of the data to be downloaded
-      a.href = window.URL.createObjectURL(blob);
-
-      // Use download attribute to set set desired file name
-      a.setAttribute("download", `${event.title}.ics`);
-
-      // Trigger the download by simulating click
-      a.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(a.href);
-      document.body.removeChild(a);
+      patchfox.go("contacts", "profile", { feed });
     }
+  };
+
+  const exportToICS = ev => {
+    pull(
+      pull.values(event.attendees),
+      paramap((attendee, cb) => {
+        ssb.avatar(attendee).then(a => cb(null, {name: a.name, rsvp: true}))
+      } ),
+      pull.collect((err, attendees) => {
+        if (err) {
+          console.log("err")
+          throw err;
+          return;
+        }
+        console.log("a", attendees)
+        let el = document.createElement("div");
+        el.innerHTML = ssb.markdown(event.description);
+        let obj = {
+          title: event.title,
+          description: el.innerText
+        };
+
+        if (event.location) {
+          obj.location = event.location;
+        }
+
+        obj.start = moment(event.startDateTime.epoch)
+          .format("YYYY-M-D-H-m")
+          .split("-");
+
+        obj.duration = { hours: 1 };
+        obj.organizer = { name: name };
+        obj.attendees = attendees;
+
+        let { error, value } = ics.createEvent(obj);
+
+        if (error) {
+          throw `Can't generate iCal ${error}`;
+        } else {
+          let blob = new Blob([value], { type: "text/calendar" });
+
+          const a = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+
+          // Set the HREF to a Blob representation of the data to be downloaded
+          a.href = window.URL.createObjectURL(blob);
+
+          // Use download attribute to set set desired file name
+          a.setAttribute("download", `${event.title}.ics`);
+
+          // Trigger the download by simulating click
+          a.click();
+
+          // Cleanup
+          window.URL.revokeObjectURL(a.href);
+          document.body.removeChild(a);
+        }
+      })
+    );
   };
 </script>
 
@@ -128,6 +167,19 @@
 
 {#if event}
   <div class="card-body">
+    <div class="tile tile-centered feed-display" on:click={goProfile}>
+      <div class="tile-icon">
+        <div class="example-tile-icon">
+          <img src={image} class="avatar avatar-lg" alt={name} />
+        </div>
+      </div>
+      <div class="tile-content">
+        <div class="tile-title">{name}</div>
+        <small class="tile-subtitle text-gray">
+          {timestamp(msg.timestamp)}
+        </small>
+      </div>
+    </div>
     <h1 class="title">{event.title}</h1>
     <h2 class="subtitle">{dateToNiceDate(event.startDateTime.epoch)}</h2>
     {#if event.image}
