@@ -1,6 +1,6 @@
 <script>
   const Scuttle = require("scuttle-gathering");
-  const AvatarChip = require("../../core/components/parts/AvatarChip.svelte");
+  const AvatarRound = require("../../core/components/parts/AvatarRound.svelte");
   const gathering = Scuttle(ssb.sbot);
 
   export let msgid;
@@ -22,7 +22,7 @@
       event = data;
       attending = event.isAttendee;
       notAttending = data.notAttendees.includes(ssb.sbot.id);
-      console.log("event",event)
+      console.log("event", event);
     }
   });
 
@@ -52,7 +52,7 @@
     });
   };
 
-   const avatarClick = ev => {
+  const avatarClick = ev => {
     let feed = ev.detail.feed;
     let name = ev.detail.name;
 
@@ -63,6 +63,14 @@
 <style>
   img.gathering-image {
     max-width: 100%;
+  }
+
+  span.contains-avatar {
+    padding: 2px;
+  }
+
+  .card-body {
+    padding-bottom: 15px;
   }
 </style>
 
@@ -78,16 +86,22 @@
     {/if}
     {@html ssb.markdown(event.description)}
     <h3 class="h3">Attending</h3>
-      {#each event.attendees as attendee}
-          <p><AvatarChip feed={attendee} on:avatarClick={avatarClick} /></p>
-      {:else}
-        <p>This gathering has no atteendees yet</p>
-      {/each}
-      {#each event.notAttendees as notAttendee}
-          <p><AvatarChip feed={notAttendee} on:avatarClick={avatarClick} /></p>
-      {:else}
-        <p>This gathering has no people not attending it yet</p>
-      {/each}
+    {#each event.attendees as attendee}
+      <span class="contains-avatar">
+        <AvatarRound feed={attendee} on:avatarClick={avatarClick} />
+      </span>
+    {:else}
+      <p>This gathering has no atteendees yet</p>
+    {/each}
+    <h3 class="h3">Not Attending</h3>
+
+    {#each event.notAttendees as notAttendee}
+      <span class="contains-avatar">
+        <AvatarRound dim=true feed={notAttendee} on:avatarClick={avatarClick} />
+      </span>
+    {:else}
+      <p>This gathering has no people not attending it yet</p>
+    {/each}
   </div>
   <div class="card-footer">
     <div class="columns col-gapless">
