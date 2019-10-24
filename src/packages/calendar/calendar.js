@@ -26,14 +26,6 @@ patchfox.package({
               pkg: "calendar",
               view: "timeline"
             }
-          },
-          {
-            label: "Export Events",
-            event: "package:go",
-            data: {
-              pkg: "calendar",
-              view: "export"
-            }
           }
         ]
       }

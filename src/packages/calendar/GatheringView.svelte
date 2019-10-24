@@ -39,7 +39,6 @@
       attending = event.isAttendee;
       notAttending = data.notAttendees.includes(ssb.sbot.id);
       loadedAllData = true;
-      console.log("event", event);
     }
   });
 
@@ -98,7 +97,6 @@
           throw err;
           return;
         }
-        console.log("a", attendees)
         let el = document.createElement("div");
         el.innerHTML = ssb.markdown(event.description);
         let obj = {

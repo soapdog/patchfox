@@ -62,7 +62,7 @@ class SSB {
           }
         }, (err, server) => {
           if (err) {
-            reject(err)
+            reject("can't connect to sbot")
           } else {
             sbot = server
             console.log("you are", server.id)
