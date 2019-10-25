@@ -12,6 +12,7 @@ patchfox.package({
     },
     {
       type: "about",
+      validator: msg => !msg.value.content.about.startsWith("%"),
       card: AboutCard
     }
   ],
