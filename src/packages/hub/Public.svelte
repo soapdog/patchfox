@@ -1,26 +1,28 @@
 <script>
   const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
-  const {onDestroy} = require("svelte");
+  const { onDestroy } = require("svelte");
 
   let msgs = false;
   let error = false;
   let dropdownActive = false;
   let promise;
 
-  export let lt = false
-  export let limit = false
+  export let lt = false;
+  export let limit = false;
 
   $: {
     document.title = `Patchfox - Public`;
 
-    let opts = {}
+    let opts = {};
     if (lt) {
       opts.lt = lt;
+      document.title = `Patchfox - Public - ${lt}`;
     }
 
     promise = ssb
       .public(opts)
       .then(ms => {
+        console.log("got msgs", ms);
         msgs = ms;
         window.scrollTo(0, 0);
       })

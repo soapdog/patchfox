@@ -1,7 +1,7 @@
 <script>
   const GenericMsg = require("./GenericMsg.svelte");
   const AvatarChip = require("../parts/AvatarChip.svelte");
-  const {timestamp} = require("../parts/timestamp.js");
+  const { timestamp } = require("../parts/timestamp.js");
   const { isMessageBlured } = require("../../platforms/ssb/abusePrevention.js");
   const _ = require("lodash");
 
@@ -14,23 +14,35 @@
   let dropdownActive = false;
   let privateMsgForYou = false;
 
-  let messageTypes = {
-    "*": GenericMsg
+  let messageTypes = [];
+
+  let packagesForMessageTypes = _.filter(
+    patchfox.packages,
+    p => p.messageTypes
+  );
+
+  const makeGenericValidatorForType = typeToBuildFor => {
+    return msg => {
+      let type;
+      if (typeof msg.value.content === "string") {
+        type = "private";
+      } else {
+        type = msg.value.content.type;
+      }
+      return type === typeToBuildFor;
+    };
   };
 
-  let packagesForMessageTypes = _.filter(patchfox.packages, p => p.messageTypes)
-
   packagesForMessageTypes.forEach(p => {
-     p.messageTypes.forEach(mt => {
-       let key = mt.type
-       let view = mt.card
-       messageTypes[key] = view
-     })
+    p.messageTypes.forEach(mt => {
+      let type = mt.type;
+      let view = mt.card;
+      let validator = mt.validator || makeGenericValidatorForType(type)
+      messageTypes.push({type, validator, view});
+    });
   });
- 
-  
 
-  let selectedRenderer;
+  let selectedRenderer = false;
 
   if (typeof msg.value.content === "string") {
     type = "private";
@@ -42,10 +54,15 @@
     privateMsgForYou = true;
   }
 
-  if (messageTypes.hasOwnProperty(type)) {
-    selectedRenderer = messageTypes[type];
-  } else {
-    selectedRenderer = messageTypes["*"];
+  for (let p of messageTypes) {
+    if (p.validator(msg)) {
+      selectedRenderer = p.view;
+      break;
+    }
+  }
+
+  if (!selectedRenderer) {
+    selectedRenderer = GenericMsg
   }
 
   let image = "images/icon.png";
@@ -84,9 +101,11 @@
 
   const goProfile = ev => {
     if (ev.ctrlKey) {
-      window.open(`?pkg=contacs&view=profile&feed=${encodeURIComponent(feed)}#/profile`);
+      window.open(
+        `?pkg=contacs&view=profile&feed=${encodeURIComponent(feed)}#/profile`
+      );
     } else {
-     patchfox.go("contacts","profile", { feed });
+      patchfox.go("contacts", "profile", { feed });
     }
   };
 </script>
@@ -122,7 +141,7 @@
   }
 </style>
 
-<div class="card m-2"  class:private={privateMsgForYou} class:blured>
+<div class="card m-2" class:private={privateMsgForYou} class:blured>
   <div class="card-header">
     <div class="float-left">
       <div class="card-title">
@@ -135,7 +154,7 @@
           <div class="tile-content">
             <div class="tile-title">{name}</div>
             <small class="tile-subtitle text-gray">
-               {timestamp(msg.value.timestamp)}
+              {timestamp(msg.value.timestamp)}
             </small>
           </div>
         </div>
@@ -148,9 +167,7 @@
       <span
         class="text-gray channel-display"
         on:click={() => {
-           patchfox.go("hub","channel", {
-             channel: msg.value.content.channel
-           })
+          patchfox.go('hub', 'channel', { channel: msg.value.content.channel });
         }}>
         {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
       </span>
