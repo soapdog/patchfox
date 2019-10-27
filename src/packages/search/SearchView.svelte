@@ -1,0 +1,49 @@
+<script>
+  const { tick } = require("svelte");
+  const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
+  let msgs = [];
+  let error = false;
+  export let query;
+  let promise;
+
+  $: {
+    document.title = `Patchfox - search: ${query}`;
+
+    console.log("searching for", query);
+
+    const gotResult = async msg => {
+      console.log("got a match", msg);
+      msgs.push(msg);
+      await tick();
+      return true;
+    };
+
+    promise = ssb
+      .searchWithCallback(query, gotResult)
+      .then(() => {})
+      .catch(n => {
+        console.dir(n);
+        error = n.message;
+      });
+  }
+</script>
+
+<div class="container">
+  <h4>
+    Search
+    <small class="label hide-sm">{query}</small>
+  </h4>
+</div>
+{#if error}
+  <div class="toast toast-error">
+    Couldn't find results for query {query} : {error}
+  </div>
+{/if}
+{#await promise}
+  <div class="loading loading-lg" />
+{:then}
+
+{/await}
+{#each msgs as msg (msg.key)}
+  <MessageRenderer {msg} />
+{/each}

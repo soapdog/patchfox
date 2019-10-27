@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2019.9.1",
+  "version": "2019.10.1",
   "devDependencies": {
     "augmented-ui": "^1.1.0",
     "browserify": "^16.5.0",
@@ -89,6 +89,7 @@
     "ssb-mentions": "^0.5.0",
     "ssb-ref": "^2.13.9",
     "ssb-sort": "^1.1.3",
+    "ssb-uri": "^1.0.1",
     "ssb-web-resolver": "^1.1.2",
     "stream-to-pull-stream": "^1.7.2"
   }

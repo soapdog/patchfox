@@ -248,15 +248,14 @@
             bind:value={content} />
           <div class="d-block m-2">
             <button class="btn btn-link" on:click={toggleContentWarning}>
-              CW
+              Add Content Warning
             </button>
             {#if showContentWarningField}
               <input
                 type="text"
                 size="50"
                 bind:value={contentWarning}
-                placeholder="Describe your content warning (leave empty to no
-                use it)" />
+                placeholder="Describe your content warning (leave empty to not use it)" />
             {/if}
           </div>
           <input type="file" on:input={attachFile} id="fileInput" />
