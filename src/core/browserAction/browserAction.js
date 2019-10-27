@@ -105,13 +105,6 @@ document.getElementById("go-to-mentions").addEventListener("click", (ev) => {
   goMentions();
 });
 
-
-document.getElementById("go-to-channels").addEventListener("click", (ev) => {
-  ev.stopPropagation();
-  ev.preventDefault();
-  goReleaseNotes();
-});
-
 keymage("p", goPublic);
 keymage("s", goSettings);
 keymage("c", goCompose);

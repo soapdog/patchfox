@@ -11,18 +11,20 @@
 
     console.log("searching for", query);
 
-    const gotResult = async msg => {
+    const gotResult = msg => {
       console.log("got a match", msg);
       msgs.push(msg);
-      await tick();
+      msgs = msgs
       return true;
     };
 
     promise = ssb
       .searchWithCallback(query, gotResult)
-      .then(() => {})
+      .then(() => {
+        console.log("finished searching", msgs)
+      })
       .catch(n => {
-        console.dir(n);
+        console.dir("error searching", n);
         error = n.message;
       });
   }

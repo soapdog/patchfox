@@ -2,7 +2,7 @@
  * SSB
  *
  * Things I don't currently like here:
- * - usage of getPref and abuse prevention. This should be pluggable?
+ * - usage of getPref and abuse prevention. This should be pluggable!
  */
 
 
@@ -294,9 +294,9 @@ class SSB {
           pull(
             sbot.createLogStream(opts),
             pull.filter(matchesQuery),
-            this.filterTypes(),
-            this.filterWithUserFilters(),
-            this.filterLimit(),
+            //this.filterTypes(),
+            //this.filterWithUserFilters(),
+            //this.filterLimit(),
             pull.drain((msg) => {
               if (!msg.sync) {
                 cb(msg)

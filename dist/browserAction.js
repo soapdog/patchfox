@@ -9,7 +9,7 @@ function goPublic() {
 
 function goCompose() {
   browser.tabs.create({
-    url: "/index.html?pkg=compose&view=post"
+    url: "/index.html?pkg=post&view=compose"
   });
   window.close();
 }
@@ -104,13 +104,6 @@ document.getElementById("go-to-mentions").addEventListener("click", (ev) => {
   ev.stopPropagation();
   ev.preventDefault();
   goMentions();
-});
-
-
-document.getElementById("go-to-channels").addEventListener("click", (ev) => {
-  ev.stopPropagation();
-  ev.preventDefault();
-  goReleaseNotes();
 });
 
 keymage("p", goPublic);
