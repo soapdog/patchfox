@@ -77,7 +77,7 @@
 
   let qs = queryString.parse(location.search);
   let pkg = qs.pkg || getPref("default-package", "hub");
-  let view = qs.view;
+  let view = qs.view ? qs.view : "view";
   delete qs.pkg;
   delete qs.view;
   console.log("go from URL");
@@ -85,9 +85,10 @@
 </script>
 
 <style>
-  .reduced-line-length {
+  .wm-current-package-container {
     max-width: 840px;
     margin: auto;
+    padding-top: 10px;
   }
 
   .wm-backdrop {
@@ -103,7 +104,7 @@
   {#each systemPackages as pkg}
     <svelte:component this={pkg.view} />
   {/each}
-  <div class="container reduced-line-length">
+  <div class="container wm-current-package-container">
     <div
       id="wm-current-package"
       class="cyberpunk-container"
