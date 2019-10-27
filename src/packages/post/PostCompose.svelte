@@ -7,11 +7,6 @@
   const pull = require("pull-stream");
   const fileReader = require("pull-file-reader");
 
-  let showPreview = false;
-  let msg = false;
-  let error = false;
-  let posting = false;
-
   export let root = false;
   export let branch = false;
   export let channel = "";
@@ -20,10 +15,13 @@
   export let fork = false;
 
   let fileOnTop = false;
-
   let sbot = ssb.sbot;
-  let ipfsDaemonRunning = false;
-  let datDaemonRunning = false;
+  let showContentWarningField = false;
+  let contentWarning = "";
+  let showPreview = false;
+  let msg = false;
+  let error = false;
+  let posting = false;
 
   document.title = `Patchfox - compose`;
 
@@ -38,6 +36,7 @@
   });
 
   const readFileAndAttach = files => {
+    try {
     error = false;
     msg = "";
 
@@ -77,6 +76,9 @@
         fileOnTop = false;
       })
     );
+    } catch(n) {
+      console.error("error, attaching", n)
+    }
   };
 
   const post = async ev => {
@@ -159,23 +161,8 @@
     readFileAndAttach(files);
   };
 
-  const readFileAndAttachIPFS = async files => {
-    error = false;
-    msg = "";
-
-    var ipfs = window.IpfsHttpClient("127.0.0.1", "5001");
-    const results = await ipfs.add(files[0]);
-
-    console.log("added via IPFS", results);
-    content += ` [${results[0].path}](ipfs://${results[0].hash})`;
-  };
-
-  let showContentWarningField = false;
-
   const toggleContentWarning = () =>
     (showContentWarningField = !showContentWarningField);
-
-  let contentWarning = "";
 </script>
 
 <style>
@@ -246,7 +233,7 @@
             on:dragleave|preventDefault|stopPropagation={dragLeave}
             class:file-on-top={fileOnTop}
             bind:value={content} />
-          <div class="d-block m-2">
+          <div class="d-block m-1">
             <button class="btn btn-link" on:click={toggleContentWarning}>
               Add Content Warning
             </button>
@@ -255,23 +242,12 @@
                 type="text"
                 size="50"
                 bind:value={contentWarning}
-                placeholder="Describe your content warning (leave empty to not use it)" />
+                placeholder="Describe your content warning (leave empty to not
+                use it)" />
             {/if}
           </div>
           <input type="file" on:input={attachFile} id="fileInput" />
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
-          {#if getPref('platform-ipfs-enabled', 'yes') === 'yes' && ipfsDaemonRunning}
-            <input type="file" on:input={attachFileIPFS} id="fileInputIPFS" />
-            <button class="btn" on:click={attachFileIPFSTrigger}>
-              Attach File using IPFS
-            </button>
-          {/if}
-          {#if getPref('platform-dat-enabled', 'yes') === 'yes' && datDaemonRunning}
-            <input type="file" on:input={attachFileDAT} id="fileInputDAT" />
-            <button class="btn" on:click={attachFileDATTrigger}>
-              Attach File using Dat
-            </button>
-          {/if}
           <button class="btn btn-primary float-right" on:click={preview}>
             Preview
           </button>

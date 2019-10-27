@@ -8,7 +8,7 @@ function goPublic() {
 
 function goCompose() {
   browser.tabs.create({
-    url: "/index.html?pkg=compose&view=post"
+    url: "/index.html?pkg=post&view=compose"
   });
   window.close();
 }
