@@ -4,7 +4,7 @@
 
   export let msg;
 
-  let expression;
+  let expression = false;
   let msgid = msg.value.content.about;
   let encodedid = encodeURIComponent(msgid);
   let label = msgid;
@@ -18,6 +18,14 @@
   if (msg.value.content.notAttendee && msg.value.content.notAttendee.link) {
     expression = "not attending";
     person = msg.value.content.notAttendee.link;
+  }
+
+  if (msg.value.content.image) {
+    expression = "changed the image for";
+  }
+
+  if (!expression) {
+    expression = "made changes to";
   }
 
   gathering.get(msgid, (err, data) => {

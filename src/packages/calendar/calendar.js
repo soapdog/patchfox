@@ -2,7 +2,7 @@ const GatheringCard = require("./GatheringCard.svelte")
 const GatheringView = require("./GatheringView.svelte")
 const TimelineView = require("./TimelineView.svelte");
 const ExportView = require("./ExportView.svelte");
-const GatheringRSVPCard = require("./GatheringRSVPCard.svelte");
+const GatheringActionCard = require("./GatheringActionCard.svelte");
 
 
 patchfox.package({
@@ -14,7 +14,7 @@ patchfox.package({
         },
         {
           type: "about",
-          card: GatheringRSVPCard,
+          card: GatheringActionCard,
           validator: msg => msg.value.content.about.startsWith("%")
       }
     ],
