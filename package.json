@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2019.10.1",
+  "version": "2019.11.1",
   "devDependencies": {
     "augmented-ui": "^1.1.0",
     "browserify": "^16.5.0",
