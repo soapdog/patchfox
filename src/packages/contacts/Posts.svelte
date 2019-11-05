@@ -44,22 +44,31 @@
   {:then data}
     {#each lastMsgs as msg (msg.key)}
       <MessageRenderer {msg} />
+    {:else}
+      <p>You don't have messages from this user in your database.</p>
     {/each}
-    <ul class="pagination">
+    {#if lastMsgs.length > 0}
+      <ul class="pagination">
 
-      <li class="page-item page-next">
-        <a
-          href="#/public"
-          on:click|stopPropagation|preventDefault={() => {
-            loadMoreMessages(lastMsgs[lastMsgs.length - 1].value.timestamp);
-          }}>
-          <div class="page-item-subtitle">Load More</div>
-        </a>
-      </li>
-    </ul>
+        <li class="page-item page-next">
+          <a
+            href="#/public"
+            on:click|stopPropagation|preventDefault={() => {
+              loadMoreMessages(lastMsgs[lastMsgs.length - 1].value.timestamp);
+            }}>
+            <div class="page-item-subtitle">Load More</div>
+          </a>
+        </li>
+      </ul>
+    {/if}
   {:catch n}
     <p>Error fetching messages: {n.message}.</p>
-    <p>Try <a on:click={()=> location.reload()} href="{location}">reloading the page.</a></p>
+    <p>
+      Try
+      <a on:click={() => location.reload()} href={location}>
+        reloading the page.
+      </a>
+    </p>
 
   {/await}
 
