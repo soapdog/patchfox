@@ -3,6 +3,10 @@
 
   export let active = false;
 
+  let currentTab = "All Packages";
+  let packageBeingHovered = false;
+  let description = "";
+
   let packageKeys = Object.keys(patchfox.packages).filter(pkg => {
     return patchfox.packages[pkg].hasOwnProperty("view");
   });
@@ -31,6 +35,30 @@
     return url;
   };
 
+  const filter = key => {
+    switch (key) {
+      case "All Packages":
+        packageKeys = patchfox.packages;
+        break;
+      case "Apps":
+        packageKeys = Object.keys(patchfox.packages).filter(pkg => {
+          return (
+            patchfox.packages[pkg].launchable &&
+            patchfox.packages[pkg].launchable === true
+          );
+        });
+    }
+  };
+
+  const descriptionForPackage = pkg => {
+    if (patchfox.packages[pkg].description) {
+      description = patchfox.packages[pkg].description;
+    } else {
+      description = "";
+    }
+    console.log("description", description);
+  };
+
   onDestroy(() => {
     keymage.popScope("launcher");
     removeHotKey();
@@ -48,6 +76,7 @@
     border-radius: 4px;
     padding: 0.5rem;
     text-align: center;
+    cursor: pointer;
   }
 
   .package-title {
@@ -56,16 +85,46 @@
 </style>
 
 <div class:active class="modal modal-lg">
-  <a href="#close" class="modal-overlay" aria-label="Close" />
+  <a
+    href="#close"
+    class="modal-overlay"
+    aria-label="Close"
+    on:click={() => (active = false)} />
   <div class="modal-container">
     <div class="modal-header">
-      <a href="#close" class="btn btn-clear float-right" aria-label="Close" />
-      <div class="modal-title h5">Packages</div>
+      <a
+        href="#close"
+        class="btn btn-clear float-right"
+        aria-label="Close"
+        on:click={() => (active = false)} />
+      <div class="modal-title h5">Launcher</div>
     </div>
     <div class="modal-body">
+      <ul class="tab tab-block">
+        <li class="tab-item">
+          <a
+            href="#"
+            class:active={currentTab == 'Apps'}
+            on:click={() => filter('Apps')}>
+            Apps
+          </a>
+        </li>
+        <li class="tab-item">
+          <a
+            href="#"
+            class:active={currentTab == 'All Packages'}
+            on:click={() => filter('All Packages')}>
+            All Packages
+          </a>
+        </li>
+      </ul>
       <div class="grid">
         {#each packageKeys as pkg}
-          <div class="package">
+          <div
+            class="package"
+            on:mouseover={() => {
+              descriptionForPackage(pkg);
+            }}>
             <div class="package-icon">
               <img
                 class="centered"
@@ -78,9 +137,17 @@
               </div>
             </div>
           </div>
+        {:else}
+          <p>No packages matching the {currentTab} filter</p>
         {/each}
       </div>
     </div>
-    <div class="modal-footer">...</div>
+    <div class="modal-footer">
+      <p>
+        {#if description !== ''}
+          &nbsp;{description}
+        {/if}
+      </p>
+    </div>
   </div>
 </div>
