@@ -14,14 +14,22 @@
     const gotResult = msg => {
       console.log("got a match", msg);
       msgs.push(msg);
-      msgs = msgs
+      msgs = msgs;
       return true;
     };
+
+    if (query[0] === "%") {
+      patchfox.reload("hub", "thread", { thread: query });
+    }
+
+    if (query[0] === "@") {
+      patchfox.reload("contacts", "profile", { feed: query });
+    }
 
     promise = ssb
       .searchWithCallback(query, gotResult)
       .then(() => {
-        console.log("finished searching", msgs)
+        console.log("finished searching", msgs);
       })
       .catch(n => {
         console.dir("error searching", n);
