@@ -84,8 +84,8 @@
       </label>
       <button
         class="btn btn-link float-right"
-        href="?pkg=compose&view=post&channel={channel}"
-        on:click|preventDefault={() => patchfox.go('compose', 'post', {
+        href="?pkg=post&view=compose&channel={channel}"
+        on:click|preventDefault={() => patchfox.go('post', 'compose', {
             channel
           })}>
         New Post
