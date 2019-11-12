@@ -4,6 +4,7 @@ const PubSub = require("pubsub-js");
 const events = require("./events.js");
 const menus = require("./menus.js");
 const _ = require("lodash");
+const queryString = require("query-string");
 
 let packages = {};
 
@@ -42,7 +43,13 @@ function systemPackages() {
 }
 
 function go(pkg, view, data) {
-  PubSub.publishSync("package:go", {pkg, view, data})
+  PubSub.publishSync("package:go", { pkg, view, data })
+}
+
+function reload(pkg, view, data) {
+  let state = { pkg, view, ...data };
+  let qs = queryString.stringify(state);
+  location = `/index.html?${qs}`
 }
 
 module.exports = {
@@ -51,6 +58,7 @@ module.exports = {
   packages,
   systemPackages,
   go,
+  reload,
   // menu related (aka navigation)
   ...menus,
   // event related
