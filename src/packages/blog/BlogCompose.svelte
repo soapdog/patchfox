@@ -104,6 +104,10 @@
         channel = channel.slice(1);
       }
 
+      if (channel.length == 0) {
+        channel = undefined;
+      }
+
       try {
         msg = await ssb.newBlogPost({
           content,
