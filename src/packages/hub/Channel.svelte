@@ -4,15 +4,15 @@
 
   let msgs = false;
   let error = false;
-  export let channel =  false;
-    export let lt = false;
+  export let channel = false;
+  export let lt = false;
 
   let subscribed = false;
   let promise;
 
   if (!channel) {
     console.log("can't navigate to unnamed channel, going back to public");
-    location = "?pkg=hub" // force reload.
+    location = "?pkg=hub"; // force reload.
   }
 
   ssb.channelSubscribed(channel).then(s => (subscribed = s));
@@ -21,9 +21,9 @@
   $: {
     document.title = `Patchfox - #${channel}`;
 
-    let opts = {}
+    let opts = {};
     if (lt) {
-      opts.lt = lt
+      opts.lt = lt;
     }
     promise = ssb
       .channel(channel, opts)
@@ -50,7 +50,7 @@
   const goNext = () => {
     let lt = msgs[msgs.length - 1].value.timestamp;
     msgs = [];
-    patchfox.go("hub","channel", {
+    patchfox.go("hub", "channel", {
       channel,
       lt
     });
@@ -85,7 +85,9 @@
       <button
         class="btn btn-link float-right"
         href="?pkg=compose&view=post&channel={channel}"
-        on:click|preventDefault={() => patchfox.go("compose","post", { channel })}>
+        on:click|preventDefault={() => patchfox.go('compose', 'post', {
+            channel
+          })}>
         New Post
       </button>
     </div>
