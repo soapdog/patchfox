@@ -26,6 +26,10 @@
       patchfox.reload("contacts", "profile", { feed: query });
     }
 
+     if (query[0] === "#") {
+      patchfox.reload("hub", "channel", { channel: query });
+    }
+
     promise = ssb
       .searchWithCallback(query, gotResult)
       .then(() => {
