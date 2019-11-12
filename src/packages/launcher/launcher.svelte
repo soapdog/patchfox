@@ -47,6 +47,8 @@
             patchfox.packages[pkg].launchable === true
           );
         });
+      default:
+        packageKeys = [];
     }
   };
 

@@ -86,7 +86,8 @@ const initializeOmniboxFeatures = () => {
     });
 
     browser.omnibox.onInputEntered.addListener((text, disposition) => {
-        let url = `/index.html?query=${text}#/search`;
+        let query = encodeURIComponent(text);
+        let url = `/index.html?query=${query}&pkg=search`;
 
         switch (disposition) {
             case "currentTab":
