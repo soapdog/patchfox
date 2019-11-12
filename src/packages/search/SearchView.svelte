@@ -27,7 +27,7 @@
     }
 
      if (query[0] === "#") {
-      patchfox.reload("hub", "channel", { channel: query });
+      patchfox.reload("hub", "channel", { channel: query.slice(1) });
     }
 
     promise = ssb
