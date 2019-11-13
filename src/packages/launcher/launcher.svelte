@@ -30,6 +30,11 @@
     return name;
   };
 
+  const descriptionForPackage = pkg => {
+    let description = patchfox.packages[pkg].description || false;
+    return description;
+  };
+
   const urlForPackage = pkg => {
     let url = `?pkg=${pkg}`;
     return url;
@@ -38,33 +43,28 @@
   const filter = key => {
     switch (key) {
       case "All Packages":
-        packageKeys = patchfox.packages;
+        packageKeys = Object.keys(patchfox.packages);
         break;
       case "Apps":
         packageKeys = Object.keys(patchfox.packages).filter(pkg => {
           return (
-            patchfox.packages[pkg].launchable &&
-            patchfox.packages[pkg].launchable === true
+            patchfox.packages[pkg].app &&
+            patchfox.packages[pkg].app === true
           );
         });
       default:
         packageKeys = [];
     }
-  };
-
-  const descriptionForPackage = pkg => {
-    if (patchfox.packages[pkg].description) {
-      description = patchfox.packages[pkg].description;
-    } else {
-      description = "";
-    }
-    console.log("description", description);
+    currentTab = key;
   };
 
   onDestroy(() => {
     keymage.popScope("launcher");
     removeHotKey();
+    patchfox.stopListening(token);
   });
+
+  const token = patchfox.listen("launcher:open", () => active = true);
 </script>
 
 <style>
@@ -86,7 +86,7 @@
   }
 </style>
 
-<div class:active class="modal modal-lg">
+<div class:active class="modal">
   <a
     href="#close"
     class="modal-overlay"
@@ -124,9 +124,8 @@
         {#each packageKeys as pkg}
           <div
             class="package"
-            on:mouseover={() => {
-              descriptionForPackage(pkg);
-            }}>
+            class:tooltip={descriptionForPackage(pkg)}
+            data-tooltip={descriptionForPackage(pkg)}>
             <div class="package-icon">
               <img
                 class="centered"
@@ -144,12 +143,6 @@
         {/each}
       </div>
     </div>
-    <div class="modal-footer">
-      <p>
-        {#if description !== ''}
-          &nbsp;{description}
-        {/if}
-      </p>
-    </div>
+    <div class="modal-footer" />
   </div>
 </div>
