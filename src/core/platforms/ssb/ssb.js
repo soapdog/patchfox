@@ -1201,4 +1201,5 @@ class SSB {
   }
 }
 
+global.ssb = new SSB()
 module.exports.SSB = SSB

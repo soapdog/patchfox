@@ -1,5 +1,4 @@
 const kernel = require("./kernel/kernel.js")
-const platforms = require("./platforms/platforms.js")
 const runtimes = require("./runtimes/runtimes.js")
 const queryString = require("query-string")
 
@@ -7,15 +6,13 @@ const queryString = require("query-string")
 if (window) {
   window.patchfox = {}
   Object.assign(window.patchfox, kernel)
-  Object.assign(window.patchfox, platforms)
   Object.assign(window.patchfox, runtimes)
 }
 
 const start = async () => {
   try {
     await kernel.loadConfiguration()
-    window.ssb = new platforms.SSB()
-    let server = await ssb.connect()
+    let server = await ssb.connect(kernel.savedKeys())
     window.ssb.feed = server.id
     window.ssb.sbot = server
     await ssb.loadCaches()
@@ -40,6 +37,5 @@ const start = async () => {
 }
 
 module.exports = {
-  start,
-  platforms
+  start
 }
