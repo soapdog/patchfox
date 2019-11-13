@@ -1,3 +1,7 @@
+const version = browser.runtime.getManifest().version;
+const releaseNotesUrl = browser.extension.getURL(`/docs/index.html#/release_notes/${version}`);
+
+
 patchfox.package({
   name: "helpMenu",
   menu: [
@@ -17,7 +21,7 @@ patchfox.package({
         {
           label: "Release Notes",
           event: "url:open",
-          data: "/docs/index.html#/release_notes/latest"
+          data: releaseNotesUrl
         }
       ]
     }
