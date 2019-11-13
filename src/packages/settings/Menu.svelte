@@ -47,7 +47,7 @@
       Filters
     </a>
   </li>
-  <li class="menu-item">
+  <!-- <li class="menu-item">
     <a
       href="#/settings"
       on:click={() => setView('contentWarnings')}
@@ -56,14 +56,14 @@
     </a>
   </li>
   <li class="divider" data-content="ADITIONAL PLATFORMS" />
-  <!-- <li class="menu-item">
+  <li class="menu-item">
     <a
       href="#/settings"
       on:click={() => setView('platformDAT')}
       class:active={currentView === 'platformDAT'}>
       DAT
     </a>
-  </li> -->
+  </li>
   <li class="menu-item">
     <a
       href="#/settings"
@@ -71,5 +71,5 @@
       class:active={currentView === 'platformIPFS'}>
       IPFS
     </a>
-  </li>
+  </li> -->
 </ul>

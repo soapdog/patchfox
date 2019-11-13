@@ -74,7 +74,7 @@
 <div class="container">
   <div class="columns">
     {#each currentFilters as filter}
-      <div class="column col-6">
+      <div class="column col-12">
         <div class="card filter">
           <div class="card-header">
             <div class="card-title h5">{filter.action}</div>

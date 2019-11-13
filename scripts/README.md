@@ -1,0 +1,1 @@
+All files in here are related to developing patchfox itself and are not part of the codebase of the add-on.

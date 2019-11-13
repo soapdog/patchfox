@@ -21,7 +21,10 @@
   );
 
   const iconForPackage = pkg => {
-    let icon = patchfox.packages[pkg].icon || "/images/package.svg";
+    let icon = "/images/package.svg";
+    if (patchfox.packages[pkg].icon ) {
+      icon = `/packages/${pkg}/${patchfox.packages[pkg].icon}`
+    }
     return icon;
   };
 

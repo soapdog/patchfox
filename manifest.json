@@ -46,7 +46,6 @@
     }
   ],
   "omnibox": { "keyword" : "ssb" },
-  "devtools_page": "devtools/devtools-page.html",
   "permissions": [
     "http://localhost:8989/",
     "<all_urls>",
