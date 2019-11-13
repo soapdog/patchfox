@@ -9,5 +9,5 @@ move .\web-ext-artifacts ..\
 cd ..
 echo compressing source..
 call git archive -o source.zip HEAD
-call mv .\source.zip .\web-ext-artifacts
+move .\source.zip .\web-ext-artifacts
 echo done
