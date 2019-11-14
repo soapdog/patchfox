@@ -21,6 +21,14 @@ And build the add-on with:
 $ npm run build
 ```
 
+If you use:
+
+```
+$ npm run dev
+```
+
+It will build the add-on using sourcemaps which makes debugging easier but can't be submit to AMO because they limit bundles to 4mb.
+
 ## Running
 
 Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from the `dist/` folder from this repository.

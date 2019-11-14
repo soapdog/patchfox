@@ -1,3 +1,4 @@
+
 require("./intercept/intercept.js");
 require("./vote/vote.js");
 require("./pub/pub.js");
@@ -15,4 +16,5 @@ require("./calendar/calendar.js");
 require("./helpMenu/helpMenu.js");
 require("./githubIntegration/githubIntegration.js");
 require("./errorHandler/errorHandler.js");
+
 

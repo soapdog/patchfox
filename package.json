@@ -7,6 +7,7 @@
     "copyfiles": "^2.1.1",
     "cross-env": "^5.2.0",
     "drag-and-drop-files": "0.0.1",
+    "factor-bundle": "^2.5.0",
     "fs": "0.0.1-security",
     "fs-extra": "^8.1.0",
     "globby": "^10.0.1",
@@ -41,7 +42,11 @@
     "build:background": "browserify src/core/background/background.js -o dist/background.js",
     "build:addon": "browserify src/main.js -o dist/bundle.js",
     "build:platform-ssb": "browserify src/core/platforms/ssb/ssb.js -o dist/ssb.js",
+    "dev:background": "browserify -d src/core/background/background.js -o dist/background.js",
+    "dev:addon": "browserify -d src/main.js -o dist/bundle.js",
+    "dev:platform-ssb": "browserify -d src/core/platforms/ssb/ssb.js -o dist/ssb.js",
     "build": "run-s copy:* build:*",
+    "dev": "run-s copy:* dev:*",
     "clean-build": "run-s clean build"
   },
   "browserify": {

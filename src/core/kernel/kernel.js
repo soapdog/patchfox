@@ -42,6 +42,10 @@ function systemPackages() {
   return _.filter(patchfox.packages, p => p.system)
 }
 
+function appPackages() {
+  return _.filter(patchfox.packages, p => p.app)
+}
+
 function go(pkg, view, data) {
   PubSub.publishSync("package:go", { pkg, view, data })
 }
@@ -52,12 +56,20 @@ function reload(pkg, view, data) {
   location = `/index.html?${qs}`
 }
 
+function url(pkg, view, data) {
+  let state = { pkg, view, ...data };
+  let qs = queryString.stringify(state);
+  return `/index.html?${qs}`
+}
+
 module.exports = {
   // package related
   package,
   packages,
   systemPackages,
+  appPackages,
   go,
+  url,
   reload,
   // menu related (aka navigation)
   ...menus,

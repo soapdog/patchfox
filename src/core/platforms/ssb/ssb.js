@@ -6,8 +6,8 @@
  */
 
 
-const { getPref, savedKeys } = require("../../kernel/prefs.js")
-const { isMessageHidden } = require("./abusePrevention.js")
+// const { getPref } = require("../../kernel/prefs.js")
+// const { isMessageHidden } = require("./abusePrevention.js")
 
 const pull = require("pull-stream")
 const sort = require("ssb-sort")
@@ -20,6 +20,8 @@ const ssbAvatar = require("ssb-avatar")
 const manifest = require("./manifest")
 
 let sbot = false
+let getPref = () => false
+let isMessageHidden = () => false
 
 let avatarCache = {}
 
@@ -43,11 +45,19 @@ class SSB {
     console.log(`[SSB API] - ${pMsg}`, pVal)
   }
 
+  setGetPrefFunction(gp) {
+    getPref = gp
+  }
+
+  setIsMessageHiddenFunction(ish) {
+    isMessageHidden = ish
+  }
+
   connect(keys) {
     let port = 8989;
 
     if (!keys) {
-      keys = savedKeys()
+      throw "no keys passed to ssb.connect()"
     }
     return new Promise(function (resolve, reject) {
       if (sbot) {

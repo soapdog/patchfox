@@ -23,7 +23,7 @@
             });
             secret = JSON.parse(secret.join("\n"));
             remote = `ws://localhost:8989~shs:${secret.id.slice(
-                    0,
+                    1,
                     secret.id.indexOf("=") + 1
             )}`;
             updateUI({keys: secret, remote});

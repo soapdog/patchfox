@@ -1,6 +1,7 @@
 const kernel = require("./kernel/kernel.js")
 const runtimes = require("./runtimes/runtimes.js")
 const queryString = require("query-string")
+const { isMessageHidden } = require("./platforms/ssb/abusePrevention.js")
 
 
 if (window) {
@@ -12,9 +13,13 @@ if (window) {
 const start = async () => {
   try {
     await kernel.loadConfiguration()
+    // window.ssb.* comes from browserified ssb.js
+    // that exists only in the dist folder.
     let server = await ssb.connect(kernel.savedKeys())
     window.ssb.feed = server.id
     window.ssb.sbot = server
+    ssb.setGetPrefFunction(kernel.getPref)
+    ssb.setIsMessageHiddenFunction(isMessageHidden)
     await ssb.loadCaches()
     return server.id
   } catch (n) {
