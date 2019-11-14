@@ -1,9 +1,12 @@
 .DS_Store
 node_modules
 .idea
+.env
 web-ext-artifacts
 *.zip
 old-src
 
 \#*
 .vscode
+test/
+old/
