@@ -14,7 +14,7 @@
     window.scrollTo(0, 0);
     msgs = [];
     ssb
-      .mentions(ssb.feed, lt)
+      .mentions(ssb.feed, Number(lt))
       .then(ms => (msgs = ms))
       .catch(n =>
         patchfox.go("errorHandler", {
@@ -22,6 +22,12 @@
         })
       );
   }
+
+  
+  const urlForNext = () => {
+    let lt = msgs[msgs.length - 1].value.timestamp;
+    return patchfox.url("hub", "public", { lt });
+  };
 </script>
 
 <style>
@@ -54,7 +60,7 @@
     </li>
     <li class="page-item page-next">
       <a
-        href="#/public"
+        href="{urlForNext()}"
         on:click|stopPropagation|preventDefault={() => {
           let newLt = msgs[msgs.length - 1].timestamp;
           patchfox.go('hub', 'mentions', { lt: newLt });

@@ -15,7 +15,7 @@
 
     let opts = {};
     if (lt) {
-      opts.lt = lt;
+      opts.lt = Number(lt);
       document.title = `Patchfox - Public - ${lt}`;
     }
 
@@ -36,6 +36,12 @@
     msgs = false;
     patchfox.go("hub", "public", { lt });
   };
+
+  const urlForNext = () => {
+    let lt = msgs[msgs.length - 1].value.timestamp;
+    return patchfox.url("hub", "public", { lt });
+  };
+
   const goPrevious = () => {
     msgs = false;
     history.back();
@@ -73,7 +79,7 @@
         </a>
       </li>
       <li class="page-item page-next">
-        <a href="#/public" on:click|stopPropagation|preventDefault={goNext}>
+        <a href={urlForNext()} on:click|stopPropagation|preventDefault={goNext}>
           <div class="page-item-subtitle">Next</div>
         </a>
       </li>

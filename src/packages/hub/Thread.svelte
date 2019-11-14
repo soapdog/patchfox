@@ -4,27 +4,6 @@
   let error = false;
   export let thread;
 
-  window._SCHEME_HOOKS = {
-    messages: {
-      name: "messages",
-      description: "The messages loaded on the current thread",
-      minArguments: 0,
-      maxArguments: 0,
-      action: function() {
-        return msgs;
-      }
-    },
-    keys: {
-      name: "keys",
-      description: "A list with the keys of the loaded messages",
-      minArguments: 0,
-      maxArguments: 0,
-      action: function() {
-        return msgs.map(m => m.key);
-      }
-    }
-  };
-
   // todo: move back into using stores.
   $: {
     if (thread.startsWith("ssb:")) {
