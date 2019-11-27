@@ -53,7 +53,7 @@ class SSB {
     isMessageHidden = ish
   }
 
-  connect(keys) {
+  connect(keys, remote) {
     let port = 8989;
 
     if (!keys) {
@@ -65,7 +65,7 @@ class SSB {
       } else {
         ssbClient(keys, {
           manifest: manifest,
-          remote: `ws://localhost:${port}/~shs:${keys.public}`,
+          remote: remote || `ws://127.0.0.1:${port}/~shs:${keys.public}`,
           caps: {
             shs: "1KHLiKZvAvjbY1ziZEHMXawbCEIM6qwjCDm3VYRan/s=",
             sign: null
@@ -513,20 +513,20 @@ class SSB {
 
 
     function replaceImageLinks(match, id, offset, string) {
-      return "<a class=\"image-link\" target=\"_blank\" href=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+      return `<a class="image-link" target="_blank" href="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id);
     }
 
 
     function replaceImages(match, id, offset, string) {
-      return "<img class=\"is-image-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+      return `<img class="is-image-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id);
     }
 
     function replaceVideos(match, id, offset, string) {
-      return "<video controls class=\"is-video-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+      return `<video controls class="is-video-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id);
     }
 
     function replaceAudios(match, id, offset, string) {
-      return "<audio controls class=\"is-audio-from-blob\" src=\"http://localhost:8989/blobs/get/&" + encodeURIComponent(id);
+      return `<audio controls class="is-audio-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id);
     }
 
     let opts = {

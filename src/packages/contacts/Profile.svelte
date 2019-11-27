@@ -102,7 +102,7 @@
         <div class="container">
           <img
             class="img-responsive"
-            src="http://localhost:8989/blobs/get/{image}"
+            src="{patchfox.httpUrl("/blobs/get/" + image)}"
             alt={feed} />
         </div>
       </div>

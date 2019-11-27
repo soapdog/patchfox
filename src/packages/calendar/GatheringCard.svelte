@@ -61,7 +61,7 @@
     {#if event.image}
       <img
         class="gathering-image"
-        src="http://localhost:8989/blobs/get/{encodeURIComponent(event.image.link)}"
+        src="{patchfox.httpUrl("/blobs/get/" + encodeURIComponent(event.image.link))}"
         alt={event.image.name} />
     {/if}
     {@html ssb.markdown(event.description)}

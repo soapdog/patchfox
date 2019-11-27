@@ -19,9 +19,11 @@
       document.title = `Patchfox - Public - ${lt}`;
     }
 
+    console.time("public");
     promise = ssb
       .public(opts)
       .then(ms => {
+        console.timeEnd("public");
         console.log("got msgs", ms);
         msgs = ms;
         window.scrollTo(0, 0);

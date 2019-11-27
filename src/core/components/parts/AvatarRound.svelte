@@ -12,7 +12,7 @@
     
   ssb.avatar(feed).then(data => {
     if (data.image !== null) {
-      image = `http://localhost:8989/blobs/get/${data.image}`;
+      image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`;
     }
     name = data.name;
   });

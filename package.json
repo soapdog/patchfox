@@ -47,12 +47,14 @@
     "build:background": "browserify src/core/background/background.js -o dist/background.js",
     "build:addon": "browserify src/main.js -o dist/bundle.js",
     "build:platform-ssb": "browserify src/core/platforms/ssb/ssb.js -o dist/ssb.js",
+    "dev:browserAction": "browserify -d src/core/browserAction/browserAction.js -o dist/browserAction.js",
     "dev:background": "browserify -d src/core/background/background.js -o dist/background.js",
     "dev:addon": "browserify -d src/main.js -o dist/bundle.js",
     "dev:platform-ssb": "browserify -d src/core/platforms/ssb/ssb.js -o dist/ssb.js",
     "build": "run-s copy:* build:*",
     "dev": "run-s copy:* dev:*",
-    "clean-build": "run-s clean build"
+    "clean-build": "run-s clean build",
+    "clean-dev": "run-s clean dev"
   },
   "browserify": {
     "transform": [

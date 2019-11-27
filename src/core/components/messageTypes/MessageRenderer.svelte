@@ -37,8 +37,8 @@
     p.messageTypes.forEach(mt => {
       let type = mt.type;
       let view = mt.card;
-      let validator = mt.validator || makeGenericValidatorForType(type)
-      messageTypes.push({type, validator, view});
+      let validator = mt.validator || makeGenericValidatorForType(type);
+      messageTypes.push({ type, validator, view });
     });
   });
 
@@ -62,7 +62,7 @@
   }
 
   if (!selectedRenderer) {
-    selectedRenderer = GenericMsg
+    selectedRenderer = GenericMsg;
   }
 
   let image = "images/icon.png";
@@ -70,8 +70,9 @@
   let blured = isMessageBlured(msg);
 
   ssb.avatar(feed).then(data => {
+    // console.log(`avatar for ${feed}`, data);
     if (data.image !== null) {
-      image = `http://localhost:8989/blobs/get/${data.image}`;
+      image = patchfox.httpUrl(`/blobs/get/${data.image}`);
     }
     name = data.name;
   });

@@ -13,6 +13,7 @@ const loadConfiguration = async () => {
 
         if (data.hasOwnProperty("keys")) {
             savedData = data
+            return savedData
         } else {
             throw "Configuration is missing"
         }
@@ -51,10 +52,23 @@ const savedKeys = () => {
     return savedData.keys
 }
 
+const remote = () => {
+    return savedData.remote
+}
+
+const httpUrl = (url) => {
+    let remote = savedData.remote
+    let tildePos = remote.indexOf("~")
+    let colonPos = remote.indexOf(":")
+    return "http" + remote.slice(colonPos, tildePos) + url
+}
+
 module.exports = {
     loadConfiguration,
     setPref,
     getPref,
     setConnectionConfiguration,
-    savedKeys
+    savedKeys,
+    httpUrl,
+    remote
 }

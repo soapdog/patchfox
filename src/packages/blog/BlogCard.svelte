@@ -13,6 +13,7 @@
   let toastMsg = "";
   let post = summary;
   let hasContentWarning = content.contentWarning && content.contentWarning.length > 0;
+  let encodedThumbnail = encodeURIComponent(thumbnail) || false
 
   let liked = false;
 
@@ -86,7 +87,7 @@
 {#if thumbnail}
   <div class="card-image">
     <img
-      src="http://localhost:8989/blobs/get/{encodeURIComponent(thumbnail)}"
+      src="{ssb.httpUrl("/blobs/get/" + encodedThumbnail)}"
       class="img-responsive"
       alt={title} />
   </div>

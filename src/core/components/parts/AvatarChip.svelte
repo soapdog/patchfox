@@ -2,22 +2,21 @@
   const { createEventDispatcher } = require("svelte");
 
   export let feed;
-  
 
   let image = false;
   let name = feed;
 
   const dispatch = createEventDispatcher();
-    
+
   ssb.avatar(feed).then(data => {
     if (data.image !== null) {
-      image = `http://localhost:8989/blobs/get/${data.image}`;
+      image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`;
     }
     name = data.name;
   });
 
   const avatarClick = () => {
-    dispatch("avatarClick", {feed, name})
+    dispatch("avatarClick", { feed, name });
   };
 </script>
 
@@ -28,10 +27,18 @@
 </style>
 
 {#if image}
-  <div class="chip clickable" on:click={avatarClick}>
+  <a
+    href={patchfox.url('contacts', 'profile', { feed })}
+    class="chip clickable"
+    on:click|preventDefault|stopPropagation={avatarClick}>
     <img src={image} class="avatar avatar-sm" alt={name} />
     {name}
-  </div>
+  </a>
 {:else}
-  <span class="chip clickable" on:click={avatarClick}>{name}</span>
+  <a
+    href={patchfox.url('contacts', 'profile', { feed })}
+    class="chip clickable"
+    on:click|preventDefault|stopPropagation={avatarClick}>
+    {name}
+  </a>
 {/if}

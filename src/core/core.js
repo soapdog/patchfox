@@ -12,10 +12,10 @@ if (window) {
 
 const start = async () => {
   try {
-    await kernel.loadConfiguration()
+    let savedData = await kernel.loadConfiguration()
     // window.ssb.* comes from browserified ssb.js
     // that exists only in the dist folder.
-    let server = await ssb.connect(kernel.savedKeys())
+    let server = await ssb.connect(kernel.savedKeys(), savedData.remote)
     window.ssb.feed = server.id
     window.ssb.sbot = server
     ssb.setGetPrefFunction(kernel.getPref)
