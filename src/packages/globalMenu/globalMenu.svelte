@@ -63,7 +63,7 @@
                 <li class="divider" data-content={menu.label} />
               {/if}
               {#each menu.items as item}
-                <li class="menu-item">
+                <li class="menu-item text-left">
                   {#if item.event === 'package:go'}
                     <a
                       href="?{menuItemToURL(item.data)}"
