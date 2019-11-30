@@ -12,7 +12,7 @@ patchfox.package({
     },
     {
       type: "about",
-      validator: msg => !msg.value.content.about.startsWith("%"),
+      validator: msg => msg.value.content && msg.value.content.about && !msg.value.content.about.startsWith("%"),
       card: AboutCard
     }
   ],
@@ -25,6 +25,39 @@ patchfox.package({
         data: {
           pkg: "contacts",
           view: "profile"
+        }
+      },
+      {
+        label: "Your Friends",
+        event: "package:go",
+        data: {
+          pkg: "contacts",
+          view: "profile",
+          data: {
+            currentSubView: "friends"
+          }
+        }
+      },
+      {
+        label: "Who You Follow",
+        event: "package:go",
+        data: {
+          pkg: "contacts",
+          view: "profile",
+          data: {
+            currentSubView: "following"
+          }
+        }
+      },
+      {
+        label: "Your Followers",
+        event: "package:go",
+        data: {
+          pkg: "contacts",
+          view: "profile",
+          data: {
+            currentSubView: "followers"
+          }
         }
       }
     ]
