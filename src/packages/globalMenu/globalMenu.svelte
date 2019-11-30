@@ -20,7 +20,6 @@
     patchfox.go("search", "query", { query });
   };
 
-  
   const openSidebar = async ev => {
     let loc = window.location.href;
     browser.sidebarAction.setPanel({ panel: loc });
@@ -32,7 +31,6 @@
     await browser.tabs.create({ url: loc });
     await browser.sidebarAction.close();
   };
-
 </script>
 
 <style>
@@ -50,7 +48,9 @@
 <div class="container">
   <header class="main-menu navbar hide-sm ">
     <section class="navbar-section">
-    <a href="#" class="btn btn-link" on:click={openSidebar}><i class="icon icon-arrow-left"></i></a>
+      <a href="#" class="btn btn-link" on:click={openSidebar}>
+        <i class="icon icon-arrow-left" />
+      </a>
       {#each groupKeys as key}
         <div class="dropdown">
           <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
@@ -94,16 +94,18 @@
       <!-- centered logo or brand -->
     </section>
     <section class="navbar-section">
-      <div class="input-group input-inline p-2">
-        <input
-          class="form-input"
-          type="text"
-          bind:value={query}
-          placeholder="search" />
-        <button class="btn btn-primary input-group-btn" on:click={search}>
-          Search
-        </button>
-      </div>
+      <form on:submit|preventDefault={search}>
+        <div class="input-group input-inline p-2">
+          <input
+            class="form-input"
+            type="text"
+            bind:value={query}
+            placeholder="search" />
+          <button class="btn btn-primary input-group-btn" on:click={search}>
+            Search
+          </button>
+        </div>
+      </form>
     </section>
   </header>
   <header class="main-menu show-sm">
