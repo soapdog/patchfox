@@ -564,6 +564,26 @@ class SSB {
     }
   }
 
+  setProfileMetadata(data) {
+    return new Promise((resolve, reject) => {
+      let msgToPost = { type: "about", about: sbot.id }
+
+      Object.assign(msgToPost, data)
+
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      } else {
+        reject("There is no sbot connection")
+      }
+    })
+  }
+
   newPost(data) {
     return new Promise((resolve, reject) => {
       let msgToPost = { type: "post", text: data.text }

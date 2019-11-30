@@ -3,29 +3,33 @@
   const Following = require("./Following.svelte");
   const Followers = require("./Followers.svelte");
   const Friends = require("./Friends.svelte");
+  const Editor = require("./ProfileEditor.svelte");
+
+  export let feed = ssb.feed;
 
   let profile = false;
-
   let description = false;
   let following = false;
   let blocking = false;
   let image;
-  export let feed = ssb.feed;
   let lastAbout;
   let avatarPromise;
   let aboutPromise;
+
   let subViews = {
     posts: Posts,
     following: Following,
     followers: Followers,
     friends: Friends
   };
+  
   let currentSubView = "posts";
 
   let name = feed;
   let followersCount = false;
   let followingCount = false;
   let friendsCount = false;
+  let showEditor = false;
 
   document.title = `Patchfox - Feed: ${feed}`;
 
@@ -86,6 +90,10 @@
       friendsCount = friends;
     }
   };
+
+  const toggleEditor = () => {
+    showEditor = !showEditor;
+  };
 </script>
 
 <style>
@@ -96,55 +104,70 @@
   {#await aboutPromise && avatarPromise}
     <div class="loading loading-lg" />
   {:then}
-    <div class="columns">
+    {#if showEditor}
+      <Editor
+        {feed}
+        {name}
+        {description}
+        {image}
+        on:cancelEdit={() => (showEditor = false)} />
+    {:else}
+      <div class="columns">
 
-      <div class="column col-6">
-        <div class="container">
-          <img
-            class="img-responsive"
-            src="{patchfox.httpUrl("/blobs/get/" + image)}"
-            alt={feed} />
+        <div class="column col-6">
+          <div class="container">
+            <img
+              class="img-responsive"
+              src={patchfox.httpUrl('/blobs/get/' + image)}
+              alt={feed} />
+          </div>
+        </div>
+        <div class="column col-6">
+          {#if feed === ssb.feed}
+            <span class="chip">❤ Thats You ❤</span>
+            {#await aboutPromise then }
+              <span class="c-hand" on:click={toggleEditor}>
+                <i class="icon icon-edit" />
+                Edit your profile
+              </span>
+            {/await}
+          {/if}
+          <h1>{name}</h1>
+          <span class="chip">{feed}</span>
+          {#if feed !== ssb.feed}
+            <div class="container">
+              <div class="divider" />
+              <div class="form-group">
+                <label class="form-switch form-inline">
+                  <input
+                    type="checkbox"
+                    on:change={followingChanged}
+                    bind:checked={following} />
+                  <i class="form-icon" />
+                  following
+                </label>
+                <label class="form-switch form-inline">
+                  <input
+                    type="checkbox"
+                    on:change={blockingChanged}
+                    bind:checked={blocking} />
+                  <i class="form-icon" />
+                  blocking
+                </label>
+              </div>
+              <div class="divider" />
+            </div>
+          {/if}
+          {#await aboutPromise}
+            <div class="loading" />
+          {:then}
+            <p>
+              {@html ssb.markdown(description)}
+            </p>
+          {/await}
         </div>
       </div>
-      <div class="column col-6">
-        {#if feed === ssb.feed}
-          <span class="chip">❤ Thats You ❤</span>
-        {/if}
-        <h1>{name}</h1>
-        <span class="chip">{feed}</span>
-        {#if feed !== ssb.feed}
-          <div class="container">
-            <div class="divider" />
-            <div class="form-group">
-              <label class="form-switch form-inline">
-                <input
-                  type="checkbox"
-                  on:change={followingChanged}
-                  bind:checked={following} />
-                <i class="form-icon" />
-                following
-              </label>
-              <label class="form-switch form-inline">
-                <input
-                  type="checkbox"
-                  on:change={blockingChanged}
-                  bind:checked={blocking} />
-                <i class="form-icon" />
-                blocking
-              </label>
-            </div>
-            <div class="divider" />
-          </div>
-        {/if}
-        {#await aboutPromise}
-          <div class="loading" />
-        {:then}
-          <p>
-            {@html ssb.markdown(description)}
-          </p>
-        {/await}
-      </div>
-    </div>
+    {/if}
     <br />
     <ul class="tab tab-block">
       <li class="tab-item" class:active={currentSubView === 'posts'}>
