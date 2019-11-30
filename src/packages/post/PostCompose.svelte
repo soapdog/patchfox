@@ -89,11 +89,11 @@
       saveToURL();
       posting = true;
 
-      if (channel.length > 0 && channel.startsWith("#")) {
+      if (channel && channel.length > 0 && channel.startsWith("#")) {
         channel = channel.slice(1);
       }
 
-      if (channel.length == 0) {
+      if (channel && channel.length == 0) {
         channel = undefined;
       }
 
