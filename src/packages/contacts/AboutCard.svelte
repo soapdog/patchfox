@@ -17,9 +17,9 @@
   }
 
   let image = msg.value.content.image
-    ? `http://localhost:8989/blobs/get/${encodeURIComponent(
-        msg.value.content.image
-      )}`
+    ? patchfox.httpUrl(`/blobs/get/${encodeURIComponent(
+        msg.value.content.image.link
+      )}`)
     : false;
 
   if (msg.value.content.description) {
