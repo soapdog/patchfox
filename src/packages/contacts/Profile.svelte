@@ -23,7 +23,7 @@
     friends: Friends
   };
   
-  let currentSubView = "posts";
+  export let currentSubView = "posts";
 
   let name = feed;
   let followersCount = false;
