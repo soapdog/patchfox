@@ -18,9 +18,10 @@ patchfox.package({
   ],
   menu: {
     group: "Contacts",
+    label: "You",
     items: [
       {
-        label: "Your Profile",
+        label: "Profile",
         event: "package:go",
         data: {
           pkg: "contacts",
@@ -28,7 +29,7 @@ patchfox.package({
         }
       },
       {
-        label: "Your Friends",
+        label: "Friends",
         event: "package:go",
         data: {
           pkg: "contacts",
@@ -39,7 +40,7 @@ patchfox.package({
         }
       },
       {
-        label: "Who You Follow",
+        label: "Following",
         event: "package:go",
         data: {
           pkg: "contacts",
@@ -50,7 +51,7 @@ patchfox.package({
         }
       },
       {
-        label: "Your Followers",
+        label: "Followers",
         event: "package:go",
         data: {
           pkg: "contacts",

@@ -15,14 +15,17 @@
   });
 
   const goPackage = ({ pkg, view, data }) => {
-    currentView = false;
-    args = {};
-    // four cases
     try {
       let packageToOpen = patchfox.packages[pkg];
       let viewToOpen = view ? packageToOpen[view] : packageToOpen.view;
-      let eventToSend = view ? `package:activate:${pkg}:${view}` : `package:activate:${pkg}:view`;
+      let eventToSend = view
+        ? `package:activate:${pkg}:${view}`
+        : `package:activate:${pkg}:view`;
 
+      currentView = false;
+      args = {};
+
+      // normal package
       if (packageToOpen && viewToOpen) {
         args = data;
         currentPackage = packageToOpen;
@@ -33,10 +36,9 @@
         return true;
       }
     } catch (e) {
-      throw `Can't go to package ${pkg} and view ${view}`
+      throw `Can't go to package ${pkg} and view ${view}`;
       return false;
     }
-
   };
 
   const popState = ev => {
@@ -69,7 +71,7 @@
     if (typeof data === "undefined") {
       data = {};
     }
-  
+
     let state = { pkg, view, ...data };
     let qs = queryString.stringify(state);
     history.pushState({ pkg, view, data }, "", `/index.html?${qs}`);
@@ -91,6 +93,11 @@
     padding-top: 10px;
   }
 
+   .wm-current-app-container {
+    margin: auto;
+    padding-top: 60px;
+  }
+
   .wm-backdrop {
     width: 100%;
     height: 100%;
@@ -104,15 +111,20 @@
   {#each systemPackages as pkg}
     <svelte:component this={pkg.view} />
   {/each}
-  <div class="container wm-current-package-container">
-    <div
-      id="wm-current-package"
-      class="cyberpunk-container"
-      augmented-ui="tr-clip-x br-clip-x exe">
-      {#if currentView}
-        <svelte:component this={currentView} {...args} />
-      {/if}
+  {#if currentPackage.app}
+    <div class="container wm-current-app-container">
+      <svelte:component this={currentView} {...args} />
     </div>
-
-  </div>
+  {:else}
+    <div class="container wm-current-package-container">
+      <div
+        id="wm-current-package"
+        class="cyberpunk-container"
+        augmented-ui="tr-clip-x br-clip-x exe">
+        {#if currentView}
+          <svelte:component this={currentView} {...args} />
+        {/if}
+      </div>
+    </div>
+  {/if}
 </div>

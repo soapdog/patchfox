@@ -4,7 +4,7 @@ require("./vote/vote.js");
 require("./pub/pub.js");
 require("./private/private.js");
 
-// require("./launcher/launcher.js");
+require("./launcher/launcher.js");
 require("./globalMenu/globalMenu.js");
 require("./search/search.js");
 require("./system/system.js");
@@ -18,5 +18,9 @@ require("./helpMenu/helpMenu.js");
 require("./githubIntegration/githubIntegration.js");
 require("./sourcehutIntegration/sourcehutIntegration.js");
 require("./errorHandler/errorHandler.js");
+require("./zine/zine.js");
+require("./scheme/scheme.js");
+require("./journal/journal.js");
+
 
 

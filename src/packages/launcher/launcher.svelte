@@ -3,13 +3,11 @@
 
   export let active = false;
 
-  let currentTab = "All Packages";
+  export let subView = "Apps";
   let packageBeingHovered = false;
   let description = "";
 
-  let packageKeys = Object.keys(patchfox.packages).filter(pkg => {
-    return patchfox.packages[pkg].hasOwnProperty("view");
-  });
+  let packageKeys = [];
 
   let removeHotKey = keymage(
     "ctrl-m",
@@ -22,8 +20,8 @@
 
   const iconForPackage = pkg => {
     let icon = "/images/package.svg";
-    if (patchfox.packages[pkg].icon ) {
-      icon = `/packages/${pkg}/${patchfox.packages[pkg].icon}`
+    if (patchfox.packages[pkg].icon) {
+      icon = `/packages/${pkg}/${patchfox.packages[pkg].icon}`;
     }
     return icon;
   };
@@ -51,14 +49,15 @@
       case "Apps":
         packageKeys = Object.keys(patchfox.packages).filter(pkg => {
           return (
-            patchfox.packages[pkg].app &&
-            patchfox.packages[pkg].app === true
+            patchfox.packages[pkg].app && patchfox.packages[pkg].app === true
           );
         });
+        console.log("apps", packageKeys);
+        break;
       default:
         packageKeys = [];
     }
-    currentTab = key;
+    subView = key;
   };
 
   onDestroy(() => {
@@ -67,7 +66,8 @@
     patchfox.stopListening(token);
   });
 
-  const token = patchfox.listen("launcher:open", () => active = true);
+  const token = patchfox.listen("launcher:open", () => (active = true));
+  filter(subView);
 </script>
 
 <style>
@@ -86,6 +86,10 @@
 
   .package-title {
     text-transform: capitalize;
+  }
+
+  .package-icon img {
+    width: 42px;
   }
 </style>
 
@@ -109,7 +113,7 @@
         <li class="tab-item">
           <a
             href="#"
-            class:active={currentTab == 'Apps'}
+            class:active={subView == 'Apps'}
             on:click={() => filter('Apps')}>
             Apps
           </a>
@@ -117,7 +121,7 @@
         <li class="tab-item">
           <a
             href="#"
-            class:active={currentTab == 'All Packages'}
+            class:active={subView == 'All Packages'}
             on:click={() => filter('All Packages')}>
             All Packages
           </a>
@@ -126,9 +130,13 @@
       <div class="grid">
         {#each packageKeys as pkg}
           <div
-            class="package"
+            class="package c-hand"
             class:tooltip={descriptionForPackage(pkg)}
-            data-tooltip={descriptionForPackage(pkg)}>
+            data-tooltip={descriptionForPackage(pkg)}
+            on:click={() => {
+              active = false;
+              patchfox.go(pkg)
+            }}>
             <div class="package-icon">
               <img
                 class="centered"
@@ -142,7 +150,7 @@
             </div>
           </div>
         {:else}
-          <p>No packages matching the {currentTab} filter</p>
+          <p>No packages matching the {subView} filter</p>
         {/each}
       </div>
     </div>
