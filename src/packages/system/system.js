@@ -6,6 +6,7 @@ patchfox.package({
     menu: [
         {
             group: "Patchfox",
+            label: "System",
             items: [
                 {
                     label: "Peer List",
