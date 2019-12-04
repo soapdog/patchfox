@@ -60,7 +60,7 @@
   const reply = ev => {
     let rootId = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
-    patchfox.go("compose","post", { root: rootId, branch: msg.key, channel });
+    patchfox.go("post","compose", { root: rootId, branch: msg.key, channel });
   };
 
   const goRoot = ev => {

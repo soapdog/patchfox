@@ -3,11 +3,11 @@
 
   const dispatch = createEventDispatcher();
 
-  export let currentView = "";
+  export let subView = "";
 
-  const setView = currentView => {
+  const setView = subView => {
     dispatch("message", {
-      currentView
+      subView
     });
   };
 </script>
@@ -18,7 +18,7 @@
     <a
       href="#/settings"
       on:click={() => setView('about')}
-      class:active={currentView === 'about'}>
+      class:active={subView === 'about'}>
       About Patchfox
     </a>
   </li>
@@ -26,7 +26,7 @@
     <a
       href="#/settings"
       on:click={() => setView('identityAndConnection')}
-      class:active={currentView === 'identityAndConnection'}>
+      class:active={subView === 'identityAndConnection'}>
       Identity &amp; Connection
     </a>
   </li>
@@ -34,7 +34,7 @@
     <a
       href="#/settings"
       on:click={() => setView('displayPreferences')}
-      class:active={currentView === 'displayPreferences'}>
+      class:active={subView === 'displayPreferences'}>
       Display Preferences
     </a>
   </li>
@@ -43,7 +43,7 @@
     <a
       href="#/settings"
       on:click={() => setView('filters')}
-      class:active={currentView === 'filters'}>
+      class:active={subView === 'filters'}>
       Filters
     </a>
   </li>
@@ -51,7 +51,7 @@
     <a
       href="#/settings"
       on:click={() => setView('contentWarnings')}
-      class:active={currentView === 'contentWarnings'}>
+      class:active={subView === 'contentWarnings'}>
       Content Warnings
     </a>
   </li>
@@ -60,7 +60,7 @@
     <a
       href="#/settings"
       on:click={() => setView('platformDAT')}
-      class:active={currentView === 'platformDAT'}>
+      class:active={subView === 'platformDAT'}>
       DAT
     </a>
   </li>
@@ -68,7 +68,7 @@
     <a
       href="#/settings"
       on:click={() => setView('platformIPFS')}
-      class:active={currentView === 'platformIPFS'}>
+      class:active={subView === 'platformIPFS'}>
       IPFS
     </a>
   </li> -->

@@ -124,17 +124,6 @@
         error = true;
         msg = `Couldn't post your message: ${n}`;
         window.scrollTo(0, 0);
-
-        if (msg.message == "stream is closed") {
-          msg += ". We lost connection to sbot. We'll try to restablish it...";
-
-          location.search = `?root=${encodeURIComponent(
-            root
-          )}&branch=${encodeURIComponent(branch)}&content=${encodeURIComponent(
-            content
-          )}&channel=${encodeURIComponent(channel)}`;
-          msg = `Sorry, couldn't reconnect to sbot:${err}. Try reloading the page. Your content has been saved to the URL`;
-        }
       }
     }
   };
@@ -147,9 +136,6 @@
     let data = {};
     if (content) data.content = content;
     if (channel) data.channel = channel;
-    if (root) data.root = root;
-    if (branch) data.branch = branch;
-    if (fork) data.fork = fork;
     if (summary) data.summary = summary;
     if (thumbnail) data.thumbnail = thumbnail;
 

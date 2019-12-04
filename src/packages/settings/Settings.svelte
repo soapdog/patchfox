@@ -18,10 +18,10 @@
     about: About
   };
 
-  let currentView = "identityAndConnection";
+  export let subView = "identityAndConnection";
 
   const handleMenuChange = ev => {
-    currentView = ev.detail.currentView;
+    subView = ev.detail.subView;
   };
 </script>
 
@@ -40,9 +40,9 @@
 
 <div class="columns">
   <div class="column col-auto">
-    <Menu {currentView} on:message={handleMenuChange} />
+    <Menu {subView} on:message={handleMenuChange} />
   </div>
   <div class="column">
-    <svelte:component this={views[currentView]} />
+    <svelte:component this={views[subView]} />
   </div>
 </div>
