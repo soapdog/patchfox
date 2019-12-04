@@ -21,11 +21,7 @@
       .filter(v => v.length !== 0);
 
     let filter = {};
-    filter.action = filterAction.length !== 0 ? filterAction : false;
-    filter.feed = filterFeed.length !== 0 ? filterFeed : false;
-    filter.channel = filterChannel.length !== 0 ? filterChannel : false;
-    filter.keywords = keywords;
-    filter.expires = filterExpiry.length !== 0 ? filterExpiry : false;
+   
 
     if (filter.channel && filter.channel.startsWith("#")) {
       filter.channel = filter.channel.slice(1);
@@ -103,7 +99,7 @@
                   </a>
                 </li>
               {/if}
-              {#if filter.keywords.length > 0}
+              {#if filter.keywords && filter.keywords.length > 0}
                 <i>
                   <li>Containing: {filter.keywords.join(', ')}</li>
                 </i>

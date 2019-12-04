@@ -1,5 +1,11 @@
 <script>
   const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
+  const {
+    isChannelFiltered,
+    addFilter,
+    deleteFilter
+  } = require("../../core/platforms/ssb/abusePrevention.js");
+
   const { onMount, onDestroy } = require("svelte");
 
   let msgs = false;
@@ -9,6 +15,7 @@
 
   let subscribed = false;
   let promise;
+  let hidden = isChannelFiltered(channel) || false;
 
   if (!channel) {
     console.log("can't navigate to unnamed channel, going back to public");
@@ -47,6 +54,22 @@
     }
   };
 
+  const hideChanged = ev => {
+    let v = ev.target.checked;
+    if (v) {
+      addFilter({
+        action: "hide",
+        channel
+      });
+    } else {
+      deleteFilter({
+        action: "hide",
+        channel
+      });
+    }
+    location.reload()
+  };
+
   const goNext = () => {
     let lt = msgs[msgs.length - 1].value.timestamp;
     msgs = [];
@@ -70,10 +93,15 @@
 
 <div class="container">
   <div class="columns">
-    <div class="column">
-      <h4>Channel: #{channel}</h4>
+    <div class="column col-3">
+      <h4>#{channel}</h4>
     </div>
     <div class="column">
+      <label class="form-switch float-right">
+        <input type="checkbox" on:change={hideChanged} bind:checked={hidden} />
+        <i class="form-icon" />
+        Hide messages from this channel
+      </label>
       <label class="form-switch float-right">
         <input
           type="checkbox"
@@ -96,24 +124,28 @@
 {#if error}
   <div class="toast toast-error">Error: {error}</div>
 {/if}
-{#await promise}
-  <div class="loading loading-lg" />
-{:then}
-  {#each msgs as msg (msg.key)}
-    <MessageRenderer {msg} />
-  {:else}
-    <p>No messages.</p>
-  {/each}
-  <ul class="pagination">
-    <li class="page-item page-previous">
-      <a href="#" on:click|stopPropagation|preventDefault={goPrevious}>
-        <div class="page-item-subtitle">Previous</div>
-      </a>
-    </li>
-    <li class="page-item page-next">
-      <a href="#" on:click|stopPropagation|preventDefault={goNext}>
-        <div class="page-item-subtitle">Next</div>
-      </a>
-    </li>
-  </ul>
-{/await}
+{#if isChannelFiltered(channel)}
+  <p>This channel is being filtered.</p>
+{:else}
+  {#await promise}
+    <div class="loading loading-lg" />
+  {:then}
+    {#each msgs as msg (msg.key)}
+      <MessageRenderer {msg} />
+    {:else}
+      <p>No messages.</p>
+    {/each}
+    <ul class="pagination">
+      <li class="page-item page-previous">
+        <a href="#" on:click|stopPropagation|preventDefault={goPrevious}>
+          <div class="page-item-subtitle">Previous</div>
+        </a>
+      </li>
+      <li class="page-item page-next">
+        <a href="#" on:click|stopPropagation|preventDefault={goNext}>
+          <div class="page-item-subtitle">Next</div>
+        </a>
+      </li>
+    </ul>
+  {/await}
+{/if}

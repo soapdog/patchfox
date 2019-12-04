@@ -1,9 +1,16 @@
 const { getPref, setPref } = require("../../kernel/prefs.js")
+const _ = require("lodash")
 
 const getFilters = () => getPref("filters", [])
 
 const addFilter = (filter) => {
     let currentFilters = getFilters()
+
+    filter.action = filter.action || "hide"
+    filter.feed = filter.feed || false
+    filter.channel = filter.channel || false
+    filter.keywords = filter.keywords || false;
+    filter.expires = filter.expires || false;
 
     currentFilters.push(filter)
 
@@ -13,13 +20,50 @@ const addFilter = (filter) => {
 const deleteFilter = (filter) => {
     let currentFilters = getFilters()
 
-    setPref("filters", currentFilters.filter(f => f !== filter))
+    setPref("filters", currentFilters.filter(f => {
+        let keys = Object.keys(filter)
+        let include = false
+        keys.forEach(k => {
+            if (filter[k] !== f[k]) include = true
+        })
+        return include
+    }))
 }
 
 const isMessageBlured = (msg) => {
     let currentFilters = getFilters().filter(f => f.action == "blur")
     if (currentFilters.length > 0) {
         let res = currentFilters.map((f) => isMessageFiltered(msg, f, "blur"))
+        return !res.some(r => r)
+    } else {
+        return false
+    }
+}
+
+const isChannelFiltered = (channel) => {
+    let currentFilters = getFilters().filter(f => f.action == "hide")
+    if (currentFilters.length > 0) {
+        let res = currentFilters.map((filter) => {
+            if (channel && channel.startsWith("#")) {
+                channel = channel.slice(1);
+            }
+
+            if (filter.expires) {
+                let expirationDate = new Date(filter.expires)
+                let today = new Date()
+        
+                if (today > expirationDate) {
+                    return true
+                }
+            }
+
+            if (channel == filter.channel) {
+                return false
+            }
+
+            return true
+        })
+
         return !res.some(r => r)
     } else {
         return false
@@ -85,6 +129,7 @@ module.exports = {
     isMessageBlured,
     isMessageFiltered,
     isMessageHidden,
+    isChannelFiltered,
     addFilter,
     deleteFilter
 }
