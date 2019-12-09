@@ -11,6 +11,7 @@ var manifest = {
   "links": "source",
   "relatedMessages": "async",
   "add": "async",
+  "status": "async",
   "publish": "async",
   "getAddress": "sync",
   "getLatest": "async",

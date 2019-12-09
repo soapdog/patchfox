@@ -1,4 +1,6 @@
 <script>
+  const prettyPrintJson = require("pretty-print-json");
+
   let sbot = ssb.sbot;
 
   let joining = false;
@@ -14,9 +16,9 @@
       joining = false;
       if (err) {
         error = true;
-        msg = JSON.stringify(err);
+        msg = prettyPrintJson.toHtml(err);
       } else {
-        msg = JSON.stringify(result);
+        msg = prettyPrintJson.toHtml(result);
       }
     });
   };
@@ -46,9 +48,7 @@
 {#if msg.length > 0}
   <div class="container">
     <div class="toast" class:toast-error={error}>
-      <code class="hide-overflow">
-        <pre>{msg}</pre>
-      </code>
+        <pre>{@html msg}</pre>
     </div>
   </div>
 {/if}

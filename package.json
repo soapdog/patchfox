@@ -77,6 +77,7 @@
   "dependencies": {
     "ics": "^2.18.0",
     "moment": "^2.24.0",
+    "pretty-print-json": "^0.1.4",
     "private-box": "^0.3.0",
     "pull-box-stream": "^1.0.13",
     "pull-cat": "^1.1.11",
