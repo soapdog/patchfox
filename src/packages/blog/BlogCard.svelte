@@ -87,7 +87,7 @@
 {#if thumbnail}
   <div class="card-image">
     <img
-      src="{ssb.httpUrl("/blobs/get/" + encodedThumbnail)}"
+      src="{patchfox.httpUrl("/blobs/get/" + encodedThumbnail)}"
       class="img-responsive"
       alt={title} />
   </div>
