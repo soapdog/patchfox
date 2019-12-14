@@ -597,7 +597,7 @@ class SSB {
       ]
 
       commonFields.forEach(f => {
-        if (typeof data[f] !== "undefined" && data[f] !== false) {
+        if (typeof data[f] !== "undefined" && data[f] !== false && data[f].length > 0) {
           msgToPost[f] = data[f]
         }
       })

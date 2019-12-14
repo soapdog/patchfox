@@ -7,5 +7,3 @@ console.log("starting background script")
 initializeContextMenus();
 initializeOmniboxFeatures();
 updateChecker();
-
-// Cache contacts
