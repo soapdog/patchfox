@@ -1,10 +1,10 @@
 <script>
   const Scuttle = require("scuttle-gathering");
-  const AvatarRound = require("../../core/components/parts/AvatarRound.svelte");
+  const AvatarRound = require("../../core/components/AvatarRound.svelte");
   const gathering = Scuttle(ssb.sbot);
   const ics = require("ics");
   const moment = require("moment");
-  const { timestamp } = require("../../core/components/parts/timestamp.js");
+  const { timestamp } = require("../../core/components/timestamp.js");
   const pull = require("pull-stream");
   const paramap = require("pull-paramap");
   const toPull = require("pull-promise");

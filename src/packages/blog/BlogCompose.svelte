@@ -3,7 +3,7 @@
   const drop = require("drag-and-drop-files");
   const { slide } = require("svelte/transition");
   const { getPref } = require("../../core/kernel/prefs.js");
-  const AvatarChip = require("../../core/components/parts/AvatarChip.svelte");
+  const AvatarChip = require("../../core/components/AvatarChip.svelte");
   const Preview = require("./BlogComposePreview.svelte");
   const pull = require("pull-stream");
   const fileReader = require("pull-file-reader");

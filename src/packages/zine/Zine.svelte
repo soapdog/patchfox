@@ -3,7 +3,7 @@
   const paramap = require("pull-paramap");
   const sort = require("pull-sort");
   const { onDestroy, tick } = require("svelte");
-  const { timestamp } = require("../../core/components/parts/timestamp.js");
+  const { timestamp } = require("../../core/components/timestamp.js");
 
   export let filter = "everyone";
   export let channel = false;

@@ -1,5 +1,5 @@
 <script>
-  const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
+  const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
   const { onDestroy } = require("svelte");
 
   let msgs = false;

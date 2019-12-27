@@ -1,5 +1,5 @@
 <script>
-  const MessageRenderer = require("../../core/components/messageTypes/MessageRenderer.svelte");
+  const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
   let msgs = false;
   let error = false;
   export let thread;

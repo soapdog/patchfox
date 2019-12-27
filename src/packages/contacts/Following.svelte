@@ -1,6 +1,6 @@
 <script>
-  const QueryRepeater = require("../../core/components/parts/QueryRepeater.svelte");
-  const AvatarChip = require("../../core/components/parts/AvatarChip.svelte");
+  const QueryRepeater = require("../../core/components/QueryRepeater.svelte");
+  const AvatarChip = require("../../core/components/AvatarChip.svelte");
   const pull = require("pull-stream");
   const Abortable = require("pull-abortable");
   const _ = require("lodash");
