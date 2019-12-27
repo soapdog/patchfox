@@ -1,7 +1,7 @@
 const m = require("mithril");
 const Stream = require("mithril/stream")
 const Menu = require("./menu.js");
-// const IdentityAndConnection = require("./IdentityAndConnection.js");
+const IdentityAndConnection = require("./identityAndConnection.js");
 // const DisplayPreferences = require("./DisplayPreferences.js");
 // const Filters = require("./Filters.js");
 // const ContentWarnings = require("./ContentWarnings.js");
@@ -10,7 +10,7 @@ const Menu = require("./menu.js");
 const About = require("./about.js");
 
 const views = {
-    // identityAndConnection: IdentityAndConnection,
+    identityAndConnection: IdentityAndConnection,
     // displayPreferences: DisplayPreferences,
     // filters: Filters,
     // contentWarnings: ContentWarnings,
@@ -23,10 +23,10 @@ require("./style.css")
 
 class Settings {
     constructor(vnode) {
-        let key = vnode.attrs.subView || "about"
+        let key = vnode.attrs.subView || "identityAndConnection"
         if (!views.hasOwnProperty(key)) {
             console.error(`no view ${key}`)
-            key = "about"
+            key = "identityAndConnection"
         }
         this.subView = Stream(key)
     }
