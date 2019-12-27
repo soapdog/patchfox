@@ -7,12 +7,15 @@
   let label = msgid;
   let person = msg.value.author;
 
-  ssb.blurbFromMsg(msgid, 100).then(blurb => {
-    label = blurb;
-  }).catch(n => {
-    console.log("error retrieving blurb for", msgid)
-    console.error(n)
-  });
+  ssb
+    .blurbFromMsg(msgid, 50)
+    .then(blurb => {
+      label = blurb;
+    })
+    .catch(n => {
+      console.log("error retrieving blurb for", msgid);
+      console.error(n);
+    });
 
   ssb.avatar(msg.value.author).then(data => (person = data.name));
 
@@ -20,8 +23,8 @@
     ev.stopPropagation();
     ev.preventDefault();
     if (typeof msgid === "undefined") {
-      throw "Can't go to undefined message id"
-      return false
+      throw "Can't go to undefined message id";
+      return false;
     }
     if (ev.ctrlKey) {
       window.open(`?pkg=hub&view=thread&thread=${encodeURIComponent(msgid)}`);
@@ -31,9 +34,7 @@
   };
 </script>
 
-<div class="card-body">
-   {person} {expression}
-  <a href="?pkg=hub&view=thread&thread={encodedid}" on:click={goThread}>
-     {label}
-  </a>
-</div>
+{expression}
+<a href="?pkg=hub&view=thread&thread={encodedid}" on:click={goThread}>
+  {label}
+</a>

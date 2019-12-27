@@ -1,6 +1,7 @@
 <script>
 export let blur = false;
 export let border = false;
+export let short = false;
 </script>
 
 <style>
@@ -25,10 +26,12 @@ export let border = false;
   <div class="card-header">
     <slot name="card-header" />
   </div>
+  {#if !short}
   <div class="card-body">
     <slot name="card-body" />
   </div>
   <div class="card-footer">
     <slot name="card-footer" />
   </div>
+  {/if}
 </div>

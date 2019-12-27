@@ -5,7 +5,8 @@ patchfox.package({
     messageTypes: [
         {
             type: "vote",
-            card: Vote
+            card: Vote,
+            short: true
         }
     ]
 })

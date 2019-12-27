@@ -1,19 +1,17 @@
 <script>
   const GenericMsg = require("./GenericMsg.svelte");
   const AvatarChip = require("./AvatarChip.svelte");
-  const Card = require("./ui/Card.svelte");
   const MessageDropdown = require("./MessageDropdown.svelte");
-  const AvatarTile = require("./AvatarTile.svelte");
-  const MessageRaw = require("./MessageRaw.svelte");
-
   const { timestamp } = require("./timestamp.js");
   const { isMessageBlured } = require("../platforms/ssb/abusePrevention.js");
   const _ = require("lodash");
 
   export let msg;
 
+  let type;
   let feed = msg.value.author;
   let showRaw = false;
+  let rawContent = JSON.stringify(msg, null, 2);
   let dropdownActive = false;
   let privateMsgForYou = false;
 
@@ -23,9 +21,6 @@
     patchfox.packages,
     p => p.messageTypes
   );
-
-  let type;
-  let shortCard = false;
 
   const makeGenericValidatorForType = typeToBuildFor => {
     return msg => {
@@ -43,9 +38,8 @@
     p.messageTypes.forEach(mt => {
       let type = mt.type;
       let view = mt.card;
-      let short = mt.short || false;
       let validator = mt.validator || makeGenericValidatorForType(type);
-      messageTypes.push({ type, validator, view, short });
+      messageTypes.push({ type, validator, view });
     });
   });
 
@@ -64,7 +58,6 @@
   for (let p of messageTypes) {
     if (p.validator(msg)) {
       selectedRenderer = p.view;
-      shortCard = p.short;
       break;
     }
   }
@@ -73,7 +66,17 @@
     selectedRenderer = GenericMsg;
   }
 
+  let image = "images/icon.png";
+  let name = feed;
   let blured = isMessageBlured(msg);
+
+  ssb.avatar(feed).then(data => {
+    // console.log(`avatar for ${feed}`, data);
+    if (data.image !== null) {
+      image = patchfox.httpUrl(`/blobs/get/${data.image}`);
+    }
+    name = data.name;
+  });
 
   const toggleRawMessage = () => {
     showRaw = !showRaw;
@@ -116,64 +119,64 @@
   }
 </style>
 
-{#if !shortCard}
-  <Card {blured} border={privateMsgForYou}>
-    <div slot="card-header">
-      <div class="float-left">
-        <div class="card-title">
-          <AvatarTile {feed} time={msg.value.timestamp} on:click={goProfile} />
+<div class="card m-2" class:private={privateMsgForYou} class:blured>
+  <div class="card-header">
+    <div class="float-left">
+      <div class="card-title">
+        <div class="tile tile-centered feed-display" on:click={goProfile}>
+          <div class="tile-icon">
+            <div class="example-tile-icon">
+              <img src={image} class="avatar avatar-lg" alt={name} />
+            </div>
+          </div>
+          <div class="tile-content">
+            <div class="tile-title">{name}</div>
+            <small class="tile-subtitle text-gray">
+              {timestamp(msg.value.timestamp)}
+            </small>
+          </div>
         </div>
       </div>
-      {#if privateMsgForYou}
-        <span class="label">PRIVATE</span>
-      {/if}
-      <div class="float-right">
-        <span
-          class="text-gray channel-display"
-          on:click={() => {
-            patchfox.go('hub', 'channel', {
-              channel: msg.value.content.channel
-            });
-          }}>
-          {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
-        </span>
-        <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
-      </div>
     </div>
-    <div slot="card-body">
-      {#if !showRaw}
-        <svelte:component this={selectedRenderer} {msg} {showRaw} />
-      {:else}
-        <MessageRaw {msg} />
-      {/if}
+    {#if privateMsgForYou}
+      <span class="label">PRIVATE</span>
+    {/if}
+    <div class="float-right">
+      <span
+        class="text-gray channel-display"
+        on:click={() => {
+          patchfox.go('hub', 'channel', { channel: msg.value.content.channel });
+        }}>
+        {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
+      </span>
+      <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
     </div>
-  </Card>
-{:else}
-  <Card {blured} border={privateMsgForYou} short={shortCard}>
-    <div slot="card-header">
-      <div class="float-left">
-        <div class="card-title">
-          <AvatarTile {feed} time={msg.value.timestamp} on:click={goProfile} />
+  </div>
+  {#if !showRaw}
+    <svelte:component this={selectedRenderer} {msg} {showRaw} />
+  {:else}
+    <div class="card-body">
+      <div class="columns">
+        <div class="column col-9">
+          <pre class="code">
+            <code>{rawContent}</code>
+          </pre>
+        </div>
+        <div class="column col-3">
+          <p>
+            This is a message of type
+            <em>{type}</em>
+            .
+          </p>
+          <p>
+            To learn more about it, go to
+            <a target="_blank" href="/docs/index.html#/message_types/{type}">
+              the documentation about messages with type {type}
+            </a>
+            .
+          </p>
         </div>
       </div>
-        <svelte:component this={selectedRenderer} {msg} {showRaw} />
-      <div class="float-right">
-        <span
-          class="text-gray channel-display"
-          on:click={() => {
-            patchfox.go('hub', 'channel', {
-              channel: msg.value.content.channel
-            });
-          }}>
-          {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
-        </span>
-        <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
-      </div>
     </div>
-    <div slot="card-body">
-      {#if showRaw}
-        <MessageRaw {msg} />
-      {/if}
-    </div>
-  </Card>
-{/if}
+  {/if}
+</div>
