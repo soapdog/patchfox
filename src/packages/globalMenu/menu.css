@@ -1,0 +1,9 @@
+.main-menu {
+    z-index: 999999;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding-left: 10;
+    padding-right: 10;
+  }

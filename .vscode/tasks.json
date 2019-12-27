@@ -6,6 +6,11 @@
         {
             "type": "npm",
             "script": "dev",
+            "group": "build"
+        },
+        {
+            "type": "npm",
+            "script": "dev:addon",
             "group": {
                 "kind": "build",
                 "isDefault": true
