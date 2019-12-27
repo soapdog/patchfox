@@ -154,22 +154,13 @@ class SSB {
             query: [
               {
                 $filter: {
-                  dest: id,
-                  value: {
-                    content: {
-
-                      root: id
-                    }
-                  }
+                  dest: id
                 }
               }
-            ]
+            ],
+            reverse: true
           }) : pull(
             sbot.links({ dest: id, values: true, rel: 'root' }),
-            pull.filter(function (msg) {
-              var c = msg && msg.value && msg.value.content
-              return c && c.type === 'post' && c.root === id
-            }),
             pull.unique('key')
           ),
           this.filterTypes(),
