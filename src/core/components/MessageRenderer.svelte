@@ -1,6 +1,7 @@
 <script>
   const GenericMsg = require("./GenericMsg.svelte");
   const AvatarChip = require("./AvatarChip.svelte");
+  const MessageDropdown = require("./MessageDropdown.svelte");
   const { timestamp } = require("./timestamp.js");
   const { isMessageBlured } = require("../platforms/ssb/abusePrevention.js");
   const _ = require("lodash");
@@ -82,24 +83,6 @@
     dropdownActive = false;
   };
 
-  const copyPermalink = () => {
-    navigator.clipboard
-      .writeText(`ssb:${msg.key}`)
-      .then(() => console.log("permalink copied"))
-      .catch(err => console.error("can't copy permalink", err));
-
-    dropdownActive = false;
-  };
-
-  const copyHash = () => {
-    navigator.clipboard
-      .writeText(`${msg.key}`)
-      .then(() => console.log("hash copied"))
-      .catch(err => console.error("can't copy hash", err));
-
-    dropdownActive = false;
-  };
-
   const goProfile = ev => {
     if (ev.ctrlKey) {
       window.open(
@@ -129,12 +112,6 @@
 
   .channel-display {
     cursor: pointer;
-  }
-
-  .menu-right {
-    right: 0px;
-    left: unset;
-    min-width: 300px;
   }
 
   .private {
@@ -172,49 +149,11 @@
         }}>
         {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
       </span>
-      <div class="dropdown">
-        <span
-          class="btn btn-link dropdown-toggle"
-          tabindex="0"
-          class:active={dropdownActive}
-          on:click={() => (dropdownActive = !dropdownActive)}>
-          <i class="icon icon-more-vert" />
-        </span>
-        <ul class="menu menu-right">
-          <li class="menu-item">
-
-            <a
-              href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.key)}"
-              target="_blank">
-              <i class="icon icon-share" />
-              Open in new tab
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="#" on:click|preventDefault={copyPermalink}>
-              <i class="icon icon-copy" />
-              Copy permalink to clipboard
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="#" on:click|preventDefault={copyHash}>
-              <i class="icon icon-copy" />
-              Copy message id to clipboard
-            </a>
-          </li>
-          <li class="divider" data-content="FOR THE CURIOUS" />
-          <li class="menu-item">
-            <a href="#" on:click|preventDefault={toggleRawMessage}>
-              <i class="icon icon-message" />
-              {#if !showRaw}Show raw message{:else}Close raw message{/if}
-            </a>
-          </li>
-        </ul>
-      </div>
+      <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
     </div>
   </div>
   {#if !showRaw}
-    <svelte:component this={selectedRenderer} {msg} />
+    <svelte:component this={selectedRenderer} {msg} {showRaw} />
   {:else}
     <div class="card-body">
       <div class="columns">
