@@ -26,9 +26,7 @@
   };
 </script>
 
-<div class="card-body">
-   {person} {verb}
+  {verb}
   <a href="?pkg=contacts&view=profile&feed={otherPersonFeed}" on:click={goProfile}>
      {otherPersonName}
   </a>
-</div>

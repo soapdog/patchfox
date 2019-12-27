@@ -14,7 +14,8 @@ patchfox.package({
   messageTypes: [
     {
       type: "channel",
-      card: ChannelCard
+      card: ChannelCard,
+      short: true
     }
   ],
   menu: {

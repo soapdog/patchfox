@@ -151,29 +151,35 @@
 {:else}
   <Card {blured} border={privateMsgForYou} short={shortCard}>
     <div slot="card-header">
-      <div class="float-left">
-        <div class="card-title">
+      <div class="columns">
+        <div class="column col-3">
           <AvatarTile {feed} time={msg.value.timestamp} on:click={goProfile} />
         </div>
+        <div class="column">
+          <div class="ml-2 mr-2">
+            <svelte:component this={selectedRenderer} {msg} {showRaw} />
+          </div>
+        </div>
+        {#if msg.value.content.channel}
+          <div class="column col-3 text-right">
+            <span
+              class="text-gray channel-display"
+              on:click={() => {
+                patchfox.go('hub', 'channel', {
+                  channel: msg.value.content.channel
+                });
+              }}>
+              #{msg.value.content.channel}
+            </span>
+            <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
+          </div>
+        {/if}
       </div>
-        <svelte:component this={selectedRenderer} {msg} {showRaw} />
-      <div class="float-right">
-        <span
-          class="text-gray channel-display"
-          on:click={() => {
-            patchfox.go('hub', 'channel', {
-              channel: msg.value.content.channel
-            });
-          }}>
-          {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
-        </span>
-        <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
+      <div slot="card-body">
+        {#if showRaw}
+          <MessageRaw {msg} />
+        {/if}
       </div>
-    </div>
-    <div slot="card-body">
-      {#if showRaw}
-        <MessageRaw {msg} />
-      {/if}
     </div>
   </Card>
 {/if}

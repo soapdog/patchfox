@@ -8,7 +8,8 @@ patchfox.package({
   messageTypes: [
     {
       type: "contact",
-      card: ContactCard
+      card: ContactCard,
+      short: true
     },
     {
       type: "about",
