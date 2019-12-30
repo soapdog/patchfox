@@ -1,2 +1,3 @@
-require("./globalMenu");
-require("./settings");
+require("./globalMenu")
+require("./settings")
+require("./system")

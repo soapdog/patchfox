@@ -11,6 +11,14 @@
         {
             "type": "npm",
             "script": "dev:addon",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true

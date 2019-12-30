@@ -68,7 +68,10 @@ class Menu {
                             m("li.menu-item.text-left",
                                 m("a.btn.btn-link", {
                                     href: `?${this.menuItemToURL(item.data)}`,
-                                    onclick: () => patchfox.triggerMenu(item)
+                                    onclick: (ev) => {
+                                        ev.preventDefault()
+                                        patchfox.triggerMenu(item)
+                                    }
                                 }, item.label)
                             ))
                     })
