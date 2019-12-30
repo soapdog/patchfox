@@ -65,7 +65,14 @@ class DisplayPreferences {
                         target: "_blank"
                     }, "Click here for more information about Message Types")
                 ]),
-                this.messageTypeInput("showTypeAbout", "<b>About</b> (aka people setting avatars and descriptions; gatherings)")
+                this.messageTypeInput("showTypeAbout", "<b>About</b> People setting avatars and descriptions; gatherings"),
+                this.messageTypeInput("showTypeBlog", "<b>Blog</b> long form posts."),
+                this.messageTypeInput("showTypeChannel", "<b>Channel</b> People subscribing/unsubscribing to channels."),
+                this.messageTypeInput("showTypeContact", "<b>Contact</b> People following/unfollowing each other."),
+                this.messageTypeInput("showTypePost", "<b>Post</b> Common content post, leave this on or it is not that fun."),
+                this.messageTypeInput("showTypePrivate", "<b>Pub</b> Pub server announcements."),
+                this.messageTypeInput("showTypePub", "<b>Private</b> Private messages"),
+                this.messageTypeInput("showTypeVote", "<b>Vote</b> People liking/digging stuff")
             ]),
         ]
     }
