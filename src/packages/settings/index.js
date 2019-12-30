@@ -14,6 +14,11 @@ patchfox.package({
                 data: { pkg: "settings" }
             },
             {
+                label: "Display Preferences",
+                event: "package:go",
+                data: { pkg: "settings", data: { subView: "displayPreferences" } }
+            },
+            {
                 label: "Filters",
                 event: "package:go",
                 data: { pkg: "settings", data: { subView: "filters" } }

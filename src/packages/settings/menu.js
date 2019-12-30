@@ -24,6 +24,8 @@ class Menu {
             this.menuItem("displayPreferences", "Display Preferences"),
             m("li.divider[data-content=ABUSE PREVENTION]"),
             this.menuItem("filters", "Filters"),
+            this.menuItem("contentWarnings", "Content Warnings"),
+
         ])
     }
 }

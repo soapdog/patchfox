@@ -2,18 +2,18 @@ const m = require("mithril");
 const Stream = require("mithril/stream")
 const Menu = require("./menu.js");
 const IdentityAndConnection = require("./identityAndConnection.js");
-// const DisplayPreferences = require("./DisplayPreferences.js");
+const DisplayPreferences = require("./displayPreferences.js");
 // const Filters = require("./Filters.js");
-// const ContentWarnings = require("./ContentWarnings.js");
+const ContentWarnings = require("./contentWarnings.js");
 // const PlatformDAT = require("./PlatformDAT.js");
 // const PlatformIPFS = require("./PlatformIPFS.js");
 const About = require("./about.js");
 
 const views = {
     identityAndConnection: IdentityAndConnection,
-    // displayPreferences: DisplayPreferences,
+    displayPreferences: DisplayPreferences,
     // filters: Filters,
-    // contentWarnings: ContentWarnings,
+    contentWarnings: ContentWarnings,
     // platformDAT: PlatformDAT,
     // platformIPFS: PlatformIPFS,
     about: About
