@@ -1,0 +1,23 @@
+.blured img {
+    filter: blur(20px) !important;
+}
+
+.blured {
+    border: solid 2px red;
+}
+
+.raw-content {
+    width: 50%;
+}
+
+.feed-display {
+    cursor: pointer;
+}
+
+.channel-display {
+    cursor: pointer;
+}
+
+.private {
+    border: solid 2px orange;
+}

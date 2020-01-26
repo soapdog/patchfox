@@ -85,7 +85,7 @@ class SSB {
 
     filterLimit() {
         let limit = getPref("limit", 10)
-        return pull.take(limit)
+        return pull.take(Number(limit))
     }
 
     filterWithUserFilters() {

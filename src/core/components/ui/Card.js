@@ -3,29 +3,11 @@ const m = require("mithril");
 class Card {
 
     view(vnode) {
-        let image = []
-
-        if (this.image) {
-            image.push(this.image)
-        }
-
-        let header = []
-
-        if (this.header) {
-            header.push(this.header)
-        }
-
-        let footer = []
-
-        if (this.footer) {
-            footer.push(this.footer)
-        }
-
         return m("div.card.m-2", [
-            ...image,
-            ...header,
-            vnode.children,
-            ...footer
+            vnode.attrs.image ? m(".card-image", vnode.attrs.image) : "",
+            vnode.attrs.header ? m(".card-header", vnode.attrs.header) : "",
+            m(".card-body", vnode.children),
+            vnode.attrs.footer ? m(".card-footer", vnode.attrs.footer) : ""
         ])
     }
 }

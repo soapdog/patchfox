@@ -1,5 +1,7 @@
 const Settings = require("./settings.js");
 
+// TODO: We're missing filters.
+
 patchfox.package({
     name: "settings",
     title: "Settings",

@@ -65,6 +65,7 @@ class DisplayPreferences {
                         target: "_blank"
                     }, "Click here for more information about Message Types")
                 ]),
+                // todo: this needs to be reworked to be dynamic.
                 this.messageTypeInput("showTypeAbout", "<b>About</b> People setting avatars and descriptions; gatherings"),
                 this.messageTypeInput("showTypeBlog", "<b>Blog</b> long form posts."),
                 this.messageTypeInput("showTypeChannel", "<b>Channel</b> People subscribing/unsubscribing to channels."),
