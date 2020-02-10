@@ -2,11 +2,11 @@
   "description": "Patchfox is a Secure Scuttlebutt client",
   "manifest_version": 2,
   "name": "Patchfox",
-  "version": "2019.12.1",
+  "version": "2020.2.1",
   "icons": {
-    "512": "images/patchfox_pixel_512.png",
-    "96": "images/patchfox_pixel_96.png",
-    "128": "images/patchfox_pixel_128.png"
+    "512": "assets/images/patchfox_pixel_512.png",
+    "96": "assets/images/patchfox_pixel_96.png",
+    "128": "assets/images/patchfox_pixel_128.png"
 
   },
   "applications": {
@@ -18,7 +18,7 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "background": {
     "scripts": [
-      "background.js"
+      "background/background.js"
     ]
   },
   "options_ui": {
@@ -27,9 +27,9 @@
   },
   "browser_action": {
     "default_icon": {
-      "32": "images/patchfox_32.png"
+      "32": "assets/images/patchfox_32.png"
     },
-    "default_popup": "browserAction.html"
+    "default_popup": "browserAction/browserAction.html"
   },
   "commands": {
     "_execute_browser_action": {
@@ -61,7 +61,7 @@
   ],
   "sidebar_action": {
     "default_icon": {
-      "32": "images/patchfox_32.png"
+      "32": "assets/images/patchfox_32.png"
     },
     "default_title": "Patchfox",
     "default_panel": "/index.html",

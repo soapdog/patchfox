@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Patchfox menu</title>
+  <link rel="stylesheet" href="../css/browser.css">
+  <script src="../assets/vendor/browser-polyfill.min.js"></script>
+  <script src="../assets/vendor/keymage.min.js"></script>
+  <style>
+    body {
+      width: 300px;
+    }
+
+    .logo {
+      width: 48px;
+    }
+
+    a.text {
+      text-decoration: none;
+      color: unset;
+    }
+
+    a.text:visited {
+      color: unset;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="panel-section panel-section-header">
+    <div class="icon-section-header"></div>
+    <div class="text-section-header">Patchfox</div>
+  </header>
+
+  <div class="panel-section panel-section-list">
+    <div class="panel-list-item" id="go-to-public">
+      <div class="icon"></div>
+      <div class="text">Public</div>
+      <div class="text-shortcut">P</div>
+    </div>
+
+    <div class="panel-list-item" id="go-to-profile">
+      <div class="icon"></div>
+      <div class="text">Your Profile</div>
+      <div class="text-shortcut">F</div>
+    </div>
+
+    <div class="panel-list-item" id="go-to-mentions">
+      <div class="icon"></div>
+      <div class="text">Mentions</div>
+      <div class="text-shortcut">M</div>
+    </div>
+
+    <div class="panel-section-separator"></div>
+
+    <div class="panel-list-item" id="go-to-release-notes">
+      <div class="icon"></div>
+      <div class="text">Release Notes</div>
+    </div>
+
+    <div class="panel-section-separator"></div>
+
+    <div class="panel-list-item" id="options-trigger">
+      <div class="icon"></div>
+      <div class="text">Settings</div>
+      <div class="text-shortcut">S</div>
+    </div>
+
+
+    <div class="panel-list-item" id="go-to-public">
+      <div class="icon"></div>
+      <a class="text" href="https://github.com/soapdog/patchfox" target="_blank">View on
+        Github</a>
+      <div class="text-shortcut"></div>
+    </div>
+    <div class="panel-list-item" id="go-to-public">
+      <div class="icon"></div>
+      <a class="text" href="https://github.com/soapdog/patchfox/issues" target="_blank">Issues</a>
+      <div class="text-shortcut"></div>
+    </div>
+  </div>
+
+  <footer class="panel-section panel-section-footer">
+    <button class="panel-section-footer-button" id="go-to-help">Help</button>
+    <div class="panel-section-footer-separator"></div>
+    <button class="panel-section-footer-button default" id="compose">New Post</button>
+  </footer>
+  <script src="browserAction.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "pull-stream": "./pull-stream.js?rev=5fa6478461",
+    "mithril": "./mithril.js?rev=0f46d66073",
+    "lodash": "./lodash.js?rev=050c900c28",
+    "csz": "./csz.js?rev=819114fe66"
+  }
+}
