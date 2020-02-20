@@ -11,8 +11,10 @@
 
  import wm from "./wm/wm.js"
  import dock from "./dock/dock.js"
+ import test from "./test.js"
 
  export const packages = {
    wm,
-   dock
+   dock,
+   test
  }

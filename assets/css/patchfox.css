@@ -1,16 +1,81 @@
+:root {
+  /* convenience */
+  --bg: var(--base00);
+  --bg-status: var(--base01);
+  --bg-selection: var(--base02);
+  --fg-alt: var(--base03);
+  --fg-status: var(--base04);
+  --fg: var(--base05);
+  --fg-light: var(--base06);
+  --bg-light: var(--base07);
+
+  /* line */
+
+  --peta: 32rem;
+  --tera: 16rem;
+  --giga: 8rem;
+  --mega: 4rem;
+  --kilo: 2rem;
+  --whole: 1rem;
+  --milli: 0.5rem;
+  --micro: 0.25rem;
+  --nano: 0.125rem;
+  --pico: 0.0625rem;
+
+  /* size */
+  --common-radius: var(--micro);
+  --measure: calc(var(--peta) + var(--mega));
+  --line: 1.5rem;
+  --code-size: 85%;
+}
+
+* {
+  scrollbar-color: var(--fg-status) var(--bg);
+}
+
+::selection {
+  background-color: var(--bg-selection);
+  color: var(--fg-light);
+}
+
+html {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  justify-content: center;
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Use the browser's default font rendering instead of using our fancy
+   * font-family above. This resolves a problem where some emoji were being
+   * rendered in the system-ui font, which is rarely what we want.
+   */
+.emoji {
+  font-family: initial;
+}
+
+/* from old style, I think it is markdown related */
+
 img.is-image-from-blob {
-    max-width: 100%;
-    display:block;
-    margin:auto;
-    padding: 5px;
+  max-width: 100%;
+  display: block;
+  margin: auto;
+  padding: 5px;
 }
 
 a.image-link {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }
 
-
 .blured img {
-    filter: blur(20px) !important;
+  filter: blur(20px) !important;
 }

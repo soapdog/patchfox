@@ -22,10 +22,12 @@
       "mithril",
       "lodash",
       "csz",
-      "is-my-ssb-valid"
+      "is-my-ssb-valid",
+      "browserfs"
     ]
   },
   "devDependencies": {
+    "browserfs": "^1.4.3",
     "browserify": "^16.5.0",
     "copyfiles": "^2.2.0",
     "jake": "^10.4.5",
