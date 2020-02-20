@@ -1,10 +1,11 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
-const sort = require("ssb-sort");
+const ssbRef = require("ssb-ref");
 
-global.ssbSort = sort;
+global.ssbRef = ssbRef;
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"ssb-sort":5}],2:[function(require,module,exports){
+},{"ssb-ref":5}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -184,144 +185,6 @@ exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
 },{"./decode":2,"./encode":3}],5:[function(require,module,exports){
-var isMsgRef = require('ssb-ref').isMsg
-
-//messages in thread that are not referenced by another message in the thread.
-function heads (thread) {
-  var counts = messages(thread)
-
-  thread.forEach(function (msg) {
-    links(msg.value, function (link) {
-      counts[link] = 0
-    })
-  })
-  var ary = []
-  for(var k in counts) if(counts[k] !== 0) ary.push(k)
-  return ary.sort()
-}
-
-function roots (thread) {
-  sort(thread)
-  var counts = messages(thread)
-
-  thread.forEach(function (msg) {
-    links(msg.value, function (link) {
-      if(counts[link]) counts[msg.key] = 2
-    })
-  })
-
-  var ary = []
-  for(var k in counts) if(counts[k] === 1) ary.push(k)
-  return ary
-}
-
-function sort (thread) {
-  var dict = arrayToDict(thread)
-  function compare(a, b) {
-    return ancestorOf(a, b, dict) ? 1 : ancestorOf(b, a, dict) ? -1 : 0
-  }
-
-  return thread.sort(function (a, b) {
-    return (
-      compare(a, b)
-      //received timestamp, may not be present
-      || a.timestamp - b.timestamp
-      //declared timestamp, may by incorrect or a lie
-      || a.value.timestamp - b.value.timestamp
-      //finially, sort hashes lexiegraphically.
-      || (a.key > b.key ? -1 : a.key < b.key ? 1 : 0)
-    )
-  })
-}
-
-function ancestors (thread, start, isTarget) {
-  if(Array.isArray(thread))
-    thread = arrayToDict(thread)
-  start = isString(start) ? start : start.key
-  var seen = {}
-  function traverse (key) {
-    if(seen[key]) return
-    seen[key] = true
-    if(isTarget(thread[key], key)) return true
-    return links(thread[key], function (link) {
-      if(thread[link]) return traverse(link)
-    })
-  }
-
-  return traverse(start)
-}
-
-function ancestorOf (a, b, thread) {
-  return ancestors(thread, a.key, function (_b, k) {
-    return b.key === k
-  })
-}
-
-function missingContext (thread) {
-  var dict = arrayToDict(thread)
-  var results = {}
-
-  thread.forEach(function (msg) {
-    const noLineage = thread
-      .filter(function (m) { return m.key !== msg.key })
-      .map(function (m) {
-        return areCausallyLinked(m, msg)
-          ? null  // if it's an ancestor, that's all good
-          : m     // if it's not an ancestor, bingo!
-      })
-      .filter(Boolean)
-
-    if (noLineage.length) results[msg.key] = noLineage
-  })
-  return results
-
-  function areCausallyLinked (a, b) {
-    return ancestorOf(a, b, dict) || ancestorOf(b, a, dict)
-  }
-}
-
-exports = module.exports = sort
-exports.heads = heads
-exports.roots = roots
-exports.ancestors = ancestors
-exports.missingContext = missingContext
-
-
-// Utils ///////////////////////////////////
-
-function links (obj, each) {
-  if(isMsgRef(obj)) return each(obj)
-  if(!obj || 'object' !== typeof obj) return
-  for(var k in obj)
-    if(links(obj[k], each)) return true
-}
-
-//used to initialize sort
-function messages (thread) {
-  var counts = {}
-
-  for(var i = 0; i < thread.length; i++) {
-    var key = thread[i].key
-    if(counts[key])
-      throw new Error('thread has duplicate message:'+key)
-    counts[key] = 1
-  }
-
-  return counts
-}
-
-function arrayToDict (thread) {
-  var o = {}
-  thread.forEach(function (e) {
-    o[e.key] = e.value
-  })
-  return o
-}
-
-function isString(s) { return 'string' === typeof s }
-
-
-},{"ssb-ref":6}],6:[function(require,module,exports){
 var isCanonicalBase64 = require('is-canonical-base64')
 var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
@@ -668,7 +531,7 @@ exports.extract =
 
 
 
-},{"is-canonical-base64":7,"is-valid-domain":9,"multiserver-address":10,"querystring":4}],7:[function(require,module,exports){
+},{"is-canonical-base64":6,"is-valid-domain":8,"multiserver-address":9,"querystring":4}],6:[function(require,module,exports){
 
 var char = '[a-zA-Z0-9\/\+]'
 var trail2 = '[AQgw]=='
@@ -703,10 +566,10 @@ module.exports = function (prefix,suffix, length) {
 
 
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = {"com.ac":true,"net.ac":true,"gov.ac":true,"org.ac":true,"mil.ac":true,"co.ae":true,"net.ae":true,"gov.ae":true,"ac.ae":true,"sch.ae":true,"org.ae":true,"mil.ae":true,"pro.ae":true,"name.ae":true,"com.af":true,"edu.af":true,"gov.af":true,"net.af":true,"org.af":true,"com.al":true,"edu.al":true,"gov.al":true,"mil.al":true,"net.al":true,"org.al":true,"ed.ao":true,"gv.ao":true,"og.ao":true,"co.ao":true,"pb.ao":true,"it.ao":true,"com.ar":true,"edu.ar":true,"gob.ar":true,"gov.ar":true,"int.ar":true,"mil.ar":true,"net.ar":true,"org.ar":true,"tur.ar":true,"gv.at":true,"ac.at":true,"co.at":true,"or.at":true,"com.au":true,"net.au":true,"org.au":true,"edu.au":true,"gov.au":true,"csiro.au":true,"asn.au":true,"id.au":true,"vic.au":true,"sa.au":true,"wa.au":true,"nt.au":true,"tas.au":true,"qld.au":true,"act.au":true,"conf.au":true,"oz.au":true,"org.ba":true,"net.ba":true,"edu.ba":true,"gov.ba":true,"mil.ba":true,"unsa.ba":true,"untz.ba":true,"unmo.ba":true,"unbi.ba":true,"unze.ba":true,"co.ba":true,"com.ba":true,"rs.ba":true,"co.bb":true,"com.bb":true,"net.bb":true,"org.bb":true,"gov.bb":true,"edu.bb":true,"info.bb":true,"store.bb":true,"tv.bb":true,"biz.bb":true,"com.bh":true,"info.bh":true,"cc.bh":true,"edu.bh":true,"biz.bh":true,"net.bh":true,"org.bh":true,"gov.bh":true,"com.bn":true,"edu.bn":true,"gov.bn":true,"net.bn":true,"org.bn":true,"com.bo":true,"net.bo":true,"org.bo":true,"tv.bo":true,"mil.bo":true,"int.bo":true,"gob.bo":true,"gov.bo":true,"edu.bo":true,"adm.br":true,"adv.br":true,"agr.br":true,"am.br":true,"arq.br":true,"art.br":true,"ato.br":true,"b.br":true,"bio.br":true,"blog.br":true,"bmd.br":true,"cim.br":true,"cng.br":true,"cnt.br":true,"com.br":true,"coop.br":true,"ecn.br":true,"edu.br":true,"eng.br":true,"esp.br":true,"etc.br":true,"eti.br":true,"far.br":true,"flog.br":true,"fm.br":true,"fnd.br":true,"fot.br":true,"fst.br":true,"g12.br":true,"ggf.br":true,"gov.br":true,"imb.br":true,"ind.br":true,"inf.br":true,"jor.br":true,"jus.br":true,"lel.br":true,"mat.br":true,"med.br":true,"mil.br":true,"mus.br":true,"net.br":true,"nom.br":true,"not.br":true,"ntr.br":true,"odo.br":true,"org.br":true,"ppg.br":true,"pro.br":true,"psc.br":true,"psi.br":true,"qsl.br":true,"rec.br":true,"slg.br":true,"srv.br":true,"tmp.br":true,"trd.br":true,"tur.br":true,"tv.br":true,"vet.br":true,"vlog.br":true,"wiki.br":true,"zlg.br":true,"com.bs":true,"net.bs":true,"org.bs":true,"edu.bs":true,"gov.bs":true,"om.bz":true,"du.bz":true,"ov.bz":true,"et.bz":true,"rg.bz":true,"ab.ca":true,"bc.ca":true,"mb.ca":true,"nb.ca":true,"nf.ca":true,"nl.ca":true,"ns.ca":true,"nt.ca":true,"nu.ca":true,"on.ca":true,"pe.ca":true,"qc.ca":true,"sk.ca":true,"yk.ca":true,"co.ck":true,"org.ck":true,"edu.ck":true,"gov.ck":true,"net.ck":true,"gen.ck":true,"biz.ck":true,"info.ck":true,"ac.cn":true,"com.cn":true,"edu.cn":true,"gov.cn":true,"mil.cn":true,"net.cn":true,"org.cn":true,"ah.cn":true,"bj.cn":true,"cq.cn":true,"fj.cn":true,"gd.cn":true,"gs.cn":true,"gz.cn":true,"gx.cn":true,"ha.cn":true,"hb.cn":true,"he.cn":true,"hi.cn":true,"hl.cn":true,"hn.cn":true,"jl.cn":true,"js.cn":true,"jx.cn":true,"ln.cn":true,"nm.cn":true,"nx.cn":true,"qh.cn":true,"sc.cn":true,"sd.cn":true,"sh.cn":true,"sn.cn":true,"sx.cn":true,"tj.cn":true,"tw.cn":true,"xj.cn":true,"xz.cn":true,"yn.cn":true,"zj.cn":true,"com.co":true,"org.co":true,"edu.co":true,"gov.co":true,"net.co":true,"mil.co":true,"nom.co":true,"ac.cr":true,"co.cr":true,"ed.cr":true,"fi.cr":true,"go.cr":true,"or.cr":true,"sa.cr":true,"cr":true,"ac.cy":true,"net.cy":true,"gov.cy":true,"org.cy":true,"pro.cy":true,"name.cy":true,"ekloges.cy":true,"tm.cy":true,"ltd.cy":true,"biz.cy":true,"press.cy":true,"parliament.cy":true,"com.cy":true,"edu.do":true,"gob.do":true,"gov.do":true,"com.do":true,"sld.do":true,"org.do":true,"net.do":true,"web.do":true,"mil.do":true,"art.do":true,"com.dz":true,"org.dz":true,"net.dz":true,"gov.dz":true,"edu.dz":true,"asso.dz":true,"pol.dz":true,"art.dz":true,"com.ec":true,"info.ec":true,"net.ec":true,"fin.ec":true,"med.ec":true,"pro.ec":true,"org.ec":true,"edu.ec":true,"gov.ec":true,"mil.ec":true,"com.eg":true,"edu.eg":true,"eun.eg":true,"gov.eg":true,"mil.eg":true,"name.eg":true,"net.eg":true,"org.eg":true,"sci.eg":true,"com.er":true,"edu.er":true,"gov.er":true,"mil.er":true,"net.er":true,"org.er":true,"ind.er":true,"rochest.er":true,"w.er":true,"com.es":true,"nom.es":true,"org.es":true,"gob.es":true,"edu.es":true,"com.et":true,"gov.et":true,"org.et":true,"edu.et":true,"net.et":true,"biz.et":true,"name.et":true,"info.et":true,"ac.fj":true,"biz.fj":true,"com.fj":true,"info.fj":true,"mil.fj":true,"name.fj":true,"net.fj":true,"org.fj":true,"pro.fj":true,"co.fk":true,"org.fk":true,"gov.fk":true,"ac.fk":true,"nom.fk":true,"net.fk":true,"fr":true,"tm.fr":true,"asso.fr":true,"nom.fr":true,"prd.fr":true,"presse.fr":true,"com.fr":true,"gouv.fr":true,"co.gg":true,"net.gg":true,"org.gg":true,"com.gh":true,"edu.gh":true,"gov.gh":true,"org.gh":true,"mil.gh":true,"com.gn":true,"ac.gn":true,"gov.gn":true,"org.gn":true,"net.gn":true,"com.gr":true,"edu.gr":true,"net.gr":true,"org.gr":true,"gov.gr":true,"mil.gr":true,"com.gt":true,"edu.gt":true,"net.gt":true,"gob.gt":true,"org.gt":true,"mil.gt":true,"ind.gt":true,"com.gu":true,"net.gu":true,"gov.gu":true,"org.gu":true,"edu.gu":true,"com.hk":true,"edu.hk":true,"gov.hk":true,"idv.hk":true,"net.hk":true,"org.hk":true,"2000.hu":true,"agrar.hu":true,"bolt.hu":true,"casino.hu":true,"city.hu":true,"co.hu":true,"erotica.hu":true,"erotika.hu":true,"film.hu":true,"forum.hu":true,"games.hu":true,"hotel.hu":true,"info.hu":true,"ingatlan.hu":true,"jogasz.hu":true,"konyvelo.hu":true,"lakas.hu":true,"media.hu":true,"news.hu":true,"org.hu":true,"priv.hu":true,"reklam.hu":true,"sex.hu":true,"shop.hu":true,"sport.hu":true,"suli.huv":true,"szex.hu":true,"tm.hu":true,"tozsde.hu":true,"utazas.hu":true,"video.hu":true,"ac.id":true,"co.id":true,"net.id":true,"or.id":true,"web.id":true,"sch.id":true,"mil.id":true,"go.id":true,"war.net.id":true,"ac.il":true,"co.il":true,"org.il":true,"net.il":true,"k12.il":true,"gov.il":true,"muni.il":true,"idf.il":true,"in":true,"4fd.in":true,"co.in":true,"firm.in":true,"net.in":true,"org.in":true,"gen.in":true,"ind.in":true,"ac.in":true,"edu.in":true,"res.in":true,"ernet.in":true,"gov.in":true,"mil.in":true,"nic.in":true,"iq":true,"gov.iq":true,"edu.iq":true,"com.iq":true,"mil.iq":true,"org.iq":true,"net.iq":true,"ir":true,"ac.ir":true,"co.ir":true,"gov.ir":true,"id.ir":true,"net.ir":true,"org.ir":true,"sch.ir":true,"dnssec.ir":true,"gov.it":true,"edu.it":true,"co.je":true,"net.je":true,"org.je":true,"com.jo":true,"net.jo":true,"gov.jo":true,"edu.jo":true,"org.jo":true,"mil.jo":true,"name.jo":true,"sch.jo":true,"ac.jp":true,"ad.jp":true,"co.jp":true,"ed.jp":true,"go.jp":true,"gr.jp":true,"lg.jp":true,"ne.jp":true,"or.jp":true,"co.ke":true,"or.ke":true,"ne.ke":true,"go.ke":true,"ac.ke":true,"sc.ke":true,"me.ke":true,"mobi.ke":true,"info.ke":true,"per.kh":true,"com.kh":true,"edu.kh":true,"gov.kh":true,"mil.kh":true,"net.kh":true,"org.kh":true,"com.ki":true,"biz.ki":true,"de.ki":true,"net.ki":true,"info.ki":true,"org.ki":true,"gov.ki":true,"edu.ki":true,"mob.ki":true,"tel.ki":true,"km":true,"com.km":true,"coop.km":true,"asso.km":true,"nom.km":true,"presse.km":true,"tm.km":true,"medecin.km":true,"notaires.km":true,"pharmaciens.km":true,"veterinaire.km":true,"edu.km":true,"gouv.km":true,"mil.km":true,"net.kn":true,"org.kn":true,"edu.kn":true,"gov.kn":true,"kr":true,"co.kr":true,"ne.kr":true,"or.kr":true,"re.kr":true,"pe.kr":true,"go.kr":true,"mil.kr":true,"ac.kr":true,"hs.kr":true,"ms.kr":true,"es.kr":true,"sc.kr":true,"kg.kr":true,"seoul.kr":true,"busan.kr":true,"daegu.kr":true,"incheon.kr":true,"gwangju.kr":true,"daejeon.kr":true,"ulsan.kr":true,"gyeonggi.kr":true,"gangwon.kr":true,"chungbuk.kr":true,"chungnam.kr":true,"jeonbuk.kr":true,"jeonnam.kr":true,"gyeongbuk.kr":true,"gyeongnam.kr":true,"jeju.kr":true,"edu.kw":true,"com.kw":true,"net.kw":true,"org.kw":true,"gov.kw":true,"com.ky":true,"org.ky":true,"net.ky":true,"edu.ky":true,"gov.ky":true,"com.kz":true,"edu.kz":true,"gov.kz":true,"mil.kz":true,"net.kz":true,"org.kz":true,"com.lb":true,"edu.lb":true,"gov.lb":true,"net.lb":true,"org.lb":true,"gov.lk":true,"sch.lk":true,"net.lk":true,"int.lk":true,"com.lk":true,"org.lk":true,"edu.lk":true,"ngo.lk":true,"soc.lk":true,"web.lk":true,"ltd.lk":true,"assn.lk":true,"grp.lk":true,"hotel.lk":true,"com.lr":true,"edu.lr":true,"gov.lr":true,"org.lr":true,"net.lr":true,"com.lv":true,"edu.lv":true,"gov.lv":true,"org.lv":true,"mil.lv":true,"id.lv":true,"net.lv":true,"asn.lv":true,"conf.lv":true,"com.ly":true,"net.ly":true,"gov.ly":true,"plc.ly":true,"edu.ly":true,"sch.ly":true,"med.ly":true,"org.ly":true,"id.ly":true,"ma":true,"net.ma":true,"ac.ma":true,"org.ma":true,"gov.ma":true,"press.ma":true,"co.ma":true,"tm.mc":true,"asso.mc":true,"co.me":true,"net.me":true,"org.me":true,"edu.me":true,"ac.me":true,"gov.me":true,"its.me":true,"priv.me":true,"org.mg":true,"nom.mg":true,"gov.mg":true,"prd.mg":true,"tm.mg":true,"edu.mg":true,"mil.mg":true,"com.mg":true,"com.mk":true,"org.mk":true,"net.mk":true,"edu.mk":true,"gov.mk":true,"inf.mk":true,"name.mk":true,"pro.mk":true,"com.ml":true,"net.ml":true,"org.ml":true,"edu.ml":true,"gov.ml":true,"presse.ml":true,"gov.mn":true,"edu.mn":true,"org.mn":true,"com.mo":true,"edu.mo":true,"gov.mo":true,"net.mo":true,"org.mo":true,"com.mt":true,"org.mt":true,"net.mt":true,"edu.mt":true,"gov.mt":true,"aero.mv":true,"biz.mv":true,"com.mv":true,"coop.mv":true,"edu.mv":true,"gov.mv":true,"info.mv":true,"int.mv":true,"mil.mv":true,"museum.mv":true,"name.mv":true,"net.mv":true,"org.mv":true,"pro.mv":true,"ac.mw":true,"co.mw":true,"com.mw":true,"coop.mw":true,"edu.mw":true,"gov.mw":true,"int.mw":true,"museum.mw":true,"net.mw":true,"org.mw":true,"com.mx":true,"net.mx":true,"org.mx":true,"edu.mx":true,"gob.mx":true,"com.my":true,"net.my":true,"org.my":true,"gov.my":true,"edu.my":true,"sch.my":true,"mil.my":true,"name.my":true,"com.nf":true,"net.nf":true,"arts.nf":true,"store.nf":true,"web.nf":true,"firm.nf":true,"info.nf":true,"other.nf":true,"per.nf":true,"rec.nf":true,"com.ng":true,"org.ng":true,"gov.ng":true,"edu.ng":true,"net.ng":true,"sch.ng":true,"name.ng":true,"mobi.ng":true,"biz.ng":true,"mil.ng":true,"gob.ni":true,"co.ni":true,"com.ni":true,"ac.ni":true,"edu.ni":true,"org.ni":true,"nom.ni":true,"net.ni":true,"mil.ni":true,"com.np":true,"edu.np":true,"gov.np":true,"org.np":true,"mil.np":true,"net.np":true,"edu.nr":true,"gov.nr":true,"biz.nr":true,"info.nr":true,"net.nr":true,"org.nr":true,"com.nr":true,"com.om":true,"co.om":true,"edu.om":true,"ac.om":true,"sch.om":true,"gov.om":true,"net.om":true,"org.om":true,"mil.om":true,"museum.om":true,"biz.om":true,"pro.om":true,"med.om":true,"edu.pe":true,"gob.pe":true,"nom.pe":true,"mil.pe":true,"sld.pe":true,"org.pe":true,"com.pe":true,"net.pe":true,"com.ph":true,"net.ph":true,"org.ph":true,"mil.ph":true,"ngo.ph":true,"i.ph":true,"gov.ph":true,"edu.ph":true,"com.pk":true,"net.pk":true,"edu.pk":true,"org.pk":true,"fam.pk":true,"biz.pk":true,"web.pk":true,"gov.pk":true,"gob.pk":true,"gok.pk":true,"gon.pk":true,"gop.pk":true,"gos.pk":true,"pwr.pl":true,"com.pl":true,"biz.pl":true,"net.pl":true,"art.pl":true,"edu.pl":true,"org.pl":true,"ngo.pl":true,"gov.pl":true,"info.pl":true,"mil.pl":true,"waw.pl":true,"warszawa.pl":true,"wroc.pl":true,"wroclaw.pl":true,"krakow.pl":true,"katowice.pl":true,"poznan.pl":true,"lodz.pl":true,"gda.pl":true,"gdansk.pl":true,"slupsk.pl":true,"radom.pl":true,"szczecin.pl":true,"lublin.pl":true,"bialystok.pl":true,"olsztyn.pl":true,"torun.pl":true,"gorzow.pl":true,"zgora.pl":true,"biz.pr":true,"com.pr":true,"edu.pr":true,"gov.pr":true,"info.pr":true,"isla.pr":true,"name.pr":true,"net.pr":true,"org.pr":true,"pro.pr":true,"est.pr":true,"prof.pr":true,"ac.pr":true,"com.ps":true,"net.ps":true,"org.ps":true,"edu.ps":true,"gov.ps":true,"plo.ps":true,"sec.ps":true,"co.pw":true,"ne.pw":true,"or.pw":true,"ed.pw":true,"go.pw":true,"belau.pw":true,"arts.ro":true,"com.ro":true,"firm.ro":true,"info.ro":true,"nom.ro":true,"nt.ro":true,"org.ro":true,"rec.ro":true,"store.ro":true,"tm.ro":true,"www.ro":true,"co.rs":true,"org.rs":true,"edu.rs":true,"ac.rs":true,"gov.rs":true,"in.rs":true,"com.sb":true,"net.sb":true,"edu.sb":true,"org.sb":true,"gov.sb":true,"com.sc":true,"net.sc":true,"edu.sc":true,"gov.sc":true,"org.sc":true,"co.sh":true,"com.sh":true,"org.sh":true,"gov.sh":true,"edu.sh":true,"net.sh":true,"nom.sh":true,"com.sl":true,"net.sl":true,"org.sl":true,"edu.sl":true,"gov.sl":true,"gov.st":true,"saotome.st":true,"principe.st":true,"consulado.st":true,"embaixada.st":true,"org.st":true,"edu.st":true,"net.st":true,"com.st":true,"store.st":true,"mil.st":true,"co.st":true,"edu.sv":true,"gob.sv":true,"com.sv":true,"org.sv":true,"red.sv":true,"co.sz":true,"ac.sz":true,"org.sz":true,"com.tr":true,"gen.tr":true,"org.tr":true,"biz.tr":true,"info.tr":true,"av.tr":true,"dr.tr":true,"pol.tr":true,"bel.tr":true,"tsk.tr":true,"bbs.tr":true,"k12.tr":true,"edu.tr":true,"name.tr":true,"net.tr":true,"gov.tr":true,"web.tr":true,"tel.tr":true,"tv.tr":true,"co.tt":true,"com.tt":true,"org.tt":true,"net.tt":true,"biz.tt":true,"info.tt":true,"pro.tt":true,"int.tt":true,"coop.tt":true,"jobs.tt":true,"mobi.tt":true,"travel.tt":true,"museum.tt":true,"aero.tt":true,"cat.tt":true,"tel.tt":true,"name.tt":true,"mil.tt":true,"edu.tt":true,"gov.tt":true,"edu.tw":true,"gov.tw":true,"mil.tw":true,"com.tw":true,"net.tw":true,"org.tw":true,"idv.tw":true,"game.tw":true,"ebiz.tw":true,"club.tw":true,"com.mu":true,"gov.mu":true,"net.mu":true,"org.mu":true,"ac.mu":true,"co.mu":true,"or.mu":true,"ac.mz":true,"co.mz":true,"edu.mz":true,"org.mz":true,"gov.mz":true,"com.na":true,"co.na":true,"ac.nz":true,"co.nz":true,"cri.nz":true,"geek.nz":true,"gen.nz":true,"govt.nz":true,"health.nz":true,"iwi.nz":true,"maori.nz":true,"mil.nz":true,"net.nz":true,"org.nz":true,"parliament.nz":true,"school.nz":true,"abo.pa":true,"ac.pa":true,"com.pa":true,"edu.pa":true,"gob.pa":true,"ing.pa":true,"med.pa":true,"net.pa":true,"nom.pa":true,"org.pa":true,"sld.pa":true,"com.pt":true,"edu.pt":true,"gov.pt":true,"int.pt":true,"net.pt":true,"nome.pt":true,"org.pt":true,"publ.pt":true,"com.py":true,"edu.py":true,"gov.py":true,"mil.py":true,"net.py":true,"org.py":true,"com.qa":true,"edu.qa":true,"gov.qa":true,"mil.qa":true,"net.qa":true,"org.qa":true,"asso.re":true,"com.re":true,"nom.re":true,"ac.ru":true,"adygeya.ru":true,"altai.ru":true,"amur.ru":true,"arkhangelsk.ru":true,"astrakhan.ru":true,"bashkiria.ru":true,"belgorod.ru":true,"bir.ru":true,"bryansk.ru":true,"buryatia.ru":true,"cbg.ru":true,"chel.ru":true,"chelyabinsk.ru":true,"chita.ru":true,"chukotka.ru":true,"chuvashia.ru":true,"com.ru":true,"dagestan.ru":true,"e-burg.ru":true,"edu.ru":true,"gov.ru":true,"grozny.ru":true,"int.ru":true,"irkutsk.ru":true,"ivanovo.ru":true,"izhevsk.ru":true,"jar.ru":true,"joshkar-ola.ru":true,"kalmykia.ru":true,"kaluga.ru":true,"kamchatka.ru":true,"karelia.ru":true,"kazan.ru":true,"kchr.ru":true,"kemerovo.ru":true,"khabarovsk.ru":true,"khakassia.ru":true,"khv.ru":true,"kirov.ru":true,"koenig.ru":true,"komi.ru":true,"kostroma.ru":true,"kranoyarsk.ru":true,"kuban.ru":true,"kurgan.ru":true,"kursk.ru":true,"lipetsk.ru":true,"magadan.ru":true,"mari.ru":true,"mari-el.ru":true,"marine.ru":true,"mil.ru":true,"mordovia.ru":true,"mosreg.ru":true,"msk.ru":true,"murmansk.ru":true,"nalchik.ru":true,"net.ru":true,"nnov.ru":true,"nov.ru":true,"novosibirsk.ru":true,"nsk.ru":true,"omsk.ru":true,"orenburg.ru":true,"org.ru":true,"oryol.ru":true,"penza.ru":true,"perm.ru":true,"pp.ru":true,"pskov.ru":true,"ptz.ru":true,"rnd.ru":true,"ryazan.ru":true,"sakhalin.ru":true,"samara.ru":true,"saratov.ru":true,"simbirsk.ru":true,"smolensk.ru":true,"spb.ru":true,"stavropol.ru":true,"stv.ru":true,"surgut.ru":true,"tambov.ru":true,"tatarstan.ru":true,"tom.ru":true,"tomsk.ru":true,"tsaritsyn.ru":true,"tsk.ru":true,"tula.ru":true,"tuva.ru":true,"tver.ru":true,"tyumen.ru":true,"udm.ru":true,"udmurtia.ru":true,"ulan-ude.ru":true,"vladikavkaz.ru":true,"vladimir.ru":true,"vladivostok.ru":true,"volgograd.ru":true,"vologda.ru":true,"voronezh.ru":true,"vrn.ru":true,"vyatka.ru":true,"yakutia.ru":true,"yamal.ru":true,"yekaterinburg.ru":true,"yuzhno-sakhalinsk.ru":true,"ac.rw":true,"co.rw":true,"com.rw":true,"edu.rw":true,"gouv.rw":true,"gov.rw":true,"int.rw":true,"mil.rw":true,"net.rw":true,"com.sa":true,"edu.sa":true,"gov.sa":true,"med.sa":true,"net.sa":true,"org.sa":true,"pub.sa":true,"sch.sa":true,"com.sd":true,"edu.sd":true,"gov.sd":true,"info.sd":true,"med.sd":true,"net.sd":true,"org.sd":true,"tv.sd":true,"a.se":true,"ac.se":true,"b.se":true,"bd.se":true,"c.se":true,"d.se":true,"e.se":true,"f.se":true,"g.se":true,"h.se":true,"i.se":true,"k.se":true,"l.se":true,"m.se":true,"n.se":true,"o.se":true,"org.se":true,"p.se":true,"parti.se":true,"pp.se":true,"press.se":true,"r.se":true,"s.se":true,"t.se":true,"tm.se":true,"u.se":true,"w.se":true,"x.se":true,"y.se":true,"z.se":true,"com.sg":true,"edu.sg":true,"gov.sg":true,"idn.sg":true,"net.sg":true,"org.sg":true,"per.sg":true,"art.sn":true,"com.sn":true,"edu.sn":true,"gouv.sn":true,"org.sn":true,"perso.sn":true,"univ.sn":true,"com.sy":true,"edu.sy":true,"gov.sy":true,"mil.sy":true,"net.sy":true,"news.sy":true,"org.sy":true,"ac.th":true,"co.th":true,"go.th":true,"in.th":true,"mi.th":true,"net.th":true,"or.th":true,"ac.tj":true,"biz.tj":true,"co.tj":true,"com.tj":true,"edu.tj":true,"go.tj":true,"gov.tj":true,"info.tj":true,"int.tj":true,"mil.tj":true,"name.tj":true,"net.tj":true,"nic.tj":true,"org.tj":true,"test.tj":true,"web.tj":true,"agrinet.tn":true,"com.tn":true,"defense.tn":true,"edunet.tn":true,"ens.tn":true,"fin.tn":true,"gov.tn":true,"ind.tn":true,"info.tn":true,"intl.tn":true,"mincom.tn":true,"nat.tn":true,"net.tn":true,"org.tn":true,"perso.tn":true,"rnrt.tn":true,"rns.tn":true,"rnu.tn":true,"tourism.tn":true,"ac.tz":true,"co.tz":true,"go.tz":true,"ne.tz":true,"or.tz":true,"biz.ua":true,"cherkassy.ua":true,"chernigov.ua":true,"chernovtsy.ua":true,"ck.ua":true,"cn.ua":true,"co.ua":true,"com.ua":true,"crimea.ua":true,"cv.ua":true,"dn.ua":true,"dnepropetrovsk.ua":true,"donetsk.ua":true,"dp.ua":true,"edu.ua":true,"gov.ua":true,"if.ua":true,"in.ua":true,"ivano-frankivsk.ua":true,"kh.ua":true,"kharkov.ua":true,"kherson.ua":true,"khmelnitskiy.ua":true,"kiev.ua":true,"kirovograd.ua":true,"km.ua":true,"kr.ua":true,"ks.ua":true,"kv.ua":true,"lg.ua":true,"lugansk.ua":true,"lutsk.ua":true,"lviv.ua":true,"me.ua":true,"mk.ua":true,"net.ua":true,"nikolaev.ua":true,"od.ua":true,"odessa.ua":true,"org.ua":true,"pl.ua":true,"poltava.ua":true,"pp.ua":true,"rovno.ua":true,"rv.ua":true,"sebastopol.ua":true,"sumy.ua":true,"te.ua":true,"ternopil.ua":true,"uzhgorod.ua":true,"vinnica.ua":true,"vn.ua":true,"zaporizhzhe.ua":true,"zhitomir.ua":true,"zp.ua":true,"zt.ua":true,"ac.ug":true,"co.ug":true,"go.ug":true,"ne.ug":true,"or.ug":true,"org.ug":true,"sc.ug":true,"ac.uk":true,"bl.uk":true,"british-library.uk":true,"co.uk":true,"cym.uk":true,"gov.uk":true,"govt.uk":true,"icnet.uk":true,"jet.uk":true,"lea.uk":true,"ltd.uk":true,"me.uk":true,"mil.uk":true,"mod.uk":true,"national-library-scotland.uk":true,"nel.uk":true,"net.uk":true,"nhs.uk":true,"nic.uk":true,"nls.uk":true,"org.uk":true,"orgn.uk":true,"parliament.uk":true,"plc.uk":true,"police.uk":true,"sch.uk":true,"scot.uk":true,"soc.uk":true,"4fd.us":true,"dni.us":true,"fed.us":true,"isa.us":true,"kids.us":true,"nsn.us":true,"com.uy":true,"edu.uy":true,"gub.uy":true,"mil.uy":true,"net.uy":true,"org.uy":true,"co.ve":true,"com.ve":true,"edu.ve":true,"gob.ve":true,"info.ve":true,"mil.ve":true,"net.ve":true,"org.ve":true,"web.ve":true,"co.vi":true,"com.vi":true,"k12.vi":true,"net.vi":true,"org.vi":true,"ac.vn":true,"biz.vn":true,"com.vn":true,"edu.vn":true,"gov.vn":true,"health.vn":true,"info.vn":true,"int.vn":true,"name.vn":true,"net.vn":true,"org.vn":true,"pro.vn":true,"co.ye":true,"com.ye":true,"gov.ye":true,"ltd.ye":true,"me.ye":true,"net.ye":true,"org.ye":true,"plc.ye":true,"ac.yu":true,"co.yu":true,"edu.yu":true,"gov.yu":true,"org.yu":true,"ac.za":true,"agric.za":true,"alt.za":true,"bourse.za":true,"city.za":true,"co.za":true,"cybernet.za":true,"db.za":true,"ecape.school.za":true,"edu.za":true,"fs.school.za":true,"gov.za":true,"gp.school.za":true,"grondar.za":true,"iaccess.za":true,"imt.za":true,"inca.za":true,"kzn.school.za":true,"landesign.za":true,"law.za":true,"lp.school.za":true,"mil.za":true,"mpm.school.za":true,"ncape.school.za":true,"net.za":true,"ngo.za":true,"nis.za":true,"nom.za":true,"nw.school.za":true,"olivetti.za":true,"org.za":true,"pix.za":true,"school.za":true,"tm.za":true,"wcape.school.za":true,"web.za":true,"ac.zm":true,"co.zm":true,"com.zm":true,"edu.zm":true,"gov.zm":true,"net.zm":true,"org.zm":true,"sch.zm":true}
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var sldMap= require('./domains/sld')
 
 module.exports = function isValidDomain(v, opts) {
@@ -752,7 +615,7 @@ module.exports = function isValidDomain(v, opts) {
 
   return isValid
 }
-},{"./domains/sld":8}],10:[function(require,module,exports){
+},{"./domains/sld":7}],9:[function(require,module,exports){
 var nearley = require('nearley')
 var grammar = nearley.Grammar.fromCompiled(require('./multiserver'))
 
@@ -798,7 +661,7 @@ exports.type = 'multiaddress'
 exports.buffer = false
 
 
-},{"./multiserver":11,"nearley":12}],11:[function(require,module,exports){
+},{"./multiserver":10,"nearley":11}],10:[function(require,module,exports){
 // Generated automatically by nearley, version 2.15.1
 // http://github.com/Hardmath123/nearley
 (function () {
@@ -847,7 +710,7 @@ if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
 }
 })();
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function(root, factory) {
     if (typeof module === 'object' && module.exports) {
         module.exports = factory();

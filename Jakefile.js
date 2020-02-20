@@ -7,7 +7,9 @@ let copyfiles = require("copyfiles")
 desc("browserify")
 task("browserify", [
     "browserify:globals/ssb-client.js",
-    "browserify:globals/ssb-sort.js"
+    "browserify:globals/ssb-sort.js",
+    "browserify:globals/ssb-ref.js",
+    "browserify:globals/ssb-schema-definitions.js"
 ], () => { })
 
 namespace("browserify", function () {
@@ -22,6 +24,16 @@ namespace("browserify", function () {
     desc("Browserify SSB Sort into Globals.");
     file("globals/ssb-sort.js", ["browserify:globals", "browserify/ssb-sort.js"], function () {
         exec(`npx browserify browserify/ssb-sort.js -o globals/ssb-sort.js`)
+    });
+
+    desc("Browserify SSB Ref into Globals.");
+    file("globals/ssb-ref.js", ["browserify:globals", "browserify/ssb-ref.js"], function () {
+        exec(`npx browserify browserify/ssb-ref.js -o globals/ssb-ref.js`)
+    });
+
+    desc("Browserify SSB Schema Definitions into Globals.");
+    file("globals/ssb-schema-definitions.js", ["browserify:globals", "browserify/ssb-schema-definitions.js"], function () {
+        exec(`npx browserify browserify/ssb-schema-definitions.js -o globals/ssb-schema-definitions.js`)
     });
 })
 
