@@ -465,11 +465,12 @@ class SSB {
         retVal = `Patchfox error: message ${msgid} is null`
       }
 
-      if (data.content.type == "post") {
-        retVal = this.plainTextFromMarkdown(data.content.text.slice(0, howManyChars) + "...")
-      }
+      // if (data.content.type == "post") {
+        retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
+      // }
       return retVal
     } catch (n) {
+      console.log("booom", n)
       return retVal
     }
   }
@@ -479,6 +480,7 @@ class SSB {
     let html = this.markdown(text)
     let div = document.createElement("div")
     div.innerHTML = html
+    let ret = div.innerText
     return div.innerText
   }
 

@@ -1,4 +1,5 @@
 <script>
+  const Card = require("../../core/components/ui/Card.svelte");
 
   export let msg;
 
@@ -11,16 +12,18 @@
   let loading = false;
   let toast = false;
   let toastMsg = "";
+  let showRaw = false;
   let post = summary;
-  let hasContentWarning = content.contentWarning && content.contentWarning.length > 0;
-  let encodedThumbnail = encodeURIComponent(thumbnail) || false
+  let hasContentWarning =
+    content.contentWarning && content.contentWarning.length > 0;
+  let encodedThumbnail = encodeURIComponent(thumbnail) || false;
 
   let liked = false;
 
   ssb.votes(msg.key).then(ms => {
     ms.forEach(m => {
       let author = m.value.author;
-      if ((author === ssb.feed && m.value.content.vote.value === 1)) {
+      if (author === ssb.feed && m.value.content.vote.value === 1) {
         liked = true;
       }
     });
@@ -60,17 +63,17 @@
   const reply = ev => {
     let rootId = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
-    patchfox.go("post","compose", { root: rootId, branch: msg.key, channel });
+    patchfox.go("post", "compose", { root: rootId, branch: msg.key, channel });
   };
 
   const goRoot = ev => {
     let rootId = msg.value.content.root || msg.key;
-    patchfox.go("hub","thread", { thread: rootId });
+    patchfox.go("hub", "thread", { thread: rootId });
   };
 
   const goBranch = ev => {
     let branchId = msg.value.content.branch || msg.key;
-    patchfox.go("hub","thread", { thread: branchId });
+    patchfox.go("hub", "thread", { thread: branchId });
   };
 
   if (!hasContentWarning && false) {
@@ -84,15 +87,15 @@
   }
 </style>
 
-{#if thumbnail}
-  <div class="card-image">
-    <img
-      src="{patchfox.httpUrl("/blobs/get/" + encodedThumbnail)}"
-      class="img-responsive"
-      alt={title} />
-  </div>
-{/if}
-<div class="card-body">
+<Card {msg} {showRaw}>
+  {#if thumbnail}
+    <div class="card-image">
+      <img
+        src={patchfox.httpUrl('/blobs/get/' + encodedThumbnail)}
+        class="img-responsive"
+        alt={title} />
+    </div>
+  {/if}
   {#if title}
     <h1 class="card-title h5">{title}</h1>
   {/if}
@@ -113,52 +116,51 @@
   {:else}
     {@html summary}
   {/if}
-</div>
-<div class="card-footer">
-  <div class="columns col-gapless">
-    <div class="column col-6">
-      <label class="form-switch d-inline">
-        <input type="checkbox" on:change={likeChanged} checked={liked} />
-        <i class="form-icon" />
-        Like
-      </label>
-      {#if msg.value.content.root}
-        <span>
-          <a
-            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
-            on:click|preventDefault={goRoot}>
-            (root)
-          </a>
-        </span>
-      {/if}
-      {#if msg.value.content.branch}
-        <span>
-          <a
-            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
-            on:click|preventDefault={goBranch}>
-            (in reply to)
-          </a>
-        </span>
-      {/if}
-    </div>
-    <div class="column col-6 text-right">
-      <button class="btn" on:click={reply}>Reply</button>
-      {#if !showBlogpost}
-        <button
-          class="btn btn-primary"
-          class:locating={loading}
-          on:click={displayBlogPost}>
-          Read Blogpost
-        </button>
-      {:else}
-        <button
-          class="btn btn-primary"
-          class:locating={loading}
-          on:click={() => (showBlogpost = false)}>
-          Close Blogpost
-        </button>
-      {/if}
+  <div slot="card-footer" class="card-footer">
+    <div class="columns col-gapless">
+      <div class="column col-6">
+        <label class="form-switch d-inline">
+          <input type="checkbox" on:change={likeChanged} checked={liked} />
+          <i class="form-icon" />
+          Like
+        </label>
+        {#if msg.value.content.root}
+          <span>
+            <a
+              href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
+              on:click|preventDefault={goRoot}>
+              (root)
+            </a>
+          </span>
+        {/if}
+        {#if msg.value.content.branch}
+          <span>
+            <a
+              href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
+              on:click|preventDefault={goBranch}>
+              (in reply to)
+            </a>
+          </span>
+        {/if}
+      </div>
+      <div class="column col-6 text-right">
+        <button class="btn" on:click={reply}>Reply</button>
+        {#if !showBlogpost}
+          <button
+            class="btn btn-primary"
+            class:locating={loading}
+            on:click={displayBlogPost}>
+            Read Blogpost
+          </button>
+        {:else}
+          <button
+            class="btn btn-primary"
+            class:locating={loading}
+            on:click={() => (showBlogpost = false)}>
+            Close Blogpost
+          </button>
+        {/if}
+      </div>
     </div>
   </div>
-
-</div>
+</Card>

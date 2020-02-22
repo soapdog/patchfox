@@ -1,10 +1,15 @@
 <script>
-  const { getPref } = require("../../core/kernel/prefs.js")
+  const { getPref } = require("../../core/kernel/prefs.js");
+  const Card = require("../../core/components/ui/Card.svelte");
 
   export let msg;
-  let contentWarningsExpandByDefault = getPref("content-warnings-expand", "collapsed")
+  let contentWarningsExpandByDefault = getPref(
+    "content-warnings-expand",
+    "collapsed"
+  );
   let content = ssb.markdown(msg.value.content.text);
   let liked = false;
+  let showRaw = false;
   let hasContentWarning = msg.value.content.contentWarning || false;
   let showContentWarning = contentWarningsExpandByDefault === "collapsed";
 
@@ -36,7 +41,12 @@
     let root = msg.value.content.root || msg.key;
     let channel = msg.value.content.channel;
     let replyfeed = msg.value.author;
-      patchfox.go("post", "compose", { root, branch: msg.key, channel, replyfeed });
+    patchfox.go("post", "compose", {
+      root,
+      branch: msg.key,
+      channel,
+      replyfeed
+    });
   };
 
   const fork = ev => {
@@ -59,7 +69,7 @@
 
   const goBranch = ev => {
     let branchId = msg.value.content.branch || msg.key;
-      patchfox.go("hub", "thread", { thread: branchId });
+    patchfox.go("hub", "thread", { thread: branchId });
   };
 </script>
 
@@ -73,7 +83,7 @@
   }
 </style>
 
-<div class="card-body">
+<Card {msg} {showRaw}>
   {#if hasContentWarning && showContentWarning}
     <p>{msg.value.content.contentWarning}</p>
     <button
@@ -97,42 +107,42 @@
     {/if}
     {@html content}
   {/if}
-</div>
-<div class="card-footer">
-  <div class="columns col-gapless">
-    <div class="column col-6">
-      <label class="form-switch d-inline">
-        <input type="checkbox" on:change={likeChanged} checked={liked} />
-        <i class="form-icon" />
-        Like
-      </label>
-      {#if msg.value.content.root}
-        <span>
-          <a
-            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
-            on:click|preventDefault={goRoot}>
-            (root)
-          </a>
-        </span>
-      {/if}
-      {#if msg.value.content.branch}
-        <span>
-          <a
-            href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
-            on:click|preventDefault={goBranch}>
-            (in reply to)
-          </a>
-        </span>
+
+  <div class="card-footer" slot="card-footer">
+    <div class="columns col-gapless">
+      <div class="column col-6">
+        <label class="form-switch d-inline">
+          <input type="checkbox" on:change={likeChanged} checked={liked} />
+          <i class="form-icon" />
+          Like
+        </label>
+        {#if msg.value.content.root}
+          <span>
+            <a
+              href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
+              on:click|preventDefault={goRoot}>
+              (root)
+            </a>
+          </span>
+        {/if}
+        {#if msg.value.content.branch}
+          <span>
+            <a
+              href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
+              on:click|preventDefault={goBranch}>
+              (in reply to)
+            </a>
+          </span>
+        {/if}
+      </div>
+
+      {#if !msg.value.private}
+        <div class="column col-6 text-right">
+          <button class="btn" on:click={fork}>Fork</button>
+
+          <button class="btn" on:click={reply}>Reply</button>
+        </div>
       {/if}
     </div>
-
-    {#if !msg.value.private}
-      <div class="column col-6 text-right">
-        <button class="btn" on:click={fork}>Fork</button>
-
-        <button class="btn" on:click={reply}>Reply</button>
-      </div>
-    {/if}
   </div>
-
-</div>
+</Card>

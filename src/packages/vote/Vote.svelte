@@ -1,4 +1,6 @@
 <script>
+  const AvatarChip = require("../../core/components/AvatarChip.svelte");
+
   export let msg;
 
   let expression = msg.value.content.vote.expression || "liked";
@@ -34,7 +36,9 @@
   };
 </script>
 
-{expression}
-<a href="?pkg=hub&view=thread&thread={encodedid}" on:click={goThread}>
-  {label}
-</a>
+<p class="m-2">
+  <AvatarChip feed={msg.value.author} /> {expression}
+  <a href="?pkg=hub&view=thread&thread={encodedid}" on:click={goThread}>
+    {label}
+  </a>
+</p>

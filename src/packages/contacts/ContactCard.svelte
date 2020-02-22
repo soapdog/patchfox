@@ -1,4 +1,5 @@
 <script>
+  const AvatarChip = require("../../core/components/AvatarChip.svelte");
 
   export let msg;
 
@@ -22,11 +23,15 @@
   const goProfile = ev => {
     ev.stopPropagation();
     ev.preventDefault();
-    patchfox.go("contacts","profile", { feed: msg.value.content.contact });
+    patchfox.go("contacts", "profile", { feed: msg.value.content.contact });
   };
 </script>
 
-  {verb}
-  <a href="?pkg=contacts&view=profile&feed={otherPersonFeed}" on:click={goProfile}>
-     {otherPersonName}
+<p class="m-2">
+  <AvatarChip feed={msg.value.author} /> {verb}
+  <a
+    href="?pkg=contacts&view=profile&feed={otherPersonFeed}"
+    on:click={goProfile}>
+    {otherPersonName}
   </a>
+</p>

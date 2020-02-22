@@ -1,10 +1,13 @@
 <script>
+  const Card = require("../../core/components/ui/Card.svelte");
+
   export let msg;
 
   let person = msg.value.author;
   let otherLink = encodeURIComponent(msg.value.content.about);
   let otherName = msg.value.content.name || msg.value.content.about;
   let isThisAboutFeeds = true;
+  let showRaw = false;
   let verb =
     msg.value.content.about === msg.value.author
       ? "self-identifies"
@@ -31,7 +34,7 @@
   }
 </script>
 
-<div class="card-body">
+<Card {msg} {showRaw}>
   {#if isThisAboutFeeds}
     {person} {verb}
     <a href="?pkg=contacts&view=profile&feed={otherLink}"
@@ -56,4 +59,4 @@
       supported yet, sorry.
     </div>
   {/if}
-</div>
+</Card>

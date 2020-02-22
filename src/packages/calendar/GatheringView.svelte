@@ -1,4 +1,5 @@
 <script>
+  const Card = require("../../core/components/ui/Card.svelte");
   const Scuttle = require("scuttle-gathering");
   const AvatarRound = require("../../core/components/AvatarRound.svelte");
   const gathering = Scuttle(ssb.sbot);
@@ -11,19 +12,21 @@
 
   export let msgid;
 
-  let msg;
+  let msg = false;
   let name;
   let feed;
   let event = false;
   let loadedAllData = false;
+  let showRaw = false;
   let attending;
   let notAttending;
   let image;
 
   ssb.get(msgid).then(data => {
-    msg = data;
-    feed = msg.author;
+    msg = {value: data};
+    feed = msg.value.author;
     name = feed;
+
 
     ssb.avatar(feed).then(data => {
       if (data.image !== null) {
@@ -89,11 +92,11 @@
     pull(
       pull.values(event.attendees),
       paramap((attendee, cb) => {
-        ssb.avatar(attendee).then(a => cb(null, {name: a.name, rsvp: true}))
-      } ),
+        ssb.avatar(attendee).then(a => cb(null, { name: a.name, rsvp: true }));
+      }),
       pull.collect((err, attendees) => {
         if (err) {
-          console.log("err")
+          console.log("err");
           throw err;
           return;
         }
@@ -163,23 +166,12 @@
   }
 </style>
 
-{#if event}
-  <div class="card-body">
-    <div class="tile tile-centered feed-display" on:click={goProfile}>
-      <div class="tile-icon">
-        <div class="example-tile-icon">
-          <img src={image} class="avatar avatar-lg" alt={name} />
-        </div>
-      </div>
-      <div class="tile-content">
-        <div class="tile-title">{name}</div>
-        <small class="tile-subtitle text-gray">
-          {timestamp(msg.timestamp)}
-        </small>
-      </div>
-    </div>
+{#if event  && msg}
+  <Card {showRaw} {msg}>
     <h1 class="title">{event.title}</h1>
-    <h2 class="subtitle">{dateToNiceDate(event.startDateTime.epoch)}</h2>
+    {#if event.startDateTime}
+      <h2 class="subtitle">{dateToNiceDate(event.startDateTime.epoch)}</h2>
+    {/if}
     {#if event.image}
       <img
         class="gathering-image"
@@ -207,32 +199,32 @@
     {:else}
       <p>This gathering has no people not attending it yet</p>
     {/each}
-  </div>
-  <div class="card-footer">
-    <div class="columns col-gapless">
-      <div class="column col-6">
-        <div class="btn-group btn-group-block">
-          <button
-            class="btn"
-            on:click={notAttend}
-            class:btn-primary={notAttending === true}>
-            Not Attending
-          </button>
-          <button
-            class="btn"
-            on:click={attend}
-            class:btn-primary={attending === true}>
-            Attending
+    <div class="card-footer" slot="card-footer">
+      <div class="columns col-gapless">
+        <div class="column col-6">
+          <div class="btn-group btn-group-block">
+            <button
+              class="btn"
+              on:click={notAttend}
+              class:btn-primary={notAttending === true}>
+              Not Attending
+            </button>
+            <button
+              class="btn"
+              on:click={attend}
+              class:btn-primary={attending === true}>
+              Attending
+            </button>
+          </div>
+        </div>
+        <div class="column col-6 text-right">
+          <button class="btn" disabled={!loadedAllData} on:click={exportToICS}>
+            Export as iCal
           </button>
         </div>
       </div>
-      <div class="column col-6 text-right">
-        <button class="btn" disabled={!loadedAllData} on:click={exportToICS}>
-          Export as iCal
-        </button>
-      </div>
     </div>
-  </div>
+  </Card>
 {:else}
   <div class="loading" />
 {/if}

@@ -1,4 +1,6 @@
 <script>
+  const AvatarChip = require("../../core/components/AvatarChip.svelte");
+
   export let msg;
 
   let person = msg.value.author;
@@ -14,7 +16,10 @@
   };
 </script>
 
-{verb}
-<a href="?pkg=hub&view=channel&channel={channel}" on:click={goChannel}>
-  #{channel}
-</a>
+<p class="m-2">
+  <AvatarChip feed={msg.value.author} />
+  {verb}
+  <a href="?pkg=hub&view=channel&channel={channel}" on:click={goChannel}>
+    #{channel}
+  </a>
+</p>

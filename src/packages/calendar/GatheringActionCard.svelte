@@ -1,5 +1,6 @@
 <script>
- const Scuttle = require("scuttle-gathering");
+  const AvatarChip = require("../../core/components/AvatarChip.svelte");
+  const Scuttle = require("scuttle-gathering");
   const gathering = Scuttle(ssb.sbot);
 
   export let msg;
@@ -31,7 +32,7 @@
   gathering.get(msgid, (err, data) => {
     if (!err) {
       event = data;
-      label = event.title || (event.description.slice(0, 100) + "...");
+      label = event.title || event.description.slice(0, 100) + "...";
     }
   });
 
@@ -52,9 +53,10 @@
   };
 </script>
 
-<div class="card-body">
-  {person} {expression}
+<p class="m-2">
+  <AvatarChip feed={msg.value.author} />
+  {expression}
   <a href="?pkg=hub&view=calendar&gathering={encodedid}" on:click={goThread}>
     {label}
   </a>
-</div>
+</p>

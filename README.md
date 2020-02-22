@@ -1,4 +1,4 @@
-# Patchfox :id=readme
+# Patchfox
 This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
 
 ## Requirements

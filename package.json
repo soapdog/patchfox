@@ -1,9 +1,10 @@
 {
   "name": "patchfox",
-  "version": "2019.11.1",
+  "version": "2020.2.1",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
+  "private": true,
   "license": "MIT",
   "devDependencies": {
     "augmented-ui": "^1.1.0",
