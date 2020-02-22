@@ -20,7 +20,7 @@ require("./sourcehutIntegration/sourcehutIntegration.js");
 require("./errorHandler/errorHandler.js");
 require("./zine/zine.js");
 // require("./scheme/scheme.js");
-require("./journal/journal.js");
+// require("./journal/journal.js");
 
 
 

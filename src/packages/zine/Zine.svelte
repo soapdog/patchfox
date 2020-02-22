@@ -135,6 +135,8 @@
       column-count: 2;
     }
   }
+
+  h1 { font-size: 1.2rem;}
 </style>
 
 <div class="container">
@@ -188,7 +190,7 @@
           {#if msg.value.content.type === 'post'}
             <div class="card">
               <div class="card-body">
-                {@html ssb.markdown(msg.value.content.text).slice(0, 500)}
+                {@html ssb.markdown(msg.value.content.text).slice(0, 500).replace(/h1/gi, "h3")}
               </div>
               <div class="card-footer">
                 <span class="float-left">{timestamp(msg.value.timestamp)}</span>
