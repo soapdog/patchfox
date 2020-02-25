@@ -32,10 +32,9 @@ const getPref = (key, defaultValue) => {
 }
 
 
-const setConnectionConfiguration = ({ keys, remote, manifest }) => {
+const setConnectionConfiguration = ({ keys, remote }) => {
     savedData.keys = keys
     savedData.remote = remote
-    savedData.manifest = manifest
 
     browser.storage.local.set(savedData)
 

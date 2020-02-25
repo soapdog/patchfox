@@ -9,7 +9,7 @@
     document.title = "Patchfox - Settings - Identity And Connection";
 
     const saveConfiguration = ev => {
-        setConnectionConfiguration({remote, keys: JSON.parse(keys), manifest});
+        setConnectionConfiguration({remote, keys: JSON.parse(keys)});
         location.reload();
     };
 
