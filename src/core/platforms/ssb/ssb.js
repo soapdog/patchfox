@@ -3,6 +3,8 @@
  *
  * Things I don't currently like here:
  * - usage of getPref and abuse prevention. This should be pluggable!
+ * 
+ * This file is fucking big and needs to be refactored.
  */
 
 
@@ -16,8 +18,18 @@ const ssbRef = require("ssb-ref")
 const ssbMentions = require("ssb-mentions")
 const ssbClient = require("ssb-client")
 const ssbAvatar = require("ssb-avatar")
+const pullParallelMap = require("pull-paramap");
+const pullSort = require("pull-sort");
 
-const manifest = require("./manifest")
+const defaultOptions = {
+  private: true,
+  reverse: true,
+  meta: true
+};
+
+const configure = (...customOptions) =>
+  Object.assign({}, defaultOptions, ...customOptions);
+
 
 let sbot = false
 let getPref = () => false
@@ -64,7 +76,6 @@ class SSB {
         resolve(sbot)
       } else {
         ssbClient(keys, {
-          manifest: manifest,
           remote: remote || `ws://127.0.0.1:${port}/~shs:${keys.public}`,
           caps: {
             shs: "1KHLiKZvAvjbY1ziZEHMXawbCEIM6qwjCDm3VYRan/s=",
@@ -85,7 +96,7 @@ class SSB {
 
   filterLimit() {
     let limit = getPref("limit", 10)
-    return pull.take(limit)
+    return pull.take(Number(limit))
   }
 
   filterWithUserFilters() {
@@ -1222,6 +1233,190 @@ class SSB {
       }
     })
   }
+
+  async popular({ period }) {
+    if (!sbot) {
+      throw "error: no sbot"
+    }
+
+    const ssb = sbot;
+
+    const periodDict = {
+      day: 1,
+      week: 7,
+      month: 30.42,
+      year: 365
+    };
+
+    if (period in periodDict === false) {
+      throw new Error("invalid period");
+    }
+
+    const myFeedId = ssb.id;
+
+    const now = new Date();
+    const earliest = Number(now) - 1000 * 60 * 60 * 24 * periodDict[period];
+
+    const source = ssb.query.read(
+      configure({
+        query: [
+          {
+            $filter: {
+              value: {
+                timestamp: { $gte: earliest },
+                content: {
+                  type: "vote"
+                }
+              },
+              timestamp: { $gte: earliest }
+            }
+          }
+        ],
+        index: "DTA"
+      })
+    );
+    const followingFilter = await socialFilter({ following: true });
+
+
+    const messages = await new Promise((resolve, reject) => {
+      pull(
+        source,
+        publicOnlyFilter,
+        pull.filter(msg => {
+          return (
+            typeof msg.value.content === "object" &&
+            typeof msg.value.content.vote === "object" &&
+            typeof msg.value.content.vote.link === "string" &&
+            typeof msg.value.content.vote.value === "number"
+          );
+        }),
+        pull.reduce(
+          (acc, cur) => {
+            const author = cur.value.author;
+            const target = cur.value.content.vote.link;
+            const value = cur.value.content.vote.value;
+
+            if (acc[author] == null) {
+              acc[author] = {};
+            }
+
+            // Only accept values between -1 and 1
+            acc[author][target] = Math.max(-1, Math.min(1, value));
+
+            return acc;
+          },
+          {},
+          (err, obj) => {
+            if (err) {
+              return reject(err);
+            }
+
+            // HACK: Can we do this without a reduce()? I think this makes the
+            // stream much slower than it needs to be. Also, we should probably
+            // be indexing these rather than building the stream on refresh.
+
+            const adjustedObj = Object.entries(obj).reduce(
+              (acc, [author, values]) => {
+                if (author === myFeedId) {
+                  return acc;
+                }
+
+                const entries = Object.entries(values);
+                const total = 1 + Math.log(entries.length);
+
+                entries.forEach(([link, value]) => {
+                  if (acc[link] == null) {
+                    acc[link] = 0;
+                  }
+                  acc[link] += value / total;
+                });
+                return acc;
+              },
+              []
+            );
+
+            const arr = Object.entries(adjustedObj);
+            const length = arr.length;
+
+            pull(
+              pull.values(arr),
+              pullSort(([, aVal], [, bVal]) => bVal - aVal),
+              pull.take(Math.min(length, maxMessages)),
+              pull.map(([key]) => key),
+              pullParallelMap(async (key, cb) => {
+                try {
+                  const msg = await post.get(key);
+                  cb(null, msg);
+                } catch (e) {
+                  cb(null, null);
+                }
+              }),
+              pull.filter(
+                (
+                  message // avoid private messages (!)
+                ) => message && typeof message.value.content !== "string"
+              ),
+              followingFilter,
+              pull.collect((err, collectedMessages) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(transform(ssb, collectedMessages, myFeedId));
+                }
+              })
+            );
+          }
+        )
+      );
+    });
+
+    return messages;
+  }
+
+  /**
+   * Returns a function that filters messages based on who published the message.
+   *
+   * `null` means we don't care, `true` means it must be true, and `false` means
+   * that the value must be false. For example, if you set `me = true` then it
+   * will only allow messages that are from you. If you set `blocking = true`
+   * then you only see message from people you block.
+   */
+  async socialFilter ({
+    following = null,
+    blocking = false,
+    me = null
+  } = {}) {
+    if (!sbot) {
+      throw "error: no sbot"
+    }
+
+    const ssb = sbot;
+    const { id } = ssb;
+    const relationshipObject = await ssb.friends.get({
+      source: id
+    });
+
+    const followingList = Object.entries(relationshipObject)
+      .filter(([, val]) => val === true)
+      .map(([key]) => key);
+
+    const blockingList = Object.entries(relationshipObject)
+      .filter(([, val]) => val === false)
+      .map(([key]) => key);
+
+    return pull.filter(message => {
+      if (message.value.author === id) {
+        return me !== false;
+      } else {
+        return (
+          (following === null ||
+            followingList.includes(message.value.author) === following) &&
+          (blocking === null ||
+            blockingList.includes(message.value.author) === blocking)
+        );
+      }
+    });
+  };
 }
 
 global.ssb = new SSB()
