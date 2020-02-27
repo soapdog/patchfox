@@ -110,7 +110,8 @@ keymage("s", goSettings);
 keymage("c", goCompose);
 keymage("n", goChannels);
 keymage("m", goMentions);
+keymage("f", goProfile);
 
 
-
-
+const version = browser.runtime.getManifest().version;
+document.getElementById("patchfox-header").innerText = `Patchfox ${version}`;
