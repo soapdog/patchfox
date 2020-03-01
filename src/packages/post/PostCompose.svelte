@@ -3,6 +3,7 @@
   const drop = require("drag-and-drop-files");
   const { slide } = require("svelte/transition");
   const AvatarChip = require("../../core/components/AvatarChip.svelte");
+  const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
   const { getPref } = require("../../core/kernel/prefs.js");
   const pull = require("pull-stream");
   const fileReader = require("pull-file-reader");
@@ -22,8 +23,13 @@
   let msg = false;
   let error = false;
   let posting = false;
+  let branchedMsg = false;
 
   document.title = `Patchfox - compose`;
+
+  if (branch) {
+    ssb.get(branch).then(data => (branchedMsg = {key: branch, value: data}));
+  }
 
   onMount(() => {
     error = false;
@@ -37,47 +43,47 @@
 
   const readFileAndAttach = files => {
     try {
-    error = false;
-    msg = "";
+      error = false;
+      msg = "";
 
-    if (files.length == 0) {
-      fileOnTop = false;
-      return false;
-    }
-
-    var first = files[0];
-    console.log(first);
-
-    if (!first.type.startsWith("image")) {
-      error = true;
-      msg = `You can only drag & drop image, this file is a ${first.type}`;
-      return false;
-    }
-
-    if (first.size >= 5000000) {
-      error = true;
-      msg = `File too large: ${Math.floor(
-        first.size / 1048576,
-        2
-      )}mb when max size is 5mb`;
-      return false;
-    }
-
-    pull(
-      fileReader(first),
-      sbot.blobs.add(function(err, hash) {
-        // 'hash' is the hash-id of the blob
-        if (err) {
-          error = true;
-          msg = "Couldn't attach file: " + err;
-        } else {
-          content += ` ![${first.name}](${hash})`;
-        }
+      if (files.length == 0) {
         fileOnTop = false;
-      })
-    );
-    } catch(n) {
-      console.error("error, attaching", n)
+        return false;
+      }
+
+      var first = files[0];
+      console.log(first);
+
+      if (!first.type.startsWith("image")) {
+        error = true;
+        msg = `You can only drag & drop image, this file is a ${first.type}`;
+        return false;
+      }
+
+      if (first.size >= 5000000) {
+        error = true;
+        msg = `File too large: ${Math.floor(
+          first.size / 1048576,
+          2
+        )}mb when max size is 5mb`;
+        return false;
+      }
+
+      pull(
+        fileReader(first),
+        sbot.blobs.add(function(err, hash) {
+          // 'hash' is the hash-id of the blob
+          if (err) {
+            error = true;
+            msg = "Couldn't attach file: " + err;
+          } else {
+            content += ` ![${first.name}](${hash})`;
+          }
+          fileOnTop = false;
+        })
+      );
+    } catch (n) {
+      console.error("error, attaching", n);
     }
   };
 
@@ -217,6 +223,11 @@
               id="reply-to"
               placeholder="in reply to"
               bind:value={branch} />
+            {#if branchedMsg}
+              <MessageRenderer msg={branchedMsg} />
+            {:else}
+               <p class="loading">Loading...</p>
+            {/if}
           {/if}
 
           {#if replyfeed}

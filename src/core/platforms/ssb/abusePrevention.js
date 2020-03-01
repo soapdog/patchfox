@@ -75,7 +75,8 @@ const isMessageHidden = (msg) => {
     let currentFilters = getFilters().filter(f => f.action == "hide")
     if (currentFilters.length > 0) {
         let res = currentFilters.map((f) => isMessageFiltered(msg, f, "hide"))
-        return res.some(r => r)
+        res = !res.some(r => !r)
+        return res
     } else {
         return true // true because it is used by a pull.filter()
     }

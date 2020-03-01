@@ -3,6 +3,8 @@
  *
  * Things I don't currently like here:
  * - usage of getPref and abuse prevention. This should be pluggable!
+ * 
+ * This file is fucking big and needs to be refactored.
  */
 
 
@@ -16,8 +18,32 @@ const ssbRef = require("ssb-ref")
 const ssbMentions = require("ssb-mentions")
 const ssbClient = require("ssb-client")
 const ssbAvatar = require("ssb-avatar")
+const pullParallelMap = require("pull-paramap");
+const pullSort = require("pull-sort");
+const _ = require("lodash")
 
-const manifest = require("./manifest")
+const defaultOptions = {
+  private: true,
+  reverse: true,
+  meta: true
+};
+
+const pipelines = {
+  threadPipes: new Set(),
+  messagePipes: new Set(),
+  thread: {
+    use: func => pipelines.threadPipes.add(func),
+    get: () => [...pipelines.threadPipes].map(p => p.apply(p))
+  },
+  message: {
+    use: func => pipelines.messagePipes.add(func),
+    get: () => [...pipelines.messagePipes].map(p => p.apply(p))
+  }
+};
+
+const configure = (...customOptions) =>
+  Object.assign({}, defaultOptions, ...customOptions);
+
 
 let sbot = false
 let getPref = () => false
@@ -41,6 +67,18 @@ const setMsgCache = (id, data) => {
 
 
 class SSB {
+  constructor() {
+    // add basic built-in pipelines
+    pipelines.thread.use(this.filterHasContent)
+    pipelines.thread.use(this.filterTypes)
+    pipelines.thread.use(this.filterWithUserFilters)
+    pipelines.thread.use(this.filterLimit)
+
+    pipelines.message.use(this.filterHasContent)
+    pipelines.message.use(this.filterTypes)
+    pipelines.message.use(this.filterWithUserFilters)
+  }
+
   log(pMsg, pVal = "") {
     console.log(`[SSB API] - ${pMsg}`, pVal)
   }
@@ -64,7 +102,6 @@ class SSB {
         resolve(sbot)
       } else {
         ssbClient(keys, {
-          manifest: manifest,
           remote: remote || `ws://127.0.0.1:${port}/~shs:${keys.public}`,
           caps: {
             shs: "1KHLiKZvAvjbY1ziZEHMXawbCEIM6qwjCDm3VYRan/s=",
@@ -83,13 +120,33 @@ class SSB {
     })
   }
 
+  filterHasContent() {
+    return pull.filter(msg => msg && msg.value && msg.value.content)
+  }
+
+  filterPublicOnly() {
+    return pull.filter(
+      message => _.get(message, "value.meta.private", false) === false
+    );
+  }
+
+  async filterFollowing() {
+    return await this.socialFilter({ following: true });
+  }
+
   filterLimit() {
     let limit = getPref("limit", 10)
-    return pull.take(limit)
+    return pull.take(Number(limit))
   }
 
   filterWithUserFilters() {
-    return pull.filter(m => isMessageHidden(m))
+    return pull.filter(m => {
+      let res = isMessageHidden(m)
+      if (!res) {
+        console.log(`msg ${m.key} has been filtered.`)
+      }
+      return res
+    })
   }
 
   filterTypes() {
@@ -127,12 +184,11 @@ class SSB {
       opts = opts || {}
       opts.reverse = opts.reverse || true
 
+      const pipeline = pipelines.thread.get();
+
       pull(
         sbot.createFeedStream(opts),
-        pull.filter(msg => msg && msg.value && msg.value.content),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
+        pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
@@ -146,6 +202,8 @@ class SSB {
 
   thread(id) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.message.get();
+
       sbot.get(id, (err, value) => {
         if (err) return reject(err)
         var rootMsg = { key: id, value: value }
@@ -163,9 +221,7 @@ class SSB {
             sbot.links({ dest: id, values: true, rel: 'root' }),
             pull.unique('key')
           ),
-          this.filterTypes(),
-          this.filterWithUserFilters(),
-          this.filterLimit(),
+          pull.apply(pull, pipeline),
           pull.collect((err, msgs) => {
             if (err) reject(err)
             resolve(sort([rootMsg].concat(msgs)))
@@ -177,6 +233,8 @@ class SSB {
 
   mentions(feed, lt) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
+
       const createBacklinkStream = id => {
         var filterQuery = {
           $filter: {
@@ -226,9 +284,7 @@ class SSB {
 
       pull(
         createBacklinkStream(sbot.id),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
+        pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
@@ -242,13 +298,13 @@ class SSB {
 
   search(query, lt) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
+
       let q = query.toLowerCase();
       let limit = parseInt(getPref("limit", 10))
       pull(
         pull(sbot => sbot.search.query({ q, limit })),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
+        pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
@@ -339,8 +395,7 @@ class SSB {
     return new Promise(async (resolve, reject) => {
       let opts = {
         id: feedid,
-        reverse: true,
-        limit: getPref("limit", 10)
+        reverse: true
       }
 
       let user = {
@@ -348,8 +403,12 @@ class SSB {
         about: await this.aboutMessages(feedid, feedid)
       }
 
+      const pipeline = pipelines.thread.get();
+
+
       pull(
         sbot.createUserStream(opts),
+        pull.apply(pull, pipeline),
         pull.collect(function (err, data) {
           if (err) {
             reject(err)
@@ -466,7 +525,7 @@ class SSB {
       }
 
       // if (data.content.type == "post") {
-        retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
+      retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
       // }
       return retVal
     } catch (n) {
@@ -793,6 +852,7 @@ class SSB {
 
   channel(channel, opts) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
 
       let query = {
         "$filter": {
@@ -816,9 +876,7 @@ class SSB {
             ],
             reverse: true
           }),
-          this.filterTypes(),
-          this.filterWithUserFilters(),
-          this.filterLimit(),
+          pull.apply(pull, pipeline),
           pull.collect(function (err, data) {
             if (err) {
               reject(err)
@@ -1138,13 +1196,11 @@ class SSB {
     })
   }
 
-  query(filter, reverse, map, reduce, limit) {
+  query(filter, reverse, map, reduce) {
     return new Promise((resolve, reject) => {
       if (sbot) {
 
-        if (typeof limit == "undefined") {
-          limit = true
-        }
+        const pipeline = pipelines.thread.get();
 
         let query = {
           "$filter": filter
@@ -1169,8 +1225,7 @@ class SSB {
             ],
             reverse: reverse
           }),
-          this.filterTypes(),
-          limit ? this.filterLimit() : pull.through(),
+          pull.apply(pull, pipeline),
           pull.collect((err, data) => {
             if (err) {
               reject(err)
@@ -1221,6 +1276,341 @@ class SSB {
         reject("no sbot")
       }
     })
+  }
+
+  /**
+   * Below this is all a part of the great Oasis heist.
+   * 
+   * Oasis is another client for SSB, it is fucking awesome.
+   * You can get more info about it on:
+   * 
+   * http://github.com/fraction/oasis
+   * 
+   * Anyway, Oasis has some great features which our little webby
+   * foxes want, so we're stealing them. At the moment our loot contains:
+   * 
+   * - the popular view.
+   * 
+   * PS: Those routines are being adapted to Patchfox and differ from
+   * their original source.
+   */
+
+
+  async popular({ period, page = 1 }) {
+    if (!sbot) {
+      throw "error: no sbot"
+    }
+
+    const pipeline = pipelines.message.get();
+
+    const periodDict = {
+      day: 1,
+      week: 7,
+      month: 30.42,
+      year: 365
+    };
+
+    if (period in periodDict === false) {
+      throw new Error("invalid period");
+    }
+
+    const myFeedId = sbot.id;
+
+    const now = new Date();
+    const earliest = Number(now) - 1000 * 60 * 60 * 24 * periodDict[period];
+
+    const source = sbot.query.read(
+      configure({
+        query: [
+          {
+            $filter: {
+              value: {
+                timestamp: { $gte: earliest },
+                content: {
+                  type: "vote"
+                }
+              },
+              timestamp: { $gte: earliest }
+            }
+          }
+        ],
+        index: "DTA"
+      })
+    );
+    const followingFilter = await this.socialFilter({ following: true });
+
+    const messages = await new Promise((resolve, reject) => {
+      pull(
+        source,
+        // this.filterPublicOnly, // <-- filter declared on top with other filters
+        pull.filter(msg => {
+          return (
+            typeof msg.value.content === "object" &&
+            typeof msg.value.content.vote === "object" &&
+            typeof msg.value.content.vote.link === "string" &&
+            typeof msg.value.content.vote.value === "number"
+          );
+        }),
+        pull.reduce(
+          (acc, cur) => {
+            const author = cur.value.author;
+            const target = cur.value.content.vote.link;
+            const value = cur.value.content.vote.value;
+
+            if (acc[author] == null) {
+              acc[author] = {};
+            }
+
+            // Only accept values between -1 and 1
+            acc[author][target] = Math.max(-1, Math.min(1, value));
+
+            return acc;
+          },
+          {},
+          (err, obj) => {
+            if (err) {
+              return reject(err);
+            }
+
+            // HACK: Can we do this without a reduce()? I think this makes the
+            // stream much slower than it needs to be. Also, we should probably
+            // be indexing these rather than building the stream on refresh.
+
+            const adjustedObj = Object.entries(obj).reduce(
+              (acc, [author, values]) => {
+                if (author === myFeedId) {
+                  return acc;
+                }
+
+                const entries = Object.entries(values);
+                const total = 1 + Math.log(entries.length);
+
+                entries.forEach(([link, value]) => {
+                  if (acc[link] == null) {
+                    acc[link] = 0;
+                  }
+                  acc[link] += value / total;
+                });
+                return acc;
+              },
+              []
+            );
+
+            const arr = Object.entries(adjustedObj);
+            const length = arr.length;
+            const maxMessages = Number(getPref("limit", 10)) * page
+
+            pull(
+              pull.values(arr),
+              pullSort(([, aVal], [, bVal]) => bVal - aVal),
+              pull.take(Math.min(length, maxMessages)),
+              pull.map(([key]) => key),
+              pullParallelMap(async (key, cb) => {
+                try {
+                  const msg = await this.get(key);
+                  const data = { key: key, value: msg }
+                  cb(null,  data);
+                } catch (e) {
+                  console.log("errorrrrr!!!", e)
+                  cb(null, null);
+                }
+              }),
+              followingFilter,
+              pull.apply(pull, pipeline),
+              pull.collect((err, collectedMessages) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(collectedMessages.slice(Number(getPref("limit", 10) * -1)));
+                }
+              })
+            );
+          }
+        )
+      );
+    });
+
+    return messages;
+  }
+
+  /**
+   * Returns a function that filters messages based on who published the message.
+   *
+   * `null` means we don't care, `true` means it must be true, and `false` means
+   * that the value must be false. For example, if you set `me = true` then it
+   * will only allow messages that are from you. If you set `blocking = true`
+   * then you only see message from people you block.
+   */
+  async socialFilter({
+    following = null,
+    blocking = false,
+    me = null
+  } = {}) {
+    if (!sbot) {
+      throw "error: no sbot"
+    }
+
+    const { id } = sbot;
+    const relationshipObject = await sbot.friends.get({
+      source: id
+    });
+
+    const followingList = Object.entries(relationshipObject)
+      .filter(([, val]) => val === true)
+      .map(([key]) => key);
+
+    const blockingList = Object.entries(relationshipObject)
+      .filter(([, val]) => val === false)
+      .map(([key]) => key);
+
+    return pull.filter(message => {
+      if (message.value.author === id) {
+        return me !== false;
+      } else {
+        return (
+          (following === null ||
+            followingList.includes(message.value.author) === following) &&
+          (blocking === null ||
+            blockingList.includes(message.value.author) === blocking)
+        );
+      }
+    });
+  };
+
+  transform(ssb, messages, myFeedId) {
+    Promise.all(
+      messages.map(async msg => {
+        if (msg == null) {
+          return null;
+        }
+
+        const filterQuery = {
+          $filter: {
+            dest: msg.key
+          }
+        };
+
+        const referenceStream = sbot.backlinks.read({
+          query: [filterQuery],
+          index: "DTA", // use asserted timestamps
+          private: true,
+          meta: true
+        });
+
+        const rawVotes = await new Promise((resolve, reject) => {
+          pull(
+            referenceStream,
+            pull.filter(
+              ref =>
+                typeof ref.value.content !== "string" &&
+                ref.value.content.type === "vote" &&
+                ref.value.content.vote &&
+                typeof ref.value.content.vote.value === "number" &&
+                ref.value.content.vote.value >= 0 &&
+                ref.value.content.vote.link === msg.key
+            ),
+            pull.collect((err, collectedMessages) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(collectedMessages);
+              }
+            })
+          );
+        });
+
+        // { @key: 1, @key2: 0, @key3: 1 }
+        //
+        // only one vote per person!
+        const reducedVotes = rawVotes.reduce((acc, vote) => {
+          acc[vote.value.author] = vote.value.content.vote.value;
+          return acc;
+        }, {});
+
+        // gets *only* the people who voted 1
+        // [ @key, @key, @key ]
+        const voters = Object.entries(reducedVotes)
+          .filter(([, value]) => value === 1)
+          .map(([key]) => key);
+
+        const pendingName = models.about.name(msg.value.author);
+        const pendingAvatarMsg = models.about.image(msg.value.author);
+
+        const pending = [pendingName, pendingAvatarMsg];
+        const [name, avatarMsg] = await Promise.all(pending);
+
+        if (isPublic) {
+          const publicOptIn = await models.about.publicWebHosting(
+            msg.value.author
+          );
+          if (publicOptIn === false) {
+            _.set(
+              msg,
+              "value.content.text",
+              "This is a public message that has been redacted because Oasis is running in public mode. This redaction is only meant to make Oasis consistent with other public SSB viewers. Please do not mistake this for privacy. All public messages are public. Any peer on the SSB network can see this message."
+            );
+
+            if (msg.value.content.contentWarning != null) {
+              msg.value.content.contentWarning = "Redacted";
+            }
+          }
+        }
+
+        const channel = _.get(msg, "value.content.channel");
+        const hasChannel = typeof channel === "string" && channel.length > 2;
+
+        const avatarId =
+          avatarMsg != null && typeof avatarMsg.link === "string"
+            ? avatarMsg.link || nullImage
+            : avatarMsg || nullImage;
+
+        const avatarUrl = `/image/64/${encodeURIComponent(avatarId)}`;
+
+        const ts = new Date(msg.value.timestamp);
+        let isoTs;
+
+        try {
+          isoTs = ts.toISOString();
+        } catch (e) {
+          // Just in case it's an invalid date. :(
+          debug(e);
+          const receivedTs = new Date(msg.timestamp);
+          isoTs = receivedTs.toISOString();
+        }
+
+        _.set(msg, "value.meta.timestamp.received.iso8601", isoTs);
+
+        const ago = Date.now() - Number(ts);
+        const prettyAgo = prettyMs(ago, { compact: true });
+        _.set(msg, "value.meta.timestamp.received.since", prettyAgo);
+        _.set(msg, "value.meta.author.name", name);
+        _.set(msg, "value.meta.author.avatar", {
+          id: avatarId,
+          url: avatarUrl
+        });
+
+        const isPost =
+          _.get(msg, "value.content.type") === "post" &&
+          _.get(msg, "value.content.text") != null;
+        const hasRoot = _.get(msg, "value.content.root") != null;
+        const hasFork = _.get(msg, "value.content.fork") != null;
+
+        if (isPost && hasRoot === false && hasFork === false) {
+          _.set(msg, "value.meta.postType", "post");
+        } else if (isPost && hasRoot && hasFork === false) {
+          _.set(msg, "value.meta.postType", "comment");
+        } else if (isPost && hasRoot && hasFork) {
+          _.set(msg, "value.meta.postType", "reply");
+        } else {
+          _.set(msg, "value.meta.postType", "mystery");
+        }
+
+        _.set(msg, "value.meta.votes", voters);
+        _.set(msg, "value.meta.voted", voters.includes(myFeedId));
+
+        return msg;
+      })
+    );
   }
 }
 

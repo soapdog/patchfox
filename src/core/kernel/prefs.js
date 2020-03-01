@@ -7,7 +7,6 @@
 let savedData = {}
 
 const loadConfiguration = async () => {
-    console.log("Loading configuration...")
     try {
         let data = await browser.storage.local.get()
 

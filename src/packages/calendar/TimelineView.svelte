@@ -18,12 +18,12 @@
   console.time("loading gatherings");
 
   let currentDate = new Date().getTime();
-  console.log(currentDate);
 
   pull(
     sbot.messagesByType({
       type: "gathering",
       gt: (currentDate / 1000) | 0
+      // lt: (twoYearsFromNow.getTime() / 1000) | 0
     }),
     (abortable = Abortable()),
     pull.filter(function(msg) {
@@ -45,7 +45,9 @@
       if (!event.startDateTime) {
         return false;
       }
-      return event.startDateTime.epoch > currentDate;
+      let twoYearsFromNow = new Date();
+      twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2);
+      return event.startDateTime.epoch > currentDate && event.startDateTime.epoch < twoYearsFromNow.getTime();
     }),
     sort((e1, e2) => {
       if (e1.startDateTime.epoch == e2.startDateTime.epoch) {
@@ -70,7 +72,6 @@
       });
 
       loading = false;
-      console.log("g", gatherings);
       console.timeEnd("loading gatherings");
     })
   );
@@ -97,7 +98,7 @@
 
 <div class="events-display">
   {#if loading}
-    {@html ssb.markdown('This query might take a while, go grab some :coffee: or :tea: ...')}
+    {@html ssb.markdown('This query shows future events up to two years from now. It might take a while, go grab some :coffee: or :tea: ...')}
     <div class="loading" />
   {:else}
     <div class="timeline">

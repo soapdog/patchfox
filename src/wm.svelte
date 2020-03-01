@@ -31,7 +31,6 @@
         currentPackage = packageToOpen;
         currentView = viewToOpen;
         patchfox.emit("package:changed", { packageToOpen, view, data });
-        console.log("sending", eventToSend);
         patchfox.emit(eventToSend, data);
         return true;
       }
@@ -82,7 +81,6 @@
   let view = qs.view ? qs.view : "view";
   delete qs.pkg;
   delete qs.view;
-  console.log("go from URL");
   patchfox.go(pkg, view, qs);
 </script>
 

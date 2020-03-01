@@ -27,7 +27,8 @@
       color: unset;
     }
 
-    body, html {
+    body,
+    html {
       border-top: none;
     }
   </style>
@@ -36,7 +37,7 @@
 <body>
   <header class="panel-section panel-section-header">
     <div class="icon-section-header"></div>
-    <div class="text-section-header">Patchfox</div>
+    <div class="text-section-header" id="patchfox-header">Patchfox</div>
   </header>
 
   <div class="panel-section panel-section-list">
@@ -45,6 +46,13 @@
       <div class="text">Public</div>
       <div class="text-shortcut">P</div>
     </div>
+
+    <div class="panel-list-item" id="go-to-popular">
+      <div class="icon"></div>
+      <div class="text">Popular</div>
+      <div class="text-shortcut">O</div>
+    </div>
+
 
     <div class="panel-list-item" id="go-to-profile">
       <div class="icon"></div>
@@ -73,16 +81,23 @@
       <div class="text-shortcut">S</div>
     </div>
 
+    <div class="panel-section-separator"></div>
 
-    <div class="panel-list-item" id="go-to-public">
+    <div class="panel-list-item">
       <div class="icon"></div>
-      <a class="text" href="https://github.com/soapdog/patchfox" target="_blank">View on
+      <a class="text" href="https://github.com/soapdog/patchfox" target="_blank">Source Code on
         Github</a>
       <div class="text-shortcut"></div>
     </div>
-    <div class="panel-list-item" id="go-to-public">
+    <div class="panel-list-item">
       <div class="icon"></div>
-      <a class="text" href="https://github.com/soapdog/patchfox/issues" target="_blank">Issues</a>
+      <a class="text" href="https://git.sr.ht/~soapdog/patchfox" target="_blank">Source Code on
+        Sourcehut</a>
+      <div class="text-shortcut"></div>
+    </div>
+    <div class="panel-list-item">
+      <div class="icon"></div>
+      <a class="text" href="https://github.com/soapdog/patchfox/issues" target="_blank">Issues on Github</a>
       <div class="text-shortcut"></div>
     </div>
   </div>
@@ -90,7 +105,7 @@
   <footer class="panel-section panel-section-footer">
     <button class="panel-section-footer-button" id="go-to-help">Help</button>
     <div class="panel-section-footer-separator"></div>
-    <button class="panel-section-footer-button default" id="compose">New Post</button>
+    <button class="panel-section-footer-button default" id="compose">New Post (c)</button>
   </footer>
   <script src="browserAction.js"></script>
 </body>

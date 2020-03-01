@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2020.2.1",
+  "version": "2020.3.1",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
@@ -24,12 +24,13 @@
     "pubsub-js": "^1.7.0",
     "pull-abortable": "^4.1.1",
     "pull-paramap": "^1.2.2",
+    "pull-sort": "^1.0.2",
     "pull-stream": "^3.6.14",
     "query-string": "^6.8.2",
     "rimraf": "^2.6.3",
     "scssify": "^3.0.1",
     "spectre.css": "^0.5.8",
-    "ssb-client": "^4.7.8",
+    "ssb-client": "^4.9.0",
     "svelte": "^3.7.1",
     "sveltify": "^3.0.0",
     "timeago-simple": "^1.2.4"
@@ -93,7 +94,6 @@
     "pull-promise": "^2.0.0",
     "pull-reader": "^1.3.1",
     "pull-reconnect": "0.0.3",
-    "pull-sort": "^1.0.2",
     "pull-split": "^0.2.0",
     "pull-utf8-decoder": "^1.0.2",
     "scuttle-gathering": "^1.3.6",
