@@ -2,7 +2,7 @@
   "description": "Patchfox is a Secure Scuttlebutt client",
   "manifest_version": 2,
   "name": "Patchfox",
-  "version": "2020.2.2",
+  "version": "2020.3.1",
   "icons": {
     "512": "images/patchfox_pixel_512.png",
     "96": "images/patchfox_pixel_96.png",
