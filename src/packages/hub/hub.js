@@ -25,6 +25,14 @@ patchfox.package({
     label: "Feeds",
     items: [
       {
+        label: "Popular",
+        event: "package:go",
+        data: {
+          pkg: "hub",
+          view: "popular"
+        }
+      },
+      {
         label: "Public",
         event: "package:go",
         data: {

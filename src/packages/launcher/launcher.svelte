@@ -52,7 +52,6 @@
             patchfox.packages[pkg].app && patchfox.packages[pkg].app === true
           );
         });
-        console.log("apps", packageKeys);
         break;
       default:
         packageKeys = [];

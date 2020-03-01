@@ -11,19 +11,19 @@
   export let limit = false;
 
   $: {
-    document.title = `Patchfox - Public`;
+    document.title = `Patchfox - Popular`;
 
     let opts = {};
     if (lt) {
       opts.lt = Number(lt);
-      document.title = `Patchfox - Public - ${lt}`;
+      document.title = `Patchfox - Popular - ${lt}`;
     }
 
-    console.time("public");
+    console.time("popular");
     promise = ssb
-      .public(opts)
+      .popular({period: "week"})
       .then(ms => {
-        console.timeEnd("public");
+        console.timeEnd("popular");
         console.log("got msgs", ms);
         msgs = ms;
         window.scrollTo(0, 0);

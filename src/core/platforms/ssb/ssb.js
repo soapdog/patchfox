@@ -20,6 +20,7 @@ const ssbClient = require("ssb-client")
 const ssbAvatar = require("ssb-avatar")
 const pullParallelMap = require("pull-paramap");
 const pullSort = require("pull-sort");
+const _ = require("lodash")
 
 const defaultOptions = {
   private: true,
@@ -72,6 +73,10 @@ class SSB {
     pipelines.thread.use(this.filterTypes)
     pipelines.thread.use(this.filterWithUserFilters)
     pipelines.thread.use(this.filterLimit)
+
+    pipelines.message.use(this.filterHasContent)
+    pipelines.message.use(this.filterTypes)
+    pipelines.message.use(this.filterWithUserFilters)
   }
 
   log(pMsg, pVal = "") {
@@ -117,6 +122,16 @@ class SSB {
 
   filterHasContent() {
     return pull.filter(msg => msg && msg.value && msg.value.content)
+  }
+
+  filterPublicOnly() {
+    return pull.filter(
+      message => _.get(message, "value.meta.private", false) === false
+    );
+  }
+
+  async filterFollowing() {
+    return await this.socialFilter({ following: true });
   }
 
   filterLimit() {
@@ -187,7 +202,7 @@ class SSB {
 
   thread(id) {
     return new Promise((resolve, reject) => {
-      const pipeline = pipelines.thread.get();
+      const pipeline = pipelines.message.get();
 
       sbot.get(id, (err, value) => {
         if (err) return reject(err)
@@ -510,7 +525,7 @@ class SSB {
       }
 
       // if (data.content.type == "post") {
-        retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
+      retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
       // }
       return retVal
     } catch (n) {
@@ -1263,12 +1278,30 @@ class SSB {
     })
   }
 
+  /**
+   * Below this is all a part of the great Oasis heist.
+   * 
+   * Oasis is another client for SSB, it is fucking awesome.
+   * You can get more info about it on:
+   * 
+   * http://github.com/fraction/oasis
+   * 
+   * Anyway, Oasis has some great features which our little webby
+   * foxes want, so we're stealing them. At the moment our loot contains:
+   * 
+   * - the popular view.
+   * 
+   * PS: Those routines are being adapted to Patchfox and differ from
+   * their original source.
+   */
+
+
   async popular({ period }) {
     if (!sbot) {
       throw "error: no sbot"
     }
 
-    const ssb = sbot;
+    const pipeline = pipelines.thread.get();
 
     const periodDict = {
       day: 1,
@@ -1281,12 +1314,12 @@ class SSB {
       throw new Error("invalid period");
     }
 
-    const myFeedId = ssb.id;
+    const myFeedId = sbot.id;
 
     const now = new Date();
     const earliest = Number(now) - 1000 * 60 * 60 * 24 * periodDict[period];
 
-    const source = ssb.query.read(
+    const source = sbot.query.read(
       configure({
         query: [
           {
@@ -1304,13 +1337,12 @@ class SSB {
         index: "DTA"
       })
     );
-    const followingFilter = await socialFilter({ following: true });
-
+    const followingFilter = await this.socialFilter({ following: true });
 
     const messages = await new Promise((resolve, reject) => {
       pull(
         source,
-        publicOnlyFilter,
+        // this.filterPublicOnly, // <-- filter declared on top with other filters
         pull.filter(msg => {
           return (
             typeof msg.value.content === "object" &&
@@ -1366,31 +1398,34 @@ class SSB {
 
             const arr = Object.entries(adjustedObj);
             const length = arr.length;
+            const maxMessages = Number(getPref("limit", 10))
 
             pull(
               pull.values(arr),
               pullSort(([, aVal], [, bVal]) => bVal - aVal),
               pull.take(Math.min(length, maxMessages)),
               pull.map(([key]) => key),
+              pull.through(d => console.log("0",d)),
               pullParallelMap(async (key, cb) => {
                 try {
-                  const msg = await post.get(key);
-                  cb(null, msg);
+                  const msg = await this.get(key);
+                  const data = { key: key, value: msg }
+                  console.log("data", data)
+                  cb(null,  data);
                 } catch (e) {
+                  console.log("errorrrrr!!!", e)
                   cb(null, null);
                 }
               }),
-              pull.filter(
-                (
-                  message // avoid private messages (!)
-                ) => message && typeof message.value.content !== "string"
-              ),
+              pull.through(d => { console.log("through1", d) }),
               followingFilter,
+              pull.through(d => { console.log("through3", d) }),
               pull.collect((err, collectedMessages) => {
                 if (err) {
                   reject(err);
                 } else {
-                  resolve(transform(ssb, collectedMessages, myFeedId));
+                  console.log(collectedMessages)
+                  resolve(collectedMessages);
                 }
               })
             );
@@ -1410,7 +1445,7 @@ class SSB {
    * will only allow messages that are from you. If you set `blocking = true`
    * then you only see message from people you block.
    */
-  async socialFilter ({
+  async socialFilter({
     following = null,
     blocking = false,
     me = null
@@ -1419,9 +1454,8 @@ class SSB {
       throw "error: no sbot"
     }
 
-    const ssb = sbot;
-    const { id } = ssb;
-    const relationshipObject = await ssb.friends.get({
+    const { id } = sbot;
+    const relationshipObject = await sbot.friends.get({
       source: id
     });
 
@@ -1434,6 +1468,7 @@ class SSB {
       .map(([key]) => key);
 
     return pull.filter(message => {
+      console.log("social", message, relationshipObject)
       if (message.value.author === id) {
         return me !== false;
       } else {
@@ -1446,6 +1481,142 @@ class SSB {
       }
     });
   };
+
+  transform(ssb, messages, myFeedId) {
+    Promise.all(
+      messages.map(async msg => {
+        if (msg == null) {
+          return null;
+        }
+
+        const filterQuery = {
+          $filter: {
+            dest: msg.key
+          }
+        };
+
+        const referenceStream = sbot.backlinks.read({
+          query: [filterQuery],
+          index: "DTA", // use asserted timestamps
+          private: true,
+          meta: true
+        });
+
+        const rawVotes = await new Promise((resolve, reject) => {
+          pull(
+            referenceStream,
+            pull.filter(
+              ref =>
+                typeof ref.value.content !== "string" &&
+                ref.value.content.type === "vote" &&
+                ref.value.content.vote &&
+                typeof ref.value.content.vote.value === "number" &&
+                ref.value.content.vote.value >= 0 &&
+                ref.value.content.vote.link === msg.key
+            ),
+            pull.collect((err, collectedMessages) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(collectedMessages);
+              }
+            })
+          );
+        });
+
+        // { @key: 1, @key2: 0, @key3: 1 }
+        //
+        // only one vote per person!
+        const reducedVotes = rawVotes.reduce((acc, vote) => {
+          acc[vote.value.author] = vote.value.content.vote.value;
+          return acc;
+        }, {});
+
+        // gets *only* the people who voted 1
+        // [ @key, @key, @key ]
+        const voters = Object.entries(reducedVotes)
+          .filter(([, value]) => value === 1)
+          .map(([key]) => key);
+
+        const pendingName = models.about.name(msg.value.author);
+        const pendingAvatarMsg = models.about.image(msg.value.author);
+
+        const pending = [pendingName, pendingAvatarMsg];
+        const [name, avatarMsg] = await Promise.all(pending);
+
+        if (isPublic) {
+          const publicOptIn = await models.about.publicWebHosting(
+            msg.value.author
+          );
+          if (publicOptIn === false) {
+            _.set(
+              msg,
+              "value.content.text",
+              "This is a public message that has been redacted because Oasis is running in public mode. This redaction is only meant to make Oasis consistent with other public SSB viewers. Please do not mistake this for privacy. All public messages are public. Any peer on the SSB network can see this message."
+            );
+
+            if (msg.value.content.contentWarning != null) {
+              msg.value.content.contentWarning = "Redacted";
+            }
+          }
+        }
+
+        const channel = _.get(msg, "value.content.channel");
+        const hasChannel = typeof channel === "string" && channel.length > 2;
+
+        const avatarId =
+          avatarMsg != null && typeof avatarMsg.link === "string"
+            ? avatarMsg.link || nullImage
+            : avatarMsg || nullImage;
+
+        const avatarUrl = `/image/64/${encodeURIComponent(avatarId)}`;
+
+        const ts = new Date(msg.value.timestamp);
+        let isoTs;
+
+        try {
+          isoTs = ts.toISOString();
+        } catch (e) {
+          // Just in case it's an invalid date. :(
+          debug(e);
+          const receivedTs = new Date(msg.timestamp);
+          isoTs = receivedTs.toISOString();
+        }
+
+        _.set(msg, "value.meta.timestamp.received.iso8601", isoTs);
+
+        const ago = Date.now() - Number(ts);
+        const prettyAgo = prettyMs(ago, { compact: true });
+        _.set(msg, "value.meta.timestamp.received.since", prettyAgo);
+        _.set(msg, "value.meta.author.name", name);
+        _.set(msg, "value.meta.author.avatar", {
+          id: avatarId,
+          url: avatarUrl
+        });
+
+        const isPost =
+          _.get(msg, "value.content.type") === "post" &&
+          _.get(msg, "value.content.text") != null;
+        const hasRoot = _.get(msg, "value.content.root") != null;
+        const hasFork = _.get(msg, "value.content.fork") != null;
+
+        if (isPost && hasRoot === false && hasFork === false) {
+          _.set(msg, "value.meta.postType", "post");
+        } else if (isPost && hasRoot && hasFork === false) {
+          _.set(msg, "value.meta.postType", "comment");
+        } else if (isPost && hasRoot && hasFork) {
+          _.set(msg, "value.meta.postType", "reply");
+        } else {
+          _.set(msg, "value.meta.postType", "mystery");
+        }
+
+        _.set(msg, "value.meta.votes", voters);
+        _.set(msg, "value.meta.voted", voters.includes(myFeedId));
+
+        return msg;
+      })
+    );
+  }
 }
 
 global.ssb = new SSB()
