@@ -1296,12 +1296,12 @@ class SSB {
    */
 
 
-  async popular({ period }) {
+  async popular({ period, page = 1 }) {
     if (!sbot) {
       throw "error: no sbot"
     }
 
-    const pipeline = pipelines.thread.get();
+    const pipeline = pipelines.message.get();
 
     const periodDict = {
       day: 1,
@@ -1398,34 +1398,30 @@ class SSB {
 
             const arr = Object.entries(adjustedObj);
             const length = arr.length;
-            const maxMessages = Number(getPref("limit", 10))
+            const maxMessages = Number(getPref("limit", 10)) * page
 
             pull(
               pull.values(arr),
               pullSort(([, aVal], [, bVal]) => bVal - aVal),
               pull.take(Math.min(length, maxMessages)),
               pull.map(([key]) => key),
-              pull.through(d => console.log("0",d)),
               pullParallelMap(async (key, cb) => {
                 try {
                   const msg = await this.get(key);
                   const data = { key: key, value: msg }
-                  console.log("data", data)
                   cb(null,  data);
                 } catch (e) {
                   console.log("errorrrrr!!!", e)
                   cb(null, null);
                 }
               }),
-              pull.through(d => { console.log("through1", d) }),
               followingFilter,
-              pull.through(d => { console.log("through3", d) }),
+              pull.apply(pull, pipeline),
               pull.collect((err, collectedMessages) => {
                 if (err) {
                   reject(err);
                 } else {
-                  console.log(collectedMessages)
-                  resolve(collectedMessages);
+                  resolve(collectedMessages.slice(Number(getPref("limit", 10) * -1)));
                 }
               })
             );
@@ -1468,7 +1464,6 @@ class SSB {
       .map(([key]) => key);
 
     return pull.filter(message => {
-      console.log("social", message, relationshipObject)
       if (message.value.author === id) {
         return me !== false;
       } else {

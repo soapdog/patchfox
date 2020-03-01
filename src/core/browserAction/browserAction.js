@@ -6,6 +6,13 @@ function goPublic() {
   window.close();
 }
 
+function goPopular() {
+  browser.tabs.create({
+    url: "/index.html?pkg=hub&view=popular"
+  });
+  window.close();
+}
+
 function goCompose() {
   browser.tabs.create({
     url: "/index.html?pkg=post&view=compose"
@@ -72,6 +79,12 @@ document.getElementById("go-to-public").addEventListener("click", (ev) => {
   goPublic();
 });
 
+document.getElementById("go-to-popular").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goPopular();
+});
+
 document.getElementById("go-to-profile").addEventListener("click", (ev) => {
   ev.stopPropagation();
   ev.preventDefault();
@@ -106,6 +119,7 @@ document.getElementById("go-to-mentions").addEventListener("click", (ev) => {
 });
 
 keymage("p", goPublic);
+keymage("o", goPopular);
 keymage("s", goSettings);
 keymage("c", goCompose);
 keymage("n", goChannels);

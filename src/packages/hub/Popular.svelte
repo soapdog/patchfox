@@ -6,25 +6,23 @@
   let error = false;
   let dropdownActive = false;
   let promise;
-
-  export let lt = false;
+  export let period = "week";
+  export let page = 1;
   export let limit = false;
 
   $: {
     document.title = `Patchfox - Popular`;
 
-    let opts = {};
-    if (lt) {
-      opts.lt = Number(lt);
-      document.title = `Patchfox - Popular - ${lt}`;
+    if (page) {
+      document.title = `Patchfox - Popular - ${page}`;
     }
 
     console.time("popular");
     promise = ssb
-      .popular({period: "week"})
+      .popular({ period, page })
       .then(ms => {
         console.timeEnd("popular");
-        console.log("got msgs", ms);
+        console.log(`popular for ${period} msgs`, ms);
         msgs = ms;
         window.scrollTo(0, 0);
       })
@@ -36,12 +34,12 @@
   const goNext = () => {
     let lt = msgs[msgs.length - 1].value.timestamp;
     msgs = false;
-    patchfox.go("hub", "public", { lt });
+    patchfox.go("hub", "popular", { page: page + 1, period });
   };
 
   const urlForNext = () => {
     let lt = msgs[msgs.length - 1].value.timestamp;
-    return patchfox.url("hub", "public", { lt });
+    return patchfox.url("hub", "popular", { page: page + 1, period });
   };
 
   const goPrevious = () => {
@@ -60,8 +58,31 @@
 
 <div class="container">
   <div class="columns">
-    <h4 class="column">Public Feed</h4>
-    <div class="column" />
+    <h4 class="column">Popular</h4>
+    <div class="column">
+      <div class="form-group">
+        <label class="form-radio form-inline">
+          <input type="radio" bind:group={period} name="period" value={"day"} />
+          <i class="form-icon" />
+          Day
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" bind:group={period} name="period" value={"week"} />
+          <i class="form-icon" />
+          Week
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" bind:group={period} name="period" value={"month"}/>
+          <i class="form-icon" />
+          Month
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" bind:group={period} name="period" value={"year"}/>
+          <i class="form-icon" />
+          Year
+        </label>
+      </div>
+    </div>
   </div>
 </div>
 {#if error}
