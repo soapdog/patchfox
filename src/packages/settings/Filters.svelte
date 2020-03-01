@@ -15,18 +15,39 @@
   let filterAction = "";
 
   const addNewFilter = () => {
+    let filter = {};
+
     let keywords = filterKeywords
       .split(",")
       .map(v => v.trim())
       .filter(v => v.length !== 0);
 
-    let filter = {};
-   
+    if (keywords.length > 0) {
+      filter.keywords = keywords
+    }
+
+    if (filterAction.length > 0) {
+      filter.action = filterAction
+    }
+
+    if (filterChannel.length > 0) {
+      filter.channel = filterChannel
+    }
+
+    if (filterExpiry.length > 0) {
+      filter.expiry = filterExpiry
+    }
+
+    if (filterFeed.length > 0) {
+      filter.feed = filterFeed
+    }
+
 
     if (filter.channel && filter.channel.startsWith("#")) {
       filter.channel = filter.channel.slice(1);
     }
 
+    console.log("new filter", filter)
     if (
       filter.action &&
       (filter.feed || filter.channel || filter.keywords.length > 0)

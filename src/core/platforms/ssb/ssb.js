@@ -27,6 +27,19 @@ const defaultOptions = {
   meta: true
 };
 
+const pipelines = {
+  threadPipes: new Set(),
+  messagePipes: new Set(),
+  thread: {
+    use: func => pipelines.threadPipes.add(func),
+    get: () => [...pipelines.threadPipes].map(p => p.apply(p))
+  },
+  message: {
+    use: func => pipelines.messagePipes.add(func),
+    get: () => [...pipelines.messagePipes].map(p => p.apply(p))
+  }
+};
+
 const configure = (...customOptions) =>
   Object.assign({}, defaultOptions, ...customOptions);
 
@@ -53,6 +66,14 @@ const setMsgCache = (id, data) => {
 
 
 class SSB {
+  constructor() {
+    // add basic built-in pipelines
+    pipelines.thread.use(this.filterHasContent)
+    pipelines.thread.use(this.filterTypes)
+    pipelines.thread.use(this.filterWithUserFilters)
+    pipelines.thread.use(this.filterLimit)
+  }
+
   log(pMsg, pVal = "") {
     console.log(`[SSB API] - ${pMsg}`, pVal)
   }
@@ -94,13 +115,23 @@ class SSB {
     })
   }
 
+  filterHasContent() {
+    return pull.filter(msg => msg && msg.value && msg.value.content)
+  }
+
   filterLimit() {
     let limit = getPref("limit", 10)
     return pull.take(Number(limit))
   }
 
   filterWithUserFilters() {
-    return pull.filter(m => isMessageHidden(m))
+    return pull.filter(m => {
+      let res = isMessageHidden(m)
+      if (!res) {
+        console.log(`msg ${m.key} has been filtered.`)
+      }
+      return res
+    })
   }
 
   filterTypes() {
@@ -138,12 +169,11 @@ class SSB {
       opts = opts || {}
       opts.reverse = opts.reverse || true
 
+      const pipeline = pipelines.thread.get();
+
       pull(
         sbot.createFeedStream(opts),
-        pull.filter(msg => msg && msg.value && msg.value.content),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
+        pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
