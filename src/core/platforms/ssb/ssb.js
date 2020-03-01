@@ -187,6 +187,8 @@ class SSB {
 
   thread(id) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
+
       sbot.get(id, (err, value) => {
         if (err) return reject(err)
         var rootMsg = { key: id, value: value }
@@ -204,9 +206,7 @@ class SSB {
             sbot.links({ dest: id, values: true, rel: 'root' }),
             pull.unique('key')
           ),
-          this.filterTypes(),
-          this.filterWithUserFilters(),
-          this.filterLimit(),
+          pull.apply(pull, pipeline),
           pull.collect((err, msgs) => {
             if (err) reject(err)
             resolve(sort([rootMsg].concat(msgs)))
@@ -218,6 +218,8 @@ class SSB {
 
   mentions(feed, lt) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
+
       const createBacklinkStream = id => {
         var filterQuery = {
           $filter: {
@@ -267,9 +269,7 @@ class SSB {
 
       pull(
         createBacklinkStream(sbot.id),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
+        pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
@@ -283,13 +283,13 @@ class SSB {
 
   search(query, lt) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
+
       let q = query.toLowerCase();
       let limit = parseInt(getPref("limit", 10))
       pull(
         pull(sbot => sbot.search.query({ q, limit })),
-        this.filterTypes(),
-        this.filterWithUserFilters(),
-        this.filterLimit(),
+        pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
@@ -380,8 +380,7 @@ class SSB {
     return new Promise(async (resolve, reject) => {
       let opts = {
         id: feedid,
-        reverse: true,
-        limit: getPref("limit", 10)
+        reverse: true
       }
 
       let user = {
@@ -389,8 +388,12 @@ class SSB {
         about: await this.aboutMessages(feedid, feedid)
       }
 
+      const pipeline = pipelines.thread.get();
+
+
       pull(
         sbot.createUserStream(opts),
+        pull.apply(pull, pipeline),
         pull.collect(function (err, data) {
           if (err) {
             reject(err)
@@ -834,6 +837,7 @@ class SSB {
 
   channel(channel, opts) {
     return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get();
 
       let query = {
         "$filter": {
@@ -857,9 +861,7 @@ class SSB {
             ],
             reverse: true
           }),
-          this.filterTypes(),
-          this.filterWithUserFilters(),
-          this.filterLimit(),
+          pull.apply(pull, pipeline),
           pull.collect(function (err, data) {
             if (err) {
               reject(err)
@@ -1179,13 +1181,11 @@ class SSB {
     })
   }
 
-  query(filter, reverse, map, reduce, limit) {
+  query(filter, reverse, map, reduce) {
     return new Promise((resolve, reject) => {
       if (sbot) {
 
-        if (typeof limit == "undefined") {
-          limit = true
-        }
+        const pipeline = pipelines.thread.get();
 
         let query = {
           "$filter": filter
@@ -1210,8 +1210,7 @@ class SSB {
             ],
             reverse: reverse
           }),
-          this.filterTypes(),
-          limit ? this.filterLimit() : pull.through(),
+          pull.apply(pull, pipeline),
           pull.collect((err, data) => {
             if (err) {
               reject(err)
