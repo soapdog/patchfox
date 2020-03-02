@@ -18,13 +18,13 @@ $ npm install
 And build the add-on with:
 
 ```
-$ npm run build
+$ npm run clean-build
 ```
 
 If you use:
 
 ```
-$ npm run dev
+$ npm run clean-dev
 ```
 
 It will build the add-on using sourcemaps which makes debugging easier but can't be submit to AMO because they limit bundles to 4mb.

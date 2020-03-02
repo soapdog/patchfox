@@ -18,13 +18,13 @@ $ npm install
 And build the add-on with:
 
 ```
-$ npm run build
+$ npm run clean-build
 ```
 
 If you want to develop with a watcher that rebuilds the add-on when file changes use:
 
 ```
-$ npm run dev
+$ npm run clean-dev
 ```
 
 ## Running
