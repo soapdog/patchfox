@@ -48,7 +48,7 @@
       "uriTemplate": "/index.html?pkg=intercept&query=%s"
     }
   ],
-  "omnibox": { "keyword" : "ssb" },
+  "omnibox": { "keyword" : "ssb?" },
   "permissions": [
     "http://localhost:8989/",
     "<all_urls>",

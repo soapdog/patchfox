@@ -2,7 +2,7 @@
   "description": "Patchfox is a Secure Scuttlebutt client",
   "manifest_version": 2,
   "name": "Patchfox",
-  "version": "2020.3.2",
+  "version": "2020.3.3",
   "icons": {
     "512": "images/patchfox_pixel_512.png",
     "96": "images/patchfox_pixel_96.png",
@@ -48,7 +48,7 @@
       "uriTemplate": "/index.html?pkg=intercept&query=%s"
     }
   ],
-  "omnibox": { "keyword" : "ssb" },
+  "omnibox": { "keyword" : "ssb?" },
   "permissions": [
     "http://localhost:8989/",
     "<all_urls>",

@@ -34,8 +34,8 @@
 
 <style>
   .menu-right {
-    right: 0px;
-    left: unset;
+    right: 0px !important;
+    left: unset !important;
     min-width: 300px;
   }
 </style>
