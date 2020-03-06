@@ -70,11 +70,13 @@ class SSB {
   constructor() {
     // add basic built-in pipelines
     pipelines.thread.use(this.filterHasContent)
+    pipelines.thread.use(this.filterRemovePrivateMsgs)
     pipelines.thread.use(this.filterTypes)
     pipelines.thread.use(this.filterWithUserFilters)
     pipelines.thread.use(this.filterLimit)
 
     pipelines.message.use(this.filterHasContent)
+    pipelines.message.use(this.filterRemovePrivateMsgs)
     pipelines.message.use(this.filterTypes)
     pipelines.message.use(this.filterWithUserFilters)
   }
@@ -124,10 +126,8 @@ class SSB {
     return pull.filter(msg => msg && msg.value && msg.value.content)
   }
 
-  filterPublicOnly() {
-    return pull.filter(
-      message => _.get(message, "value.meta.private", false) === false
-    );
+  filterRemovePrivateMsgs() {
+    return pull.filter(msg => !_.get(msg, "value.meta.private", false))
   }
 
   async filterFollowing() {
