@@ -7,6 +7,7 @@
   const { getPref } = require("../../core/kernel/prefs.js");
   const pull = require("pull-stream");
   const fileReader = require("pull-file-reader");
+  const Tribute = require("tributejs");
 
   export let root = false;
   export let branch = false;
@@ -28,7 +29,7 @@
   document.title = `Patchfox - compose`;
 
   if (branch) {
-    ssb.get(branch).then(data => (branchedMsg = {key: branch, value: data}));
+    ssb.get(branch).then(data => (branchedMsg = { key: branch, value: data }));
   }
 
   onMount(() => {
@@ -39,6 +40,26 @@
     // e.dataTransfer.getData('url'); from images in the browser window
 
     drop(document.getElementById("content"), files => readFileAndAttach(files));
+
+    let usersObjs = ssb.getAllCachedUsers();
+    let users = [];
+    for (let id in usersObjs) {
+      users.push({
+        key: usersObjs[id].name,
+        value: `[@${usersObjs[id].name}](${usersObjs[id].id})`
+      });
+    }
+
+    console.log("users", users);
+
+    const tribute = new Tribute({
+      values: users,
+      selectTemplate: function(item) {
+        return  item.original.value;
+      }
+    });
+
+    tribute.attach(document.getElementById("content"));
   });
 
   const readFileAndAttach = files => {
@@ -226,7 +247,7 @@
             {#if branchedMsg}
               <MessageRenderer msg={branchedMsg} />
             {:else}
-               <p class="loading">Loading...</p>
+              <p class="loading">Loading...</p>
             {/if}
           {/if}
 

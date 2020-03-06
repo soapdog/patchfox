@@ -452,12 +452,16 @@ class SSB {
 
   async setAvatarCache(feed, data) {
     let s = {}
-    s[`avatar-${feed}`] = data
+    s[`profile-${feed}`] = data
     return browser.storage.local.set(s)
   }
 
   async getCachedAvatar(feed) {
-    return browser.storage.local.get(`avatar-${feed}`)
+    return browser.storage.local.get(`profile-${feed}`)
+  }
+
+  getAllCachedUsers() {
+    return avatarCache
   }
 
   async avatar(feed) {

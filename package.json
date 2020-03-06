@@ -33,13 +33,15 @@
     "ssb-client": "^4.9.0",
     "svelte": "^3.7.1",
     "sveltify": "^3.0.0",
-    "timeago-simple": "^1.2.4"
+    "timeago-simple": "^1.2.4",
+    "tributejs": "^5.0.1"
   },
   "scripts": {
     "clean": "rimraf dist",
     "copy:manifest": "copyfiles manifest.json dist",
     "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
     "copy:augmented-ui": "copyfiles -E -u 2 node_modules/augmented-ui/augmented.css dist/css",
+    "copy:tribute-css": "copyfiles -E -u 3 node_modules/tributejs/dist/tribute.css dist/css",
     "copy:docs": "copyfiles docs/**/* dist",
     "copy:index": "copyfiles -u 1 src/index.html dist",
     "copy:package-assets": "node scripts/copy-package-assets.js",
