@@ -54,7 +54,12 @@ let avatarCache = {}
 const getMsgCache = (id) => {
   let data = sessionStorage.getItem(id)
   if (data) {
-    return JSON.parse(data)
+    try {
+      return JSON.parse(data)
+    } catch (n) {
+      sessionStorage.removeItem(id)
+      return false
+    }
   } else {
     return false
   }
@@ -73,12 +78,14 @@ class SSB {
     pipelines.thread.use(this.filterRemovePrivateMsgs)
     pipelines.thread.use(this.filterTypes)
     pipelines.thread.use(this.filterWithUserFilters)
+    pipelines.thread.use(this.transform)
     pipelines.thread.use(this.filterLimit)
 
     pipelines.message.use(this.filterHasContent)
     pipelines.message.use(this.filterRemovePrivateMsgs)
     pipelines.message.use(this.filterTypes)
     pipelines.message.use(this.filterWithUserFilters)
+    pipelines.message.use(this.transform)
   }
 
   log(pMsg, pVal = "") {
@@ -506,7 +513,11 @@ class SSB {
     let keys = Object.keys(allSavedData)
     keys.forEach(k => {
       let key = k.replace("profile-", "")
-      avatarCache[key] = JSON.parse(allSavedData[k])
+      try {
+        avatarCache[key] = JSON.parse(allSavedData[k])
+      } catch (n) {
+        localStorage.removeItem(`profile-${k}`)
+      }
     })
 
     console.timeEnd("avatar cache")
@@ -1294,6 +1305,7 @@ class SSB {
    * foxes want, so we're stealing them. At the moment our loot contains:
    * 
    * - the popular view.
+   * - transform
    * 
    * PS: Those routines are being adapted to Patchfox and differ from
    * their original source.
@@ -1304,6 +1316,8 @@ class SSB {
     if (!sbot) {
       throw "error: no sbot"
     }
+
+    const transform = this.transform.bind(this);
 
     const pipeline = pipelines.message.get();
 
@@ -1413,7 +1427,7 @@ class SSB {
                 try {
                   const msg = await this.get(key);
                   const data = { key: key, value: msg }
-                  cb(null,  data);
+                  cb(null, data);
                 } catch (e) {
                   console.log("errorrrrr!!!", e)
                   cb(null, null);
@@ -1481,27 +1495,29 @@ class SSB {
     });
   };
 
-  transform(ssb, messages, myFeedId) {
-    Promise.all(
-      messages.map(async msg => {
-        if (msg == null) {
-          return null;
+  transform() {
+    const aux = async (msg) => {
+      if (msg == null) {
+        return msg
+      }
+
+      const filterQuery = {
+        $filter: {
+          dest: msg.key
         }
+      };
 
-        const filterQuery = {
-          $filter: {
-            dest: msg.key
-          }
-        };
+      const referenceStream = ssb.sbot.backlinks.read({
+        query: [filterQuery],
+        index: "DTA", // use asserted timestamps
+        private: true,
+        meta: true
+      });
 
-        const referenceStream = sbot.backlinks.read({
-          query: [filterQuery],
-          index: "DTA", // use asserted timestamps
-          private: true,
-          meta: true
-        });
+      let rawVotes;
 
-        const rawVotes = await new Promise((resolve, reject) => {
+      try {
+        rawVotes = await new Promise((resolve, reject) => {
           pull(
             referenceStream,
             pull.filter(
@@ -1515,106 +1531,62 @@ class SSB {
             ),
             pull.collect((err, collectedMessages) => {
               if (err) {
-                reject(err);
+                console.error("err", err)
+                reject(err)
               } else {
-                resolve(collectedMessages);
+                resolve(collectedMessages)
               }
             })
-          );
-        });
+          )
+        })
+      } catch (n) {
+        console.error("error with rawVotes", n)
+        throw n
+      }
 
-        // { @key: 1, @key2: 0, @key3: 1 }
-        //
-        // only one vote per person!
-        const reducedVotes = rawVotes.reduce((acc, vote) => {
-          acc[vote.value.author] = vote.value.content.vote.value;
-          return acc;
-        }, {});
 
-        // gets *only* the people who voted 1
-        // [ @key, @key, @key ]
-        const voters = Object.entries(reducedVotes)
-          .filter(([, value]) => value === 1)
-          .map(([key]) => key);
 
-        const pendingName = models.about.name(msg.value.author);
-        const pendingAvatarMsg = models.about.image(msg.value.author);
+      // { @key: 1, @key2: 0, @key3: 1 }
+      //
+      // only one vote per person!
+      const reducedVotes = rawVotes.reduce((acc, vote) => {
+        acc[vote.value.author] = vote.value.content.vote.value;
+        return acc;
+      }, {});
 
-        const pending = [pendingName, pendingAvatarMsg];
-        const [name, avatarMsg] = await Promise.all(pending);
+      // gets *only* the people who voted 1
+      // [ @key, @key, @key ]
+      const voters = Object.entries(reducedVotes)
+        .filter(([, value]) => value === 1)
+        .map(([key]) => key);
 
-        if (isPublic) {
-          const publicOptIn = await models.about.publicWebHosting(
-            msg.value.author
-          );
-          if (publicOptIn === false) {
-            _.set(
-              msg,
-              "value.content.text",
-              "This is a public message that has been redacted because Oasis is running in public mode. This redaction is only meant to make Oasis consistent with other public SSB viewers. Please do not mistake this for privacy. All public messages are public. Any peer on the SSB network can see this message."
-            );
+      const isPost =
+        _.get(msg, "value.content.type") === "post" &&
+        _.get(msg, "value.content.text") != null;
+      const hasRoot = _.get(msg, "value.content.root") != null;
+      const hasFork = _.get(msg, "value.content.fork") != null;
 
-            if (msg.value.content.contentWarning != null) {
-              msg.value.content.contentWarning = "Redacted";
-            }
-          }
-        }
+      if (isPost && hasRoot === false && hasFork === false) {
+        _.set(msg, "value.meta.postType", "post");
+      } else if (isPost && hasRoot && hasFork === false) {
+        _.set(msg, "value.meta.postType", "comment");
+      } else if (isPost && hasRoot && hasFork) {
+        _.set(msg, "value.meta.postType", "reply");
+      } else {
+        _.set(msg, "value.meta.postType", "mystery");
+      }
 
-        const channel = _.get(msg, "value.content.channel");
-        const hasChannel = typeof channel === "string" && channel.length > 2;
+      _.set(msg, "value.meta.votes", voters);
+      _.set(msg, "value.meta.voted", voters.includes(ssb.sbot.id));
 
-        const avatarId =
-          avatarMsg != null && typeof avatarMsg.link === "string"
-            ? avatarMsg.link || nullImage
-            : avatarMsg || nullImage;
+      return msg
+    }
 
-        const avatarUrl = `/image/64/${encodeURIComponent(avatarId)}`;
-
-        const ts = new Date(msg.value.timestamp);
-        let isoTs;
-
-        try {
-          isoTs = ts.toISOString();
-        } catch (e) {
-          // Just in case it's an invalid date. :(
-          debug(e);
-          const receivedTs = new Date(msg.timestamp);
-          isoTs = receivedTs.toISOString();
-        }
-
-        _.set(msg, "value.meta.timestamp.received.iso8601", isoTs);
-
-        const ago = Date.now() - Number(ts);
-        const prettyAgo = prettyMs(ago, { compact: true });
-        _.set(msg, "value.meta.timestamp.received.since", prettyAgo);
-        _.set(msg, "value.meta.author.name", name);
-        _.set(msg, "value.meta.author.avatar", {
-          id: avatarId,
-          url: avatarUrl
-        });
-
-        const isPost =
-          _.get(msg, "value.content.type") === "post" &&
-          _.get(msg, "value.content.text") != null;
-        const hasRoot = _.get(msg, "value.content.root") != null;
-        const hasFork = _.get(msg, "value.content.fork") != null;
-
-        if (isPost && hasRoot === false && hasFork === false) {
-          _.set(msg, "value.meta.postType", "post");
-        } else if (isPost && hasRoot && hasFork === false) {
-          _.set(msg, "value.meta.postType", "comment");
-        } else if (isPost && hasRoot && hasFork) {
-          _.set(msg, "value.meta.postType", "reply");
-        } else {
-          _.set(msg, "value.meta.postType", "mystery");
-        }
-
-        _.set(msg, "value.meta.votes", voters);
-        _.set(msg, "value.meta.voted", voters.includes(myFeedId));
-
-        return msg;
-      })
-    );
+    return pullParallelMap((msg, cb) => {
+      aux(msg)
+      .then(data => cb(null, data))
+      .catch(err => cb(err, null))
+    })
   }
 }
 
