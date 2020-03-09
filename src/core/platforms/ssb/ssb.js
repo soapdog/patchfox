@@ -44,6 +44,52 @@ const pipelines = {
 const configure = (...customOptions) =>
   Object.assign({}, defaultOptions, ...customOptions);
 
+const caches = {}
+const cacheResult = (kind, msgId, value) => {
+  let key = `cache-${kind}-${msgId}`
+  caches[key] = {
+    time: Date.now(),
+    value
+  }
+  console.log("caching result for", key)
+}
+const invalidateCacheResult = (kind, msgId) => {
+  let key = `cache-${kind}-${msgId}`
+  delete caches[key]
+}
+
+const resultFromCache = (kind, msgId, falseIfOlderThan) => {
+  let key = `cache-${kind}-${msgId}`
+  let currentDate = Date.now()
+  if (caches.hasOwnProperty(key)) {
+    let expiryDate = caches[key].time + (falseIfOlderThan * 1000)
+    if (expiryDate > currentDate) {
+      console.log("!! cached result for", key)
+      return caches[key].value
+    }
+  }
+  console.log("no cached result for", key)
+  return false;
+}
+
+const workQueue = new Set()
+const enqueue = (kind, msgId, falseIfOlderThan, work, cb) => {
+  return new Promise((resolve, reject) => {
+    let key = `queue-${kind}-${msgId}`
+    let possibleResult = resultFromCache(kind, msgId, falseIfOlderThan)
+
+    if (possibleResult) {
+      resolve(possibleResult)
+    } else {
+      if (workQueue.has(key)) {
+        // is in the queue, should wait for result.
+      } else {
+        // not in the queue, should enqueue and block for  result.
+      }
+    }
+  })
+}
+
 
 let sbot = false
 let getPref = () => false
@@ -78,14 +124,14 @@ class SSB {
     pipelines.thread.use(this.filterRemovePrivateMsgs)
     pipelines.thread.use(this.filterTypes)
     pipelines.thread.use(this.filterWithUserFilters)
-    pipelines.thread.use(this.transform)
+    // pipelines.thread.use(this.transform)
     pipelines.thread.use(this.filterLimit)
 
     pipelines.message.use(this.filterHasContent)
     pipelines.message.use(this.filterRemovePrivateMsgs)
     pipelines.message.use(this.filterTypes)
     pipelines.message.use(this.filterWithUserFilters)
-    pipelines.message.use(this.transform)
+    // pipelines.message.use(this.transform)
   }
 
   log(pMsg, pVal = "") {
@@ -770,7 +816,9 @@ class SSB {
     })
   }
 
-  votes(msgid) {
+  // this is the old votes implementation.
+  // I'm going to try to remove it later.
+  votesOld(msgid) {
     return new Promise((resolve, reject) => {
       if (sbot) {
         pull(
@@ -1495,7 +1543,90 @@ class SSB {
     });
   };
 
+  async votes(msg) {
+    if (!msg.key && typeof msg == "string") {
+      msg = { key: msg }
+    }
+
+    let cachedResult = resultFromCache("votes", msg.key, 10)
+
+    if (cachedResult) {
+      return cachedResult
+    }
+
+    const voteQuery = async msg => {
+      const filterQuery = {
+        $filter: {
+          dest: msg.key,
+          value: {
+            content: {
+              type: "vote"
+            }
+          }
+        }
+      };
+
+      const referenceStream = ssb.sbot.backlinks.read({
+        query: [filterQuery],
+        index: "DTA", // use asserted timestamps
+        private: true,
+        meta: true
+      });
+
+      let rawVotes;
+
+      try {
+        rawVotes = await new Promise((resolve, reject) => {
+          pull(
+            referenceStream,
+            pull.filter(
+              ref =>
+                typeof ref.value.content.vote.value === "number" &&
+                ref.value.content.vote.value >= 0 &&
+                ref.value.content.vote.link === msg.key
+            ),
+            pull.collect((err, collectedMessages) => {
+              if (err) {
+                console.error("err", err)
+                reject(err)
+              } else {
+                resolve(collectedMessages)
+              }
+            })
+          )
+        })
+      } catch (n) {
+        console.error("error with rawVotes", n)
+        throw n
+      }
+
+
+
+      // { @key: 1, @key2: 0, @key3: 1 }
+      //
+      // only one vote per person!
+      const reducedVotes = rawVotes.reduce((acc, vote) => {
+        acc[vote.value.author] = vote.value.content.vote.value;
+        return acc;
+      }, {});
+
+      // gets *only* the people who voted 1
+      // [ @key, @key, @key ]
+      const voters = Object.entries(reducedVotes)
+        .filter(([, value]) => value === 1)
+        .map(([key]) => key);
+
+      return voters;
+    }
+
+
+    let res = await voteQuery(msg.key)
+    cacheResult("votes", msg.key, res)
+    return res
+  }
+
   transform() {
+    console.log("transform...")
     const aux = async (msg) => {
       if (msg == null) {
         return msg
@@ -1584,8 +1715,8 @@ class SSB {
 
     return pullParallelMap((msg, cb) => {
       aux(msg)
-      .then(data => cb(null, data))
-      .catch(err => cb(err, null))
+        .then(data => cb(null, data))
+        .catch(err => cb(err, null))
     })
   }
 }

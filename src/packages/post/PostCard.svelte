@@ -1,6 +1,8 @@
 <script>
   const { getPref } = require("../../core/kernel/prefs.js");
   const Card = require("../../core/components/ui/Card.svelte");
+  const VoteCounter = require("../../core/components/VoteCounter.svelte");
+
 
   export let msg;
   let contentWarningsExpandByDefault = getPref(
@@ -116,6 +118,8 @@
           <i class="form-icon" />
           Like
         </label>
+        <VoteCounter {msg} />
+        
         {#if msg.value.content.root}
           <span>
             <a
