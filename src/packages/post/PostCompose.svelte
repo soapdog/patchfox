@@ -120,11 +120,11 @@
       try {
         let data = {};
         data.text = content;
-        if (channel.length > 0) data.channel = channel;
+        if (typeof channel == "string" && channel.length > 0) data.channel = channel;
         if (root) data.root = root;
         if (fork) data.fork = fork;
         if (branch) data.branch = branch;
-        if (contentWarning.length > 0) data.contentWarning = contentWarning;
+        if (typeof contentWarning == "string" && contentWarning && contentWarning.length > 0) data.contentWarning = contentWarning;
 
         console.log("about to post", data);
         msg = await ssb.newPost(data);

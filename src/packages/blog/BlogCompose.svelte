@@ -126,11 +126,11 @@
       try {
         let data = {};
         data.content = content;
-        if (channel.length > 0) data.channel = channel;
-        if (title.length > 0) data.title = title;
-        if (summary.length > 0) data.summary = summary;
+        if (typeof channel == "string" && channel.length > 0) data.channel = channel;
+        if (typeof title == "string" && title.length > 0) data.title = title;
+        if (typeof summary == "string" && summary.length > 0) data.summary = summary;
         if (thumbnail) data.thumbnail = thumbnail;
-        if (contentWarning.length > 0) data.contentWarning = contentWarning;
+        if (typeof contentWarning == "string" && contentWarning.length > 0) data.contentWarning = contentWarning;
 
         console.log("about to blog", data);
         msg = await ssb.newBlogPost(data);
