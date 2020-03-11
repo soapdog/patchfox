@@ -46,6 +46,11 @@
       "protocol": "ssb",
       "name": "Secure Scuttlebutt",
       "uriTemplate": "/index.html?pkg=intercept&query=%s"
+    },
+    {
+      "protocol": "ext+patchfox",
+      "name": "Patchfox",
+      "uriTemplate": "/index.html?pkg=intercept&query=%s"
     }
   ],
   "omnibox": { "keyword" : "ssb?" },

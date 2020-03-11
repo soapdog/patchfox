@@ -12,7 +12,6 @@
   ssb
     .votes(msg)
     .then(vs => {
-      console.log("Got Votes!", vs);
       voters = vs;
       loading = false;
     })
@@ -30,9 +29,15 @@
   .clickable:hover {
     cursor: pointer;
   }
+
+  .vote-counter {
+    display: inline-block;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
 </style>
 
-<div>
+<div class="vote-counter">
   {#if loading}
     <span class="loading" />
   {:else if voters.length > 0}
@@ -54,5 +59,7 @@
     </div>
   {:else if error !== false}
     <span>💔 can't load</span>
+  {:else}
+    <span>💜 0</span>
   {/if}
 </div>

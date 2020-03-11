@@ -133,7 +133,9 @@
             {/await}
           {/if}
           <h1>{name}</h1>
-          <span class="chip">{feed}</span>
+          <a href="{ssbCustomUri.fromSigilLink(feed)}">
+            <span class="chip">{feed}</span>
+          </a>
           {#if feed !== ssb.feed}
             <div class="container">
               <div class="divider" />

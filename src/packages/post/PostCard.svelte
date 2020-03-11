@@ -3,7 +3,6 @@
   const Card = require("../../core/components/ui/Card.svelte");
   const VoteCounter = require("../../core/components/VoteCounter.svelte");
 
-
   export let msg;
   let contentWarningsExpandByDefault = getPref(
     "content-warnings-expand",
@@ -16,12 +15,7 @@
   let showContentWarning = contentWarningsExpandByDefault === "collapsed";
 
   ssb.votes(msg.key).then(ms => {
-    ms.forEach(m => {
-      let author = m.value.author;
-      if (author === ssb.feed && m.value.content.vote.value === 1) {
-        liked = true;
-      }
-    });
+    liked = ms.includes(ssb.feed);
   });
 
   const likeChanged = ev => {
@@ -118,8 +112,10 @@
           <i class="form-icon" />
           Like
         </label>
-        <VoteCounter {msg} />
-        
+        <span>
+          <VoteCounter {msg} />
+        </span>
+
         {#if msg.value.content.root}
           <span>
             <a

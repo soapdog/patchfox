@@ -51,7 +51,6 @@ const cacheResult = (kind, msgId, value) => {
     time: Date.now(),
     value
   }
-  console.log("caching result for", key)
 }
 const invalidateCacheResult = (kind, msgId) => {
   let key = `cache-${kind}-${msgId}`
@@ -64,30 +63,61 @@ const resultFromCache = (kind, msgId, falseIfOlderThan) => {
   if (caches.hasOwnProperty(key)) {
     let expiryDate = caches[key].time + (falseIfOlderThan * 1000)
     if (expiryDate > currentDate) {
-      console.log("!! cached result for", key)
       return caches[key].value
     }
   }
-  console.log("no cached result for", key)
+  // console.log("no cached result for", key)
   return false;
 }
 
-const workQueue = new Set()
+const workQueue = {}
+let parallelJobs = 0
+const maxParallelJobs = 5
 const enqueue = (kind, msgId, falseIfOlderThan, work, cb) => {
-  return new Promise((resolve, reject) => {
-    let key = `queue-${kind}-${msgId}`
-    let possibleResult = resultFromCache(kind, msgId, falseIfOlderThan)
 
-    if (possibleResult) {
-      resolve(possibleResult)
+  let key = `queue-${kind}-${msgId}`
+  let possibleResult = resultFromCache(kind, msgId, falseIfOlderThan)
+
+  if (possibleResult) {
+    cb(possibleResult)
+  } else {
+    if (workQueue.hasOwnProperty(key)) {
+      // is in the queue, should wait for result.
+      setTimeout(() => {
+        enqueue(kind, msgId, falseIfOlderThan, work, cb)
+      }, (falseIfOlderThan * 1000) / 2)
     } else {
-      if (workQueue.has(key)) {
-        // is in the queue, should wait for result.
-      } else {
-        // not in the queue, should enqueue and block for  result.
-      }
+      // not in the queue, should enqueue and block for  result.
+      workQueue[key] = { work, cb, kind, msgId }
     }
-  })
+    processQueue()
+  }
+
+}
+
+const processQueue = () => {
+  if (Object.keys(workQueue).length > 0 && parallelJobs < maxParallelJobs) {
+    // entries in the queue.
+    let jobs = Object.keys(workQueue).slice(0, maxParallelJobs)
+    parallelJobs += jobs.length
+
+    jobs.forEach(async job => {
+      let work = workQueue[job]
+      try {
+        console.log("starting job...", job)
+        let res = await work.work()
+        cacheResult(work.kind, work.msgId, res)
+        delete workQueue[job]
+        work.cb(res)
+        console.log("remaining jobs", Object.keys(workQueue).length)
+        setTimeout(processQueue, 10)
+      } catch (n) {
+        console.log("work", work)
+        console.error("error with work", n)
+      }
+      parallelJobs = parallelJobs >= 0 ? parallelJobs - 1 : 0
+    })
+  }
 }
 
 
@@ -1543,86 +1573,93 @@ class SSB {
     });
   };
 
-  async votes(msg) {
-    if (!msg.key && typeof msg == "string") {
-      msg = { key: msg }
-    }
+  votes(msg) {
+    return new Promise((resolve, reject) => {
+      if (!msg.key && typeof msg == "string") {
+        msg = { key: msg }
+      }
 
-    let cachedResult = resultFromCache("votes", msg.key, 10)
+      let cachedResult = resultFromCache("votes", msg.key, 10)
 
-    if (cachedResult) {
-      return cachedResult
-    }
+      if (cachedResult) {
+        return cachedResult
+      }
 
-    const voteQuery = async msg => {
-      const filterQuery = {
-        $filter: {
-          dest: msg.key,
-          value: {
-            content: {
-              type: "vote"
+      const voteQuery = async msg => {
+        const filterQuery = {
+          $filter: {
+            dest: msg.key,
+            value: {
+              content: {
+                type: "vote"
+              }
             }
           }
+        };
+
+        const referenceStream = ssb.sbot.backlinks.read({
+          query: [filterQuery],
+          index: "DTA", // use asserted timestamps
+          private: true,
+          meta: true
+        });
+
+        let rawVotes;
+
+        try {
+          rawVotes = await new Promise((resolve, reject) => {
+            pull(
+              referenceStream,
+              pull.filter(
+                ref =>
+                  typeof ref.value.content.vote.value === "number" &&
+                  ref.value.content.vote.value >= 0 &&
+                  ref.value.content.vote.link === msg.key
+              ),
+              pull.collect((err, collectedMessages) => {
+                if (err) {
+                  console.error("err", err)
+                  reject(err)
+                } else {
+                  resolve(collectedMessages)
+                }
+              })
+            )
+          })
+        } catch (n) {
+          console.error("error with rawVotes", n)
+          throw n
         }
-      };
 
-      const referenceStream = ssb.sbot.backlinks.read({
-        query: [filterQuery],
-        index: "DTA", // use asserted timestamps
-        private: true,
-        meta: true
-      });
 
-      let rawVotes;
 
-      try {
-        rawVotes = await new Promise((resolve, reject) => {
-          pull(
-            referenceStream,
-            pull.filter(
-              ref =>
-                typeof ref.value.content.vote.value === "number" &&
-                ref.value.content.vote.value >= 0 &&
-                ref.value.content.vote.link === msg.key
-            ),
-            pull.collect((err, collectedMessages) => {
-              if (err) {
-                console.error("err", err)
-                reject(err)
-              } else {
-                resolve(collectedMessages)
-              }
-            })
-          )
-        })
-      } catch (n) {
-        console.error("error with rawVotes", n)
-        throw n
+        // { @key: 1, @key2: 0, @key3: 1 }
+        //
+        // only one vote per person!
+        const reducedVotes = rawVotes.reduce((acc, vote) => {
+          acc[vote.value.author] = vote.value.content.vote.value;
+          return acc;
+        }, {});
+
+        // gets *only* the people who voted 1
+        // [ @key, @key, @key ]
+        const voters = Object.entries(reducedVotes)
+          .filter(([, value]) => value === 1)
+          .map(([key]) => key);
+
+        return voters;
       }
 
 
-
-      // { @key: 1, @key2: 0, @key3: 1 }
-      //
-      // only one vote per person!
-      const reducedVotes = rawVotes.reduce((acc, vote) => {
-        acc[vote.value.author] = vote.value.content.vote.value;
-        return acc;
-      }, {});
-
-      // gets *only* the people who voted 1
-      // [ @key, @key, @key ]
-      const voters = Object.entries(reducedVotes)
-        .filter(([, value]) => value === 1)
-        .map(([key]) => key);
-
-      return voters;
-    }
-
-
-    let res = await voteQuery(msg.key)
-    cacheResult("votes", msg.key, res)
-    return res
+      enqueue("votes", msg.key, 10,
+        async function work() {
+          let res = await voteQuery(msg)
+          return res
+        },
+        function callback(votes) {
+          resolve(votes)
+        })
+    })
   }
 
   transform() {

@@ -49,9 +49,6 @@
         value: `[@${usersObjs[id].name}](${usersObjs[id].id})`
       });
     }
-
-    console.log("users", users);
-
     const tribute = new Tribute({
       values: users,
       selectTemplate: function(item) {

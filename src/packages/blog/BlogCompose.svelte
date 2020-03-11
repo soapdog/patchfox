@@ -7,6 +7,7 @@
   const Preview = require("./BlogComposePreview.svelte");
   const pull = require("pull-stream");
   const fileReader = require("pull-file-reader");
+  const Tribute = require("tributejs");
 
   let showPreview = false;
   let msg = false;
@@ -36,6 +37,24 @@
     drop(document.getElementById("content"), files => readFileAndAttach(files));
     checkIpfsDaemon();
     checkDatDaemon();
+
+    let usersObjs = ssb.getAllCachedUsers();
+    let users = [];
+    for (let id in usersObjs) {
+      users.push({
+        key: usersObjs[id].name,
+        value: `[@${usersObjs[id].name}](${usersObjs[id].id})`
+      });
+    }
+    const tribute = new Tribute({
+      values: users,
+      selectTemplate: function(item) {
+        return item.original.value;
+      }
+    });
+
+    tribute.attach(document.getElementById("content"));
+    tribute.attach(document.getElementById("summary"));
   });
 
   const checkIpfsDaemon = () => {
