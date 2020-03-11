@@ -52,7 +52,7 @@
     const tribute = new Tribute({
       values: users,
       selectTemplate: function(item) {
-        return  item.original.value;
+        return item.original.value;
       }
     });
 
@@ -117,29 +117,29 @@
         channel = channel.slice(1);
       }
 
-      if (channel && channel.length == 0) {
-        channel = undefined;
-      }
-
       try {
-        msg = await ssb.newPost({
-          text: content,
-          channel,
-          root,
-          branch,
-          fork,
-          contentWarning: contentWarning.length > 0 ? contentWarning : undefined
-        });
+        let data = {};
+        data.text = content;
+        if (channel.length > 0) data.channel = channel;
+        if (root) data.root = root;
+        if (fork) data.fork = fork;
+        if (branch) data.branch = branch;
+        if (contentWarning.length > 0) data.contentWarning = contentWarning;
+
+        console.log("about to post", data);
+        msg = await ssb.newPost(data);
         posting = false;
         console.log("posted", msg);
         window.scrollTo(0, 0);
       } catch (n) {
         error = true;
         msg = `Couldn't post your message: ${n}`;
+        console.error("Couldn't post", n)
         window.scrollTo(0, 0);
 
         if (msg.message === "stream is closed") {
           msg += ". We lost connection to sbot. We'll try to restablish it...";
+          window.reload()
         }
       }
     }

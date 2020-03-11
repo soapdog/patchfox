@@ -123,25 +123,23 @@
         channel = channel.slice(1);
       }
 
-      if (channel.length == 0) {
-        channel = undefined;
-      }
-
       try {
-        msg = await ssb.newBlogPost({
-          content,
-          summary,
-          channel,
-          title,
-          thumbnail,
-          contentWarning: contentWarning.length > 0 ? contentWarning : undefined
-        });
+        let data = {};
+        data.content = content;
+        if (channel.length > 0) data.channel = channel;
+        if (title.length > 0) data.title = title;
+        if (summary.length > 0) data.summary = summary;
+        if (thumbnail) data.thumbnail = thumbnail;
+        if (contentWarning.length > 0) data.contentWarning = contentWarning;
+
+        console.log("about to blog", data);
+        msg = await ssb.newBlogPost(data);
         posting = false;
-        console.log("posted", msg);
+        console.log("blogged", msg);
         window.scrollTo(0, 0);
       } catch (n) {
         error = true;
-        msg = `Couldn't post your message: ${n}`;
+        msg = `Couldn't post your blog: ${n}`;
         window.scrollTo(0, 0);
       }
     }

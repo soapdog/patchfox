@@ -740,7 +740,7 @@ class SSB {
       ]
 
       commonFields.forEach(f => {
-        if (typeof data[f] !== "undefined" && data[f] !== false && data[f].length > 0) {
+        if (typeof data[f] !== "undefined" && data[f] !== false && data[f] !== null && data[f].length > 0) {
           msgToPost[f] = data[f]
         }
       })
@@ -782,7 +782,7 @@ class SSB {
       ]
 
       commonFields.forEach(f => {
-        if (typeof data[f] !== "undefined" && data[f].length > 0 && data[f] !== false) {
+        if (typeof data[f] !== "undefined" && data[f] !== null && data[f] !== false && data[f].length > 0 ) {
           msgToPost[f] = data[f]
         }
       })
