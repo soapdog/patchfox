@@ -26,8 +26,12 @@
       patchfox.reload("contacts", "profile", { feed: query });
     }
 
-     if (query[0] === "#") {
+    if (query[0] === "#") {
       patchfox.reload("hub", "channel", { channel: query.slice(1) });
+    }
+
+    if (query[0] === "&") {
+      window.location = `http://localhost:8989/blobs/get/${query}` // hack.
     }
 
     promise = ssb

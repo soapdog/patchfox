@@ -15,7 +15,7 @@
 
   const copyPermalink = () => {
     navigator.clipboard
-      .writeText(`ssb:${msg.key}`)
+      .writeText(ssbCustomUri.fromSigilLink(msg.key))
       .then(() => console.log("permalink copied"))
       .catch(err => console.error("can't copy permalink", err));
 
