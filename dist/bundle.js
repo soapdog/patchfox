@@ -83741,11 +83741,11 @@ function instance($$self, $$props, $$invalidate) {
       try {
         let data = {};
         data.content = content;
-        if (channel.length > 0) data.channel = channel;
-        if (title.length > 0) data.title = title;
-        if (summary.length > 0) data.summary = summary;
+        if (typeof channel == "string" && channel.length > 0) data.channel = channel;
+        if (typeof title == "string" && title.length > 0) data.title = title;
+        if (typeof summary == "string" && summary.length > 0) data.summary = summary;
         if (thumbnail) data.thumbnail = thumbnail;
-        if (contentWarning.length > 0) data.contentWarning = contentWarning;
+        if (typeof contentWarning == "string" && contentWarning.length > 0) data.contentWarning = contentWarning;
 
         console.log("about to blog", data);
         $$invalidate('msg', msg = await ssb.newBlogPost(data));
@@ -97105,11 +97105,11 @@ function instance($$self, $$props, $$invalidate) {
       try {
         let data = {};
         data.text = content;
-        if (channel.length > 0) data.channel = channel;
+        if (typeof channel == "string" && channel.length > 0) data.channel = channel;
         if (root) data.root = root;
         if (fork) data.fork = fork;
         if (branch) data.branch = branch;
-        if (contentWarning.length > 0) data.contentWarning = contentWarning;
+        if (typeof contentWarning == "string" && contentWarning && contentWarning.length > 0) data.contentWarning = contentWarning;
 
         console.log("about to post", data);
         $$invalidate('msg', msg = await ssb.newPost(data));
