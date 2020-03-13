@@ -47,7 +47,7 @@ function initializeContextMenus() {
         console.dir("info", info)
         switch (info.menuItemId) {
             case "text-selection-to-clipboard-as-quotation":
-                template = `> ${info.selectionText}\n&mdash; _Source: [${tab.title}](${info.pageUrl})_`
+                template = `> ${info.selectionText}\n\n&mdash; _Source: [${tab.title}](${info.pageUrl})_`
                 copyToClipboard(template, template)
                 break;
             case "page-action-to-clipboard-as-link":
