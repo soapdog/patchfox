@@ -30,6 +30,11 @@
 
     dropdownActive = false;
   };
+
+  const openInNewTab = () => {
+    dropdownActive = false;
+    window.open(`/index.html?pkg=hub&view=thread&thread=${encodeURIComponent(msg.key)}`)
+  }
 </script>
 
 <style>
@@ -52,7 +57,8 @@
     <MenuItem
       label="Open In New Tab"
       icon="share"
-      link="?pkg=hub&view=thread&thread={encodeURIComponent(msg.key)}" />
+      link="?pkg=hub&view=thread&thread={encodeURIComponent(msg.key)}"
+      on:click={openInNewTab} />
 
     <MenuItem
       label="Copy permalink to clipboard"
