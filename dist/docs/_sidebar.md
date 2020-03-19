@@ -2,6 +2,7 @@
 * [Intro](/#readme)
 * [Getting Started](guide.md)
 * Release Notes
+  * [Version 2020.3.6](release_notes/2020.3.6.md)
   * [Version 2020.3.5](release_notes/2020.3.5.md)
   * [Version 2020.3.4](release_notes/2020.3.4.md)
   * [Version 2020.3.3](release_notes/2020.3.3.md)
