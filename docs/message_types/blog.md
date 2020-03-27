@@ -4,8 +4,6 @@ Sometimes messages of type `post` are not enough for you to express what you nee
 
 These messages are actually a small set of metadata, just enough so that clients can display a summary and an associated [blob (this link explains them in depth)](https://ssbc.github.io/scuttlebutt-protocol-guide/#blobs) which holds the content. 
 
-> **Attention:** Patchfox currently **supports reading blogposts but does't support writing them.** This will change once I figure out how to do blob uploading.
-
 > **About blobs:** You can think of blobs like attachments to an email. Blobs are not downloaded automatically, they need to be requested. Patchfox will request images on its own so that you can see posts and images together but it will not request other blobs unless you initiate some action that needs them. In cases such as `blog` messages, the blobs are requested when you press the _Read Blogpost_ button. If you don't press it, we don't download that post.
 
 ## What do blog posts look like?
