@@ -1,9 +1,14 @@
 const BlogCompose = require("./BlogCompose.svelte");
 const BlogCard = require("./BlogCard.svelte");
+const BlogApp = require("./BlogApp.svelte");
+const BlogImport = require("./BlogImport.svelte");
 
 patchfox.package({
     name: "blog",
-    view: BlogCompose,
+    app: true,
+    icon: "web-page.svg",
+    view: BlogApp,
+    import: BlogImport,
     compose: BlogCompose,
     messageTypes: [
         {

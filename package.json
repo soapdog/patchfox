@@ -28,13 +28,15 @@
     "pull-stream": "^3.6.14",
     "query-string": "^6.8.2",
     "rimraf": "^2.6.3",
+    "rss-parser": "^3.7.6",
     "scssify": "^3.0.1",
     "spectre.css": "^0.5.8",
     "ssb-client": "^4.9.0",
     "svelte": "^3.7.1",
     "sveltify": "^3.0.0",
     "timeago-simple": "^1.2.4",
-    "tributejs": "^5.0.1"
+    "tributejs": "^5.0.1",
+    "turndown": "^6.0.0"
   },
   "scripts": {
     "clean": "rimraf dist",

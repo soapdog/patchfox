@@ -134,7 +134,7 @@
             data-tooltip={descriptionForPackage(pkg)}
             on:click={() => {
               active = false;
-              patchfox.go(pkg)
+              patchfox.go(pkg, 'view')
             }}>
             <div class="package-icon">
               <img
