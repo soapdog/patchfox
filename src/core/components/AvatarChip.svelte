@@ -24,6 +24,10 @@
   .clickable:hover {
     cursor: pointer;
   }
+
+  .fix {
+    object-fit: cover;
+  }
 </style>
 
 {#if image}
@@ -31,7 +35,7 @@
     href={patchfox.url('contacts', 'profile', { feed })}
     class="chip clickable"
     on:click|preventDefault|stopPropagation={avatarClick}>
-    <img src={image} class="avatar avatar-sm" alt={name} />
+    <img src={image} class="fix avatar avatar-sm" alt={name} />
     {name}
   </a>
 {:else}

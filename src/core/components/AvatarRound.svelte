@@ -30,11 +30,15 @@
   .dim {
     opacity: 0.4;
   }
+
+  .fix {
+    object-fit: cover;
+  }
 </style>
 
 {#if image}
   <figure class="avatar avatar-xl clickable" on:click={avatarClick} class:dim>
-    <img src={image} alt={name} />
+    <img class="fit" src={image} alt={name} />
   </figure>
 {:else}
   <figure class="avatar avatar-xl clickable" data-initial="{name.slice(0,1)}" on:click={avatarClick} class:dim></figure>

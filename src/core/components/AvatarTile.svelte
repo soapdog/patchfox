@@ -23,10 +23,16 @@
   };
 </script>
 
+<style>
+.fix {
+    object-fit: cover;
+  }
+</style>
+
 <div class="tile tile-centered feed-display" on:click>
   <div class="tile-icon">
     <div class="example-tile-icon">
-      <img src={image} class="avatar avatar-lg" alt={name} />
+      <img src={image} class="fix avatar avatar-lg" alt={name} />
     </div>
   </div>
   <div class="tile-content">
