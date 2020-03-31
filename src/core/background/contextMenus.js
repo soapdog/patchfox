@@ -48,7 +48,7 @@ function initializeContextMenus() {
     switch (info.menuItemId) {
       case "text-selection-to-clipboard-as-quotation":
         let lines = info.selectionText.split(`\n`).map(l => `> ${l}`).join(`\n`)
-        template = `${lines}\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`
+        template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`
         copyToClipboard(template, template)
         break;
       case "page-action-to-clipboard-as-link":
