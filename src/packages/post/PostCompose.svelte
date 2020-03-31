@@ -32,6 +32,7 @@
     ssb.get(branch).then(data => (branchedMsg = { key: branch, value: data }));
   }
 
+
   onMount(() => {
     error = false;
     msg = "";
@@ -57,6 +58,10 @@
     });
 
     tribute.attach(document.getElementById("content"));
+
+    if (replyfeed && content.length == 0) {
+      content = `[${usersObjs[replyfeed].name}](${replyfeed}),\n`
+    }
   });
 
   const readFileAndAttach = files => {
@@ -248,14 +253,6 @@
             {/if}
           {/if}
 
-          {#if replyfeed}
-            <div class="mt-2">
-              <span>
-                Click the avatar to add a link to the message:
-                <AvatarChip feed={replyfeed} on:avatarClick={avatarClick} />
-              </span>
-            </div>
-          {/if}
           <label class="form-label" for="content">Message</label>
           <textarea
             class="form-input"

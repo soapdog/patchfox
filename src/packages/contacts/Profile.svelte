@@ -97,7 +97,11 @@
 </script>
 
 <style>
-
+.extra-actions {
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: solid 1px lightgray;
+}
 </style>
 
 <div class="container">
@@ -167,6 +171,9 @@
               {@html ssb.markdown(description)}
             </p>
           {/await}
+          <div class="extra-actions">
+            <a href="{patchfox.url('post', 'compose', { replyfeed: feed })}" class="btn btn-sm">New post mentioning {name}</a>
+          </div>
         </div>
       </div>
     {/if}
