@@ -41,7 +41,7 @@ After saving Patchfox will then try loading your public feed. You need to have a
 
 After installing and configuring patchfox, try browsing to:
 
-[ssb:message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D](ssb:message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D)
+[ssb://message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D](ssb://message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D)
 
 # Commentary, getting help
 
