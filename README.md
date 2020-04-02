@@ -1,5 +1,5 @@
 # Patchfox
-This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
+This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. It is available on the [Firefox Add-ons Portal](https://addons.mozilla.org/en-US/firefox/addon/patchfox/), so if you just want to run it, that's the easiest way. Read on if you want to develop with it.
 
 ## Requirements
 
