@@ -872,7 +872,7 @@ class SSB {
         "vote": {
           "link": msgid,
           "value": 1,
-          "expression": "Like"
+          "expression": "💖"
         }
       }
 

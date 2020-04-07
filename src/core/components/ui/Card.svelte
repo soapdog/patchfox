@@ -23,7 +23,7 @@
   const goProfile = ev => {
     if (ev.ctrlKey) {
       window.open(
-        `?pkg=contacs&view=profile&feed=${encodeURIComponent(feed)}#/profile`
+        `?pkg=contacts&view=profile&feed=${encodeURIComponent(feed)}#/profile`
       );
     } else {
       patchfox.go("contacts", "profile", { feed });
