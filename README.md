@@ -76,3 +76,9 @@ Patchfox is using artwork by many artists including:
 * Some icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.
 
 * Artwork for the 2020.2.1 release poster was done by: Photo by Krista Stucchio on Unsplash
+
+# Third party vendored libraries
+
+* Keymage: http://github.com/piranha/keymage
+* ssb-custom-uri: https://git.sr.ht/~soapdog/ssb-custom-uri
+* browser-polyfill: https://github.com/mozilla/webextension-polyfill
