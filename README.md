@@ -79,6 +79,6 @@ Patchfox is using artwork by many artists including:
 
 # Third party vendored libraries
 
-* Keymage: http://github.com/piranha/keymage
+* Keymage 1.1.3: http://github.com/piranha/keymage
 * ssb-custom-uri: https://git.sr.ht/~soapdog/ssb-custom-uri
 * browser-polyfill: https://github.com/mozilla/webextension-polyfill
