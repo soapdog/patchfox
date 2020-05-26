@@ -1,5 +1,5 @@
 # Patchfox :id=readme
-This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox.
+This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. It is available on the [Firefox Add-ons Portal](https://addons.mozilla.org/en-US/firefox/addon/patchfox/), so if you just want to run it, that's the easiest way. Read on if you want to develop with it.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ After saving Patchfox will then try loading your public feed. You need to have a
 
 After installing and configuring patchfox, try browsing to:
 
-[ssb:%Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc=.sha256](ssb:%Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc=.sha256)
+[ssb://message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D](ssb://message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D)
 
 # Commentary, getting help
 
