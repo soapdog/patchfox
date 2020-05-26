@@ -4,6 +4,7 @@
   const Followers = require("./Followers.svelte");
   const Friends = require("./Friends.svelte");
   const Editor = require("./ProfileEditor.svelte");
+  const MoreInfo = require("./MoreInfo.svelte");
 
   export let feed = ssb.feed;
 
@@ -20,7 +21,8 @@
     posts: Posts,
     following: Following,
     followers: Followers,
-    friends: Friends
+    friends: Friends,
+    moreInfo: MoreInfo
   };
   
   export let currentSubView = "posts";
@@ -206,6 +208,11 @@
           on:click|preventDefault={() => (currentSubView = 'followers')}>
           Followers
           {#if followersCount}({followersCount}){/if}
+        </a>
+      </li>
+      <li class="tab-item" class:active={currentSubView === 'moreInfo'}>
+        <a href="#" on:click|preventDefault={() => (currentSubView = 'moreInfo')}>
+          More Info
         </a>
       </li>
     </ul>

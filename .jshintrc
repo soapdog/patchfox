@@ -1,0 +1,10 @@
+{
+  "esversion": 8,
+  "quotmark": "double",
+  "camelcase": true,
+  "browser": true,
+  "globals": {
+  	"Dexie": true,
+  	"_": true
+  }
+}
