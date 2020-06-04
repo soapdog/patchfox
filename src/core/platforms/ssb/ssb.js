@@ -824,6 +824,22 @@ class SSB {
     })
   }
 
+  publish(data) {
+    return new Promise((resolve, reject) => {
+      if (sbot) {
+        sbot.publish(data, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      } else {
+        reject("There is no sbot connection")
+      }
+    })
+  }
+
 
   getBlob(blobid) {
     return new Promise((resolve, reject) => {
