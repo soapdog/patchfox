@@ -24,12 +24,15 @@
 </script>
 
 <style>
-.fix {
+  .fix {
     object-fit: cover;
+  }
+  .clickable:hover {
+    cursor: pointer;
   }
 </style>
 
-<div class="tile tile-centered feed-display" on:click>
+<div class="tile tile-centered feed-display clickable" on:click>
   <div class="tile-icon">
     <div class="example-tile-icon">
       <img src={image} class="fix avatar avatar-lg" alt={name} />
