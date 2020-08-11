@@ -132,9 +132,9 @@
     {#if loading}
       <div class="loading" />
     {:else}
-      {#if currentFields.length > 0}
+      <!-- {#if currentFields.length > 0}
         <button class="float-right btn btn-link">Export to vCard</button>
-      {/if}
+      {/if} -->
       <table class="table table-striped table-hover">
         <tbody>
           {#each currentFields as field, index}

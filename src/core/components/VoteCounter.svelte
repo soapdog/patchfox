@@ -4,21 +4,23 @@
 
   export let msg;
   let dropdownActive = false;
-  let loading = true;
-  let error = false;
+  let state = "waitclick"; // "loading", "loaded", "error"
 
   let voters = [];
 
-  ssb
-    .votes(msg)
-    .then(vs => {
-      voters = vs;
-      loading = false;
-    })
-    .catch(n => {
-      error = n;
-      loading = false;
-    });
+  const loadVotes = () => {
+    state = "loading";
+    ssb
+      .votes(msg)
+      .then(vs => {
+        voters = vs;
+        state = "loaded";
+      })
+      .catch(n => {
+        error = n;
+        state = "error";
+      });
+  };
 
   const avatarClick = () => {
     dispatch("avatarClick", { feed, name });
@@ -38,9 +40,9 @@
 </style>
 
 <div class="vote-counter">
-  {#if loading}
+  {#if state == "loading"}
     <span class="loading" />
-  {:else if voters.length > 0}
+  {:else if state == "loaded" && voters.length > 0}
     <div class="dropdown">
       <span
         class:active={dropdownActive}
@@ -57,9 +59,11 @@
         {/each}
       </ul>
     </div>
-  {:else if error !== false}
+  {:else if state == "loaded" && voters.length == 0}
+    <span>💜 0</span>
+  {:else if state == "error"}
     <span>💔 can't load</span>
   {:else}
-    <span>💜 0</span>
+    <span class="c-hand text-primary" on:click={() => {loadVotes()}}>(get votes)</span>
   {/if}
 </div>
