@@ -10,6 +10,7 @@
 
   let msgs = false;
   let error = false;
+  let rootsOnly = false;
   export let channel = false;
   export let lt = false;
 
@@ -24,7 +25,6 @@
 
   ssb.channelSubscribed(channel).then(s => (subscribed = s));
 
-  // todo: move back into using stores.
   $: {
     document.title = `Patchfox - #${channel}`;
 
@@ -32,6 +32,12 @@
     if (lt) {
       opts.lt = lt;
     }
+    if (rootsOnly) {
+      opts.rootsOnly = true;
+    } else {
+      opts.rootsOnly = false;
+    }
+
     promise = ssb
       .channel(channel, opts)
       .then(ms => {
@@ -70,6 +76,15 @@
     location.reload()
   };
 
+  const rootsOnlyChanged = ev => {
+    let v = ev.target.checked;
+    if (v) {
+     // something
+    } else {
+     // other thing
+    }
+  };
+
   const goNext = () => {
     let lt = msgs[msgs.length - 1].value.timestamp;
     msgs = [];
@@ -100,7 +115,7 @@
       <label class="form-switch float-right">
         <input type="checkbox" on:change={hideChanged} bind:checked={hidden} />
         <i class="form-icon" />
-        Hide messages from this channel
+        Hide Channel
       </label>
       <label class="form-switch float-right">
         <input
@@ -109,6 +124,14 @@
           bind:checked={subscribed} />
         <i class="form-icon" />
         Subscribe
+      </label>
+      <label class="form-switch float-right">
+        <input
+          type="checkbox"
+          on:change={rootsOnlyChanged}
+          bind:checked={rootsOnly} />
+        <i class="form-icon" />
+        Roots Only
       </label>
       <button
         class="btn btn-link float-right"

@@ -104,7 +104,7 @@ const processQueue = () => {
     jobs.forEach(async job => {
       let work = workQueue[job]
       try {
-        console.log("starting job...", job)
+        // console.log("starting job...", job)
         let res = await work.work()
         cacheResult(work.kind, work.msgId, res)
         delete workQueue[job]
@@ -782,7 +782,7 @@ class SSB {
       ]
 
       commonFields.forEach(f => {
-        if (typeof data[f] !== "undefined" && data[f] !== null && data[f] !== false && data[f].length > 0 ) {
+        if (typeof data[f] !== "undefined" && data[f] !== null && data[f] !== false && data[f].length > 0) {
           msgToPost[f] = data[f]
         }
       })
@@ -984,6 +984,29 @@ class SSB {
               query
             ],
             reverse: true
+          }),
+          // TODO: generalize this into a new pluggable filter.
+          pull.filter(msg => {
+            let res = true;
+            if (opts.rootsOnly) {
+              if (msg && msg.value && msg.value.content) {
+                let m = msg.value.content
+
+                // root, branch, fork need to be null
+                if (typeof m.root !== "undefined" && m.root !== null) {
+                  res = false;
+                }
+
+                if (typeof m.branch !== "undefined" && m.branch !== null) {
+                  res = false;
+                }
+
+                if (typeof m.fork !== "undefined" && m.fork !== null) {
+                  res = false;
+                }
+              }
+            }
+            return res;
           }),
           pull.apply(pull, pipeline),
           pull.collect(function (err, data) {
