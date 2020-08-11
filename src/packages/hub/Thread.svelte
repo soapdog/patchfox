@@ -4,7 +4,6 @@
   let error = false;
   export let thread;
 
-  // todo: move back into using stores.
   $: {
     if (thread.startsWith("ssb:")) {
       thread = thread.replace("ssb:", "");
@@ -27,10 +26,16 @@
   }
 </script>
 
+<style>
+  .feed-id-display {
+    font-size: 15px;
+  }
+</style>
+
 <div class="container">
   <h4>
     Thread
-    <small class="label hide-sm">{thread}</small>
+    <small class="label hide-sm feed-id-display">{thread}</small>
   </h4>
 </div>
 {#if error}
