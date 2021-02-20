@@ -14,7 +14,7 @@
   let blocking = false;
   let image;
   let lastAbout;
-  let avatarPromise;
+  let avatarPromise; 
   let aboutPromise;
 
   let subViews = {
@@ -131,7 +131,7 @@
         <div class="column col-6">
           {#if feed === ssb.feed}
             <span class="chip">❤ Thats You ❤</span>
-            {#await aboutPromise then }
+            {#await aboutPromise }
               <span class="c-hand" on:click={toggleEditor}>
                 <i class="icon icon-edit" />
                 Edit your profile

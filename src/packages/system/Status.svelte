@@ -1,6 +1,4 @@
 <script>
-  const prettyPrintJson = require("pretty-print-json");
-
   let sbot = ssb.sbot;
 
   let loading = true;
@@ -10,7 +8,7 @@
     console.log("data", data);
     console.log("err", err);
     loading = false;
-    status = prettyPrintJson.toHtml(data);
+    status = JSON.stringify(data, null, 4);
   });
 </script>
 

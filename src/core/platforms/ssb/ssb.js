@@ -186,6 +186,7 @@ class SSB {
       if (sbot) {
         resolve(sbot)
       } else {
+        console.log("fs", require("fs"))
         ssbClient(keys, {
           remote: remote || `ws://127.0.0.1:${port}/~shs:${keys.public}`,
           caps: {
