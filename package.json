@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2020.8.1",
+  "version": "2021.2.1",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
@@ -44,7 +44,7 @@
     "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
     "copy:augmented-ui": "copyfiles -E -u 2 node_modules/augmented-ui/augmented.css dist/css",
     "copy:tribute-css": "copyfiles -E -u 3 node_modules/tributejs/dist/tribute.css dist/css",
-    "copy:docs": "copyfiles docs/**/* dist",
+    "copy:docs": "copyfiles docs/** dist",
     "copy:index": "copyfiles -u 1 src/index.html dist",
     "copy:package-assets": "node scripts/copy-package-assets.js",
     "copy:package-docs": "node scripts/copy-package-docs.js",
