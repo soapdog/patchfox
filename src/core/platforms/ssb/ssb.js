@@ -16,7 +16,7 @@ const sort = require("ssb-sort")
 const ssbMarkdown = require("ssb-markdown")
 const ssbRef = require("ssb-ref")
 const ssbMentions = require("ssb-mentions")
-const ssbClient = require("ssb-client")
+const ssbClient = require("ssb-client-for-browser")
 const ssbAvatar = require("ssb-avatar")
 const pullParallelMap = require("pull-paramap");
 const pullSort = require("pull-sort");
@@ -186,7 +186,6 @@ class SSB {
       if (sbot) {
         resolve(sbot)
       } else {
-        console.log("fs", require("fs"))
         ssbClient(keys, {
           remote: remote || `ws://127.0.0.1:${port}/~shs:${keys.public}`,
           caps: {
