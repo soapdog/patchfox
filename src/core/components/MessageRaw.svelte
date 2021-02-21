@@ -1,6 +1,4 @@
 <script>
-  const prettyPrintJson = require("pretty-print-json");
-
   export let msg;
 
   let type;
@@ -11,7 +9,7 @@
     type = msg.value.content.type;
   }
 
-  let raw = prettyPrintJson.toHtml(msg)
+  let raw = JSON.stringify(msg, null, 4)
 </script>
 
 <style>

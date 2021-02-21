@@ -1,5 +1,4 @@
 <script>
-  const prettyPrintJson = require("pretty-print-json");
 
   let sbot = ssb.sbot;
 
@@ -16,9 +15,9 @@
       joining = false;
       if (err) {
         error = true;
-        msg = prettyPrintJson.toHtml(err);
+        msg = JSON.stringify(err, null, 4);
       } else {
-        msg = prettyPrintJson.toHtml(result);
+        msg = JSON.stringify(result, null, 4);
       }
     });
   };
