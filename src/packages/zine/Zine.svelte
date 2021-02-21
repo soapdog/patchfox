@@ -85,58 +85,13 @@
   subscribedChannels();
 </script>
 
-<style>
-  /* Box-sizing reset: //w3bits.com/?p=3225 */
-
-  :global(body) {
-    background: unset;
-    background-color: whitesmoke;
-  }
-
-  .zine {
-    box-sizing: border-box;
-  }
-
-  *,
-  *:before,
-  *:after {
-    box-sizing: inherit;
-  }
-
-  /* The Masonry Container */
+<style>  
   .masonry {
-    margin: 0.5em auto;
-    column-gap: 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-rows: masonry;
   }
-
-  /* The Masonry Brick */
-  .item {
-    padding: 1em;
-    margin: 0 0 0;
-  }
-
-  /* Masonry on large screens */
-  @media only screen and (min-width: 1024px) {
-    .masonry {
-      column-count: 4;
-    }
-  }
-
-  /* Masonry on medium-sized screens */
-  @media only screen and (max-width: 1023px) and (min-width: 768px) {
-    .masonry {
-      column-count: 3;
-    }
-  }
-
-  /* Masonry on small screens */
-  @media only screen and (max-width: 767px) and (min-width: 540px) {
-    .masonry {
-      column-count: 2;
-    }
-  }
-
-  h1 { font-size: 1.2rem;}
 </style>
 
 <div class="container">
