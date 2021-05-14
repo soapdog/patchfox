@@ -1,19 +1,10 @@
 <script>
-import { claim_component } from "svelte/internal";
-
   const pull = require("pull-stream");
-  const paramap = require("pull-paramap");
-  const sort = require("pull-sort");
-  const { onDestroy, tick } = require("svelte");
   const { timestamp } = require("../../core/components/timestamp.js");
   const Book = require("scuttle-book")
   const book = Book(ssb.sbot)
 
-  export let filter = "everyone";
-  export let channel = false;
-  let sbot = ssb.sbot;
   let books = [];
-  let limit = 20;
 
   const fetchBooks = () => {
     pull(
@@ -21,7 +12,6 @@ import { claim_component } from "svelte/internal";
       pull.drain((data) => {
         books.push(data)
         books = books
-        console.log(data)
       })
     )
   }
@@ -42,6 +32,8 @@ import { claim_component } from "svelte/internal";
 
 <div class="container">
   <div class="zine">
+    <a class="btn btn-primary" href="{patchfox.url('books', 'edit')}">Add New Book</a>
+    <span>{books.length} books found on SSB.</span>
     {#if books.length == 0}
       <div class="loading" />
     {:else}
@@ -53,10 +45,12 @@ import { claim_component } from "svelte/internal";
                 <div class="card-image">
                   <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.image.link)}" alt="{book.common.image.name}">
                 </div>
-                {:else if book.common.images}
+                {:else if Array.isArray(book.common.images) && book.common.images[0].hasOwnProperty("link")}
                 <div class="card-image">
                   <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
                 </div>
+                {:else}
+                {@debug book}
                 {/if}
                 <div class="card-header">
                   <div class="card-title h5">
@@ -67,7 +61,7 @@ import { claim_component } from "svelte/internal";
                   </div>
                   {#if book.common.series && book.common.seriesNo}
                   <div class="card-subtitle text-gray">
-                    Book #{book.common.seriesNo.replace("#",'')} in the {book.common.series} series.
+                    Book #{#if typeof book.common.seriesNo == "string"}{book.common.seriesNo.replace("#",'')}{:else}{book.common.seriesNo}{/if} in the {book.common.series} series.
                   </div>
                   {:else if book.common.series }
                   <div class="card-subtitle text-gray">
@@ -88,8 +82,8 @@ import { claim_component } from "svelte/internal";
                   <span class="float-left">{timestamp(book.msg.timestamp)}</span>
                   
                   <a
-                    href={patchfox.url('hub', 'thread', { thread: book.msg.key })}
-                    class="btn btn-link float-right">
+                    href={patchfox.url('books', 'details', { bookKey: book.msg.key })}
+                    class="btn btn-primary float-right">
                     &rarr;
                   </a>
                 </div>

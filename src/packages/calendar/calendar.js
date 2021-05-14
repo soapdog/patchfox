@@ -15,7 +15,7 @@ patchfox.package({
         {
           type: "about",
           card: GatheringActionCard,
-          validator: msg => msg.value.content.about.startsWith("%")
+          validator: msg => msg.value.content.about && msg.value.content.about.startsWith("%")
       }
     ],
     gathering: GatheringView,

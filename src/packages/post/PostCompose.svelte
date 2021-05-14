@@ -32,7 +32,6 @@
     ssb.get(branch).then(data => (branchedMsg = { key: branch, value: data }));
   }
 
-
   onMount(() => {
     error = false;
     msg = "";
@@ -131,10 +130,8 @@
         if (branch) data.branch = branch;
         if (typeof contentWarning == "string" && contentWarning && contentWarning.length > 0) data.contentWarning = contentWarning;
 
-        console.log("about to post", data);
         msg = await ssb.newPost(data);
         posting = false;
-        console.log("posted", msg);
         window.scrollTo(0, 0);
       } catch (n) {
         error = true;

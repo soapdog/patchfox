@@ -6,7 +6,7 @@
   document.title = "Patchfox - Settings - Display Preferences";
 
   // message type filters
-  let showTypeUnknown = getPref("showTypeUnknown", false);
+  let showTypeUnknown = getPref("showTypeUnknown", true);
   let showTypeAbout = getPref("showTypeAbout", true);
   let showTypeBlog = getPref("showTypeBlog", true);
   let showTypeChannel = getPref("showTypeChannel", true);
@@ -160,8 +160,8 @@
         setPref('showTypeUnknown', showTypeUnknown);
       }} />
     <i class="form-icon" />
-    <b>Unknown</b>
-    (Show messages Patchfox doesn't understand as their raw content)
+    <b>Extra</b>
+    (Show extra messages such as book club and others)
   </label>
   <br />
 </form>

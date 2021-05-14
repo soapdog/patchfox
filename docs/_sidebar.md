@@ -14,7 +14,7 @@
   - [about](message_types/about.md)
   - [private](message_types/private.md)
 - Release Notes
-  - [Version 2021.2.1](release_notes/2021.2.1.md)
+  - [Version 2021.5.1](release_notes/2021.5.1.md)
   - [Version 2020.8.1](release_notes/2020.8.1.md)
   - [Version 2020.4.1](release_notes/2020.4.1.md)
   - [Version 2020.3.6](release_notes/2020.3.6.md)
