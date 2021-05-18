@@ -13,7 +13,10 @@
   - [blog](message_types/blog.md)
   - [about](message_types/about.md)
   - [private](message_types/private.md)
+- [Development](development/)
+- [Packages](packages/)
 - Release Notes
+  - [Version 2021.5.2](release_notes/2021.5.2.md)
   - [Version 2021.5.1](release_notes/2021.5.1.md)
   - [Version 2020.8.1](release_notes/2020.8.1.md)
   - [Version 2020.4.1](release_notes/2020.4.1.md)

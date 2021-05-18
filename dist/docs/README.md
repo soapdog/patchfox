@@ -71,3 +71,7 @@ Patchfox is using artwork by many artists including:
 * Art made by Angelica. 
 
 * Some icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.
+
+# Original SSBC-GRANTS proposal
+
+The original proposal is at: %vanIz/czvKhgXi3Psmo/BEr5TN7pAUg4ucrR1fo8uZ8=.sha256
