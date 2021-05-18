@@ -9,6 +9,7 @@ const main = async () => {
         '!node_modules'
     ]);
 
+    await fs.ensureDir("dist/docs/packages/")
     fs.writeFileSync("dist/docs/packages/README.md", `
 # Packages
 
