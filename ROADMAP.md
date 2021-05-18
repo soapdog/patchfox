@@ -21,3 +21,5 @@ More like _small trail guide_ than an actual _roadmap_. This document is used to
 - General
     - History management has a quirk where going to a package sometimes enter the data twice into history, or going back doesn't actually go back but reloads the same package. This has been a tricky bug since the start of Patchfox. Symptom is requiring you to click back multiple times before you're actually on the previous package/view combo. Might need a major refactoring.
     - Add support for the new `ssb-uri` from Staltz.
+- Package Documentation
+    - Make part of the documentation dynamic such as finding out which packages deal with which message types.
