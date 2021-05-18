@@ -1,6 +1,8 @@
 <script>
   const MenuItem = require("./ui/MenuItem.svelte");
   const { createEventDispatcher } = require("svelte");
+  const ssbUri = require("ssb-uri2")
+
 
   export let msg;
   export let showRaw = false;
@@ -15,7 +17,7 @@
 
   const copyPermalink = () => {
     navigator.clipboard
-      .writeText(ssbCustomUri.fromSigilLink(msg.key))
+      .writeText(ssbUri.fromMessageSigil(msg.key))
       .then(() => console.log("permalink copied"))
       .catch(err => console.error("can't copy permalink", err));
 

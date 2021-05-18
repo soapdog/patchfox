@@ -1,4 +1,6 @@
 <script>
+  import * as  ssbUri  from"ssb-uri2"
+
   export let query;
   let loading = true;
   let hash;
@@ -11,7 +13,7 @@
     msg = `Patchfox does not support invite URLs at the moment.`
     loading = false;
   } else {
-    hash = ssbCustomUri.toSigilLink(query);
+    hash = ssbUri.toMessageSigil(query);
     console.log("hash", hash);
 
     if (hash[0] === "%") {

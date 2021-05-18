@@ -5,6 +5,7 @@
   const Friends = require("./Friends.svelte");
   const Editor = require("./ProfileEditor.svelte");
   const MoreInfo = require("./MoreInfo.svelte");
+  const ssbUri  = require("ssb-uri2")
 
   export let feed = ssb.feed;
 
@@ -139,7 +140,7 @@
             {/await}
           {/if}
           <h1>{name}</h1>
-          <a href="{ssbCustomUri.fromSigilLink(feed)}">
+          <a href="{ssbUri.fromFeedSigil(feed)}">
             <span class="chip">{feed}</span>
           </a>
           {#if feed !== ssb.feed}

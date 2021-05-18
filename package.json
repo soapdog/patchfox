@@ -33,6 +33,7 @@
     "scuttle-book": "^2.0.6",
     "spectre.css": "^0.5.8",
     "ssb-client-for-browser": "soapdog/ssb-client-for-browser",
+    "ssb-uri2": "^1.0.2",
     "svelte": "^3.7.1",
     "sveltify": "^3.0.0",
     "timeago-simple": "^1.2.4",

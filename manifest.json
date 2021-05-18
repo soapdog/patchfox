@@ -41,7 +41,7 @@
   "protocol_handlers": [
     {
       "protocol": "ssb",
-      "name": "Secure Scuttlebutt",
+      "name": "Patchfox",
       "uriTemplate": "/index.html?pkg=intercept&query=%s"
     },
     {
