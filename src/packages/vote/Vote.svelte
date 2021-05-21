@@ -34,10 +34,17 @@
       patchfox.go("hub", "thread", { thread: msgid });
     }
   };
+
+  const avatarClick = ev => {
+    let feed = ev.detail.feed;
+    patchfox.go("contacts", "profile", { feed });
+  };
+
 </script>
 
 <p class="m-2">
-  <AvatarChip feed={msg.value.author} /> {expression}
+  <AvatarChip feed={msg.value.author} on:avatarClick={avatarClick} />
+  {expression}
   <a href="?pkg=hub&view=thread&thread={encodedid}" on:click={goThread}>
     {label}
   </a>
