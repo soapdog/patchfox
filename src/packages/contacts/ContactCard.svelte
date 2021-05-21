@@ -25,10 +25,17 @@
     ev.preventDefault();
     patchfox.go("contacts", "profile", { feed: msg.value.content.contact });
   };
+
+  const avatarClick = ev => {
+    let feed = ev.detail.feed;
+    patchfox.go("contacts", "profile", { feed });
+  };
+
 </script>
 
 <p class="m-2">
-  <AvatarChip feed={msg.value.author} /> {verb}
+  <AvatarChip feed={msg.value.author} on:avatarClick={avatarClick} />
+  {verb}
   <a
     href="?pkg=contacts&view=profile&feed={otherPersonFeed}"
     on:click={goProfile}>
