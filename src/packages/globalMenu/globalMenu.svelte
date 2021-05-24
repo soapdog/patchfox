@@ -4,6 +4,7 @@
   let groups = patchfox.menuGroups();
   let groupKeys = Object.keys(groups);
   let currentPackage = false;
+  let browserSidebarSupport = typeof browser.sidebarAction === "object"
 
   patchfox.listen("package:changed", (event, pkg) => {
     currentPackage = pkg.title || pkg.name || false;
@@ -48,9 +49,11 @@
 <div class="container">
   <header class="main-menu navbar hide-sm ">
     <section class="navbar-section">
+      {#if browserSidebarSupport}
       <a href="#" class="btn btn-link" on:click={openSidebar}>
         <i class="icon icon-arrow-left" />
       </a>
+      {/if}
       {#each groupKeys as key}
         <div class="dropdown">
           <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
