@@ -14,10 +14,16 @@
     ev.preventDefault();
     patchfox.go("hub", "channel", { channel: msg.value.content.channel });
   };
+
+  const avatarClick = ev => {
+    let feed = ev.detail.feed;
+    patchfox.go("contacts", "profile", { feed });
+  };
+
 </script>
 
 <p class="m-2">
-  <AvatarChip feed={msg.value.author} />
+  <AvatarChip feed={msg.value.author} on:avatarClick={avatarClick} />
   {verb}
   <a href="?pkg=hub&view=channel&channel={channel}" on:click={goChannel}>
     #{channel}
