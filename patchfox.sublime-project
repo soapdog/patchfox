@@ -1,0 +1,37 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+        "todoreview": {
+            "exclude_folders": [
+                "*.git*",
+    			"*node_modules*",
+    			"*dist*",
+    			"*vendor*",
+            ],
+            "exclude_files": [
+			    "*.sublime-workspace",
+			    "*.sublime-project",
+			    "*.md"
+			],
+            "patterns": {
+			    "TODO": "TODO[\\s]*?:[\\s]*(?P<todo>.*)$",
+			    "NOTE": "NOTE[\\s]*?:[\\s]*(?P<note>.*)$",
+			    "FIXME": "FIX ?ME[\\s]*?:[\\s]*(?P<fixme>.*)$",
+			    "CHANGED": "CHANGED[\\s]*?:[\\s]*(?P<changed>.*)$",
+			    "BUG": "BUG[\\s]*?:[\\s]*(?P<bug>.*)$",
+			    "HACK": "HACK[\\s]*?:[\\s]*(?P<hack>.*)$"
+			},
+			"patterns_weight": {
+			    "FIXME": 6,
+			    "BUG": 5,
+			    "TODO": 4,
+			    "HACK": 3
+			}
+        }
+    }
+}
