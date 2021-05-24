@@ -31,7 +31,8 @@
         ],
         "quotes": [
             "error",
-            "double"
+            "double",
+            { "allowTemplateLiterals": true }
         ],
       
         "no-console": "off",

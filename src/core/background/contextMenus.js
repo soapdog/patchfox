@@ -1,3 +1,5 @@
+const browser = require("webextension-polyfill");
+
 function onCreated() {
   if (browser.runtime.lastError) {
     console.log(`Error: ${browser.runtime.lastError}`);
@@ -47,18 +49,18 @@ function initializeContextMenus() {
     console.dir("info", info)
     switch (info.menuItemId) {
       case "text-selection-to-clipboard-as-quotation":
-        let lines = info.selectionText.split(`\n`).map(l => `> ${l}`).join(`\n`)
-        template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`
-        copyToClipboard(template, template)
-        break;
+      let lines = info.selectionText.split(`\n`).map(l => `> ${l}`).join(`\n`)
+      template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`
+      copyToClipboard(template, template)
+      break;
       case "page-action-to-clipboard-as-link":
-        template = `[${tab.title}](${tab.url})`
-        copyToClipboard(template, template)
-        break;
+      template = `[${tab.title}](${tab.url})`
+      copyToClipboard(template, template)
+      break;
       case "link-to-clipboard-as-link":
-        template = `[${info.linkText}](${info.linkUrl})`
-        copyToClipboard(template, template)
-        break;
+      template = `[${info.linkText}](${info.linkUrl})`
+      copyToClipboard(template, template)
+      break;
     }
   })
 }
