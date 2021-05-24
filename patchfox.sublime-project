@@ -28,11 +28,11 @@
 			    "BOUNTY": "BOUNTY[\\s]*?:[\\s]*(?P<bounty>.*)$"
 			},
 			"patterns_weight": {
-			    "FIXME": 6,
-			    "BUG": 5,
-			    "TODO": 4,
-			    "HACK": 3,
-			    "BOUNTY": 2
+			    "FIXME": 1,
+			    "BUG": 2,
+			    "TODO": 3,
+			    "HACK": 4,
+			    "BOUNTY": 5
 			}
         }
     }
