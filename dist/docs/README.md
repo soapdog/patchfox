@@ -45,7 +45,7 @@ After installing and configuring patchfox, try browsing to:
 
 # Commentary, getting help
 
-I'f you're interested in learning more about the technologies behind this add-on, check out:
+If you're interested in learning more about the technologies behind this add-on, check out:
 
 * [MDN Web Docs - WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/).
 * [Native Messaging API](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging)
