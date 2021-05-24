@@ -3,7 +3,7 @@ const GatheringView = require("./GatheringView.svelte")
 const TimelineView = require("./TimelineView.svelte");
 const ExportView = require("./ExportView.svelte");
 const GatheringActionCard = require("./GatheringActionCard.svelte");
-
+const { isGathering, isUpdate, isAttendee } = require("ssb-gathering-schema") 
 
 patchfox.package({
     name: "calendar",
@@ -15,7 +15,11 @@ patchfox.package({
         {
           type: "about",
           card: GatheringActionCard,
-          validator: msg => msg.value.content.about && msg.value.content.about.startsWith("%")
+          validator: msg => {
+            console.log(msg)
+            console.log(isUpdate(msg))
+            return isUpdate(msg)
+        }
       }
     ],
     gathering: GatheringView,
