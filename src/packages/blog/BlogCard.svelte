@@ -14,8 +14,7 @@
   let toastMsg = "";
   let showRaw = false;
   let post = summary;
-  let hasContentWarning =
-    content.contentWarning && content.contentWarning.length > 0;
+  let hasContentWarning = content.contentWarning && content.contentWarning.length > 0;
   let encodedThumbnail = encodeURIComponent(thumbnail) || false;
 
   let liked = false;
