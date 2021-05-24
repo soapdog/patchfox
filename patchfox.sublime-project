@@ -25,7 +25,7 @@
 			    "CHANGED": "CHANGED[\\s]*?:[\\s]*(?P<changed>.*)$",
 			    "BUG": "BUG[\\s]*?:[\\s]*(?P<bug>.*)$",
 			    "HACK": "HACK[\\s]*?:[\\s]*(?P<hack>.*)$",
-			    "BOUNTY": "HACK[\\s]*?:[\\s]*(?P<bounty>.*)$"
+			    "BOUNTY": "BOUNTY[\\s]*?:[\\s]*(?P<bounty>.*)$"
 			},
 			"patterns_weight": {
 			    "FIXME": 6,
