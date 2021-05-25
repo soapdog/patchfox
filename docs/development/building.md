@@ -64,6 +64,7 @@ A large part of the building process is copying files around. An example is the 
 * **copy:augmented-ui** Patchfox uses some cute cyberpunk inspired CSS library, it needs to be copied around manually.
 * **copy:tribute-css** Another CSS that needs to be copied manually.
 * **copy:spectre-icons-css** Another CSS that needs copying.
+* **copy:browser-polyfill** Copies the [browser polyfill](https://github.com/mozilla/webextension-polyfill).
 * **copy:docs-folders** Copies the documentation.
 * **copy:docs-root** Don't forget copying the root folder of the documentation.
 * **copy:index** Copy `index.html`
