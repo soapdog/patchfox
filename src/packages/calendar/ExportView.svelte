@@ -102,7 +102,7 @@
 
     return Promise.all(attendeesP.concat(notAttendeesP));
   };
-  // todo: all of this is broken
+  // fixme: all of this is broken
   
   const gatheringToEventObj = async e => {
     let attendees = await getEventAttendees(e);

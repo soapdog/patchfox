@@ -17,6 +17,8 @@
 
   console.time("loading gatherings");
 
+  // bounty: the query used to find future events might be incomplete.
+
   let currentDate = new Date().getTime();
 
   pull(
