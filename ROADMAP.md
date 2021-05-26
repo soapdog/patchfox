@@ -23,8 +23,3 @@ More like _small trail guide_ than an actual _roadmap_. This document is used to
     - Add support for the new `ssb-uri` from Staltz.
 - Package Documentation
     - Make part of the documentation dynamic such as finding out which packages deal with which message types.
-- Open Collective integration
-    - Create a simple package to add an open collective button to the help menu.
-- Multiple browsers support
-    - Add browser polyfill to support `browser.*` APIs
-    - Investigate why the docs are returning 404 on Chromium-based browsers.
