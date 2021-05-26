@@ -39,11 +39,26 @@ These are the packages that Patchfox is loading.
   paths.forEach(source => {
     let elems = source.split("/");
     let destination = `${packageDocumentationRootPath}/${elems[2]}/${elems[4]}`
-    let destinationfolder = path.dirname(destination);
+    let destinationfolder = path.dirname(destination)
+    let packageName = elems[2]
     fs.ensureDirSync(destinationfolder)
     fs.copyFileSync(source, destination)
     console.log(`DOCS: ${source} --> ${destination}`)
-    fs.appendFileSync("dist/docs/packages/README.md", `* [${elems[2]}](/packages/${elems[2]}/)\n`)
+
+    let packageReadme = `${packageDocumentationRootPath}/${elems[2]}/README.md`
+    if (fs.existsSync(packageReadme)) {
+      // Append which message types that package handles.
+      let readme = fs.readFileSync(packageReadme, "utf8")
+
+      if (readme.indexOf("## Source code") == -1) {
+        fs.appendFileSync(packageReadme, `
+## Source code
+* [View package \`${packageName}\` at Github](https://github.com/soapdog/patchfox/blob/master/src/packages/${packageName}) 
+* [View package \`${packageName}\` at Sourcehut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${packageName})
+`)
+      }
+      fs.appendFileSync("dist/docs/packages/README.md", `* [${elems[2]}](/packages/${elems[2]}/)\n`)
+    }
   })
 
   /* 
