@@ -4,32 +4,32 @@ const BlogApp = require("./BlogApp.svelte");
 const BlogImport = require("./BlogImport.svelte");
 
 patchfox.package({
-    name: "blog",
-    app: true,
-    icon: "web-page.svg",
-    view: BlogApp,
-    import: BlogImport,
-    compose: BlogCompose,
-    messageTypes: [
+  name: "blog",
+  app: true,
+  icon: "web-page.svg",
+  view: BlogApp,
+  import: BlogImport,
+  compose: BlogCompose,
+  messageTypes: [
+    {
+      type: "blog",
+      card: BlogCard,
+      compose: BlogCompose
+    }
+  ],
+  menu: [
+    {
+      group: "Compose",
+      items: [
         {
-            type: "blog",
-            card: BlogCard,
-            compose: BlogCompose
+          label: "Blog",
+          event: "package:go",
+          data: {
+            pkg: "blog",
+            view: "compose"
+          }
         }
-    ],
-    menu: [
-        {
-            group: "Compose",
-            items: [
-                {
-                    label: "Blog",
-                    event: "package:go",
-                    data: {
-                        pkg: "blog",
-                        view: "compose"
-                    }
-                }
-            ]
-        }
-    ]
+      ]
+    }
+  ]
 })
