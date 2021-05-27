@@ -1,6 +1,7 @@
 <script>
   const QueryRepeater = require("../../core/components/QueryRepeater.svelte");
   const AvatarChip = require("../../core/components/AvatarChip.svelte");
+  const AvatarContainer = require("../../core/components/AvatarContainer.svelte");
   const pull = require("pull-stream");
   const Abortable = require("pull-abortable");
   const paramap = require("pull-paramap");
@@ -67,9 +68,11 @@
   patchfox.listen("package:activate:contacts:profile", () => location.reload());
 </script>
 
-{#each contacts as contact}
-  <AvatarChip feed={contact} on:avatarClick={avatarClick} />
-{/each}
+<AvatarContainer>
+  {#each contacts as contact}
+    <AvatarChip feed={contact} on:avatarClick={avatarClick} />
+  {/each}
+</AvatarContainer>
 {#if loading}
   <div class="loading" />
 {/if}
