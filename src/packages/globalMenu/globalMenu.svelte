@@ -71,6 +71,10 @@
                     <a
                       href="?{menuItemToURL(item.data)}"
                       class="btn btn-link"
+                      tabindex="0"
+                      on:keydown|stopPropagation|preventDefault={() => {
+                        patchfox.triggerMenu(item);
+                      }}
                       on:click|stopPropagation|preventDefault={() => {
                         patchfox.triggerMenu(item);
                       }}>
@@ -80,6 +84,10 @@
                     <a
                       class="btn btn-link"
                       href="?{menuItemToURL(item.data)}"
+                      tabindex="0"
+                      on:keydown|stopPropagation|preventDefault={() => {
+                        patchfox.triggerMenu(item);
+                      }}
                       on:click|stopPropagation|preventDefault={() => {
                         patchfox.triggerMenu(item);
                       }}>
@@ -104,7 +112,7 @@
             type="text"
             bind:value={query}
             placeholder="search" />
-          <button class="btn btn-primary input-group-btn" on:click={search}>
+          <button class="btn btn-primary input-group-btn" on:click={search} tabindex="0">
             Search
           </button>
         </div>
@@ -128,6 +136,10 @@
                   <a
                     href="?{menuItemToURL(item.data)}"
                     class="btn btn-link"
+                    tabindex="0"
+                    on:keydown|stopPropagation|preventDefault={() => {
+                      patchfox.triggerMenu(item);
+                    }}
                     on:click|stopPropagation|preventDefault={() => {
                       patchfox.triggerMenu(item);
                     }}>
@@ -137,6 +149,10 @@
                   <a
                     class="btn btn-link"
                     href="?{menuItemToURL(item.data)}"
+                    tabindex="0"
+                    on:keydown|stopPropagation|preventDefault={() => {
+                      patchfox.triggerMenu(item);
+                    }}
                     on:click|stopPropagation|preventDefault={() => {
                       patchfox.triggerMenu(item);
                     }}>
