@@ -1,7 +1,6 @@
 <script>
   const { getPref, setPref } = patchfox;
   let limit = getPref("limit", 10);
-  let columnSize = getPref("columnSize", "short");
 
   document.title = "Patchfox - Settings - Display Preferences";
 
@@ -19,32 +18,6 @@
 
 <h1 class="title">Display Preferences</h1>
 <form class="form-group">
- <label class="form-label">
-    Feed column size. There is research that says that a short column size makes
-    for a more pleasant reading experience, still some users prefer to use the
-    full screen space. Your choice is between reading through long text lines or
-    short ones.
-  </label>
-  <label class="form-radio">
-    <input
-      type="radio"
-      name="column-size"
-      bind:group={columnSize}
-      on:change={() => setPref('columnSize', columnSize)}
-      value="short" />
-    <i class="form-icon" />
-    Short column
-  </label>
-  <label class="form-radio">
-    <input
-      type="radio"
-      name="column-size"
-      bind:group={columnSize}
-      on:change={() => setPref('columnSize', columnSize)}
-      value="long" />
-    <i class="form-icon" />
-    Long column
-  </label>
   <label class="form-label" for="limit">Messages per page</label>
   <input
     class="form-input"
