@@ -10,3 +10,6 @@ old-src
 .vscode
 test/
 old/
+
+*.sublime-workspace
+.vscode
