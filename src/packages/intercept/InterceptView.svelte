@@ -8,9 +8,6 @@
 
   console.log("query", query);
 
-  // ssb://experimental/?action=claim-http-invite&invite=3oHVSHpRPKuxykVWA-T2ZmleQHIojcu8DctXVPG6qx3Dy67wjJa-j1ABgvo0jPsvhWY%3D&postTo=https%3A%2F%2Fpicoroom.hendrikpeter.net%2Finvite%2Fconsume
-
-  // ssb://experimental/?action=start-http-auth&multiserverAddress=net%3Apicoroom.hendrikpeter.net%3A8008~shs%3AckZbY7QH4oVp6pJm5jvm4jm%2BaO7qnrndacIhTZ6uDCo%3D&sc=29inDpT2jzNG7OfChOAGKD5BqogAV7JG4ZXWwERYZNw%3D&sid=%40ckZbY7QH4oVp6pJm5jvm4jm%2BaO7qnrndacIhTZ6uDCo%3D.ed25519
   
   // Experimental handling
   if (ssbUri.isExperimentalSSBURI(query)) {
