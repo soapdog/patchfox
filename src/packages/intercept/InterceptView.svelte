@@ -39,7 +39,7 @@
   }
 
   if (ssbUri.isBlobSSBURI(query)) {
-    window.location = `http://localhost:8989/blobs/get/${ssbUri.toMessageSigil(query)}`; // hack.
+    window.location = `http://localhost:8989/blobs/get/${ssbUri.toMessageSigil(query)}`; // fixme: assuming localhost:8989 for blob.
   }
 
 </script>
