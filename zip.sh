@@ -1,6 +1,6 @@
 #!/bin/sh
 echo adding to git
-git commit -am "commit before tentative release."
+git commit -am "[[ release ]] commit before tentative release."
 rm -rf ./web-ext-artifacts
 echo rebuilding web extension...
 npm run clean-build

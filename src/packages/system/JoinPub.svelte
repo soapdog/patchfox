@@ -1,9 +1,8 @@
 <script>
-
   let sbot = ssb.sbot;
 
   let joining = false;
-  let invite = "";
+  export let invite = "";
   let error = false;
   let msg = "";
 

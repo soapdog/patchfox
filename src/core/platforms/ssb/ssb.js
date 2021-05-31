@@ -21,6 +21,9 @@ const ssbAvatar = require("ssb-avatar")
 const pullParallelMap = require("pull-paramap");
 const pullSort = require("pull-sort");
 const _ = require("lodash")
+const ssbHttpInviteClient = require("ssb-http-invite-client")
+const ssbHttpAuthClient = require("ssb-http-auth-client")
+const rooms2 = require("./rooms2.js")
 
 const defaultOptions = {
   private: true,
@@ -42,7 +45,7 @@ const pipelines = {
 };
 
 const configure = (...customOptions) =>
-  Object.assign({}, defaultOptions, ...customOptions);
+Object.assign({}, defaultOptions, ...customOptions);
 
 const caches = {}
 const cacheResult = (kind, msgId, value) => {
@@ -162,6 +165,8 @@ class SSB {
     pipelines.message.use(this.filterRemovePrivateMsgs)
     pipelines.message.use(this.filterWithUserFilters)
     // pipelines.message.use(this.transform)
+
+    this.rooms2 = rooms2
   }
 
   log(pMsg, pVal = "") {
@@ -177,7 +182,7 @@ class SSB {
   }
 
   connect(keys, remote) {
-    let port = 8989;
+    let port = 8989; // bug: needs fixing, do not assume port.
 
     if (!keys) {
       throw "no keys passed to ssb.connect()"
@@ -197,6 +202,44 @@ class SSB {
             reject("can't connect to sbot")
           } else {
             sbot = server
+            
+            /** 
+            * Force plugins needed by Rooms 2.0
+            * 
+            * This is dangerous territory as it includes
+            * faking, wrapping, and polyfilling stuff so that
+            * ssb-client looks like ssb-server.
+            * 
+            * hack: a ton of shit going on to make ssb-client pretend to be ssb-server.
+            */
+
+            sbot.httpInviteClient = ssbHttpInviteClient.init(sbot)
+
+            // hack: apparently `ssb-client` has no `hook()` in `sbot.close()`, so we no-op'd a polyfill.
+            sbot.close.hook = (data) => {
+              console.warn("sbot.close is a no-op polyfill, doesn't actually work.")
+            }
+
+            // SSB Conn callback passes an RPC back, which looks like sbot.
+            // This sbot does not contain the plugins above ¬¬
+            // I need to force it back.
+            let conn_aux = sbot.conn.connect
+
+            sbot.conn.connect = (serverMSAddr, cb) => {
+              conn_aux(serverMSAddr, (err, rpc) => {
+                rpc.httpAuthClientTokens = sbot.httpAuthClientTokens
+                rpc.httpAuthClient = sbot.httpAuthClient
+                rpc.httpAuth = sbot.httpAuth
+                console.log("ssb.conn.connect wrapped!", rpc)
+                cb(err, rpc)
+              })
+            }
+
+            sbot.httpAuthClientTokens = ssbHttpAuthClient[0].init(sbot) // hack: assuming order in `ssb-http-auth-client`.
+            sbot.httpAuthClient = ssbHttpAuthClient[1].init(sbot, {keys}) // hack: assuming order in `ssb-http-auth-client`.
+            sbot.httpAuth = ssbHttpAuthClient[2].init(sbot, {keys}) // hack: assuming order in `ssb-http-auth-client`.
+            
+            // Back to normal programming...
             console.log("you are", server.id)
             resolve(server)
           }
@@ -279,7 +322,7 @@ class SSB {
 
           resolve(msgs)
         })
-      )
+        )
     })
   }
 
@@ -289,27 +332,27 @@ class SSB {
 
       sbot.get(id, (err, value) => {
         if (err) return reject(err)
-        var rootMsg = { key: id, value: value }
+          var rootMsg = { key: id, value: value }
         pull(
           sbot.backlinks && sbot.backlinks.read ? sbot.backlinks.read({
             query: [
-              {
-                $filter: {
-                  dest: id
-                }
+            {
+              $filter: {
+                dest: id
               }
+            }
             ],
             reverse: true
           }) : pull(
-            sbot.links({ dest: id, values: true, rel: 'root' }),
-            pull.unique('key')
+          sbot.links({ dest: id, values: true, rel: 'root' }),
+          pull.unique('key')
           ),
           pull.apply(pull, pipeline),
           pull.collect((err, msgs) => {
             if (err) reject(err)
-            resolve(sort([rootMsg].concat(msgs)))
+              resolve(sort([rootMsg].concat(msgs)))
           })
-        )
+          )
       })
     })
   }
@@ -375,7 +418,7 @@ class SSB {
             resolve(msgs)
           }
         })
-      );
+        );
     })
   }
 
@@ -395,7 +438,7 @@ class SSB {
             resolve(msgs)
           }
         })
-      );
+        );
     })
   }
 
@@ -406,12 +449,12 @@ class SSB {
     function searchFilter(terms) {
       return function (msg) {
         if (msg.sync) return true
-        const c = msg && msg.value && msg.value.content
+          const c = msg && msg.value && msg.value.content
         return c && (
           msg.key === terms[0] || andSearch(terms.map(function (term) {
             return new RegExp('\\b' + term + '\\b', 'i')
           }), [c.text, c.name, c.title])
-        )
+          )
       }
     }
 
@@ -424,16 +467,16 @@ class SSB {
         // if a term was not matched by anything, filter this one
         if (!match) return false
       }
-      return true
-    }
+    return true
+  }
 
-    return new Promise((resolve, reject) => {
-      if (sbot) {
-        try {
-          let q = query.toLowerCase();
-          pull(
-            sbot.createLogStream(opts),
-            pull.filter(matchesQuery),
+  return new Promise((resolve, reject) => {
+    if (sbot) {
+      try {
+        let q = query.toLowerCase();
+        pull(
+          sbot.createLogStream(opts),
+          pull.filter(matchesQuery),
             //this.filterTypes(),
             //this.filterWithUserFilters(),
             //this.filterLimit(),
@@ -442,128 +485,128 @@ class SSB {
                 cb(msg)
               }
             }, () => resolve())
-          );
-        } catch (e) {
-          reject(e)
-        }
-      } else {
-        reject("no sbot")
+            );
+      } catch (e) {
+        reject(e)
       }
-    })
-  }
+    } else {
+      reject("no sbot")
+    }
+  })
+}
 
-  aboutMessages(sourceId, destId) {
-    return new Promise((resolve, reject) => {
-      let opts = {
-        source: sourceId,
-        dest: destId,
-        rel: "about",
-        values: true
-      }
+aboutMessages(sourceId, destId) {
+  return new Promise((resolve, reject) => {
+    let opts = {
+      source: sourceId,
+      dest: destId,
+      rel: "about",
+      values: true
+    }
 
-      pull(
-        sbot.links(opts),
-        pull.collect(function (err, data) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(data)
-          }
-        })
-      )
-    })
-  }
-
-  async profile(feedid) {
-    return new Promise(async (resolve, reject) => {
-      let opts = {
-        id: feedid,
-        reverse: true
-      }
-
-      let user = {
-        msgs: [],
-        about: await this.aboutMessages(feedid, feedid)
-      }
-
-      const pipeline = pipelines.thread.get();
-
-
-      pull(
-        sbot.createUserStream(opts),
-        pull.apply(pull, pipeline),
-        pull.collect(function (err, data) {
-          if (err) {
-            reject(err)
-          } else {
-            user.msgs = data
-            resolve(user)
-          }
-        })
-      )
-    })
-  }
-
-  get(id) {
-    return new Promise((resolve, reject) => {
-      if (getMsgCache(id)) {
-        resolve(getMsgCache(id))
-      }
-      if (sbot.ooo) {
-        sbot.get({ id: id, raw: true, ooo: false, private: true }, (err, data) => {
-          if (err) reject(err)
-          setMsgCache(id, data)
+    pull(
+      sbot.links(opts),
+      pull.collect(function (err, data) {
+        if (err) {
+          reject(err)
+        } else {
           resolve(data)
-        })
-      } else {
-        if (!sbot.private) {
+        }
+      })
+      )
+  })
+}
+
+async profile(feedid) {
+  return new Promise(async (resolve, reject) => {
+    let opts = {
+      id: feedid,
+      reverse: true
+    }
+
+    let user = {
+      msgs: [],
+      about: await this.aboutMessages(feedid, feedid)
+    }
+
+    const pipeline = pipelines.thread.get();
+
+
+    pull(
+      sbot.createUserStream(opts),
+      pull.apply(pull, pipeline),
+      pull.collect(function (err, data) {
+        if (err) {
+          reject(err)
+        } else {
+          user.msgs = data
+          resolve(user)
+        }
+      })
+      )
+  })
+}
+
+get(id) {
+  return new Promise((resolve, reject) => {
+    if (getMsgCache(id)) {
+      resolve(getMsgCache(id))
+    }
+    if (sbot.ooo) {
+      sbot.get({ id: id, raw: true, ooo: false, private: true }, (err, data) => {
+        if (err) reject(err)
+          setMsgCache(id, data)
+        resolve(data)
+      })
+    } else {
+      if (!sbot.private) {
           // if no sbot.private, assume we have newer sbot that supports private:true
           return sbot.get({ id: id, private: true }, (err, data) => {
             if (err) reject(err)
-            setMsgCache(id, data)
+              setMsgCache(id, data)
             resolve(data)
           })
         }
         sbot.get(id, (err, data) => {
           if (err) reject(err)
-          setMsgCache(id, data)
+            setMsgCache(id, data)
           resolve(data)
         })
       }
     })
-  }
+}
 
-  async setAvatarCache(feed, data) {
-    let s = {}
-    s[`profile-${feed}`] = data
-    return browser.storage.local.set(s)
-  }
+async setAvatarCache(feed, data) {
+  let s = {}
+  s[`profile-${feed}`] = data
+  return browser.storage.local.set(s)
+}
 
-  async getCachedAvatar(feed) {
-    return browser.storage.local.get(`profile-${feed}`)
-  }
+async getCachedAvatar(feed) {
+  return browser.storage.local.get(`profile-${feed}`)
+}
 
-  getAllCachedUsers() {
-    return avatarCache
-  }
+getAllCachedUsers() {
+  return avatarCache
+}
 
-  async avatar(feed) {
-    const avatarPromise = (key) => {
-      return new Promise((resolve, reject) => {
-        ssbAvatar(sbot, sbot.id, key, function (err, data) {
-          if (err) {
-            reject(err)
-          } else if (data) {
-            resolve(data)
-          } else {
-            reject("unknown error")
-          }
-        })
+async avatar(feed) {
+  const avatarPromise = (key) => {
+    return new Promise((resolve, reject) => {
+      ssbAvatar(sbot, sbot.id, key, function (err, data) {
+        if (err) {
+          reject(err)
+        } else if (data) {
+          resolve(data)
+        } else {
+          reject("unknown error")
+        }
       })
-    }
+    })
+  }
 
-    const getAvatarAux = async feed => {
-      let avatar = await avatarPromise(feed)
+  const getAvatarAux = async feed => {
+    let avatar = await avatarPromise(feed)
       // await this.setAvatarCache(feed, avatar)
       avatarCache[feed] = avatar
       localStorage.setItem(`profile-${feed}`, JSON.stringify(avatar))
@@ -616,7 +659,7 @@ class SSB {
       }
 
       // if (data.content.type == "post") {
-      retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
+        retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
       // }
       return retVal
     } catch (n) {
@@ -679,15 +722,15 @@ class SSB {
     }
     let html = ssbMarkdown.block(text, opts)
     html = html
-      .replace(/<pre>/gi, "<pre class=\"code\">")
-      .replace(/<a href="#([^"]*)/gi, replaceChannel)
-      .replace(/<a href="@([^"]*)/gi, replaceFeedID)
-      .replace(/target="_blank"/gi, "")
-      .replace(/<a href="%([^"]*)/gi, replaceMsgID)
-      .replace(/<img src="&([^"]*)/gi, replaceImages)
-      .replace(/<video controls src="&([^"]*)/gi, replaceVideos)
-      .replace(/<audio controls src="&([^"]*)/gi, replaceAudios)
-      .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
+    .replace(/<pre>/gi, "<pre class=\"code\">")
+    .replace(/<a href="#([^"]*)/gi, replaceChannel)
+    .replace(/<a href="@([^"]*)/gi, replaceFeedID)
+    .replace(/target="_blank"/gi, "")
+    .replace(/<a href="%([^"]*)/gi, replaceMsgID)
+    .replace(/<img src="&([^"]*)/gi, replaceImages)
+    .replace(/<video controls src="&([^"]*)/gi, replaceVideos)
+    .replace(/<audio controls src="&([^"]*)/gi, replaceAudios)
+    .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
 
     return html
   }
@@ -732,11 +775,11 @@ class SSB {
       let msgToPost = { type: "post", text: data.text }
 
       const commonFields = [
-        "root",
-        "branch",
-        "channel",
-        "fork",
-        "contentWarning"
+      "root",
+      "branch",
+      "channel",
+      "fork",
+      "contentWarning"
       ]
 
       commonFields.forEach(f => {
@@ -774,11 +817,11 @@ class SSB {
       let blogContent = data.content
 
       const commonFields = [
-        "channel",
-        "contentWarning",
-        "thumbnail",
-        "title",
-        "summary"
+      "channel",
+      "contentWarning",
+      "thumbnail",
+      "title",
+      "summary"
       ]
 
       commonFields.forEach(f => {
@@ -815,7 +858,7 @@ class SSB {
               })
             }
           })
-        );
+          );
 
 
       } else {
@@ -856,7 +899,7 @@ class SSB {
                 resolve(values)
               }
             })
-          )
+            )
         }
       })
     })
@@ -876,7 +919,7 @@ class SSB {
               resolve(msgs)
             }
           })
-        )
+          )
       }
     })
   }
@@ -933,15 +976,15 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
-              {
-                "$reduce": {
-                  "channel": ["value", "content", "channel"],
-                  "count": { "$count": true },
-                  "timestamp": { "$max": ["value", "timestamp"] }
-                }
-              },
-              { "$sort": [["timestamp"], ["count"]] }
+            { "$filter": { "value": { "content": { "channel": { "$is": "string" }, "type": "post" } } } },
+            {
+              "$reduce": {
+                "channel": ["value", "content", "channel"],
+                "count": { "$count": true },
+                "timestamp": { "$max": ["value", "timestamp"] }
+              }
+            },
+            { "$sort": [["timestamp"], ["count"]] }
             ],
             limit: 20
           }),
@@ -952,7 +995,7 @@ class SSB {
               resolve(data)
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -981,7 +1024,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ],
             reverse: true
           }),
@@ -1016,7 +1059,7 @@ class SSB {
               resolve(data)
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1086,7 +1129,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ],
             reverse: true
           }),
@@ -1101,7 +1144,7 @@ class SSB {
               }
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1134,7 +1177,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ],
             reverse: true
           }),
@@ -1145,7 +1188,7 @@ class SSB {
               resolve(data)
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1258,7 +1301,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ],
             reverse: true
           }),
@@ -1273,7 +1316,7 @@ class SSB {
               }
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1306,7 +1349,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ],
             reverse: true
           }),
@@ -1321,7 +1364,7 @@ class SSB {
               }
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1353,7 +1396,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ],
             reverse: reverse
           }),
@@ -1365,7 +1408,7 @@ class SSB {
               resolve(data)
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1393,7 +1436,7 @@ class SSB {
         pull(
           sbot.query.read({
             query: [
-              query
+            query
             ]
           }),
           pull.collect((err, data) => {
@@ -1403,7 +1446,7 @@ class SSB {
               resolve(data)
             }
           })
-        )
+          )
       } else {
         reject("no sbot")
       }
@@ -1429,7 +1472,7 @@ class SSB {
    */
 
 
-  async popular({ period, page = 1 }) {
+   async popular({ period, page = 1 }) {
     if (!sbot) {
       throw "error: no sbot"
     }
@@ -1457,21 +1500,21 @@ class SSB {
     const source = sbot.query.read(
       configure({
         query: [
-          {
-            $filter: {
-              value: {
-                timestamp: { $gte: earliest },
-                content: {
-                  type: "vote"
-                }
-              },
-              timestamp: { $gte: earliest }
-            }
+        {
+          $filter: {
+            value: {
+              timestamp: { $gte: earliest },
+              content: {
+                type: "vote"
+              }
+            },
+            timestamp: { $gte: earliest }
           }
+        }
         ],
         index: "DTA"
       })
-    );
+      );
     const followingFilter = await this.socialFilter({ following: true });
 
     const messages = await new Promise((resolve, reject) => {
@@ -1484,7 +1527,7 @@ class SSB {
             typeof msg.value.content.vote === "object" &&
             typeof msg.value.content.vote.link === "string" &&
             typeof msg.value.content.vote.value === "number"
-          );
+            );
         }),
         pull.reduce(
           (acc, cur) => {
@@ -1529,7 +1572,7 @@ class SSB {
                 return acc;
               },
               []
-            );
+              );
 
             const arr = Object.entries(adjustedObj);
             const length = arr.length;
@@ -1559,10 +1602,10 @@ class SSB {
                   resolve(collectedMessages.slice(Number(getPref("limit", 10) * -1)));
                 }
               })
-            );
+              );
           }
-        )
-      );
+          )
+        );
     });
 
     return messages;
@@ -1576,7 +1619,7 @@ class SSB {
    * will only allow messages that are from you. If you set `blocking = true`
    * then you only see message from people you block.
    */
-  async socialFilter({
+   async socialFilter({
     following = null,
     blocking = false,
     me = null
@@ -1591,12 +1634,12 @@ class SSB {
     });
 
     const followingList = Object.entries(relationshipObject)
-      .filter(([, val]) => val === true)
-      .map(([key]) => key);
+    .filter(([, val]) => val === true)
+    .map(([key]) => key);
 
     const blockingList = Object.entries(relationshipObject)
-      .filter(([, val]) => val === false)
-      .map(([key]) => key);
+    .filter(([, val]) => val === false)
+    .map(([key]) => key);
 
     return pull.filter(message => {
       if (message.value.author === id) {
@@ -1607,7 +1650,7 @@ class SSB {
             followingList.includes(message.value.author) === following) &&
           (blocking === null ||
             blockingList.includes(message.value.author) === blocking)
-        );
+          );
       }
     });
   };
@@ -1651,10 +1694,10 @@ class SSB {
               referenceStream,
               pull.filter(
                 ref =>
-                  typeof ref.value.content.vote.value === "number" &&
-                  ref.value.content.vote.value >= 0 &&
-                  ref.value.content.vote.link === msg.key
-              ),
+                typeof ref.value.content.vote.value === "number" &&
+                ref.value.content.vote.value >= 0 &&
+                ref.value.content.vote.link === msg.key
+                ),
               pull.collect((err, collectedMessages) => {
                 if (err) {
                   console.error("err", err)
@@ -1663,7 +1706,7 @@ class SSB {
                   resolve(collectedMessages)
                 }
               })
-            )
+              )
           })
         } catch (n) {
           console.error("error with rawVotes", n)
@@ -1683,8 +1726,8 @@ class SSB {
         // gets *only* the people who voted 1
         // [ @key, @key, @key ]
         const voters = Object.entries(reducedVotes)
-          .filter(([, value]) => value === 1)
-          .map(([key]) => key);
+        .filter(([, value]) => value === 1)
+        .map(([key]) => key);
 
         return voters;
       }
@@ -1729,13 +1772,13 @@ class SSB {
             referenceStream,
             pull.filter(
               ref =>
-                typeof ref.value.content !== "string" &&
-                ref.value.content.type === "vote" &&
-                ref.value.content.vote &&
-                typeof ref.value.content.vote.value === "number" &&
-                ref.value.content.vote.value >= 0 &&
-                ref.value.content.vote.link === msg.key
-            ),
+              typeof ref.value.content !== "string" &&
+              ref.value.content.type === "vote" &&
+              ref.value.content.vote &&
+              typeof ref.value.content.vote.value === "number" &&
+              ref.value.content.vote.value >= 0 &&
+              ref.value.content.vote.link === msg.key
+              ),
             pull.collect((err, collectedMessages) => {
               if (err) {
                 console.error("err", err)
@@ -1744,7 +1787,7 @@ class SSB {
                 resolve(collectedMessages)
               }
             })
-          )
+            )
         })
       } catch (n) {
         console.error("error with rawVotes", n)
@@ -1764,12 +1807,12 @@ class SSB {
       // gets *only* the people who voted 1
       // [ @key, @key, @key ]
       const voters = Object.entries(reducedVotes)
-        .filter(([, value]) => value === 1)
-        .map(([key]) => key);
+      .filter(([, value]) => value === 1)
+      .map(([key]) => key);
 
       const isPost =
-        _.get(msg, "value.content.type") === "post" &&
-        _.get(msg, "value.content.text") != null;
+      _.get(msg, "value.content.type") === "post" &&
+      _.get(msg, "value.content.text") != null;
       const hasRoot = _.get(msg, "value.content.root") != null;
       const hasFork = _.get(msg, "value.content.fork") != null;
 
@@ -1791,8 +1834,8 @@ class SSB {
 
     return pullParallelMap((msg, cb) => {
       aux(msg)
-        .then(data => cb(null, data))
-        .catch(err => cb(err, null))
+      .then(data => cb(null, data))
+      .catch(err => cb(err, null))
     })
   }
 }
