@@ -1,23 +1,23 @@
 <script>
-  const Posts = require("./Posts.svelte");
-  const Following = require("./Following.svelte");
-  const Followers = require("./Followers.svelte");
-  const Friends = require("./Friends.svelte");
-  const Editor = require("./ProfileEditor.svelte");
-  const MoreInfo = require("./MoreInfo.svelte");
+  const Posts = require("./Posts.svelte")
+  const Following = require("./Following.svelte")
+  const Followers = require("./Followers.svelte")
+  const Friends = require("./Friends.svelte")
+  const Editor = require("./ProfileEditor.svelte")
+  const MoreInfo = require("./MoreInfo.svelte")
   const ssbUri  = require("ssb-uri2")
   const pull = require("pull-stream")
 
-  export let feed = ssb.feed;
+  export let feed = ssb.feed
 
-  let profile = false;
-  let description = false;
-  let following = false;
-  let blocking = false;
-  let image;
-  let lastAbout;
-  let avatarPromise; 
-  let aboutPromise;
+  let profile = false
+  let description = false
+  let following = false
+  let blocking = false
+  let image
+  let lastAbout
+  let avatarPromise 
+  let aboutPromise
   let aliasesPromise
 
   let subViews = {
@@ -26,79 +26,79 @@
     followers: Followers,
     friends: Friends,
     moreInfo: MoreInfo
-  };
+  }
   
-  export let currentSubView = "posts";
+  export let currentSubView = "posts"
 
-  let name = feed;
-  let followersCount = false;
-  let followingCount = false;
-  let friendsCount = false;
-  let showEditor = false;
+  let name = feed
+  let followersCount = false
+  let followingCount = false
+  let friendsCount = false
+  let showEditor = false
 
-  document.title = `Patchfox - Feed: ${feed}`;
+  document.title = `Patchfox - Feed: ${feed}`
 
   avatarPromise = ssb.avatar(feed).then(data => {
-    name = data.name;
-    image = data.image;
-    document.title = `Patchfox - Feed: ${name}`;
-  });
+    name = data.name
+    image = data.image
+    document.title = `Patchfox - Feed: ${name}`
+  })
 
   aboutPromise = ssb.profile(feed).then(data => {
     lastAbout = data.about.reverse().find(m => {
-      let a = m.value.content;
-      return a.hasOwnProperty("description");
-    });
+      let a = m.value.content
+      return a.hasOwnProperty("description")
+    })
     try {
-      description = lastAbout.value.content.description;
+      description = lastAbout.value.content.description
     } catch (n) {
-      description = "";
+      description = ""
     }
-    window.scrollTo(0, 0);
-  });
+    window.scrollTo(0, 0)
+  })
 
   if (feed !== ssb.feed) {
-    ssb.following(feed).then(f => (following = f));
-    ssb.blocking(feed).then(f => (blocking = f));
+    ssb.following(feed).then(f => (following = f))
+    ssb.blocking(feed).then(f => (blocking = f))
   }
 
   const blockingChanged = ev => {
-    let v = ev.target.checked;
+    let v = ev.target.checked
     if (v) {
-      ssb.block(feed).catch(() => (blocking = false));
+      ssb.block(feed).catch(() => (blocking = false))
     } else {
-      ssb.unblock(feed).catch(() => (blocking = true));
+      ssb.unblock(feed).catch(() => (blocking = true))
     }
-  };
+  }
 
   const followingChanged = ev => {
-    let v = ev.target.checked;
+    let v = ev.target.checked
     if (v) {
-      ssb.follow(feed).catch(() => (following = false));
+      ssb.follow(feed).catch(() => (following = false))
     } else {
-      ssb.unfollow(feed).catch(() => (following = true));
+      ssb.unfollow(feed).catch(() => (following = true))
     }
-  };
+  }
 
   const countCallback = ev => {
-    let { followers, following, friends } = ev.detail;
+    let { followers, following, friends } = ev.detail
 
     if (followers) {
-      followersCount = followers;
+      followersCount = followers
     }
 
     if (following) {
-      followingCount = following;
+      followingCount = following
     }
 
     if (friends) {
-      friendsCount = friends;
+      friendsCount = friends
     }
-  };
+  }
 
   const toggleEditor = () => {
-    showEditor = !showEditor;
-  };
+    showEditor = !showEditor
+  }
 
   let aliases = []
   
@@ -113,9 +113,9 @@
 
 <style>
   .extra-actions {
-    padding-top: 10px;
-    margin-top: 10px;
-    border-top: solid 1px lightgray;
+    padding-top: 10px
+    margin-top: 10px
+    border-top: solid 1px lightgray
   }
 </style>
 
