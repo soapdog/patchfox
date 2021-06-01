@@ -137,7 +137,7 @@
       <div class="container">
         <img
         class="img-responsive"
-        src={patchfox.httpUrl('/blobs/get/' + image)}
+        src={patchfox.httpUrl("/blobs/get/" + image)}
         alt={feed} />
       </div>
     </div>
@@ -187,7 +187,7 @@
       </p>
       {/await}
       <div class="extra-actions">
-        <a href="{patchfox.url('post', 'compose', { replyfeed: feed })}" class="btn btn-sm">New post mentioning {name}</a>
+        <a href="{patchfox.url("post", "compose", { replyfeed: feed })}" class="btn btn-sm">New post mentioning {name}</a>
       </div>
       <div class="extra-actions">
         <h4>Aliases</h4>
@@ -210,37 +210,37 @@
   {/if}
   <br />
   <ul class="tab tab-block">
-    <li class="tab-item" class:active={currentSubView === 'posts'}>
-      <a href="#" on:click|preventDefault={() => (currentSubView = 'posts')}>
+    <li class="tab-item" class:active={currentSubView === "posts"}>
+      <a href="#" on:click|preventDefault={() => (currentSubView = "posts")}>
         Posts
       </a>
     </li>
-    <li class="tab-item" class:active={currentSubView === 'friends'}>
+    <li class="tab-item" class:active={currentSubView === "friends"}>
       <a
       href="#"
-      on:click|preventDefault={() => (currentSubView = 'friends')}>
+      on:click|preventDefault={() => (currentSubView = "friends")}>
       Friends
       {#if friendsCount}({friendsCount}){/if}
     </a>
   </li>
-  <li class="tab-item" class:active={currentSubView === 'following'}>
+  <li class="tab-item" class:active={currentSubView === "following"}>
     <a
     href="#"
-    on:click|preventDefault={() => (currentSubView = 'following')}>
+    on:click|preventDefault={() => (currentSubView = "following")}>
     Following
     {#if followingCount}({followingCount}){/if}
   </a>
 </li>
-<li class="tab-item" class:active={currentSubView === 'followers'}>
+<li class="tab-item" class:active={currentSubView === "followers"}>
   <a
   href="#"
-  on:click|preventDefault={() => (currentSubView = 'followers')}>
+  on:click|preventDefault={() => (currentSubView = "followers")}>
   Followers
   {#if followersCount}({followersCount}){/if}
 </a>
 </li>
-<li class="tab-item" class:active={currentSubView === 'moreInfo'}>
-  <a href="#" on:click|preventDefault={() => (currentSubView = 'moreInfo')}>
+<li class="tab-item" class:active={currentSubView === "moreInfo"}>
+  <a href="#" on:click|preventDefault={() => (currentSubView = "moreInfo")}>
     More Info
   </a>
 </li>
