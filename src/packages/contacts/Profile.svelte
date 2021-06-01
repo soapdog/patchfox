@@ -18,6 +18,7 @@
   let lastAbout;
   let avatarPromise; 
   let aboutPromise;
+  let aliasesPromise
 
   let subViews = {
     posts: Posts,
@@ -99,11 +100,15 @@
     showEditor = !showEditor;
   };
 
-  const listPeers = () => {
-    ssb.sbot.conn.dbPeers((peers) => console.log(peers))
-  }
+  let aliases = []
+  
+  aliasesPromise = ssb.rooms2.getAliases(feed)
+    .then(data => {
+      console.log(data)
+      aliases = data
+    })
+    .catch(err => console.error(err))
 
-  listPeers()
 </script>
 
 <style>
@@ -184,10 +189,21 @@
       <div class="extra-actions">
         <a href="{patchfox.url('post', 'compose', { replyfeed: feed })}" class="btn btn-sm">New post mentioning {name}</a>
       </div>
-      <div>
-        {#if feed === ssb.feed}
-
+      <div class="extra-actions">
+        <h4>Aliases</h4>
+        {#await aliasesPromise}
+        <div class="loading"></div>
+        {:then}
+        {#if aliases.length > 0}
+        <ul>
+        {#each aliases as alias}
+          <li><a class="btn btn-link" href="{alias.url}" target="_blank">{alias.url}</a></li>
+        {/each}
+        </ul>
+        {:else}
+        <p>No aliases set for this profile</p>
         {/if}
+        {/await}
       </div>
     </div>
   </div>
