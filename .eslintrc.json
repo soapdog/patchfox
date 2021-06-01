@@ -20,23 +20,21 @@
         "ecmaVersion": 2020,
         "sourceType": "module"
     },
+    "plugins": ["svelte3"],
+    "overrides": [
+        {
+            "files": ["*.svelte"],
+            "processor": "svelte3/svelte3"
+        }
+    ],
     "rules": {
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "double",
-            { "allowTemplateLiterals": true }
-        ],
-      
+        "indent": ["error", 2],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "double", { "allowTemplateLiterals": true }],
+
         "no-console": "off",
         "no-unused-vars": "off",
+        "no-prototype-builtins": "off",
         "semi": "off"
     }
 }

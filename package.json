@@ -13,6 +13,7 @@
     "cross-env": "^7.0.3",
     "drag-and-drop-files": "0.0.1",
     "eslint": "^7.27.0",
+    "eslint-plugin-svelte3": "^3.2.0",
     "factor-bundle": "^2.5.0",
     "fs": "0.0.1-security",
     "fs-extra": "^9.1.0",
