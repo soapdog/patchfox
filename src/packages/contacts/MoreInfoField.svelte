@@ -25,19 +25,19 @@
   <td class="column">{field.name}</td>
   <td class="column">{field.type}</td>
   <td class="column">
-    {#if field.type == 'URL'}
+    {#if field.type == "URL"}
       <a target="_blank" href={field.value}>{field.value}</a>
     {/if}
 
-    {#if field.type == 'email'}
+    {#if field.type == "email"}
       <a target="_blank" href="mailto:{field.value}">{field.value}</a>
     {/if}
 
-    {#if field.type == 'phone'}
+    {#if field.type == "phone"}
       <a target="_blank" href="tel:{field.value}">{field.value}</a>
     {/if}
 
-    {#if field.type == 'text'}
+    {#if field.type == "text"}
       <span>{field.value}</span>
     {/if}
   </td>

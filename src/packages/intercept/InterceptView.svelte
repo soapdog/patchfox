@@ -1,5 +1,5 @@
 <script>
-  import * as  ssbUri  from"ssb-uri2"
+  import * as  ssbUri from "ssb-uri2"
 
   export let query;
   let loading = true;
@@ -8,34 +8,44 @@
 
   console.log("query", query);
 
-  if (query.indexOf("ssb:invite/") != -1) {
-    // it is an invite.
-    msg = `Patchfox does not support invite URLs at the moment.`
-    loading = false;
-  } else {
-    hash = ssbUri.toMessageSigil(query);
-    console.log("hash", hash);
+  
+  // Experimental handling
+  if (ssbUri.isExperimentalSSBURI(query)) {
 
-    if (hash[0] === "%") {
-      patchfox.reload("hub", "thread", { thread: hash });
+    if (ssbUri.isExperimentalSSBURIWithAction("claim-http-invite")(query)) {
+      // SSB Room 2.0 invite.
+      patchfox.reload("system", "joinRoom", {invite: query})
     }
 
-    if (hash[0] === "@") {
-      patchfox.reload("contacts", "profile", { feed: hash });
+    if (ssbUri.isExperimentalSSBURIWithAction("start-http-auth")(query)) {
+      // SSB Room 2.0 http auth.
+      patchfox.reload("system", "httpAuth", {uri: query})
     }
 
-    if (hash[0] === "#") {
-      patchfox.reload("hub", "channel", { channel: hash.slice(1) });
-    }
+  }
+ 
+  if (ssbUri.isMessageSSBURI(query)) {
+    let sigil = ssbUri.toMessageSigil(query)
 
-    if (hash[0] === "&") {
-      window.location = `http://localhost:8989/blobs/get/${hash}`; // hack.
+    if (sigil[0] == "#") {
+      patchfox.reload("hub", "channel", { channel: sigil.slice(1) });
+    } else {
+      patchfox.reload("hub", "thread", { thread: sigil })
     }
   }
+
+  if (ssbUri.isFeedSSBURI(query)) {
+    patchfox.reload("contacts", "profile", { feed: ssbUri.toMessageSigil(query) });
+  }
+
+  if (ssbUri.isBlobSSBURI(query)) {
+    window.location = `http://localhost:8989/blobs/get/${ssbUri.toMessageSigil(query)}`; // fixme: assuming localhost:8989 for blob.
+  }
+
 </script>
 
 {#if loading}
-  <div class="loading" />
+<div class="loading" />
 {:else}
-  <p>{msg}</p>
+<p>{msg}</p>
 {/if}

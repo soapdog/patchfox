@@ -5,10 +5,12 @@
   const book = Book(ssb.sbot)
 
   let books = [];
+  let shouldReverse = true
 
   const fetchBooks = () => {
+    books = []
     pull(
-      book.pull.books(null, true, false),
+      book.pull.books({reverse:shouldReverse}, true, false),
       pull.drain((data) => {
         books.push(data)
         books = books
@@ -16,7 +18,18 @@
     )
   }
 
+  const sortByOldest = () => {
+    shouldReverse = false
+    fetchBooks()
+  }
+
+  const sortByNewest = () => {
+    shouldReverse = true
+    fetchBooks()
+  }
+
   fetchBooks()
+
 
 
 </script>
@@ -32,8 +45,12 @@
 
 <div class="container">
   <div class="zine">
-    <a class="btn btn-primary" href="{patchfox.url('books', 'edit')}">Add New Book</a>
-    <span>{books.length} books found on SSB.</span>
+      <a class="btn btn-primary" href="{patchfox.url('books', 'edit')}">Add New Book</a>
+      <span>{books.length} books found on SSB.</span>
+      <button class="btn" class:btn-primary={!shouldReverse} on:click={sortByOldest}>Sort by oldest additions</button>
+      <button class="btn" class:btn-primary={shouldReverse} on:click={sortByNewest}>Sort by newest additions</button>
+      <br>
+      <br>
     {#if books.length == 0}
       <div class="loading" />
     {:else}

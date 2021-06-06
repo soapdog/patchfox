@@ -1,6 +1,6 @@
 @echo off
 echo adding to git
-call git commit -am "commit before tentative release."
+call git commit -am "[[ release ]] commit before tentative release."
 call rimraf .\web-ext-artifacts
 echo rebuilding web extension...
 call npm run clean-build

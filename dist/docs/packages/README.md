@@ -1,25 +1,26 @@
 
-# Packages
+# Packages 
 
-These are the packages that Patchfox is loading.
+These are the packages that Patchfox is loading. 
 
-* [githubIntegration](/packages/githubIntegration/)
-* [contacts](/packages/contacts/)
-* [errorHandler](/packages/errorHandler/)
-* [calendar](/packages/calendar/)
 * [blog](/packages/blog/)
-* [post](/packages/post/)
+* [books](/packages/books/)
+* [calendar](/packages/calendar/)
+* [githubIntegration](/packages/githubIntegration/)
+* [globalMenu](/packages/globalMenu/)
+* [errorHandler](/packages/errorHandler/)
+* [contacts](/packages/contacts/)
+* [helpMenu](/packages/helpMenu/)
+* [hub](/packages/hub/)
 * [intercept](/packages/intercept/)
 * [launcher](/packages/launcher/)
-* [hub](/packages/hub/)
-* [helpMenu](/packages/helpMenu/)
-* [sourcehutIntegration](/packages/sourcehutIntegration/)
-* [search](/packages/search/)
+* [openCollectiveIntegration](/packages/openCollectiveIntegration/)
+* [post](/packages/post/)
 * [private](/packages/private/)
-* [books](/packages/books/)
-* [globalMenu](/packages/globalMenu/)
 * [pub](/packages/pub/)
+* [search](/packages/search/)
+* [settings](/packages/settings/)
+* [sourcehutIntegration](/packages/sourcehutIntegration/)
+* [system](/packages/system/)
 * [vote](/packages/vote/)
 * [zine](/packages/zine/)
-* [system](/packages/system/)
-* [settings](/packages/settings/)

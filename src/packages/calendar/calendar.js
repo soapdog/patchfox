@@ -19,8 +19,6 @@ patchfox.package({
       type: "about",
       card: GatheringActionCard,
       validator: msg => {
-        console.log(msg)
-        console.log(isUpdate(msg))
         return isUpdate(msg)
       }
     }
