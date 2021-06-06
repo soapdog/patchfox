@@ -5,10 +5,10 @@ These are the packages that Patchfox is loading.
 
 * [blog](/packages/blog/)
 * [books](/packages/books/)
+* [errorHandler](/packages/errorHandler/)
+* [globalMenu](/packages/globalMenu/)
 * [calendar](/packages/calendar/)
 * [githubIntegration](/packages/githubIntegration/)
-* [globalMenu](/packages/globalMenu/)
-* [errorHandler](/packages/errorHandler/)
 * [contacts](/packages/contacts/)
 * [helpMenu](/packages/helpMenu/)
 * [hub](/packages/hub/)

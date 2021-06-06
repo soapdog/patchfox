@@ -113,9 +113,9 @@
 
 <style>
   .extra-actions {
-    padding-top: 10px
-    margin-top: 10px
-    border-top: solid 1px lightgray
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: solid 1px lightgray;
   }
 </style>
 
