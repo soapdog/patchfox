@@ -3,13 +3,13 @@
 
 These are the packages that Patchfox is loading. 
 
-* [blog](/packages/blog/)
 * [books](/packages/books/)
 * [errorHandler](/packages/errorHandler/)
-* [globalMenu](/packages/globalMenu/)
+* [blog](/packages/blog/)
 * [calendar](/packages/calendar/)
-* [githubIntegration](/packages/githubIntegration/)
+* [globalMenu](/packages/globalMenu/)
 * [contacts](/packages/contacts/)
+* [githubIntegration](/packages/githubIntegration/)
 * [helpMenu](/packages/helpMenu/)
 * [hub](/packages/hub/)
 * [intercept](/packages/intercept/)
@@ -21,6 +21,6 @@ These are the packages that Patchfox is loading.
 * [search](/packages/search/)
 * [settings](/packages/settings/)
 * [sourcehutIntegration](/packages/sourcehutIntegration/)
-* [system](/packages/system/)
 * [vote](/packages/vote/)
 * [zine](/packages/zine/)
+* [system](/packages/system/)

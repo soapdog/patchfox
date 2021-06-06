@@ -54,8 +54,6 @@
   ],
   "omnibox": { "keyword": "ssb?" },
   "permissions": [
-    "http://localhost:8989/",
-    "<all_urls>",
     "tabs",
     "activeTab",
     "storage",
