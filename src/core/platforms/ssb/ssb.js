@@ -200,6 +200,9 @@ class SSB {
               reject("can't connect to sbot");
             } else {
               sbot = server;
+              if (!sbot.conn) {
+                return resolve(server);
+              }
 
               /**
                * Force plugins needed by Rooms 2.0
