@@ -63,6 +63,10 @@ Don't hesitate to reach out to me at:
 * Mastodon: [@soapdog@toot.cafe](https://toot.cafe/@soapdog)
 * Twitter: [@soapdog](http://twitter.com/soapdog/)
 
+# Privacy Policy
+
+This add-on is a client for a decentralization platform called Secure Scuttlebutt. As a social platform it is up to the user to post data that will be made available to the larger network. This add-on doesn't initiate any content sharing on its own. All data shared is initiated by the user and requires confirmation before posting.
+
 # Sponsorship
 
 Do you want a decentralized internet too? Are you worried about the loss of net neutrality and realized that radical decentralization is the way to fight back? If you want to make a financial contribution to help me fund development of this and other dex focused software, I would love to receive contributions through these channels:
