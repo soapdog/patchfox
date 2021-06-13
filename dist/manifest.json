@@ -54,7 +54,6 @@
   ],
   "omnibox": { "keyword": "ssb?" },
   "permissions": [
-    "tabs",
     "activeTab",
     "storage",
     "unlimitedStorage",
