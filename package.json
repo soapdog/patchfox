@@ -95,6 +95,8 @@
     "copy:index": "copyfiles -u 1 src/index.html dist",
     "copy:package-assets": "node scripts/copy-package-assets.js",
     "copy:package-docs": "node scripts/copy-package-docs.js",
+    "copy:message-types-to-website": "copyfiles -E -u 3 dist/docs/message_types/** docs/message_types",
+    "copy:package-docs-to-website": "copyfiles -E -u 3 dist/docs/packages/**/* docs/packages",
     "copy:browserAction": "copyfiles -E -u 3 src/core/browserAction/browserAction.html dist",
     "build:browserAction": "browserify src/core/browserAction/browserAction.js -o dist/browserAction.js",
     "build:background": "browserify src/core/background/background.js -o dist/background.js",
