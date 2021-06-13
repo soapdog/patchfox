@@ -8,6 +8,7 @@
 - [Message Types](message_types/)
 - [Development](development/)
 - [Packages](packages/)
+- [Privacy Policy](privacy-policy.md)
 - Release Notes
   - [Version 2021.5.3](release_notes/2021.5.3.md)
   - [Version 2021.5.2](release_notes/2021.5.2.md)
