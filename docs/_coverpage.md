@@ -8,7 +8,7 @@
 
 - Simple and lightweight 
 
-[GitHub](https://github.com/soapdog/patchfox/)
 [Patchfox Open Collective](https://opencollective.com/patchfox)
 [Documentation](#readme)
+[Install from Chrome Web Store](https://chrome.google.com/webstore/detail/patchfox/ocanekmedfooidiahhelofknmpobdmdp?hl=en-GB&authuser=0)
 [Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)

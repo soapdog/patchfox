@@ -10,5 +10,5 @@
 
 [Patchfox Open Collective](https://opencollective.com/patchfox)
 [Documentation](#readme)
-[Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)
 [Install from Chrome Web Store](https://chrome.google.com/webstore/detail/patchfox/ocanekmedfooidiahhelofknmpobdmdp?hl=en-GB&authuser=0)
+[Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)
