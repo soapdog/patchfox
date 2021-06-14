@@ -220,31 +220,6 @@ class SSB {
                 );
               };
 
-              // SSB Conn callback passes an RPC back, which looks like sbot.
-              // This sbot does not contain the plugins above ¬¬
-              // I need to force it back.
-              let conn_aux = sbot.conn.connect;
-
-              sbot.conn.connect = (serverMSAddr, cb) => {
-                conn_aux(serverMSAddr, (err, rpc) => {
-                  rpc.httpAuthClientTokens = sbot.httpAuthClientTokens;
-                  rpc.httpAuthClient = sbot.httpAuthClient;
-                  rpc.httpAuth = sbot.httpAuth;
-                  console.log("ssb.conn.connect wrapped!", rpc);
-                  cb(err, rpc);
-                });
-              };
-
-              sbot.httpAuthClientTokens = ssbHttpAuthClient[0].init(sbot); // hack: assuming order in `ssb-http-auth-client`.
-              sbot.httpAuthClient = ssbHttpAuthClient[1].init(sbot, { keys }); // hack: assuming order in `ssb-http-auth-client`.
-              sbot.httpAuth = ssbHttpAuthClient[2].init(sbot, { keys }); // hack: assuming order in `ssb-http-auth-client`.
-
-              // Room client
-              //sbot.tunnel = ssbRoomClient[0].init(sbot);
-              //sbot.roomClient = ssbRoomClient[1].init(sbot, { keys });
-              //sbot.room = ssbRoomClient[2].init();
-
-              // Back to normal programming...
               console.log("you are", server.id);
               resolve(server);
             }

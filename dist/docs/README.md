@@ -1,11 +1,10 @@
 # Patchfox :id=readme
-This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. It is available on:
+This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension. This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. It is available on:
 
 * [Firefox Add-ons Portal](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)
 * [Chrome Web Store](https://chrome.google.com/webstore/detail/patchfox/ocanekmedfooidiahhelofknmpobdmdp?hl=en-GB&authuser=0)
 
-
-So if you just want to run it, that's the easiest way. Read on if you want to develop with it.
+So if you just want to run it, that's the easiest way. Read on if you want to develop with it. Read on if you want to develop with it.
 
 ## Requirements
 
@@ -63,6 +62,10 @@ Don't hesitate to reach out to me at:
 * Scuttlebutt: `@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519`
 * Mastodon: [@soapdog@toot.cafe](https://toot.cafe/@soapdog)
 * Twitter: [@soapdog](http://twitter.com/soapdog/)
+
+# Privacy Policy
+
+This add-on is a client for a decentralization platform called Secure Scuttlebutt. As a social platform it is up to the user to post data that will be made available to the larger network. This add-on doesn't initiate any content sharing on its own. All data shared is initiated by the user and requires confirmation before posting.
 
 # Sponsorship
 

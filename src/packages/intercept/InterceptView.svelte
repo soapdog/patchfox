@@ -19,7 +19,7 @@
 
     if (ssbUri.isExperimentalSSBURIWithAction("start-http-auth")(query)) {
       // SSB Room 2.0 http auth.
-      patchfox.reload("system", "httpAuth", {uri: query})
+      throw "Can't handle Rooms 2.0 auth messages"
     }
 
   }
