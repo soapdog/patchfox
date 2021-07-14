@@ -152,6 +152,8 @@ const setMsgCache = (id, data) => {
 
 class NodeJsSSB {
   constructor() {
+    this.serverType = "nodejs-ssb"
+
     // add basic built-in pipelines
     pipelines.thread.use(this.filterHasContent)
     pipelines.thread.use(this.filterTypes)
