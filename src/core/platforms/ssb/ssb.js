@@ -177,7 +177,7 @@ class SSB {
   }
 
   connect(keys, remote) {
-    let port = 8989; // bug: needs fixing, do not assume port.
+    let port = remote.match(/:([0-9]*)~/)[2] 
 
     if (!keys) {
       throw "no keys passed to ssb.connect()";
