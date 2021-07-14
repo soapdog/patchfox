@@ -3,6 +3,7 @@ const PostCard = require("./PostCard.svelte");
 
 patchfox.package({
   name: "post",
+  supportedPlatforms: ["nodejs-ssb"],
   view: PostCompose,
   compose: PostCompose,
   messageTypes: [

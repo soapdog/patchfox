@@ -1,12 +1,13 @@
-const publicView = require("./Public.svelte");
-const threadView = require("./Thread.svelte");
-const mentionsView = require("./Mentions.svelte");
-const channelView = require("./Channel.svelte");
-const channelCard = require("./ChannelCard.svelte");
-const popularView = require("./Popular.svelte");
+const publicView = require("./Public.svelte")
+const threadView = require("./Thread.svelte")
+const mentionsView = require("./Mentions.svelte")
+const channelView = require("./Channel.svelte")
+const channelCard = require("./ChannelCard.svelte")
+const popularView = require("./Popular.svelte")
 
 patchfox.package({
   name: "hub",
+  supportedPlatforms: ["nodejs-ssb"],
   public: publicView,
   thread: threadView,
   mentions: mentionsView,
@@ -17,8 +18,8 @@ patchfox.package({
     {
       type: "channel",
       card: channelCard,
-      short: true
-    }
+      short: true,
+    },
   ],
   menu: {
     group: "Hub",
@@ -29,25 +30,25 @@ patchfox.package({
         event: "package:go",
         data: {
           pkg: "hub",
-          view: "popular"
-        }
+          view: "popular",
+        },
       },
       {
         label: "Public",
         event: "package:go",
         data: {
           pkg: "hub",
-          view: "public"
-        }
+          view: "public",
+        },
       },
       {
         label: "Mentions",
         event: "package:go",
         data: {
           pkg: "hub",
-          view: "mentions"
-        }
-      }
-    ]
-  }
+          view: "mentions",
+        },
+      },
+    ],
+  },
 })

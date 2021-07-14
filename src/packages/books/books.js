@@ -7,6 +7,7 @@ patchfox.package({
   name: "books",
   app: true,
   icon: "books.svg",
+  supportedPlatforms: ["nodejs-ssb"],
   view: Books,
   details: BookDetails,
   edit: BookEdit,
