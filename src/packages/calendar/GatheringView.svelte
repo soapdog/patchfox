@@ -40,7 +40,7 @@
     if (!err) {
       event = data;
       attending = event.isAttendee;
-      notAttending = data.notAttendees.includes(ssb.sbot.id);
+      notAttending = data.notAttendees.includes(ssb.feed);
       loadedAllData = true;
     }
   });

@@ -23,7 +23,7 @@
           {
             $filter: {
               value: {
-                author: sbot.id,
+                author: ssb.feed,
                 content: { type: "channel" }
               }
             }

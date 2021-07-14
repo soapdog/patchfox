@@ -20,7 +20,7 @@
 
   let filter = {
     value: {
-      author: ssb.sbot.id,
+      author: ssb.feed,
       content: {
         type: "more-info",
         about: feed
@@ -82,7 +82,7 @@
         about: feed,
         fields: currentFields,
         luckyNumbers,
-        recps: [ssb.sbot.id]
+        recps: [ssb.feed]
       };
 
       console.log("about to post", data);

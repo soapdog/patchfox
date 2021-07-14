@@ -16,12 +16,12 @@
       console.log(data)
       book = data
 
-      if (book.reviews[ssb.sbot.id].rating !== "" || book.reviews[ssb.sbot.id].review) {
-        newRating = book.reviews[ssb.sbot.id].rating || ""
-        newRatingType = book.reviews[ssb.sbot.id].ratingType || ":star:"
-        newRatingMax = book.reviews[ssb.sbot.id].ratingMax || "5"
-        newReviewText = book.reviews[ssb.sbot.id].review || ""
-        newShelves = book.reviews[ssb.sbot.id].shelves.join(", ") || ""
+      if (book.reviews[ssb.feed].rating !== "" || book.reviews[ssb.feed].review) {
+        newRating = book.reviews[ssb.feed].rating || ""
+        newRatingType = book.reviews[ssb.feed].ratingType || ":star:"
+        newRatingMax = book.reviews[ssb.feed].ratingMax || "5"
+        newReviewText = book.reviews[ssb.feed].review || ""
+        newShelves = book.reviews[ssb.feed].shelves.join(", ") || ""
       }
     })
   }
@@ -43,7 +43,7 @@
     saving = true
 
     let bookRating = { 
-      type: 'bookclubUpdate', 
+      type: "bookclubUpdate", 
       review: newReviewText, 
       rating: newRating, 
       ratingMax: newRatingMax, 
