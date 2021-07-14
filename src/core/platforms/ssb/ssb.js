@@ -23,6 +23,9 @@ const _ = require("lodash")
 const ssbHttpInviteClient = require("ssb-http-invite-client")
 const ssbHttpAuthClient = require("ssb-http-auth-client")
 const ssbRoomClient = require("ssb-room-client")
+const fileReader = require("pull-file-reader");
+
+
 const rooms2 = require("./rooms2.js")
 const system = require("./system.js")
 
@@ -568,6 +571,22 @@ class SSB {
           resolve(data)
         })
       }
+    })
+  }
+
+  addBlob(file) {
+    return new Promise((resolve, reject) => {
+      pull(
+        fileReader(file),
+        sbot.blobs.add(function(err, hash) {
+          // 'hash' is the hash-id of the blob
+          if (err) {
+            reject(err)
+          } else {
+            resolve(hash)
+          }
+        })
+      )
     })
   }
 
