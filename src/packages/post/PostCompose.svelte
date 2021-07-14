@@ -91,19 +91,16 @@
         return false;
       }
 
-      pull(
-        fileReader(first),
-        sbot.blobs.add(function(err, hash) {
-          // 'hash' is the hash-id of the blob
-          if (err) {
-            error = true;
-            msg = "Couldn't attach file: " + err;
-          } else {
-            content += ` ![${first.name}](${hash})`;
-          }
-          fileOnTop = false;
+      ssb.addBlob(first)
+        .then(hash => {
+          content += ` ![${first.name}](${hash})`
+          fileOnTop = false
         })
-      );
+        .catch(err => {
+          error = true 
+          msg = "Couldn't attach file: " + err
+          fileOnTop = false
+        })
     } catch (n) {
       console.error("error, attaching", n);
     }
