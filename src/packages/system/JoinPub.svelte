@@ -4,6 +4,8 @@
   let error = false
   let msg = ""
 
+  patchfox.title("Join Pub")
+
   const joinPub = () => {
     error = false
     msg = ""

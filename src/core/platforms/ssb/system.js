@@ -9,7 +9,25 @@ const system = {
         }
       })
     })
-  }
+  },
+  getPeers: () => new Promise((resolve, reject) => {
+    ssb.sbot.gossip.peers((err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  }),
+  getStatus: () => new Promise((resolve, reject) => {
+    ssb.sbot.status((err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
 }
 
 module.exports = system
