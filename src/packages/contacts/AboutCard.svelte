@@ -1,36 +1,36 @@
 <script>
-  const Card = require("../../core/components/ui/Card.svelte");
+  const Card = require("../../core/components/ui/Card.svelte")
 
-  export let msg;
+  export let msg
 
-  let person = msg.value.author;
-  let otherLink = encodeURIComponent(msg.value.content.about);
-  let otherName = msg.value.content.name || msg.value.content.about;
-  let isThisAboutFeeds = true;
-  let showRaw = false;
+  let person = msg.value.author
+  let otherLink = encodeURIComponent(msg.value.content.about)
+  let otherName = msg.value.content.name || msg.value.content.about
+  let isThisAboutFeeds = true
+  let showRaw = false
   let verb =
     msg.value.content.about === msg.value.author
       ? "self-identifies"
-      : "identifies";
+      : "identifies"
 
-  ssb.avatar(msg.value.author).then(data => (person = data.name));
+  ssb.avatar(msg.value.author).then(data => (person = data.name))
 
   if (otherName === msg.value.content.about) {
-    ssb.avatar(msg.value.content.about).then(data => (otherName = data.name));
+    ssb.avatar(msg.value.content.about).then(data => (otherName = data.name))
   }
 
   let image = msg.value.content.image
     ? patchfox.httpUrl(`/blobs/get/${encodeURIComponent(
         msg.value.content.image.link
       )}`)
-    : false;
+    : false
 
   if (msg.value.content.description) {
-    verb += " with description";
+    verb += " with description"
   }
 
   if (msg.value.content.about.startsWith("%")) {
-    isThisAboutFeeds = false; // this appear to be a gathering
+    isThisAboutFeeds = false // this appear to be a gathering
   }
 </script>
 
