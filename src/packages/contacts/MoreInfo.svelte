@@ -28,30 +28,32 @@
     }
   }
 
-  pull(
-    ssb.sbot.query.read({
-      query: [
-        {
-          $filter: filter
+  if (ssb.serverType === "nodejs-ssb") {
+    pull(
+      ssb.sbot.query.read({
+        query: [
+          {
+            $filter: filter
+          }
+        ],
+        reverse: true,
+        limit: 1
+      }),
+      pull.collect((err, data) => {
+        loading = false
+        if (err) {
+          console.error("more-info", err)
+          error = err
+        } else {
+          console.log("more-info", data)
+          let fields = _.get(data[0], "value.content.fields", [])
+          if (fields.length > 0) {
+            currentFields = fields
+          }
         }
-      ],
-      reverse: true,
-      limit: 1
-    }),
-    pull.collect((err, data) => {
-      loading = false
-      if (err) {
-        console.error("more-info", err)
-        error = err
-      } else {
-        console.log("more-info", data)
-        let fields = _.get(data[0], "value.content.fields", [])
-        if (fields.length > 0) {
-          currentFields = fields
-        }
-      }
-    })
-  )
+      })
+    )
+  }
 
   const addNewField = () => {
     dirty = true
