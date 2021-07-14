@@ -1,88 +1,92 @@
 <script>
-  const pull = require("pull-stream");
-  const paramap = require("pull-paramap");
-  const sort = require("pull-sort");
-  const { onDestroy, tick } = require("svelte");
-  const { timestamp } = require("../../core/components/timestamp.js");
+  const pull = require("pull-stream")
+  const paramap = require("pull-paramap")
+  const sort = require("pull-sort")
+  const { onDestroy, tick } = require("svelte")
+  const { timestamp } = require("../../core/components/timestamp.js")
 
-  export let filter = "everyone";
-  export let channel = false;
-  let sbot = ssb.sbot;
-  let content = [];
-  let channels = [];
-  let limit = 20;
+  export let filter = "everyone"
+  export let channel = false
+  let sbot = ssb.sbot
+  let content = []
+  let channels = []
+  let limit = 20
 
 
-  let opts = {};
+  let opts = {}
 
   const subscribedChannels = () => {
-    pull(
-      sbot.query.read({
-        reverse: true,
-        query: [
-          {
-            $filter: {
-              value: {
-                author: ssb.feed,
-                content: { type: "channel" }
+    if (ssb.serverType === "nodejs-ssb") {
+      pull(
+        sbot.query.read({
+          reverse: true,
+          query: [
+            {
+              $filter: {
+                value: {
+                  author: ssb.feed,
+                  content: { type: "channel" }
+                }
               }
-            }
-          },
-          { $map: ["value", "content"] }
-        ]
-      }),
-      pull.unique("channel"),
-      pull.filter("subscribed"),
-      pull.map("channel"),
-      pull.collect((e, c) => {
-        channels = c;
-        channel = channel || channels[0];
-        getContentForChannel(channel);
-      })
-    );
-  };
+            },
+            { $map: ["value", "content"] }
+          ]
+        }),
+        pull.unique("channel"),
+        pull.filter("subscribed"),
+        pull.map("channel"),
+        pull.collect((e, c) => {
+          channels = c
+          channel = channel || channels[0]
+          getContentForChannel(channel)
+        })
+      )
+    }
+  }
 
   const getContentForChannel = c => {
-    content = [];
-    channel = c;
-    let query = [
-      {
-        $filter: {
-          value: {
-            content: {
-              channel: c,
-              type: { $in: ["post", "blog"] }
+    if (ssb.serverType === "nodejs-ssb") {
+      content = []
+      channel = c
+      let query = [
+        {
+          $filter: {
+            value: {
+              content: {
+                channel: c,
+                type: { $in: ["post", "blog"] }
+              }
             }
           }
         }
-      }
-    ];
+      ]
 
-    pull(
-      sbot.query.read({
-        query,
-        reverse: true
-      }),
-      ssb.filterWithUserFilters(),
-      pull.filter(msg => {
-        if (msg.value.content.type === "post") {
-          let root = msg.value.content.root;
-          let branch = msg.value.content.branch;
+      pull(
+        sbot.query.read({
+          query,
+          reverse: true
+        }),
+        ssb.filterWithUserFilters(),
+        pull.filter(msg => {
+          if (msg.value.content.type === "post") {
+            let root = msg.value.content.root
+            let branch = msg.value.content.branch
 
-          if (branch) return false;
-          if (root && root !== msg.key) return false;
-        }
-        return true;
-      }),
-      pull.take(limit),
-      pull.drain(function(data) {
-        content.push(data);
-        content = content;
-      })
-    );
-  };
+            if (branch) return false
+            if (root && root !== msg.key) return false
+          }
+          return true
+        }),
+        pull.take(limit),
+        pull.drain(function(data) {
+          content.push(data)
+          content = content
+        })
+      )
+    }
+  }
 
-  subscribedChannels();
+  subscribedChannels()
 </script>
 
 <style>  
