@@ -1,7 +1,7 @@
 const kernel = require("./kernel/kernel.js")
 const runtimes = require("./runtimes/runtimes.js")
 const queryString = require("query-string")
-const { isMessageHidden } = require("./platforms/ssb/abusePrevention.js")
+const { isMessageHidden } = require("./platforms/nodejs-ssb/abusePrevention.js")
 
 
 if (window) {

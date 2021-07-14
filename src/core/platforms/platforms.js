@@ -1,5 +1,7 @@
-const { SSB } = require("./ssb/ssb.js");
+const { NodeJsSSB } = require("./nodejs-ssb/ssb.js")
 
-module.exports = {
-  SSB
+const platforms = {
+  "nodejs-ssb": NodeJsSSB,
 }
+global.ssb = new platforms["nodejs-ssb"]()
+module.exports = platforms

@@ -1,5 +1,5 @@
 /**
- * SSB
+ * NodeJS SSB
  *
  * Things I don't currently like here:
  * - usage of getPref and abuse prevention. This should be pluggable!
@@ -150,7 +150,7 @@ const setMsgCache = (id, data) => {
   sessionStorage.setItem(id, JSON.stringify(data))
 }
 
-class SSB {
+class NodeJsSSB {
   constructor() {
     // add basic built-in pipelines
     pipelines.thread.use(this.filterHasContent)
@@ -1853,5 +1853,4 @@ class SSB {
   }
 }
 
-global.ssb = new SSB()
-module.exports.SSB = SSB
+module.exports.NodeJsSSB = NodeJsSSB
