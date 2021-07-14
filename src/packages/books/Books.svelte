@@ -66,6 +66,11 @@
                 <div class="card-image">
                   <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
                 </div>
+                {:else if book.common.images.hasOwnProperty("link")}
+                <div class="card-image">
+                  <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images.link)}" alt="{book.common.images.name}">
+                </div>
+
                 {:else}
                 {@debug book}
                 {/if}
