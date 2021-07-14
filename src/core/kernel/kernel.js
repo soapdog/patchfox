@@ -112,7 +112,12 @@ function packageForType(msg) {
   return selectedPackage
 }
 
+const title = (title) => {
+  window.title = `Patchfox - ${title}`
+}
+
 module.exports = {
+  title,
   // package related
   package,
   packages,
