@@ -27,15 +27,14 @@ const start = async () => {
     let pkg = qs.pkg
     if (pkg !== "settings") {
       switch (n) {
-        case "Configuration is missing":
-          location = "/docs/index.html#/troubleshooting/no-configuration"
-          break
-        case "can't connect to sbot":
-          location = "/docs/index.html#/troubleshooting/no-connection"
-          break
-        default:
-          throw n
-          break
+      case "Configuration is missing":
+        location = "/docs/index.html#/troubleshooting/no-configuration"
+        break
+      case "can't connect to sbot":
+        location = "/docs/index.html#/troubleshooting/no-connection"
+        break
+      default:
+        throw n
       }
     }
   }

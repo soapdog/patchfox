@@ -4,7 +4,7 @@ const themes = require("./themes/themes.js");
 const WM = require("./wm.svelte");
 
 core.start().then(() => {
-    const wm = new WM({
-        target: document.body
-    });
+  const wm = new WM({
+    target: document.body
+  });
 });
