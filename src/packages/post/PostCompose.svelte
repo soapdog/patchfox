@@ -137,7 +137,7 @@
         window.scrollTo(0, 0);
 
         if (msg.message === "stream is closed") {
-          msg += ". We lost connection to sbot. We'll try to restablish it...";
+          msg += ". We lost connection to SSB Server. We'll try to restablish it...";
           window.reload()
         }
       }
