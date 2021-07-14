@@ -23,11 +23,12 @@ const _ = require("lodash")
 const ssbHttpInviteClient = require("ssb-http-invite-client")
 const ssbHttpAuthClient = require("ssb-http-auth-client")
 const ssbRoomClient = require("ssb-room-client")
-const fileReader = require("pull-file-reader");
+const fileReader = require("pull-file-reader")
 
 
 const rooms2 = require("./rooms2.js")
 const system = require("./system.js")
+const friendship = require("./friendship.js")
 
 const defaultOptions = {
   private: true,
@@ -167,6 +168,7 @@ class SSB {
 
     this.rooms2 = rooms2
     this.system = system
+    this.friendship = friendship
   }
 
   log(pMsg, pVal = "") {
