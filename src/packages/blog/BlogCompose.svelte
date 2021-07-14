@@ -95,19 +95,16 @@
       return false;
     }
 
-    pull(
-      fileReader(first),
-      sbot.blobs.add(function(err, hash) {
-        // 'hash' is the hash-id of the blob
-        if (err) {
-          error = true;
-          msg = "Couldn't attach file: " + err;
-        } else {
-          content += ` ![${first.name}](${hash})`;
-        }
-        fileOnTop = false;
+    ssb.addBlob(first)
+      .then(hash => {
+        content += ` ![${first.name}](${hash})`
+        fileOnTop = false
       })
-    );
+      .catch(err => {
+        error = true 
+        msg = "Couldn't attach file: " + err
+        fileOnTop = false
+      })
   };
 
   const post = async ev => {
@@ -222,18 +219,16 @@
       return false;
     }
 
-    pull(
-      fileReader(first),
-      sbot.blobs.add(function(err, hash) {
-        // 'hash' is the hash-id of the blob
-        if (err) {
-          error = true;
-          msg = "Couldn't add file: " + err + " as thumbnail";
-        } else {
-          thumbnail = hash;
-        }
+    ssb.addBlob(first)
+      .then(hash => {
+        content += ` ![${first.name}](${hash})`
+        fileOnTop = false
       })
-    );
+      .catch(err => {
+        error = true 
+        msg = "Couldn't attach file: " + err
+        fileOnTop = false
+      })
   };
 
   const attachFileIPFS = ev => {
