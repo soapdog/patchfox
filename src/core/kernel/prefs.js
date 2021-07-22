@@ -52,12 +52,6 @@ const remote = () => {
   return savedData.remote
 }
 
-const httpUrl = (url) => {
-  let remote = savedData.remote
-  let tildePos = remote.indexOf("~")
-  let colonPos = remote.indexOf(":")
-  return "http" + remote.slice(colonPos, tildePos) + url
-}
 
 module.exports = {
   loadConfiguration,
@@ -65,6 +59,5 @@ module.exports = {
   getPref,
   setConnectionConfiguration,
   savedKeys,
-  httpUrl,
   remote,
 }

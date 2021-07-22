@@ -594,6 +594,11 @@ class NodeJsSSB {
     })
   }
 
+  blobUrl(file) {
+    const remote = ssb.remote.match(/\/\/(.+?)(?=~)/g)
+    return `http:${remote}/blobs/get/${file}`
+  }
+
   async setAvatarCache(feed, data) {
     let s = {}
     s[`profile-${feed}`] = data
