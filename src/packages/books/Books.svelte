@@ -1,10 +1,10 @@
 <script>
-  const pull = require("pull-stream");
-  const { timestamp } = require("../../core/components/timestamp.js");
+  const pull = require("pull-stream")
+  const { timestamp } = require("../../core/components/timestamp.js")
   const Book = require("scuttle-book")
   const book = Book(ssb.sbot)
 
-  let books = [];
+  let books = []
   let shouldReverse = true
 
   const fetchBooks = () => {
