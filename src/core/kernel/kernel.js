@@ -54,7 +54,7 @@ function appPackages() {
 
 function go(pkg, view, data) {
   let cs = queryString.parse(location.search)
-  if (cs.identity) {
+  if (cs.identity && !data.identity) {
     data.identity = cs.identity
   }
   PubSub.publishSync("package:go", { pkg, view, data })
@@ -62,7 +62,7 @@ function go(pkg, view, data) {
 
 function reload(pkg, view, data) {
   let cs = queryString.parse(location.search)
-  if (cs.identity) {
+  if (cs.identity && !data.identity) {
     data.identity = cs.identity
   } 
   let state = { pkg, view, ...data };
@@ -72,7 +72,7 @@ function reload(pkg, view, data) {
 
 function url(pkg, view, data) {
   let cs = queryString.parse(location.search)
-  if (cs.identity) {
+  if (cs.identity && !data.identity) {
     data.identity = cs.identity
   }
   let state = { pkg, view, ...data };
