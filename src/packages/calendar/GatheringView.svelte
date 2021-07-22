@@ -1,151 +1,151 @@
 <script>
-  const Card = require("../../core/components/ui/Card.svelte");
-  const Scuttle = require("scuttle-gathering");
-  const AvatarRound = require("../../core/components/AvatarRound.svelte");
-  const gathering = Scuttle(ssb.sbot);
-  const ics = require("ics");
-  const moment = require("moment");
-  const { timestamp } = require("../../core/components/timestamp.js");
-  const pull = require("pull-stream");
-  const paramap = require("pull-paramap");
-  const toPull = require("pull-promise");
+  const Card = require("../../core/components/ui/Card.svelte")
+  const Scuttle = require("scuttle-gathering")
+  const AvatarRound = require("../../core/components/AvatarRound.svelte")
+  const gathering = Scuttle(ssb.sbot)
+  const ics = require("ics")
+  const moment = require("moment")
+  const { timestamp } = require("../../core/components/timestamp.js")
+  const pull = require("pull-stream")
+  const paramap = require("pull-paramap")
+  const toPull = require("pull-promise")
 
-  export let msgid;
+  export let msgid
 
-  let msg = false;
-  let name;
-  let feed;
-  let event = false;
-  let loadedAllData = false;
-  let showRaw = false;
-  let attending;
-  let notAttending;
-  let image;
+  let msg = false
+  let name
+  let feed
+  let event = false
+  let loadedAllData = false
+  let showRaw = false
+  let attending
+  let notAttending
+  let image
 
   ssb.get(msgid).then(data => {
-    msg = {value: data};
-    feed = msg.value.author;
-    name = feed;
+    msg = {value: data}
+    feed = msg.value.author
+    name = feed
 
 
     ssb.avatar(feed).then(data => {
       if (data.image !== null) {
-        image = `http://localhost:8989/blobs/get/${data.image}`;
+        image = patchfox.blobUrl(data.image)
       }
-      name = data.name;
-    });
-  });
+      name = data.name
+    })
+  })
 
   gathering.get(msgid, (err, data) => {
     if (!err) {
-      event = data;
-      attending = event.isAttendee;
-      notAttending = data.notAttendees.includes(ssb.feed);
-      loadedAllData = true;
+      event = data
+      attending = event.isAttendee
+      notAttending = data.notAttendees.includes(ssb.feed)
+      loadedAllData = true
     }
-  });
+  })
 
   const dateToNiceDate = epoch => {
-    let date = new Date(epoch).toLocaleDateString();
-    let time = new Date(epoch).toLocaleTimeString();
-    return `${date} ${time}`;
-  };
+    let date = new Date(epoch).toLocaleDateString()
+    let time = new Date(epoch).toLocaleTimeString()
+    return `${date} ${time}`
+  }
 
   const attend = () => {
     gathering.attending(msgid, true, (err, data) => {
-      console.log(err);
-      console.log(data);
+      console.log(err)
+      console.log(data)
       if (!err) {
-        attending = true;
-        notAttending = false;
+        attending = true
+        notAttending = false
       }
-    });
-  };
+    })
+  }
 
   const notAttend = () => {
     gathering.attending(msgid, false, (err, data) => {
       if (!err) {
-        notAttending = true;
-        attending = false;
+        notAttending = true
+        attending = false
       }
-    });
-  };
+    })
+  }
 
   const avatarClick = ev => {
-    let feed = ev.detail.feed;
-    let name = ev.detail.name;
+    let feed = ev.detail.feed
+    let name = ev.detail.name
 
-    patchfox.go("contacts", "profile", { feed });
-  };
+    patchfox.go("contacts", "profile", { feed })
+  }
 
   const goProfile = ev => {
     if (ev.ctrlKey) {
       window.open(
         `?pkg=contacs&view=profile&feed=${encodeURIComponent(feed)}#/profile`
-      );
+      )
     } else {
-      patchfox.go("contacts", "profile", { feed });
+      patchfox.go("contacts", "profile", { feed })
     }
-  };
+  }
 
   const exportToICS = ev => {
     pull(
       pull.values(event.attendees),
       paramap((attendee, cb) => {
-        ssb.avatar(attendee).then(a => cb(null, { name: a.name, rsvp: true }));
+        ssb.avatar(attendee).then(a => cb(null, { name: a.name, rsvp: true }))
       }),
       pull.collect((err, attendees) => {
         if (err) {
-          console.log("err");
-          throw err;
-          return;
+          console.log("err")
+          throw err
+          return
         }
-        let el = document.createElement("div");
-        el.innerHTML = ssb.markdown(event.description);
+        let el = document.createElement("div")
+        el.innerHTML = ssb.markdown(event.description)
         let obj = {
           title: event.title,
           description: el.innerText
-        };
+        }
 
         if (event.location) {
-          obj.location = event.location;
+          obj.location = event.location
         }
 
         obj.start = moment(event.startDateTime.epoch)
           .format("YYYY-M-D-H-m")
-          .split("-");
+          .split("-")
 
-        obj.duration = { hours: 1 };
-        obj.organizer = { name: name };
-        obj.attendees = attendees;
+        obj.duration = { hours: 1 }
+        obj.organizer = { name: name }
+        obj.attendees = attendees
 
-        let { error, value } = ics.createEvent(obj);
+        let { error, value } = ics.createEvent(obj)
 
         if (error) {
-          throw `Can't generate iCal ${error}`;
+          throw `Can't generate iCal ${error}`
         } else {
-          let blob = new Blob([value], { type: "text/calendar" });
+          let blob = new Blob([value], { type: "text/calendar" })
 
-          const a = document.createElement("a");
-          a.style.display = "none";
-          document.body.appendChild(a);
+          const a = document.createElement("a")
+          a.style.display = "none"
+          document.body.appendChild(a)
 
           // Set the HREF to a Blob representation of the data to be downloaded
-          a.href = window.URL.createObjectURL(blob);
+          a.href = window.URL.createObjectURL(blob)
 
           // Use download attribute to set set desired file name
-          a.setAttribute("download", `${event.title}.ics`);
+          a.setAttribute("download", `${event.title}.ics`)
 
           // Trigger the download by simulating click
-          a.click();
+          a.click()
 
           // Cleanup
-          window.URL.revokeObjectURL(a.href);
-          document.body.removeChild(a);
+          window.URL.revokeObjectURL(a.href)
+          document.body.removeChild(a)
         }
       })
-    );
-  };
+    )
+  }
 </script>
 
 <style>
@@ -175,7 +175,7 @@
     {#if event.image}
       <img
         class="gathering-image"
-        src="http://localhost:8989/blobs/get/{encodeURIComponent(event.image.link)}"
+        src="{patchfox.blobUrl(encodeURIComponent(event.image.link))}"
         alt={event.image.name} />
     {/if}
     {@html ssb.markdown(event.description)}

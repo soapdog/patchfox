@@ -1,10 +1,10 @@
 <script>
-export let channel;
-export let title;
-export let contentWarning;
-export let content;
-export let summary;
-export let thumbnail;
+export let channel
+export let title
+export let contentWarning
+export let content
+export let summary
+export let thumbnail
 </script>
 
 <style>
@@ -45,7 +45,7 @@ export let thumbnail;
         <b>Thumbnail:</b>
         <img
           class="thumbnail-preview"
-          src="http://localhost:8989/blobs/get/{thumbnail}"
+          src="{patchfox.bloburl(thumbnail)}"
           alt="post thumbnail" />
       </p>
     {/if}

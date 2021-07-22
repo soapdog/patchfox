@@ -140,5 +140,5 @@ module.exports = {
   stopListening,
   ...prefs,
   // aux
-  utils
+  ...utils
 }

@@ -16,6 +16,7 @@ const start = async () => {
     // window.ssb.* comes from browserified ssb.js
     // that exists only in the dist folder.
     let server = await ssb.connect(kernel.savedKeys(), savedData.remote)
+    window.ssb.remote = savedData.remote
     window.ssb.feed = server.id
     window.ssb.sbot = server
     ssb.setGetPrefFunction(kernel.getPref)
@@ -23,7 +24,7 @@ const start = async () => {
     await ssb.loadCaches()
     return server.id
   } catch (n) {
-    let qs = queryString.parse(location.search);
+    let qs = queryString.parse(location.search)
     let pkg = qs.pkg
     if (pkg !== "settings") {
       switch (n) {

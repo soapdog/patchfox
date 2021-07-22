@@ -1,53 +1,52 @@
 <script>
-  const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
-  const { onDestroy } = require("svelte");
+  const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
+  const { onDestroy } = require("svelte")
 
-  let msgs = false;
-  let error = false;
-  let dropdownActive = false;
-  let promise;
+  let msgs = false
+  let error = false
+  let dropdownActive = false
+  let promise
 
-  export let lt = false;
-  export let limit = false;
+  export let lt = false
+  export let limit = false
 
   $: {
-    document.title = `Patchfox - Public`;
+    patchfox.title("Public")
 
-    let opts = {};
+    let opts = {}
     if (lt) {
-      opts.lt = Number(lt);
-      document.title = `Patchfox - Public - ${lt}`;
+      opts.lt = Number(lt)
+      patchfox.title(`Public - ${lt}`)
     }
 
-    console.time("public");
+    console.time("public")
     promise = ssb
       .public(opts)
       .then(ms => {
-        console.timeEnd("public");
-        console.log("got msgs", ms);
-        msgs = ms;
-        window.scrollTo(0, 0);
+        console.timeEnd("public")
+        msgs = ms
+        window.scrollTo(0, 0)
       })
       .catch(n => {
-        throw n;
-      });
+        throw n
+      })
   }
 
   const goNext = () => {
-    let lt = msgs[msgs.length - 1].value.timestamp;
-    msgs = false;
-    patchfox.go("hub", "public", { lt });
-  };
+    let lt = msgs[msgs.length - 1].value.timestamp
+    msgs = false
+    patchfox.go("hub", "public", { lt })
+  }
 
   const urlForNext = () => {
-    let lt = msgs[msgs.length - 1].value.timestamp;
-    return patchfox.url("hub", "public", { lt });
-  };
+    let lt = msgs[msgs.length - 1].value.timestamp
+    return patchfox.url("hub", "public", { lt })
+  }
 
   const goPrevious = () => {
-    msgs = false;
-    history.back();
-  };
+    msgs = false
+    history.back()
+  }
 </script>
 
 <style>
