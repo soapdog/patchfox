@@ -24,7 +24,7 @@ const ssbHttpInviteClient = require("ssb-http-invite-client")
 const ssbHttpAuthClient = require("ssb-http-auth-client")
 const ssbRoomClient = require("ssb-room-client")
 const fileReader = require("pull-file-reader")
-
+const queryString = require("query-string");
 
 const rooms2 = require("./rooms2.js")
 const system = require("./system.js")
@@ -696,23 +696,30 @@ class NodeJsSSB {
   }
 
   markdown(text) {
+    let cs = queryString.parse(location.search)
+    let identity = ""
+    
+    if (cs.identity) {
+      identity = `&identity=${encodeURIComponent(cs.identity)}`
+    }
+
     function replaceMsgID(match, id, offset, string) {
       let eid = encodeURIComponent(`%${id}`)
 
-      return `<a class="thread-link" href="?pkg=hub&view=thread&thread=${eid}`
+      return `<a class="thread-link" href="?pkg=hub&view=thread&thread=${eid}${identity}`
     }
 
     function replaceChannel(match, id, offset, string) {
       let eid = encodeURIComponent(id)
 
-      return `<a class="channel-link" href="?pkg=hub&view=channel&channel=${eid}`
+      return `<a class="channel-link" href="?pkg=hub&view=channel&channel=${eid}${identity}`
     }
 
     function replaceFeedID(match, id, offset, string) {
       let eid = encodeURIComponent(`@${id}`)
       return (
         // eslint-disable-next-line quotes
-        '<a class="profile-link" href="?pkg=contacts&view=profile&feed=' + eid
+        '<a class="profile-link" href="?pkg=contacts&view=profile&feed=' + eid + identity
       )
     }
 

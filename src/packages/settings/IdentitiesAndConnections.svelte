@@ -81,11 +81,11 @@
     <h5 class="card-title h5">{identities[key].keys.public}</h5>
     {/if}
   </div>
-  <div class="card-body">
-    <p>Feed Id: <code>{identities[key].keys.public}</code></p>
-    <p>Server Type: <code>{identities[key].type}</code></p>
-    <p>Remote: <code>{identities[key].remote}</code></p>
-  </div>
+  <ul class="card-body text-tiny">
+    <li>Feed Id: <code>{identities[key].keys.public}</code></li>
+    <li>Server Type: <code>{identities[key].type}</code></li>
+    <li>Remote: <code>{identities[key].remote}</code></li>
+  </ul>
   <div class="card-footer">
     <button class="btn btn-primary" on:click={() => {
       keys = JSON.stringify(identities[key].keys)

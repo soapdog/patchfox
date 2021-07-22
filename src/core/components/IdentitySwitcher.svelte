@@ -86,8 +86,8 @@
   <div class="tile-content">
     <p class="tile-title">{identities[key].keys.public}</p>
     <p class="tile-subtitle text-tiny">
-      <span>Server Type: <code>{identities[key].type}</code> </span>
-      <span>Remote: <code>{identities[key].remote}</code></span>
+      <span>Server Type: <code>{identities[key].type}</code></span><br>
+      <span>Remote: <code class="text-ellipsis d-inline-block" style="width:  300px">{identities[key].remote}</code></span>
     </p>
   <p>
     <button class="btn btn-sm" on:click={() => {

@@ -53,16 +53,28 @@ function appPackages() {
 }
 
 function go(pkg, view, data) {
+  let cs = queryString.parse(location.search)
+  if (cs.identity) {
+    data.identity = cs.identity
+  }
   PubSub.publishSync("package:go", { pkg, view, data })
 }
 
 function reload(pkg, view, data) {
+  let cs = queryString.parse(location.search)
+  if (cs.identity) {
+    data.identity = cs.identity
+  } 
   let state = { pkg, view, ...data };
   let qs = queryString.stringify(state);
   location = `/index.html?${qs}`
 }
 
 function url(pkg, view, data) {
+  let cs = queryString.parse(location.search)
+  if (cs.identity) {
+    data.identity = cs.identity
+  }
   let state = { pkg, view, ...data };
   let qs = queryString.stringify(state);
   return `/index.html?${qs}`
