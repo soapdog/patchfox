@@ -1,6 +1,6 @@
 patchfox.package({
   name: "sourcehutIntegration",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   menu: [
     {
       group: "Help",

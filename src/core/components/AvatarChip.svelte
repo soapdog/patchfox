@@ -1,23 +1,23 @@
 <script>
-  const { createEventDispatcher } = require("svelte");
+  const { createEventDispatcher } = require("svelte")
 
-  export let feed;
+  export let feed
 
-  let image = false;
-  let name = feed;
+  let image = false
+  let name = feed
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher()
 
   ssb.avatar(feed).then(data => {
-    if (data.image !== null) {
-      image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`;
+    if (data.image !== null && data.image !== undefined) {
+      image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`
     }
-    name = data.name;
-  });
+    name = data.name
+  })
 
   const avatarClick = () => {
-    dispatch("avatarClick", { feed, name });
-  };
+    dispatch("avatarClick", { feed, name })
+  }
 </script>
 
 <style>
@@ -41,7 +41,7 @@
     title={name}
     aria-label={name}
     on:click|preventDefault|stopPropagation={avatarClick}>
-    <img src={image} class="fix-img avatar avatar-sm" alt={name} />
+    <img src={image} class="fix-img avatar avatar-sm" data-initial="{name.slice(1,3)}" alt={name} />
     {name}
   </a>
   {:else}

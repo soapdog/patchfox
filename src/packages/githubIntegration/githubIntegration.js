@@ -1,6 +1,6 @@
 patchfox.package({
   name: "githubIntegration",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   menu: [
     {
       group: "Help",

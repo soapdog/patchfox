@@ -2,7 +2,7 @@ const view = require("./launcher.svelte")
 
 patchfox.package({
   name: "launcher",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   description: "A handy application/package launcher.",
   system: true,
   view,

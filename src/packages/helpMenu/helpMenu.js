@@ -1,10 +1,9 @@
-const version = browser.runtime.getManifest().version;
-const releaseNotesUrl = browser.extension.getURL(`/docs/index.html#/release_notes/${version}`);
-
+const version = browser.runtime.getManifest().version
+const releaseNotesUrl = browser.extension.getURL(`/docs/index.html#/release_notes/${version}`)
 
 patchfox.package({
   name: "helpMenu",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   menu: [
     {
       group: "Help",
@@ -12,19 +11,19 @@ patchfox.package({
         {
           label: "Documentation",
           event: "url:open",
-          data: "/docs/index.html"
+          data: "/docs/index.html",
         },
         {
           label: "Troubleshooting",
           event: "url:open",
-          data: "/docs/index.html#/troubleshooting/"
+          data: "/docs/index.html#/troubleshooting/",
         },
         {
           label: "Release Notes",
           event: "url:open",
-          data: releaseNotesUrl
-        }
-      ]
-    }
-  ]
-});
+          data: releaseNotesUrl,
+        },
+      ],
+    },
+  ],
+})

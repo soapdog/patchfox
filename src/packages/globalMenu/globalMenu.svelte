@@ -1,37 +1,42 @@
 <script>
-  const queryString = require("query-string");
+  const queryString = require("query-string")
+  const IdentitySwitcher = require("../../core/components/IdentitySwitcher.svelte")
 
-  let groups = patchfox.menuGroups();
-  let groupKeys = Object.keys(groups);
-  let currentPackage = false;
+  let groups = patchfox.menuGroups()
+  let groupKeys = Object.keys(groups)
+  let currentPackage = false
   let browserSidebarSupport = typeof browser.sidebarAction === "object"
+  let currentQuery = queryString.parse(location.search)
 
   patchfox.listen("package:changed", (event, pkg) => {
-    currentPackage = pkg.title || pkg.name || false;
-  });
+    currentPackage = pkg.title || pkg.name || false
+  })
 
   const menuItemToURL = ({ pkg, view, data }) => {
-    let state = { pkg, view, ...data };
-    let qs = queryString.stringify(state);
-    return qs;
-  };
+    let state = { pkg, view, ...data }
+    if (currentQuery.identity) {
+      state.identity = currentQuery.identity
+    }
+    let qs = queryString.stringify(state)
+    return qs
+  }
 
-  let query = "";
+  let query = ""
   const search = ev => {
-    patchfox.go("search", "query", { query });
-  };
+    patchfox.go("search", "query", { query })
+  }
 
   const openSidebar = async ev => {
-    let loc = window.location.href;
-    browser.sidebarAction.setPanel({ panel: loc });
-    browser.sidebarAction.open();
-  };
+    let loc = window.location.href
+    browser.sidebarAction.setPanel({ panel: loc })
+    browser.sidebarAction.open()
+  }
 
   const closeSidebar = async ev => {
-    let loc = await browser.sidebarAction.getPanel({});
-    await browser.tabs.create({ url: loc });
-    await browser.sidebarAction.close();
-  };
+    let loc = await browser.sidebarAction.getPanel({})
+    await browser.tabs.create({ url: loc })
+    await browser.sidebarAction.close()
+  }
 </script>
 
 <style>
@@ -105,6 +110,9 @@
       <!-- centered logo or brand -->
     </section>
     <section class="navbar-section">
+      {#if window.hasOwnProperty("ssb") && ssb?.feed}
+      <IdentitySwitcher feed={ssb.feed} />
+      {/if}
       <form on:submit|preventDefault={search}>
         <div class="input-group input-inline p-2">
           <input

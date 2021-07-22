@@ -6,11 +6,11 @@
 
 let savedData = {}
 
-const loadConfiguration = async () => {
+const loadSavedData = async () => {
   try {
     let data = await browser.storage.local.get()
 
-    if (data.hasOwnProperty("keys")) {
+    if (data.hasOwnProperty("identities")) {
       savedData = data
       return savedData
     } else {
@@ -30,12 +30,18 @@ const getPref = (key, defaultValue) => {
   return defaultValue
 }
 
-const setConnectionConfiguration = ({ keys, remote }) => {
-  savedData.keys = keys
-  savedData.remote = remote
+const saveIdentityConfiguration = ({ keys, remote, type }) => {
+  const publicKey = keys.public
+  savedData.identities = savedData.identities || {}
+  savedData.identities[publicKey] = {
+    keys,
+    remote,
+    type,
+  }
 
   browser.storage.local.set(savedData)
 }
+
 
 const setPref = (key, value) => {
   savedData.preferences = savedData.preferences || {}
@@ -44,20 +50,39 @@ const setPref = (key, value) => {
   browser.storage.local.set(savedData)
 }
 
-const savedKeys = () => {
-  return savedData.keys
+const savedIdentitites = () => {
+  return savedData.identities
 }
 
-const remote = () => {
-  return savedData.remote
+const configurationForIdentity = (feedId) => {
+  if (savedData?.identities?.[feedId]) {
+    return savedData.identities[feedId]
+  } else {
+    return false
+  }
 }
 
+const setDefaultIdentity = (feedId) => {
+  savedData.defaultIdentity = feedId
+
+  browser.storage.local.set(savedData)
+}
+
+const getDefaultIdentity = () => {
+  if (savedData?.defaultIdentity) {
+    return configurationForIdentity(savedData.defaultIdentity)
+  } else {
+    savedData?.identities[0]
+  }
+}
 
 module.exports = {
-  loadConfiguration,
+  loadSavedData,
   setPref,
   getPref,
-  setConnectionConfiguration,
-  savedKeys,
-  remote,
+  saveIdentityConfiguration,
+  configurationForIdentity,
+  savedIdentitites,
+  getDefaultIdentity,
+  setDefaultIdentity,
 }

@@ -10,7 +10,11 @@ let packages = {};
 
 function package(pkg) {
   let name = pkg.name
-  if (pkg.supportedPlatforms.includes(ssb.serverType)) {
+  let ssb = window.ssb || {}
+  if (!window.hasOwnProperty("ssb") && pkg.supportedPlatforms.includes("all")) {
+    console.log(`SSB Platform not initialized. Loading package ${pkg.name} because it supports *all* platforms.`)
+  }
+  if (pkg.supportedPlatforms.includes("all") || pkg.supportedPlatforms.includes(ssb?.serverType)) {
     _.set(packages, name, pkg)
   }
 }
