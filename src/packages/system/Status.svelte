@@ -1,15 +1,13 @@
 <script>
-  let sbot = ssb.sbot;
-
   let loading = true;
   let status;
 
-  sbot.status((err, data) => {
-    console.log("data", data);
-    console.log("err", err);
-    loading = false;
-    status = JSON.stringify(data, null, 4);
-  });
+  ssb.system.getStatus()
+    .then(data => { 
+      console.log("data", data);
+      loading = false;
+      status = JSON.stringify(data, null, 4);
+    });
 </script>
 
 <h1 class="title">Status</h1>

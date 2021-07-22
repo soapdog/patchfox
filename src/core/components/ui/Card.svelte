@@ -2,7 +2,7 @@
   const MessageDropdown = require("../MessageDropdown.svelte");
   const MessageRaw = require("../MessageRaw.svelte");
   const AvatarTile = require("../AvatarTile.svelte");
-  const { isMessageBlured } = require("../../platforms/ssb/abusePrevention.js");
+  const { isMessageBlured } = require("../../platforms/nodejs-ssb/abusePrevention.js");
 
   export let msg;
   export let showRaw = false;

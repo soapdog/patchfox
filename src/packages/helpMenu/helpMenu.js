@@ -4,6 +4,7 @@ const releaseNotesUrl = browser.extension.getURL(`/docs/index.html#/release_note
 
 patchfox.package({
   name: "helpMenu",
+  supportedPlatforms: ["nodejs-ssb"],
   menu: [
     {
       group: "Help",

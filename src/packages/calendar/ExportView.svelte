@@ -1,142 +1,144 @@
 <script>
-  const _ = require("lodash");
-  const pull = require("pull-stream");
-  const Abortable = require("pull-abortable");
-  const { onDestroy, tick } = require("svelte");
-  const paramap = require("pull-paramap");
-  const sort = require("pull-sort");
-  const Scuttle = require("scuttle-gathering");
-  const ics = require("ics");
-  const gathering = Scuttle(ssb.sbot);
-  const sbot = ssb.sbot;
+  const _ = require("lodash")
+  const pull = require("pull-stream")
+  const Abortable = require("pull-abortable")
+  const { onDestroy, tick } = require("svelte")
+  const paramap = require("pull-paramap")
+  const sort = require("pull-sort")
+  const Scuttle = require("scuttle-gathering")
+  const ics = require("ics")
+  const gathering = Scuttle(ssb.sbot)
+  const sbot = ssb.sbot
 
-  let loading = true;
-  let abortable;
-  let events = [];
-  let groupedEvents = [];
+  let loading = true
+  let abortable
+  let events = []
+  let groupedEvents = []
 
-  onDestroy(() => abortable());
+  onDestroy(() => abortable())
 
-  console.time("loading gatherings");
+  console.time("loading gatherings")
 
-  let currentDate = new Date().getTime();
-  console.log(currentDate);
+  let currentDate = new Date().getTime()
+  console.log(currentDate)
 
-  pull(
-    sbot.messagesByType({
-      type: "gathering",
-      gt: (currentDate / 1000) | 0
-    }),
-    (abortable = Abortable()),
-    pull.filter(function(msg) {
-      return (
-        msg &&
-        msg.value &&
-        msg.value.content &&
-        msg.value.content.type === "gathering"
-      );
-    }),
-    paramap((msg, cb) => {
-      gathering.get(msg.key, (err, data) => {
-        msg.event = data;
-        cb(null, msg);
-      });
-    }),
-    pull.map("event"),
-    pull.filter(event => {
-      if (!event.startDateTime) {
-        return false;
-      }
-      return event.startDateTime.epoch > currentDate;
-    }),
-    pull.filter(e => e.isAttendee),
-    sort((e1, e2) => {
-      if (e1.startDateTime.epoch == e2.startDateTime.epoch) {
-        return 0;
-      }
+  if (ssb.serverType === "nodejs-ssb") {
+    pull(
+      sbot.messagesByType({
+        type: "gathering",
+        gt: (currentDate / 1000) | 0
+      }),
+      (abortable = Abortable()),
+      pull.filter(function(msg) {
+        return (
+          msg &&
+          msg.value &&
+          msg.value.content &&
+          msg.value.content.type === "gathering"
+        )
+      }),
+      paramap((msg, cb) => {
+        gathering.get(msg.key, (err, data) => {
+          msg.event = data
+          cb(null, msg)
+        })
+      }),
+      pull.map("event"),
+      pull.filter(event => {
+        if (!event.startDateTime) {
+          return false
+        }
+        return event.startDateTime.epoch > currentDate
+      }),
+      pull.filter(e => e.isAttendee),
+      sort((e1, e2) => {
+        if (e1.startDateTime.epoch == e2.startDateTime.epoch) {
+          return 0
+        }
 
-      if (e1.startDateTime.epoch > e2.startDateTime.epoch) {
-        return 1;
-      }
+        if (e1.startDateTime.epoch > e2.startDateTime.epoch) {
+          return 1
+        }
 
-      return -1;
-    }),
-    pull.collect((err, gs) => {
-      events = gs;
-      let groups = _.groupBy(gs, event => {
-        let date = new Date(event.startDateTime.epoch);
-        return date.toISOString().slice(0, 7);
-      });
-      let keys = Object.keys(groups);
+        return -1
+      }),
+      pull.collect((err, gs) => {
+        events = gs
+        let groups = _.groupBy(gs, event => {
+          let date = new Date(event.startDateTime.epoch)
+          return date.toISOString().slice(0, 7)
+        })
+        let keys = Object.keys(groups)
 
-      groupedEvents = keys.map(k => {
-        return { name: k, events: groups[k] };
-      });
+        groupedEvents = keys.map(k => {
+          return { name: k, events: groups[k] }
+        })
 
-      loading = false;
-      console.timeEnd("loading gatherings");
-    })
-  );
+        loading = false
+        console.timeEnd("loading gatherings")
+      })
+    )
+  }
 
   const dateToNiceDate = epoch => {
-    let date = new Date(epoch).toLocaleDateString();
-    let time = new Date(epoch).toLocaleTimeString();
-    return `${date} ${time}`;
-  };
+    let date = new Date(epoch).toLocaleDateString()
+    let time = new Date(epoch).toLocaleTimeString()
+    return `${date} ${time}`
+  }
 
   const monthAndYear = s => {
-    let str = `${s}-01`;
-    let date = new Date(str);
-    return date.toLocaleDateString("en-GB", { year: "numeric", month: "long" });
-  };
+    let str = `${s}-01`
+    let date = new Date(str)
+    return date.toLocaleDateString("en-GB", { year: "numeric", month: "long" })
+  }
 
   const getEventAttendees = e => {
     let attendeesP = e.attendees.map(async id => {
-      let feed = await ssb.avatar(id);
-      return { name: feed.name, rsvp: true };
-    });
+      let feed = await ssb.avatar(id)
+      return { name: feed.name, rsvp: true }
+    })
     let notAttendeesP = e.notAttendees.map(async id => {
-      let feed = await ssb.avatar(id);
-      return { name: feed.name, rsvp: false };
-    });
+      let feed = await ssb.avatar(id)
+      return { name: feed.name, rsvp: false }
+    })
 
-    return Promise.all(attendeesP.concat(notAttendeesP));
-  };
+    return Promise.all(attendeesP.concat(notAttendeesP))
+  }
   // fixme: all of this is broken
   
   const gatheringToEventObj = async e => {
-    let attendees = await getEventAttendees(e);
+    let attendees = await getEventAttendees(e)
 
     let obj = {
       title: e.title,
       description: e.description
-    };
+    }
 
     if (e.location) {
-      obj.location = e.location;
+      obj.location = e.location
     }
 
     if (e.attendees) {
-      obj.attendees = attendees;
+      obj.attendees = attendees
     }
     console.log(obj)
-    return obj;
-  };
+    return obj
+  }
 
   const exportToICS = () => {
     let ee = events.map(e => gatheringToEventObj(e))
     console.log(ee)
     Promise.all(ee, es => {
-      console.log("es", es);
-      const { error, value } = ics.createEvents(es);
+      console.log("es", es)
+      const { error, value } = ics.createEvents(es)
 
       if (error) {
-        console.log(error);
+        console.log(error)
       }
 
-      console.log(value);
-    });
-  };
+      console.log(value)
+    })
+  }
 </script>
 
 <style>
@@ -148,7 +150,7 @@
 
 <div class="events-display">
   {#if loading}
-    {@html ssb.markdown('This query might take a while, go grab some :coffee: or :tea: ...')}
+    {@html ssb.markdown("This query might take a while, go grab some :coffee: or :tea: ...")}
     <div class="loading" />
   {:else}
     <h1 class="h1">Export future events</h1>

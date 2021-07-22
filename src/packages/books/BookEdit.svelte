@@ -105,16 +105,13 @@
         return false;
       }
 
-      pull(
-        fileReader(first),
-        ssb.sbot.blobs.add(function(err, hash) {
-          if (err) {
-            alert("Couldn't attach file: " + err);
-          } else {
-            newImage = hash;
-          }
+      ssb.addBlob(first)
+        .then(hash => {
+          newImage = hash
         })
-      );
+        .catch(err => {
+          alert("Couldn't attach file: " + err);
+        })
     } catch (n) {
       console.error("error, attaching", n);
     }

@@ -1,7 +1,8 @@
 const SearchView = require("./SearchView.svelte")
 
 patchfox.package({
-    name: "search",
-    view: SearchView,
-    query: SearchView
+  name: "search",
+  supportedPlatforms: ["nodejs-ssb"],
+  view: SearchView,
+  query: SearchView,
 })

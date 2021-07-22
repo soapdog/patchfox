@@ -1,21 +1,25 @@
-const ProfileView = require("./Profile.svelte");
-const ContactCard = require("./ContactCard.svelte");
-const AboutCard = require("./AboutCard.svelte");
+const ProfileView = require("./Profile.svelte")
+const ContactCard = require("./ContactCard.svelte")
+const AboutCard = require("./AboutCard.svelte")
 
 patchfox.package({
   name: "contacts",
+  supportedPlatforms: ["nodejs-ssb"],
   profile: ProfileView,
   messageTypes: [
     {
       type: "contact",
       card: ContactCard,
-      short: true
+      short: true,
     },
     {
       type: "about",
-      validator: msg => msg.value.content && msg.value.content.about && !msg.value.content.about.startsWith("%"),
-      card: AboutCard
-    }
+      validator: (msg) =>
+        msg.value.content &&
+        msg.value.content.about &&
+        !msg.value.content.about.startsWith("%"),
+      card: AboutCard,
+    },
   ],
   menu: {
     group: "Contacts",
@@ -26,8 +30,8 @@ patchfox.package({
         event: "package:go",
         data: {
           pkg: "contacts",
-          view: "profile"
-        }
+          view: "profile",
+        },
       },
       {
         label: "Friends",
@@ -36,9 +40,9 @@ patchfox.package({
           pkg: "contacts",
           view: "profile",
           data: {
-            currentSubView: "friends"
-          }
-        }
+            currentSubView: "friends",
+          },
+        },
       },
       {
         label: "Following",
@@ -47,9 +51,9 @@ patchfox.package({
           pkg: "contacts",
           view: "profile",
           data: {
-            currentSubView: "following"
-          }
-        }
+            currentSubView: "following",
+          },
+        },
       },
       {
         label: "Followers",
@@ -58,10 +62,10 @@ patchfox.package({
           pkg: "contacts",
           view: "profile",
           data: {
-            currentSubView: "followers"
-          }
-        }
-      }
-    ]
-  }
+            currentSubView: "followers",
+          },
+        },
+      },
+    ],
+  },
 })

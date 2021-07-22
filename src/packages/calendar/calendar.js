@@ -10,6 +10,7 @@ const { isGathering, isUpdate, isAttendee } = require("ssb-gathering-schema")
 
 patchfox.package({
   name: "calendar",
+  supportedPlatforms: ["nodejs-ssb"],
   messageTypes: [
     {
       type: "gathering",

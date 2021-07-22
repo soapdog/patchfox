@@ -35,6 +35,6 @@
         "no-console": "off",
         "no-unused-vars": "off",
         "no-prototype-builtins": "off",
-        "semi": "off"
+        "semi": ["error", "never"]
     }
 }

@@ -41,7 +41,7 @@
   avatarPromise = ssb.avatar(feed).then(data => {
     name = data.name
     image = data.image
-    document.title = `Patchfox - Feed: ${name}`
+    patchfox.title(`Feed: ${name}`)
   })
 
   aboutPromise = ssb.profile(feed).then(data => {
@@ -144,12 +144,10 @@
     <div class="column col-6">
       {#if feed === ssb.feed}
       <span class="chip">❤ Thats You ❤</span>
-      {#await aboutPromise }
       <span class="c-hand" on:click={toggleEditor}>
         <i class="icon icon-edit" />
         Edit your profile
       </span>
-      {/await}
       {/if}
       <h1>{name}</h1>
       <a href="{ssbUri.fromFeedSigil(feed)}">

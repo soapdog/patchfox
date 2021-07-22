@@ -1,15 +1,16 @@
 <script>
-  let sbot = ssb.sbot;
+  let loading = true
+  let peerlist = []
 
-  let loading = true;
-  let peerlist = [];
-
-  sbot.gossip.peers((err, data) => {
-    console.log("data", data);
-    console.log("err", err);
-    loading = false;
-    peerlist = data;
-  });
+  ssb.system.getPeers()
+    .then(data => {
+      console.log("data", data)
+      loading = false
+      peerlist = data
+    })
+    .catch(err => {
+      throw err
+    })
 </script>
 
 <h1 class="title">Peer list</h1>
@@ -31,10 +32,10 @@
           <td>{peer.port}</td>
           <td>
             <a
-              href={patchfox.url('contacts', 'profile', { feed: peer.key })}
+              href={patchfox.url("contacts", "profile", { feed: peer.key })}
               on:click|preventDefault={() => patchfox.go(
-                  'contacts',
-                  'profile',
+                  "contacts",
+                  "profile",
                   { feed: peer.key }
                 )}>
               {peer.key}

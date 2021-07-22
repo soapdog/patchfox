@@ -6,6 +6,7 @@ const HttpAuth = require("./httpAuth.svelte")
 
 patchfox.package({
   name: "system",
+  supportedPlatforms: ["nodejs-ssb"],
   peers: Peers,
   joinPub: JoinPub,
   joinRoom: JoinRoom,

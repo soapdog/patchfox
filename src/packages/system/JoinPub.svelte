@@ -1,25 +1,26 @@
 <script>
-  let sbot = ssb.sbot;
+  let joining = false
+  export let invite = ""
+  let error = false
+  let msg = ""
 
-  let joining = false;
-  export let invite = "";
-  let error = false;
-  let msg = "";
+  patchfox.title("Join Pub")
 
   const joinPub = () => {
-    error = false;
-    msg = "";
-    joining = true;
-    sbot.invite.accept(invite, (err, result) => {
-      joining = false;
-      if (err) {
-        error = true;
-        msg = JSON.stringify(err, null, 4);
-      } else {
-        msg = JSON.stringify(result, null, 4);
-      }
-    });
-  };
+    error = false
+    msg = ""
+    joining = true
+    ssb.system.acceptInvite(invite)
+      .catch(err => {
+        joining = false
+        error = true
+        msg = JSON.stringify(err, null, 4)
+      })
+      .then(result => {
+        joining = false
+        msg = JSON.stringify(result, null, 4)
+      })
+  }
 </script>
 
 <style>

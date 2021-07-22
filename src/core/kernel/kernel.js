@@ -10,7 +10,9 @@ let packages = {};
 
 function package(pkg) {
   let name = pkg.name
-  _.set(packages, name, pkg)
+  if (pkg.supportedPlatforms.includes(ssb.serverType)) {
+    _.set(packages, name, pkg)
+  }
 }
 
 function emit(event, data) {
@@ -112,7 +114,12 @@ function packageForType(msg) {
   return selectedPackage
 }
 
+const title = (title) => {
+  window.title = `Patchfox - ${title}`
+}
+
 module.exports = {
+  title,
   // package related
   package,
   packages,

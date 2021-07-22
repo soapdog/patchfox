@@ -1,10 +1,10 @@
 <script>
-  const pull = require("pull-stream");
-  const { timestamp } = require("../../core/components/timestamp.js");
+  const pull = require("pull-stream")
+  const { timestamp } = require("../../core/components/timestamp.js")
   const Book = require("scuttle-book")
   const book = Book(ssb.sbot)
 
-  let books = [];
+  let books = []
   let shouldReverse = true
 
   const fetchBooks = () => {
@@ -66,6 +66,11 @@
                 <div class="card-image">
                   <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
                 </div>
+                {:else if book.common.images.hasOwnProperty("link")}
+                <div class="card-image">
+                  <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images.link)}" alt="{book.common.images.name}">
+                </div>
+
                 {:else}
                 {@debug book}
                 {/if}

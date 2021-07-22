@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2021.6.2",
+  "version": "2021.7.1",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
@@ -105,7 +105,7 @@
     "dev:browserAction": "browserify -d src/core/browserAction/browserAction.js -o dist/browserAction.js",
     "dev:background": "browserify -d src/core/background/background.js -o dist/background.js",
     "dev:addon": "browserify -d src/main.js -o dist/bundle.js",
-    "dev:platform-ssb": "browserify -d src/core/platforms/ssb/ssb.js -o dist/ssb.js",
+    "dev:platform-ssb": "browserify -d src/core/platforms/platforms.js -o dist/ssb.js",
     "dev:both": "run-s dev:platform-ssb dev:addon",
     "build": "run-s copy:* build:*",
     "dev": "run-s copy:* dev:*",

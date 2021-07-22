@@ -6,6 +6,8 @@
   let error = false;
   let msg = "";
 
+  patchfox.title("Join Rooms 2.0")
+
   const joinRoom = async () => {
     error = false;
     msg += `* Attempting to claim invite...\n`
