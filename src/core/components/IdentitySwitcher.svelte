@@ -1,6 +1,6 @@
 <script>
   const { createEventDispatcher } = require("svelte")
-  const AvatarChip = require("../../core/components/AvatarChip.svelte")
+  const AvatarRound = require("../../core/components/AvatarRound.svelte")
 
 
   export let feed
@@ -77,25 +77,23 @@
       <div class="content">
 <div>
 {#each Object.keys(identities) as key}
-<div class="card">
-  <div class="card-header">
-    {#if window.ssb}
-    <AvatarChip feed={"@" + identities[key].keys.public} />
-    {:else}
-    <h5 class="card-title h5">{identities[key].keys.public}</h5>
-    {/if}
+<div class="tile">
+  {#if window.ssb}
+  <div class="tile-icon">
+    <AvatarRound feed={"@" + identities[key].keys.public} />
   </div>
-  <div class="card-body">
-    <ul class="text-tiny">
-      <li>Feed Id: <code>{identities[key].keys.public}</code></li>
-      <li>Server Type: <code>{identities[key].type}</code></li>
-      <li>Remote: <code>{identities[key].remote}</code></li>
-    </ul>
-  </div>
-  <div class="card-footer">
+  {/if}
+  <div class="tile-content">
+    <p class="tile-title">{identities[key].keys.public}</p>
+    <p class="tile-subtitle text-tiny">
+      <span>Server Type: <code>{identities[key].type}</code> </span>
+      <span>Remote: <code>{identities[key].remote}</code></span>
+    </p>
+  <p>
     <button class="btn btn-sm" on:click={() => {
       window.open(patchfox.url("hub","public",{identity: identities[key].keys.public}))
     }}>Open in new tab</button>
+  </p>
   </div>
 </div>
 {:else}

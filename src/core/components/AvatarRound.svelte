@@ -12,7 +12,7 @@
     
   ssb.avatar(feed).then(data => {
     if (data.image !== null && data.image !== undefined) {
-      image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`
+      image = `${patchfox.blobUrl(data.image)}`
     }
     name = data.name
   })
@@ -41,5 +41,5 @@
     <img class="fit" src={image} alt={name} />
   </figure>
 {:else}
-  <figure class="avatar avatar-xl clickable" data-initial="{name.slice(0,1)}" on:click={avatarClick} class:dim></figure>
+  <figure class="avatar avatar-xl clickable" data-initial="{name.slice(1,3)}" on:click={avatarClick} class:dim></figure>
 {/if}
