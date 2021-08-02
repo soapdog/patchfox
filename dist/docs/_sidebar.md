@@ -10,7 +10,7 @@
 - [Packages](packages/)
 - [Privacy Policy](privacy-policy.md)
 - Release Notes
-  - [Version 2021.7.1](release_notes/2021.7.1.md)
+  - [Version 2021.8.1](release_notes/2021.8.1.md)
   - [Version 2021.6.2](release_notes/2021.6.2.md)
   - [Version 2021.6.1](release_notes/2021.6.1.md)
   - [Version 2021.5.3](release_notes/2021.5.3.md)
