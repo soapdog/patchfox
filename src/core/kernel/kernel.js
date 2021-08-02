@@ -14,7 +14,7 @@ function package(pkg) {
   if (!window.hasOwnProperty("ssb") && pkg.supportedPlatforms.includes("all")) {
     console.log(`SSB Platform not initialized. Loading package ${pkg.name} because it supports *all* platforms.`)
   }
-  if (pkg.supportedPlatforms.includes("all") || pkg.supportedPlatforms.includes(ssb?.serverType)) {
+  if (pkg.supportedPlatforms.includes("all") || pkg.supportedPlatforms.includes(ssb?.platform)) {
     _.set(packages, name, pkg)
   }
 }

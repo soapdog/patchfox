@@ -28,7 +28,7 @@
     }
   }
 
-  if (ssb.serverType === "nodejs-ssb") {
+  if (ssb.platform === "nodejs-ssb") {
     pull(
       ssb.sbot.query.read({
         query: [
