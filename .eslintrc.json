@@ -13,7 +13,8 @@
         "patchfox": true,
         "process": true,
         "history": true,
-        "location": true
+        "location": true,
+        "setServerType": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {

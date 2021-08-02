@@ -10,7 +10,7 @@
 
   ssb.avatar(feed).then(data => {
     // console.log(`avatar for ${feed}`, data);
-    if (data.image !== null) {
+    if (data.image !== null && data.image !== undefined) {
       image = patchfox.httpUrl(`/blobs/get/${data.image}`);
     }
     name = data.name;

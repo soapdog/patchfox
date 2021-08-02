@@ -1,8 +1,8 @@
-const view = require("./globalMenu.svelte");
+const view = require("./globalMenu.svelte")
 
 patchfox.package({
   name: "globalMenu",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   system: true,
   view
-});
+})

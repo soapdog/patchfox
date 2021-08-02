@@ -1,6 +1,6 @@
 patchfox.package({
   name: "openCollectiveIntegration",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   menu: [
     {
       group: "Help",

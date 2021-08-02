@@ -1,10 +1,10 @@
 <script>
-  const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
+  const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
 
-  export let feed;
+  export let feed
 
-  let messagePromise;
-  let lastMsgs = [];
+  let messagePromise
+  let lastMsgs = []
 
   messagePromise = ssb
     .query(
@@ -16,11 +16,10 @@
       10
     )
     .then(msgs => {
-      lastMsgs = msgs;
+      lastMsgs = msgs
 
-      window.scrollTo(0, 0);
-    });
-
+      window.scrollTo(0, 0)
+    })
   // todo: refactor navigation here. This is a hack it shouldn't hide and show values which are
   // not reloading.
   const loadMoreMessages = lt => {
@@ -32,10 +31,10 @@
         }
       })
       .then(msgs => {
-        lastMsgs = msgs;
-        window.scrollTo(0, 0);
-      });
-  };
+        lastMsgs = msgs
+        window.scrollTo(0, 0)
+      })
+  }
 </script>
 
 <div>

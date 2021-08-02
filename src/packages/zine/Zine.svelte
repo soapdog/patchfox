@@ -16,7 +16,7 @@
   let opts = {}
 
   const subscribedChannels = () => {
-    if (ssb.serverType === "nodejs-ssb") {
+    if (ssb.platform === "nodejs-ssb") {
       pull(
         sbot.query.read({
           reverse: true,
@@ -45,7 +45,7 @@
   }
 
   const getContentForChannel = c => {
-    if (ssb.serverType === "nodejs-ssb") {
+    if (ssb.platform === "nodejs-ssb") {
       content = []
       channel = c
       let query = [

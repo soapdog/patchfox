@@ -1,44 +1,44 @@
 <script>
-  const { createEventDispatcher } = require("svelte");
-  const pull = require("pull-stream");
-  const fileReader = require("pull-file-reader");
+  const { createEventDispatcher } = require("svelte")
+  const pull = require("pull-stream")
+  const fileReader = require("pull-file-reader")
 
-  const dispach = createEventDispatcher();
+  const dispach = createEventDispatcher()
 
-  export let description;
-  export let name;
-  export let image;
-  export let feed;
+  export let description
+  export let name
+  export let image
+  export let feed
 
-  let submitting = false;
-  let sbot = ssb.sbot;
+  let submitting = false
+  let sbot = ssb.sbot
 
   const save = () => {
-    let data = { name, description, image: { link: image } };
-    submitting = true;
+    let data = { name, description, image: { link: image } }
+    submitting = true
     ssb
       .setProfileMetadata(data)
       .then(res => {
-        console.log("res", res);
-        location.reload();
+        console.log("res", res)
+        location.reload()
       })
       .catch(err => {
-        console.err("err", err);
-      });
-  };
+        console.error("err", err)
+      })
+  }
 
   const readFileAndAttach = files => {
     try {
       if (files.length == 0) {
-        return false;
+        return false
       }
 
-      var first = files[0];
-      console.log(first);
+      var first = files[0]
+      console.log(first)
 
       if (!first.type.startsWith("image")) {
-        alert(`You can only drag & drop image, this file is a ${first.type}`);
-        return false;
+        alert(`You can only drag & drop image, this file is a ${first.type}`)
+        return false
       }
 
       if (first.size >= 5000000) {
@@ -47,8 +47,8 @@
             first.size / 1048576,
             2
           )}mb when max size is 5mb`
-        );
-        return false;
+        )
+        return false
       }
 
       ssb.addBlob(first)
@@ -56,17 +56,17 @@
           image = hash
         })
         .catch(err => {
-          alert("Couldn't attach file: " + err);
+          alert("Couldn't attach file: " + err)
         })
     } catch (n) {
-      console.error("error, attaching", n);
+      console.error("error, attaching", n)
     }
-  };
+  }
 
   const attachFile = ev => {
-    const files = ev.target.files;
-    readFileAndAttach(files);
-  };
+    const files = ev.target.files
+    readFileAndAttach(files)
+  }
 </script>
 
 <div class="columns">

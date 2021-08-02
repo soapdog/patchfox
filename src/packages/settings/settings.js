@@ -2,7 +2,7 @@ const view = require("./Settings.svelte")
 
 patchfox.package({
   name: "settings",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["all"],
   title: "Settings",
   icon: "icon.svg",
   view,

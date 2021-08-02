@@ -11,12 +11,18 @@ if (window) {
 }
 
 const start = async () => {
+  let qs = queryString.parse(location.search)
+
   try {
-    let savedData = await kernel.loadConfiguration()
+    let savedData = await kernel.loadSavedData()
     // window.ssb.* comes from browserified ssb.js
     // that exists only in the dist folder.
-    let server = await ssb.connect(kernel.savedKeys(), savedData.remote)
-    window.ssb.remote = savedData.remote
+    let identity = qs?.identity ? kernel.configurationForIdentity(qs.identity) : kernel.getDefaultIdentity() 
+    console.info(`server: ${identity.type}, key: ${identity.keys.public}`)
+    setServerType(identity.type)
+    console.log("ssb", window.ssb)
+    let server = await ssb.connect(identity.keys, identity.remote)
+    window.ssb.remote = identity.remote
     window.ssb.feed = server.id
     window.ssb.sbot = server
     ssb.setGetPrefFunction(kernel.getPref)
@@ -24,7 +30,6 @@ const start = async () => {
     await ssb.loadCaches()
     return server.id
   } catch (n) {
-    let qs = queryString.parse(location.search)
     let pkg = qs.pkg
     if (pkg !== "settings") {
       switch (n) {
@@ -37,6 +42,8 @@ const start = async () => {
       default:
         throw n
       }
+    } else {
+      console.error("error on core start", n)
     }
   }
 }

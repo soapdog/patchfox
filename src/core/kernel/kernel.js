@@ -10,7 +10,11 @@ let packages = {};
 
 function package(pkg) {
   let name = pkg.name
-  if (pkg.supportedPlatforms.includes(ssb.serverType)) {
+  let ssb = window.ssb || {}
+  if (!window.hasOwnProperty("ssb") && pkg.supportedPlatforms.includes("all")) {
+    console.log(`SSB Platform not initialized. Loading package ${pkg.name} because it supports *all* platforms.`)
+  }
+  if (pkg.supportedPlatforms.includes("all") || pkg.supportedPlatforms.includes(ssb?.platform)) {
     _.set(packages, name, pkg)
   }
 }
@@ -49,16 +53,28 @@ function appPackages() {
 }
 
 function go(pkg, view, data) {
+  let cs = queryString.parse(location.search)
+  if (cs.identity && !data.identity) {
+    data.identity = cs.identity
+  }
   PubSub.publishSync("package:go", { pkg, view, data })
 }
 
 function reload(pkg, view, data) {
+  let cs = queryString.parse(location.search)
+  if (cs.identity && !data.identity) {
+    data.identity = cs.identity
+  } 
   let state = { pkg, view, ...data };
   let qs = queryString.stringify(state);
   location = `/index.html?${qs}`
 }
 
 function url(pkg, view, data) {
+  let cs = queryString.parse(location.search)
+  if (cs.identity && !data.identity) {
+    data.identity = cs.identity
+  }
   let state = { pkg, view, ...data };
   let qs = queryString.stringify(state);
   return `/index.html?${qs}`

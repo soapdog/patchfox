@@ -59,7 +59,11 @@
     if (typeof data === "undefined") {
       data = {}
     }
+    let cs = queryString.parse(location.search)
     let state = { pkg, view, ...data }
+    if (cs.identity) {
+      state.identity = cs.identity
+    }
     let qs = queryString.stringify(state)
     history.pushState({ pkg, view, data }, "", `/index.html?${qs}`)
     goPackage({ pkg, view, data })

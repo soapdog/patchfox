@@ -1,15 +1,15 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte"
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher()
 
-  export let subView = "";
+  export let subView = ""
 
   const setView = subView => {
     dispatch("message", {
       subView
-    });
-  };
+    })
+  }
 </script>
 
 <ul class="menu">
@@ -17,24 +17,24 @@
   <li class="menu-item">
     <a
       href="#/settings"
-      on:click={() => setView('about')}
-      class:active={subView === 'about'}>
+      on:click={() => setView("about")}
+      class:active={subView === "about"}>
       About Patchfox
     </a>
   </li>
   <li class="menu-item">
     <a
       href="#/settings"
-      on:click={() => setView('identityAndConnection')}
-      class:active={subView === 'identityAndConnection'}>
-      Identity &amp; Connection
+      on:click={() => setView("identitiesAndConnections")}
+      class:active={subView === "identitiesAndConnections"}>
+      Identities &amp; Connections
     </a>
   </li>
   <li class="menu-item">
     <a
       href="#/settings"
-      on:click={() => setView('displayPreferences')}
-      class:active={subView === 'displayPreferences'}>
+      on:click={() => setView("displayPreferences")}
+      class:active={subView === "displayPreferences"}>
       Display Preferences
     </a>
   </li>
@@ -42,8 +42,8 @@
   <li class="menu-item">
     <a
       href="#/settings"
-      on:click={() => setView('filters')}
-      class:active={subView === 'filters'}>
+      on:click={() => setView("filters")}
+      class:active={subView === "filters"}>
       Filters
     </a>
   </li>
