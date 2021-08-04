@@ -18,9 +18,7 @@
     try {
       let packageToOpen = patchfox.packages[pkg]
       let viewToOpen = view ? packageToOpen[view] : packageToOpen.view
-      let eventToSend = view
-        ? `package:activate:${pkg}:${view}`
-        : `package:activate:${pkg}:view`
+      let eventToSend = view ? `package:activate:${pkg}:${view}` : `package:activate:${pkg}:view`
 
       currentView = false
       args = {}
@@ -50,8 +48,8 @@
       pkg: "errorHandler",
       data: {
         currentPackage,
-        error: n
-      }
+        error: n,
+      },
     })
   }
 
@@ -87,45 +85,24 @@
   patchfox.go(pkg, view, qs)
 </script>
 
-<style>
-  .wm-current-package-container {
-    max-width: 840px;
-    margin: auto;
-    padding-top: 10px;
-  }
+<svelte:window on:popstate="{popState}" on:error="{handleUncaughtException}" />
 
-   .wm-current-app-container {
-    margin: auto;
-    padding-top: 60px;
-  }
-
-  .wm-backdrop {
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-  }
-</style>
-
-<svelte:window on:popstate={popState} on:error={handleUncaughtException} />
-
-<div class="root wm-backdrop">
-  {#each systemPackages as pkg}
-    <svelte:component this={pkg.view} />
-  {/each}
-  {#if currentPackage.app}
-    <div class="container wm-current-app-container">
-      <svelte:component this={currentView} {...args} />
+<div class="">
+  <div class="root container mx-auto p-2 lg:p-10 text-base-content">
+    {#each systemPackages as pkg}
+    <svelte:component this="{pkg.view}" />
+    {/each} {#if currentPackage.app}
+    <div class="container wm-current-app-container container mx-auto">
+      <svelte:component this="{currentView}" {...args} />
     </div>
-  {:else}
-    <div class="container wm-current-package-container">
-      <div
-        id="wm-current-package"
-        class="cyberpunk-container"
-        augmented-ui="tr-clip-x br-clip-x exe">
+    {:else}
+    <div class="wm-current-package-container">
+      <div id="wm-current-package">
         {#if currentView}
-          <svelte:component this={currentView} {...args} />
+        <svelte:component this="{currentView}" {...args} />
         {/if}
       </div>
     </div>
-  {/if}
+    {/if}
+  </div>
 </div>

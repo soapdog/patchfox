@@ -28,7 +28,7 @@
     </p>
     <p>
       To learn more about it, go to
-      <a target="_blank" href="/docs/index.html#/message_types/{type}">
+      <a class="link link-accent" target="_blank" href="/docs/index.html#/message_types/{type}">
         the documentation about messages with type {type}
       </a>
       .
@@ -36,7 +36,7 @@
     {#if pkg}
       <p>
         This message is being handled by the <b>{pkg.name} Package</b>.
-        <a target="_blank" href="/docs/index.html#/packages/{pkg.name}/">
+        <a class="link link-accent" target="_blank" href="/docs/index.html#/packages/{pkg.name}/">
           Click here to check more about it.
         </a>
       </p>
@@ -44,12 +44,12 @@
 
       <ul>
         <li>
-          <a target="_blank" href="https://github.com/soapdog/patchfox/blob/master/src/packages/{pkg.name}/">
+          <a class="link" target="_blank" href="https://github.com/soapdog/patchfox/blob/master/src/packages/{pkg.name}/">
             See source for <b>{pkg.name} package</b> at GitHub.
           </a>
         </li>
         <li>
-          <a target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/{pkg.name}/">
+          <a class="link" target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/{pkg.name}/">
             See source for <b>{pkg.name} package</b> at SourceHut.
           </a>
         </li>

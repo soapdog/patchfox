@@ -1,39 +1,39 @@
 <script>
-  const MessageDropdown = require("../MessageDropdown.svelte");
-  const MessageRaw = require("../MessageRaw.svelte");
-  const AvatarTile = require("../AvatarTile.svelte");
-  const { isMessageBlured } = require("../../platforms/nodejs-ssb/abusePrevention.js");
+  const MessageDropdown = require("../MessageDropdown.svelte")
+  const MessageRaw = require("../MessageRaw.svelte")
+  const AvatarTile = require("../AvatarTile.svelte")
+  const { isMessageBlured } = require("../../platforms/nodejs-ssb/abusePrevention.js")
 
-  export let msg;
-  export let showRaw = false;
+  export let msg
+  export let showRaw = false
 
-  let feed = msg.value.author;
-  let privateMsgForYou = false;
+  let feed = msg.value.author
+  let privateMsgForYou = false
 
-  let blur = false;
-  let border = false;
-  let dropdownActive = false;
+  let blur = false
+  let border = false
+  let dropdownActive = false
 
   if (msg.value.private) {
-    privateMsgForYou = true;
+    privateMsgForYou = true
   }
 
-  let blured = isMessageBlured(msg);
+  let blured = isMessageBlured(msg)
 
   const goProfile = ev => {
     if (ev.ctrlKey) {
       window.open(
         `?pkg=contacts&view=profile&feed=${encodeURIComponent(feed)}#/profile`
-      );
+      )
     } else {
-      patchfox.go("contacts", "profile", { feed });
+      patchfox.go("contacts", "profile", { feed })
     }
-  };
+  }
 
   const toggleRawMessage = () => {
-    showRaw = !showRaw;
-    dropdownActive = false;
-  };
+    showRaw = !showRaw
+    dropdownActive = false
+  }
 </script>
 
 <style>
@@ -66,22 +66,25 @@
   }
 </style>
 
-<div class="card m-2" class:blur class:border={privateMsgForYou}>
+<div class="card bordered shadow-2xl mb-8" class:blur class:border={privateMsgForYou}>
   <slot name="card-header">
-    <div class="card-header">
-      <div class="float-left">
         <div class="card-title">
+        <div class="navbar">
+        <div class="navbar-start">
+        <div class="flex-none">
           <AvatarTile {feed} time={msg.value.timestamp} on:click={goProfile} />
         </div>
       </div>
       {#if privateMsgForYou}
+        <div class="navbar-center">
         <span class="label">PRIVATE</span>
+      </div>
       {/if}
-      <div class="float-right">
+      <div class="navbar-end">
         <span
           class="text-gray channel-display"
           on:click={() => {
-            patchfox.go('hub', 'channel', {
+            patchfox.go("hub", "channel", {
               channel: msg.value.content.channel
             });
           }}>
@@ -89,7 +92,7 @@
         </span>
         <MessageDropdown {msg} on:toggleRawMessage={toggleRawMessage} />
       </div>
-    </div>
+      </div>
   </slot>
 
   <div class="card-body">
@@ -98,6 +101,6 @@
     {:else}
       <MessageRaw {msg} />
     {/if}
+    <slot name="card-actions" />
   </div>
-  <slot name="card-footer" />
 </div>

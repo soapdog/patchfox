@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 img.is-image-from-blob {
     max-width: 100%;
     display:block;
