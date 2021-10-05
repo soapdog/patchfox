@@ -28,7 +28,7 @@
     moreInfo: MoreInfo
   }
   
-  export let currentSubView = "posts"
+  export let currentSubView = "friends"
 
   let name = feed
   let followersCount = false

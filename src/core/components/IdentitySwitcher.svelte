@@ -33,12 +33,6 @@
 
 </script>
 
-<style>
-.modal.active {
-  opacity: unset;
-  visibility: unset;
-}
-</style>
 
 {#if image}
 <div class="avatar" class:online={window.hasOwnProperty("ssb") && ssb.feed}>
@@ -54,51 +48,48 @@
 </div>
 {/if}
 
-<input type="checkbox" id="identity-switcher-toggle" bind:value={active} class="modal-toggle"> 
-<div class="modal" class:active id="modal-id">
-  <a href="#close" class="modal-overlay" aria-label="Close" on:click={() => active = false}></a>
-  <div class="modal-box">
+<div class="modal" class:modal-open={active} id="identity-switcher-modal">
+  <div class="modal-box bg-base-200 text-base-content">
     <div class="modal-header">
-      <a href="#close" class="btn btn-ghost float-right" aria-label="Close" on:click={() => active = false}><i class="fas fa-close"></a>
-      <h3 class="modal-title h5">Identities</h3>
+      <button class="btn btn-ghost btn-square float-right" aria-label="Close" on:click={() => {console.log("click"); active = false}}>
+        <i class="fas fa-times">
+        </button>
+      <h2>Identities</h2>
     </div>
     <div class="modal-body">
-      <div class="content">
-        <div>
+        <div class="flex">
         {#each Object.keys(identities) as key}
-        <div class="tile">
+        <div class="bordered">
           {#if window.ssb}
-          <div class="tile-icon">
-            <AvatarRound feed={"@" + identities[key].keys.public} />
-          </div>
+          <AvatarRound feed={"@" + identities[key].keys.public} />
           {/if}
-          <div class="tile-content">
-            <p class="tile-title">{identities[key].keys.public}</p>
-            <p class="tile-subtitle text-tiny">
+          <div>
+            <h2>{identities[key].keys.public}</h2>
+            <p>
               <span>Server Type: <code>{identities[key].type}</code></span><br>
               <span>Remote: <code class="text-ellipsis d-inline-block" style="width:  300px">{identities[key].remote}</code></span>
             </p>
-          <p>
-            <button class="btn btn-sm" on:click={() => {
-              window.open(patchfox.url("hub","public",{identity: identities[key].keys.public}))
-            }}>Open in new tab</button>
-          </p>
+              <button class="btn btn-sm" on:click={() => {
+                window.open(patchfox.url("hub","public",{identity: identities[key].keys.public}))
+              }}>Open in new tab</button>
           </div>
         </div>
         {:else}
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title h5">No identities saved</h5>
-            </div>
-            <div class="card-body">
-              <p>You haven't saved any SSB identity yet.</p>
+          <div class="hero bg-base-200">
+            <div class="text-center hero-content">
+              <div class="max-w-md">
+                <h1 class="mb-5 text-5xl font-bold">
+                      No Identities Saved
+                    </h1> 
+                <p class="mb-5">
+                      Add your identities using the settings.
+                    </p> 
+                <button class="btn btn-primary" on:click={() => patchfox.go("settings")}>Go to settings</button>
+              </div>
             </div>
           </div>
         {/each}
         </div>      
       </div>
     </div>
-    <div class="modal-footer">
-    </div>
-  </div>
 </div>

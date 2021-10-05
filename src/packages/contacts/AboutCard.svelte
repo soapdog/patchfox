@@ -21,8 +21,8 @@
 
   let image = msg.value.content.image
     ? patchfox.httpUrl(`/blobs/get/${encodeURIComponent(
-        msg.value.content.image.link
-      )}`)
+      msg.value.content.image.link
+    )}`)
     : false
 
   if (msg.value.content.description) {
@@ -37,21 +37,29 @@
 <Card {msg} {showRaw}>
   {#if isThisAboutFeeds}
     {person} {verb}
-    <a href="?pkg=contacts&view=profile&feed={otherLink}"
+    <div class="flex flex-row cursor-pointer"
       on:click|preventDefault={() => patchfox.go("contacts","profile", {feed: otherLink})}>
-      {#if image}
-        <div class="chip">
-          <img src={image} class="avatar avatar-sm" alt={otherName} />
-           {otherName}
+       {#if image}
+        <div class="avatar">
+          <div class="m-2 w-14 h-14 mask mask-squircle">
+            <img src={image} alt={otherName} />
+          </div>
         </div>
-      {:else}
-        <span class="chip">{otherName}</span>
-      {/if}
-    </a>
+        <div class="tile-content">
+          <div class="tile-title">{otherName}</div>
+        </div>
+        {:else}
+        <div class="avatar placeholder">
+          <div class="bg-neutral-focus text-neutral-content mask mask-squircle m-2 w-14 h-14">
+            <span class="text-xl">{otherName.slice(0,2)}</span>
+          </div>
+        </div> 
+        {/if}
+    </div>
     {#if msg.value.content.description}
-      <blockquote>
+      <article class="prose">
         {@html ssb.markdown(msg.value.content.description)}
-      </blockquote>
+      </article>
     {/if}
   {:else}
     <div class="toast">

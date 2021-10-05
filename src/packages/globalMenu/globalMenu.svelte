@@ -8,6 +8,11 @@
   let currentPackage = false
   let browserSidebarSupport = typeof browser.sidebarAction === "object"
   let currentQuery = queryString.parse(location.search)
+  let title = ""
+
+  patchfox._title.subscribe(newTitle => {
+    title = newTitle
+  })
 
   patchfox.listen("package:changed", (event, pkg) => {
     currentPackage = pkg || false
@@ -95,19 +100,24 @@
       {/each}
     </div>
     </div>
-    <div class="flex-1 lg:flex-none">
+    <div class="flex-1 lg:flex-none mr-2">
         <div class="form-control">
+          <div class="relative">
           <input
-            class="input input-ghost"
+            class="w-full pr-16 input input-accent input-ghost input-bordered border-accent-focus"
             type="text"
             bind:value={query}
             placeholder="search" />
+          <button 
+            class="absolute top-0 right-0 rounded-l-none btn btn-accent border-accent-focus" 
+            on:click={search} 
+            tabindex="0">
+              <i class="fas fa-search" />
+          </button>
+          </div>
         </div>
       </div>
       <div class="flex-none">
-        <button class="btn btn-ghost" on:click={search} tabindex="0">
-            <i class="fas fa-search" />
-          </button>
     </div>
     <div class="flex-none">
       {#if window.hasOwnProperty("ssb") && ssb?.feed}
@@ -125,9 +135,14 @@
     <li>
       {currentPackage.packageToOpen.name}
     </li>
-    {#if currentPackage.view}
+    {#if currentPackage.view && currentPackage.view.toLowerCase() !== "view"}
     <li>
       {currentPackage.view}
+    </li>
+    {/if}
+    {#if title.length > 0 && (title.toLowerCase() !== currentPackage.view.toLowerCase())}
+    <li class="normal-case">
+      {title}
     </li>
     {/if}
   </ul>

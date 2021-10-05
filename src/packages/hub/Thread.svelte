@@ -1,43 +1,31 @@
 <script>
-  const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
-  let msgs = false;
-  let error = false;
-  export let thread;
+  const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
+  let msgs = false
+  let error = false
+  export let thread
 
   $: {
     if (thread.startsWith("ssb:")) {
-      thread = thread.replace("ssb:", "");
+      thread = thread.replace("ssb:", "")
     }
-    document.title = `Patchfox - Thread: ${thread}`;
+    patchfox.title(thread)
 
     let promise = ssb
       .thread(thread)
       .then(ms => {
-        msgs = ms;
-        window.scrollTo(0, 0);
+        msgs = ms
+        window.scrollTo(0, 0)
       })
       .catch(n => {
-        console.dir(n);
-        error = n.message;
+        console.dir(n)
+        error = n.message
         if (n.message.indexOf("stream is closed") !== -1) {
-          location.reload();
+          location.reload()
         }
-      });
+      })
   }
 </script>
 
-<style>
-  .feed-id-display {
-    font-size: 15px;
-  }
-</style>
-
-<div class="container">
-  <h4>
-    Thread
-    <small class="label hide-sm feed-id-display">{thread}</small>
-  </h4>
-</div>
 {#if error}
   <div class="toast toast-error">
     Couldn't load thread

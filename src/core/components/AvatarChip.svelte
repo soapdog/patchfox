@@ -20,37 +20,23 @@
   }
 </script>
 
-<style>
-  .clickable:hover {
-    cursor: pointer;
-  }
-
-  .fix-a {
-    margin-bottom: 8px;
-    max-width: unset;
-  }
-  .fix-img {
-    object-fit: cover;
-  }
-</style>
 
 {#if image}
-  <a
-    href={patchfox.url('contacts', 'profile', { feed })}
-    class="chip clickable d-flex text-ellipsis fix-a"
-    title={name}
-    aria-label={name}
-    on:click|preventDefault|stopPropagation={avatarClick}>
-    <img src={image} class="fix-img avatar avatar-sm" data-initial="{name.slice(1,3)}" alt={name} />
-    {name}
-  </a>
-  {:else}
-  <a
-    href={patchfox.url('contacts', 'profile', { feed })}
-    class="chip clickable d-flex text-ellipsis fix-a"
-    title={name}
-    aria-label={name}
-    on:click|preventDefault|stopPropagation={avatarClick}>
-    {name}
-  </a>
+<div class="flex items-center p-1 gap-1 justify-center">
+  <figure class="avatar cursor-pointer" on:click="{avatarClick}">
+    <div class="mb-1 w-4 h-4 mask mask-squircle">
+      <img src="{image}" alt="{name}" />
+    </div>
+  </figure>
+  <span class="flex-1 inline-block align-middle">{name}</span>
+</div>
+{:else}
+<div class="flex items-center p-1 gap-1 justify-center">
+  <figure class="avatar cursor-pointer" data-initial="{name.slice(1,3)}" on:click="{avatarClick}">
+    <div class="mb-1 bg-neutral-focus text-neutral-content w-4 h-4 mask mask-squircle">
+      <span class="text-xl">{name.slice(1,3)}</span>
+    </div>
+  </figure>
+  <span class="flex-1 inline-block align-middle">{name}</span>
+</div>
 {/if}
