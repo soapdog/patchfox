@@ -695,7 +695,7 @@ class NodeJsSSB {
     return div.innerText
   }
 
-  markdown(text) {
+  markdown(text, removePara = false) {
     let cs = queryString.parse(location.search)
     let identity = ""
     
@@ -776,6 +776,12 @@ class NodeJsSSB {
       .replace(/<audio controls src="&([^"]*)/gi, replaceAudios)
       .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
       .replace(/<a href="([^"]*)/gi, replaceLinks)
+
+    if (removePara) {
+      html = html
+        .replace(/<p>/gi,"")
+        .replace(/<\/p>/gi,"")
+    }
 
     return html
   }
