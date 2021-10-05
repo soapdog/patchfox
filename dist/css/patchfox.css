@@ -23,3 +23,15 @@ a.image-link {
 figure.avatar {
     width: unset !important;
 }
+
+@layer utilities {
+  @variants responsive {
+    .masonry {
+      column-count: 4;
+      column-gap: 1.5em;
+    }
+    .break-inside {
+      break-inside: avoid;
+    }
+  }
+}

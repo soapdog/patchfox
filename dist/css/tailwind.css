@@ -3936,6 +3936,11 @@ html {
   margin-right: 0.5rem;
 }
 
+.my-6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -3952,24 +3957,28 @@ html {
   margin-bottom: 1.25rem;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
 
 .mt-2 {
   margin-top: 0.5rem;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
+}
+
+.box-border {
+  box-sizing: border-box;
 }
 
 .block {
@@ -4024,8 +4033,16 @@ html {
   height: 6rem;
 }
 
+.h-96 {
+  height: 24rem;
+}
+
 .h-80 {
   height: 20rem;
+}
+
+.h-6 {
+  height: 1.5rem;
 }
 
 .min-h-screen {
@@ -4054,6 +4071,10 @@ html {
 
 .w-full {
   width: 100%;
+}
+
+.w-6 {
+  width: 1.5rem;
 }
 
 .max-w-md {
@@ -4112,6 +4133,14 @@ html {
   gap: 1rem;
 }
 
+.overflow-visible {
+  overflow: visible;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
 .rounded-full {
   border-radius: 9999px;
 }
@@ -4122,6 +4151,10 @@ html {
 
 .rounded {
   border-radius: 0.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
 }
 
 .rounded-l-none {
@@ -4142,14 +4175,14 @@ html {
   border-color: hsla(var(--af) / var(--tw-border-opacity));
 }
 
-.bg-base-200 {
-  --tw-bg-opacity: 1;
-  background-color: hsla(var(--b2) / var(--tw-bg-opacity));
-}
-
 .bg-neutral-focus {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--nf) / var(--tw-bg-opacity));
+}
+
+.bg-base-200 {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--b2) / var(--tw-bg-opacity));
 }
 
 .bg-base-100 {
@@ -4160,6 +4193,10 @@ html {
 .bg-accent {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--a) / var(--tw-bg-opacity));
+}
+
+.stroke-current {
+  stroke: currentColor;
 }
 
 .object-contain {
@@ -4233,6 +4270,10 @@ html {
   font-weight: 500;
 }
 
+.font-thin {
+  font-weight: 100;
+}
+
 .uppercase {
   text-transform: uppercase;
 }
@@ -4292,6 +4333,18 @@ html {
 
 .filter {
   filter: var(--tw-filter);
+}
+
+.masonry {
+  -moz-column-count: 4;
+       column-count: 4;
+  -moz-column-gap: 1.5em;
+       column-gap: 1.5em;
+}
+
+.break-inside {
+  -moz-column-break-inside: avoid;
+       break-inside: avoid;
 }
 
 img.is-image-from-blob {
@@ -4849,6 +4902,13 @@ figure.avatar {
   .md\:object-scale-down {
     -o-object-fit: scale-down;
        object-fit: scale-down;
+  }
+
+  .md\:masonry {
+    -moz-column-count: 4;
+         column-count: 4;
+    -moz-column-gap: 1.5em;
+         column-gap: 1.5em;
   }
 }
 
