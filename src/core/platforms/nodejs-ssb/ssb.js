@@ -1513,6 +1513,8 @@ class NodeJsSSB {
       throw "error: no sbot"
     }
 
+    try {
+
     const transform = this.transform.bind(this)
 
     const pipeline = pipelines.message.get()
@@ -1620,14 +1622,9 @@ class NodeJsSSB {
               pull.take(Math.min(length, maxMessages)),
               pull.map(([key]) => key),
               pullParallelMap(async (key, cb) => {
-                try {
-                  const msg = await this.get(key)
-                  const data = { key: key, value: msg }
-                  cb(null, data)
-                } catch (e) {
-                  console.log("errorrrrr!!!", e)
-                  cb(null, null)
-                }
+                const msg = await this.get(key)
+                const data = { key: key, value: msg }
+                cb(null, data)
               }),
               followingFilter,
               pull.apply(pull, pipeline),
@@ -1871,6 +1868,11 @@ class NodeJsSSB {
         .catch((err) => cb(err, null))
     })
   }
+
+  } catch(e) {
+      console.error("error computing popular threads", e)
+      throw e
+    }
 }
 
 module.exports.NodeJsSSB = NodeJsSSB
