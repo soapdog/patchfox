@@ -5,11 +5,11 @@ These are the packages that Patchfox is loading.
 
 * [blog](/packages/blog/)
 * [books](/packages/books/)
-* [errorHandler](/packages/errorHandler/)
 * [calendar](/packages/calendar/)
+* [githubIntegration](/packages/githubIntegration/)
 * [globalMenu](/packages/globalMenu/)
 * [contacts](/packages/contacts/)
-* [githubIntegration](/packages/githubIntegration/)
+* [errorHandler](/packages/errorHandler/)
 * [helpMenu](/packages/helpMenu/)
 * [hub](/packages/hub/)
 * [intercept](/packages/intercept/)
