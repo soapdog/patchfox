@@ -8,8 +8,6 @@
   let identities = []
   let savedData
 
-  patchfox.title("Settings - Identities And Connections")
-
   const saveConfiguration = ev => {
     saveIdentityConfiguration({ remote, keys: JSON.parse(keys), type })
     location.reload()
@@ -47,6 +45,7 @@
   reloadSavedConfiguration()
 </script>
 
+<div class="prose">
 <h1>Identities &amp; Connections</h1>
 <p>
   <b>
@@ -70,24 +69,24 @@
     .
   </b>
 </p>
+</div>
 <!-- List identities -->
-<div>
+<div class="mt-4">
 {#each Object.keys(identities) as key}
-<div class="card">
-  <div class="card-header">
+<div class="card shadow-sm bg-accent text-accent-content mb-4">
+  <div class="card-body">
     {#if window.ssb}
     <AvatarChip feed={"@" + identities[key].keys.public} />
     {:else}
-    <h5 class="card-title h5">{identities[key].keys.public}</h5>
+    <h5 class="card-title">{identities[key].keys.public}</h5>
     {/if}
-  </div>
-  <ul class="card-body text-tiny">
-    <li>Feed Id: <code>{identities[key].keys.public}</code></li>
-    <li>Server Type: <code>{identities[key].type}</code></li>
-    <li>Remote: <code>{identities[key].remote}</code></li>
+  <ul class="text-sm list-disc">
+    <li>Feed Id: <span class="font-ultrathin">{identities[key].keys.public}</span></li>
+    <li>Server Type: <span class="font-ultrathin">{identities[key].type}</span></li>
+    <li>Remote: <span class="font-ultrathin">{identities[key].remote}</span></li>
   </ul>
-  <div class="card-footer">
-    <button class="btn btn-primary" on:click={() => {
+  <div class="card-actions">
+    <button class="btn" on:click={() => {
       keys = JSON.stringify(identities[key].keys)
       remote = identities[key].remote
       type = identities[key].type
@@ -106,39 +105,45 @@
     }}>Open in new tab</button>
   </div>
 </div>
+</div>
 {:else}
-  <div class="card">
-    <div class="card-header">
-      <h5 class="card-title h5">No identities saved</h5>
-    </div>
-    <div class="card-body">
+  <div class="prose text-center">
+      <h2 class="card-title h2">No identities saved</h2>
       <p>You haven't saved any SSB identity yet.</p>
-    </div>
   </div>
 {/each}
 </div>
 <!-- Add identity -->
-<form class="form-group">
-  <label class="form-label" for="secret-file">
-    Use the button below to select your secret file (usually located at
-    <code>~/.ssb/secret</code>
-    ).
-  </label>
-  <input type="file" class="form-input" id="secret-file" on:change="{selectedFile}" />
-  <label class="form-label" for="remote">Remote</label>
-  <input class="form-input" type="text" id="remote" placeholder="remote" bind:value="{remote}" />
+<form>
+  <div class="form-control">
+    <label class="label" for="secret-file">
+      <span class="label-text">Use the button below to select your secret file (usually located at
+      <code>~/.ssb/secret</code>
+      ).</span>
+    </label>
+    <input type="file" class="input" id="secret-file" on:change="{selectedFile}" />
+  </div>
 
-  <label class="form-label" for="secret">Secret</label>
-  <textarea class="form-input" id="secret" placeholder="Your secret" rows="8" bind:value="{keys}" />
+  <div class="form-control">
+    <label class="label" for="remote"><span class="label-text">Remote</span></label>
+  <input class="input input-bordered" type="text" id="remote" placeholder="remote" bind:value="{remote}" />
+</div>
+
+  <div class="form-control">
+    <label class="label" for="secret"><span class="label-text">Secret</span></label>
+  <textarea class="textarea textarea-bordered h-48" id="secret" placeholder="Your secret" bind:value="{keys}" />
+</div>
+
   <br />
-  <div class="form-group">
-    <select class="form-select" bind:value="{type}">
+  <div class="form-control">
+    <select class="select" bind:value="{type}">
       <option value="nodejs-ssb">NodeJS-based SSB Server (Patchwork, Scuttle Shell...)</option>
       <option value="browser-ssb">Browser-SSB Server</option>
       <option value="go-ssb">Go-SSB</option>
     </select>
   </div>
   <br />
+
   <button class="btn btn-primary float-right" on:click="{saveConfiguration}">
     Save Identity & Remote
   </button>

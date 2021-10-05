@@ -12,9 +12,9 @@
   }
 </script>
 
-<ul class="menu">
-  <li class="divider" data-content="GENERAL" />
-  <li class="menu-item">
+<ul class="menu menu py-3 shadow-lg bg-base-100 rounded-box">
+  <li class="menu-title"><span>GENERAL</span></li>
+  <li>
     <a
       href="#/settings"
       on:click={() => setView("about")}
@@ -22,7 +22,7 @@
       About Patchfox
     </a>
   </li>
-  <li class="menu-item">
+  <li>
     <a
       href="#/settings"
       on:click={() => setView("identitiesAndConnections")}
@@ -30,7 +30,7 @@
       Identities &amp; Connections
     </a>
   </li>
-  <li class="menu-item">
+  <li>
     <a
       href="#/settings"
       on:click={() => setView("displayPreferences")}
@@ -38,8 +38,8 @@
       Display Preferences
     </a>
   </li>
-  <li class="divider" data-content="ABUSE PREVENTION" />
-  <li class="menu-item">
+  <li class="menu-title"><span>ABUSE PREVENTION</span></li>
+  <li>
     <a
       href="#/settings"
       on:click={() => setView("filters")}
@@ -47,7 +47,7 @@
       Filters
     </a>
   </li>
-  <!-- <li class="menu-item">
+  <!-- <li>
     <a
       href="#/settings"
       on:click={() => setView('contentWarnings')}
@@ -56,7 +56,7 @@
     </a>
   </li>
   <li class="divider" data-content="ADITIONAL PLATFORMS" />
-  <li class="menu-item">
+  <li>
     <a
       href="#/settings"
       on:click={() => setView('platformDAT')}
@@ -64,7 +64,7 @@
       DAT
     </a>
   </li>
-  <li class="menu-item">
+  <li>
     <a
       href="#/settings"
       on:click={() => setView('platformIPFS')}
