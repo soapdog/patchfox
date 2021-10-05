@@ -66,7 +66,7 @@
   }
 </style>
 
-<div class="card bordered shadow-2xl mb-8 bg-base-100" class:blur class:border={privateMsgForYou}>
+<div class="card bordered shadow-2xl mb-8 bg-base-100 overflow-visible" class:blur class:border={privateMsgForYou}>
   <slot name="card-header">
         <div class="card-title">
         <div class="navbar">
