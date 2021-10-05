@@ -117338,7 +117338,7 @@ function add_css(target) {
 	append_styles(target, "svelte-1kmc4x", ".file-on-top.svelte-1kmc4x{border:solid 2px rgb(26, 192, 11)}input[type=\"file\"].svelte-1kmc4x{display:none}");
 }
 
-// (206:2) {#if fork}
+// (208:2) {#if fork}
 function create_if_block_11(ctx) {
 	let div;
 	let t0;
@@ -117365,7 +117365,7 @@ function create_if_block_11(ctx) {
 	};
 }
 
-// (209:2) {#if msg}
+// (211:2) {#if msg}
 function create_if_block_9(ctx) {
 	let if_block_anchor;
 
@@ -117406,7 +117406,7 @@ function create_if_block_9(ctx) {
 	};
 }
 
-// (212:4) {:else}
+// (214:4) {:else}
 function create_else_block_2(ctx) {
 	let div1;
 	let div0;
@@ -117449,7 +117449,7 @@ function create_else_block_2(ctx) {
 	};
 }
 
-// (210:4) {#if error}
+// (212:4) {#if error}
 function create_if_block_10(ctx) {
 	let div;
 	let t;
@@ -117473,7 +117473,7 @@ function create_if_block_10(ctx) {
 	};
 }
 
-// (290:2) {:else}
+// (292:2) {:else}
 function create_else_block_1(ctx) {
 	let div5;
 	let h2;
@@ -117558,8 +117558,8 @@ function create_else_block_1(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen(button0, "click", /*click_handler*/ ctx[27]),
-					listen(button1, "click", /*post*/ ctx[15])
+					listen(button0, "click", /*click_handler*/ ctx[28]),
+					listen(button1, "click", /*post*/ ctx[16])
 				];
 
 				mounted = true;
@@ -117600,7 +117600,7 @@ function create_else_block_1(ctx) {
 	};
 }
 
-// (228:2) {#if !showPreview}
+// (230:2) {#if !showPreview}
 function create_if_block(ctx) {
 	let div3;
 	let div0;
@@ -117713,14 +117713,14 @@ function create_if_block(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen(input0, "input", /*input0_input_handler*/ ctx[23]),
-					listen(textarea, "dragover", stop_propagation(prevent_default(/*dragOver*/ ctx[17]))),
-					listen(textarea, "dragleave", stop_propagation(prevent_default(/*dragLeave*/ ctx[18]))),
-					listen(textarea, "input", /*textarea_input_handler*/ ctx[25]),
-					listen(button0, "click", /*toggleContentWarning*/ ctx[21]),
-					listen(input1, "input", /*attachFile*/ ctx[20]),
-					listen(button1, "click", /*attachFileTrigger*/ ctx[19]),
-					listen(button2, "click", /*preview*/ ctx[16])
+					listen(input0, "input", /*input0_input_handler*/ ctx[24]),
+					listen(textarea, "dragover", stop_propagation(prevent_default(/*dragOver*/ ctx[18]))),
+					listen(textarea, "dragleave", stop_propagation(prevent_default(/*dragLeave*/ ctx[19]))),
+					listen(textarea, "input", /*textarea_input_handler*/ ctx[26]),
+					listen(button0, "click", /*toggleContentWarning*/ ctx[22]),
+					listen(input1, "input", /*attachFile*/ ctx[21]),
+					listen(button1, "click", /*attachFileTrigger*/ ctx[20]),
+					listen(button2, "click", /*preview*/ ctx[17])
 				];
 
 				mounted = true;
@@ -117804,7 +117804,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (294:6) {#if channel || root || branch || contentWarning.length > 0}
+// (296:6) {#if channel || root || branch || contentWarning.length > 0}
 function create_if_block_4(ctx) {
 	let t0;
 	let t1;
@@ -117902,7 +117902,7 @@ function create_if_block_4(ctx) {
 	};
 }
 
-// (295:10) {#if channel}
+// (297:10) {#if channel}
 function create_if_block_8(ctx) {
 	let p;
 	let b;
@@ -117939,7 +117939,7 @@ function create_if_block_8(ctx) {
 	};
 }
 
-// (301:10) {#if root}
+// (303:10) {#if root}
 function create_if_block_7(ctx) {
 	let p;
 	let b;
@@ -117969,7 +117969,7 @@ function create_if_block_7(ctx) {
 	};
 }
 
-// (307:10) {#if branch}
+// (309:10) {#if branch}
 function create_if_block_6(ctx) {
 	let p;
 	let b;
@@ -117999,7 +117999,7 @@ function create_if_block_6(ctx) {
 	};
 }
 
-// (313:10) {#if contentWarning.length > 0}
+// (315:10) {#if contentWarning.length > 0}
 function create_if_block_5(ctx) {
 	let p;
 	let b;
@@ -118029,7 +118029,7 @@ function create_if_block_5(ctx) {
 	};
 }
 
-// (240:6) {#if branch}
+// (242:6) {#if branch}
 function create_if_block_2(ctx) {
 	let div;
 	let label;
@@ -118083,7 +118083,7 @@ function create_if_block_2(ctx) {
 			current = true;
 
 			if (!mounted) {
-				dispose = listen(input, "input", /*input_input_handler*/ ctx[24]);
+				dispose = listen(input, "input", /*input_input_handler*/ ctx[25]);
 				mounted = true;
 			}
 		},
@@ -118138,11 +118138,11 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (252:8) {:else}
+// (254:8) {:else}
 function create_else_block(ctx) {
 	let spinner;
 	let current;
-	spinner = new Spinner({});
+	spinner = new /*Spinner*/ ctx[15]({});
 
 	return {
 		c() {
@@ -118168,7 +118168,7 @@ function create_else_block(ctx) {
 	};
 }
 
-// (250:8) {#if branchedMsg}
+// (252:8) {#if branchedMsg}
 function create_if_block_3(ctx) {
 	let messagerenderer;
 	let current;
@@ -118202,7 +118202,7 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (273:8) {#if showContentWarningField}
+// (275:8) {#if showContentWarningField}
 function create_if_block_1(ctx) {
 	let input;
 	let mounted;
@@ -118221,7 +118221,7 @@ function create_if_block_1(ctx) {
 			set_input_value(input, /*contentWarning*/ ctx[7]);
 
 			if (!mounted) {
-				dispose = listen(input, "input", /*input_input_handler_1*/ ctx[26]);
+				dispose = listen(input, "input", /*input_input_handler_1*/ ctx[27]);
 				mounted = true;
 			}
 		},
@@ -118354,6 +118354,7 @@ function instance($$self, $$props, $$invalidate) {
 	const { slide } = require("svelte/transition");
 	const AvatarChip = require("../../core/components/AvatarChip.svelte");
 	const MessageRenderer = require("../../core/components/MessageRenderer.svelte");
+	const Spinner = require("../../core/components/Spinner.svelte");
 	const { getPref } = require("../../core/kernel/prefs.js");
 	const pull = require("pull-stream");
 	const fileReader = require("pull-file-reader");
@@ -118558,7 +118559,7 @@ function instance($$self, $$props, $$invalidate) {
 		if ('branch' in $$props) $$invalidate(0, branch = $$props.branch);
 		if ('channel' in $$props) $$invalidate(1, channel = $$props.channel);
 		if ('content' in $$props) $$invalidate(2, content = $$props.content);
-		if ('replyfeed' in $$props) $$invalidate(22, replyfeed = $$props.replyfeed);
+		if ('replyfeed' in $$props) $$invalidate(23, replyfeed = $$props.replyfeed);
 		if ('fork' in $$props) $$invalidate(4, fork = $$props.fork);
 	};
 
@@ -118578,6 +118579,7 @@ function instance($$self, $$props, $$invalidate) {
 		branchedMsg,
 		slide,
 		MessageRenderer,
+		Spinner,
 		post,
 		preview,
 		dragOver,
@@ -118609,7 +118611,7 @@ class PostCompose extends SvelteComponent {
 				branch: 0,
 				channel: 1,
 				content: 2,
-				replyfeed: 22,
+				replyfeed: 23,
 				fork: 4
 			},
 			add_css,
@@ -118620,7 +118622,7 @@ class PostCompose extends SvelteComponent {
 
 module.exports = PostCompose;
 
-},{"../../core/components/AvatarChip.svelte":659,"../../core/components/MessageRenderer.svelte":668,"../../core/kernel/prefs.js":680,"drag-and-drop-files":101,"pull-file-reader":406,"pull-stream":414,"svelte":573,"svelte/internal":574,"svelte/transition":576,"tributejs":580}],734:[function(require,module,exports){
+},{"../../core/components/AvatarChip.svelte":659,"../../core/components/MessageRenderer.svelte":668,"../../core/components/Spinner.svelte":670,"../../core/kernel/prefs.js":680,"drag-and-drop-files":101,"pull-file-reader":406,"pull-stream":414,"svelte":573,"svelte/internal":574,"svelte/transition":576,"tributejs":580}],734:[function(require,module,exports){
 const PostCompose = require("./PostCompose.svelte");
 const PostCard = require("./PostCard.svelte");
 
