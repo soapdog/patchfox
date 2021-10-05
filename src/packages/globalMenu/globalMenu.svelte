@@ -60,7 +60,7 @@
           <div class="btn btn-ghost rounded-btn" tabindex="0">
             {key}
           </div>
-          <ul class="shadow menu dropdown-content text-neutral bg-base-100 rounded-box w-52 font-extralight">
+          <ul class="shadow menu dropdown-content text-base-content bg-base-100 rounded-box w-52 font-extralight">
             {#each groups[key] as menu, i}
               {#if menu.label}
                 <div class="divider"><span>{menu.label}</span></div>

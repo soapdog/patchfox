@@ -10,7 +10,6 @@
   let feed = msg.value.author
   let privateMsgForYou = false
 
-  let blur = false
   let border = false
   let dropdownActive = false
 
@@ -66,7 +65,7 @@
   }
 </style>
 
-<div class="card bordered shadow-2xl mb-8 bg-base-100 overflow-visible" class:blur class:border={privateMsgForYou}>
+<div class="card bordered shadow-2xl mb-8 bg-base-100 overflow-visible" class:blured class:border={privateMsgForYou}>
   <slot name="card-header">
         <div class="card-title">
         <div class="navbar">
