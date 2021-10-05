@@ -1,6 +1,7 @@
 <script>
   const { tick } = require("svelte")
   const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
+  const Spinner = require("../../core/components/Spinner.svelte")
   let msgs = []
   let error = false
   export let query
@@ -53,12 +54,12 @@
   </h4>
 </div>
 {#if error}
-  <div class="toast toast-error">
-    Couldn't find results for query {query} : {error}
+  <div class="alert alert-error">
+    <span class="flex-1">Couldn't find results for query {query} : {error}</span>
   </div>
 {/if}
 {#await promise}
-  <div class="loading loading-lg" />
+  <Spinner />
 {:then}
 
 {/await}
