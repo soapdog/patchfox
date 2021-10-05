@@ -39,8 +39,8 @@
       <a class="btn" href="{patchfox.url('books', 'edit')}">Add New Book</a>
       <span class="flex-1 p-2 text-center">{books.length} books found on SSB.</span>
       <div class="btn-group">
-        <button class="btn" class:btn-active={!shouldReverse} on:click={sortByOldest}>Sort by oldest additions</button>
-        <button class="btn" class:btn-active={shouldReverse} on:click={sortByNewest}>Sort by newest additions</button>
+        <button class="btn btn-outline" class:btn-active={!shouldReverse} on:click={sortByOldest}>Sort by oldest additions</button>
+        <button class="btn btn-outline" class:btn-active={shouldReverse} on:click={sortByNewest}>Sort by newest additions</button>
       </div>
     </div>
 
@@ -55,11 +55,11 @@
                 <figure class="flex-shrink">
                   <img  src="{patchfox.httpUrl('/blobs/get/' + book.common.image.link)}" alt="{book.common.image.name}">
                 </figure>
-                {:else if Array.isArray(book.common.images) && book.common.images[0].hasOwnProperty("link")}
+                {:else if Array.isArray(book.common.images) && book.common?.images[0].hasOwnProperty("link")}
                 <figure class="flex-shrink">
                   <img  src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
                 </figure>
-                {:else if book.common.images.hasOwnProperty("link")}
+                {:else if book.common.images?.hasOwnProperty("link")}
                 <figure class="flex-shrink">
                   <img  src="{patchfox.httpUrl('/blobs/get/' + book.common.images.link)}" alt="{book.common.images.name}">
                 </figure>
