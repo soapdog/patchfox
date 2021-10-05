@@ -28,7 +28,7 @@
   }
 </script>
 
-<div class="container">
+<div class="prose">
   <h1 class="uppercase text-sl font-medium">😿 An Error Has Occurred, sorry 😭</h1>
   {#if toast}
   <div class="alert {toastClass}">{msg}</div>
