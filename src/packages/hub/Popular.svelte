@@ -25,7 +25,7 @@
         window.scrollTo(0, 0)
       })
       .catch(n => {
-        throw n
+        patchfox.go("errorHandler", "view", {error: n})
       })
   }
 
