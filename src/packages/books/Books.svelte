@@ -34,48 +34,41 @@
 
 </script>
 
-<style>  
-  .masonry {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-template-rows: masonry;
-  }
-</style>
-
 <div class="container">
-  <div class="zine">
-      <a class="btn btn-primary" href="{patchfox.url('books', 'edit')}">Add New Book</a>
-      <span>{books.length} books found on SSB.</span>
-      <button class="btn" class:btn-primary={!shouldReverse} on:click={sortByOldest}>Sort by oldest additions</button>
-      <button class="btn" class:btn-primary={shouldReverse} on:click={sortByNewest}>Sort by newest additions</button>
-      <br>
-      <br>
+    <div class="flex mb-4">
+      <a class="btn" href="{patchfox.url('books', 'edit')}">Add New Book</a>
+      <span class="flex-1 p-2 text-center">{books.length} books found on SSB.</span>
+      <div class="btn-group">
+        <button class="btn" class:btn-active={!shouldReverse} on:click={sortByOldest}>Sort by oldest additions</button>
+        <button class="btn" class:btn-active={shouldReverse} on:click={sortByNewest}>Sort by newest additions</button>
+      </div>
+    </div>
+
     {#if books.length == 0}
       <div class="loading" />
     {:else}
-      <div class="masonry">
+      <div class="grid grid-cols-4 gap-4">
         {#each books as book}
           <div class="item">
-              <div class="card">
+              <div class="card shadow-sm bg-accent text-accent-content">
                 {#if book.common.image}
-                <div class="card-image">
-                  <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.image.link)}" alt="{book.common.image.name}">
-                </div>
+                <figure class="flex-shrink">
+                  <img  src="{patchfox.httpUrl('/blobs/get/' + book.common.image.link)}" alt="{book.common.image.name}">
+                </figure>
                 {:else if Array.isArray(book.common.images) && book.common.images[0].hasOwnProperty("link")}
-                <div class="card-image">
-                  <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
-                </div>
+                <figure class="flex-shrink">
+                  <img  src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
+                </figure>
                 {:else if book.common.images.hasOwnProperty("link")}
-                <div class="card-image">
-                  <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images.link)}" alt="{book.common.images.name}">
-                </div>
+                <figure class="flex-shrink">
+                  <img  src="{patchfox.httpUrl('/blobs/get/' + book.common.images.link)}" alt="{book.common.images.name}">
+                </figure>
 
                 {:else}
                 {@debug book}
                 {/if}
-                <div class="card-header">
-                  <div class="card-title h5">
+                <div class="card-body">
+                  <div class="card-title uppercase font-medium">
                     {book.common.title}
                   </div>
                   <div class="card-subtitle text-gray">
@@ -90,29 +83,34 @@
                     Part of {book.common.series} series.
                   </div>
                   {/if}
-                </div>
-                <div class="card-body">
+                
+                  <div class="prose">
                   {@html ssb.markdown(book.common.description.slice(0, 200).replace(/h1/gi, "h3") + "...")}
-                  {#if book.readers}
-                  <p class="text-gray">{book.readers.length} readers.</p>
-                  {/if} 
-                  {#if book.reviews }
-                  <p class="text-gray">{Object.keys(book.reviews).length} reviews. </p>
-                  {/if}
-                </div>
-                <div class="card-footer">
-                  <span class="float-left">{timestamp(book.msg.timestamp)}</span>
                   
+                  <div>
+                    {#if book.readers}
+                    <span class="text-gray">{book.readers.length} <i class="fas fa-user"></i></span>
+                    {/if} 
+
+                    {#if book.reviews }
+                    <span class="text-gray ml-2">{Object.keys(book.reviews).length} <i class="fas fa-file-alt"></i> </span>
+                    {/if}
+
+                    <span class="ml-2">{timestamp(book.msg.timestamp)}</span>
+                  </div>
+
+                </div>
+                <div class="card-actions">
                   <a
-                    href={patchfox.url('books', 'details', { bookKey: book.msg.key })}
-                    class="btn btn-primary float-right">
-                    &rarr;
+                    href={patchfox.url("books", "details", { bookKey: book.msg.key })}
+                    class="btn btn-primary">
+                    Read more
                   </a>
                 </div>
               </div>
           </div>
+        </div>
         {/each}
-      </div>
+        </div>
     {/if}
-  </div>
 </div>
