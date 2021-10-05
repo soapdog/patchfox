@@ -19,3 +19,7 @@ a.image-link {
 .blured img {
     filter: blur(20px) !important;
 }
+
+figure.avatar {
+    width: unset !important;
+}

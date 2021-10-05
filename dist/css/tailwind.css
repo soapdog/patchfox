@@ -3925,6 +3925,10 @@ html {
   margin-top: 0.5rem;
 }
 
+.mt-4 {
+  margin-top: 1rem;
+}
+
 .block {
   display: block;
 }
@@ -4113,10 +4117,6 @@ html {
   text-align: center;
 }
 
-.text-right {
-  text-align: right;
-}
-
 .align-middle {
   vertical-align: middle;
 }
@@ -4228,6 +4228,10 @@ a.image-link {
 
 .blured img {
   filter: blur(20px) !important;
+}
+
+figure.avatar {
+  width: unset !important;
 }
 
 @media (min-width: 640px) {
