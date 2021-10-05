@@ -88,7 +88,7 @@
 
 <svelte:window on:popstate="{popState}" on:error="{handleUncaughtException}" />
 
-<div class="bg-base-200 min-h-screen">
+<div class=" min-h-screen">
   <div class="root container mx-auto p-2 lg:p-10 text-base-content">
     {#each systemPackages as pkg}
     <svelte:component this="{pkg.view}" />
