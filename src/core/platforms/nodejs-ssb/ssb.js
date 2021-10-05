@@ -1513,8 +1513,6 @@ class NodeJsSSB {
       throw "error: no sbot"
     }
 
-    try {
-
     const transform = this.transform.bind(this)
 
     const pipeline = pipelines.message.get()
@@ -1868,11 +1866,6 @@ class NodeJsSSB {
         .catch((err) => cb(err, null))
     })
   }
-
-  } catch(e) {
-      console.error("error computing popular threads", e)
-      throw e
-    }
 }
 
 module.exports.NodeJsSSB = NodeJsSSB
