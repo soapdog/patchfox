@@ -4,6 +4,8 @@
   const { slide } = require("svelte/transition")
   const AvatarChip = require("../../core/components/AvatarChip.svelte")
   const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
+  const Spinner = require("../../core/components/Spinner.svelte")
+
   const { getPref } = require("../../core/kernel/prefs.js")
   const pull = require("pull-stream")
   const fileReader = require("pull-file-reader")
