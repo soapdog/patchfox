@@ -46,7 +46,7 @@
 </script>
 
 <p class="m-2">
-  <AvatarChip feed={msg.value.author} />
+  <AvatarChip inline={true} arrow={true} feed={msg.value.author} />
   {action}
   <a href="?pkg=books&view=details&bookKey={encodedid}" on:click={goToBook}>
     {title}
