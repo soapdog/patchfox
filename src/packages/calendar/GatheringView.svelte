@@ -1,7 +1,9 @@
 <script>
   const Card = require("../../core/components/ui/Card.svelte")
   const Scuttle = require("scuttle-gathering")
-  const AvatarRound = require("../../core/components/AvatarRound.svelte")
+  const AvatarChip = require("../../core/components/AvatarChip.svelte")
+  const AvatarContainer = require("../../core/components/AvatarContainer.svelte")
+
   const gathering = Scuttle(ssb.sbot)
   const ics = require("ics")
   const moment = require("moment")
@@ -42,6 +44,7 @@
       attending = event.isAttendee
       notAttending = data.notAttendees.includes(ssb.feed)
       loadedAllData = true
+      patchfox.title(event.title)
     }
   })
 
@@ -98,7 +101,6 @@
         if (err) {
           console.log("err")
           throw err
-          return
         }
         let el = document.createElement("div")
         el.innerHTML = ssb.markdown(event.description)
@@ -168,9 +170,9 @@
 
 {#if event  && msg}
   <Card {showRaw} {msg}>
-    <h1 class="title">{event.title}</h1>
+    <h1 class="uppercase font-medium">{event.title}</h1>
     {#if event.startDateTime}
-      <h2 class="subtitle">{dateToNiceDate(event.startDateTime.epoch)}</h2>
+      <h2 class="uppercase">{dateToNiceDate(event.startDateTime.epoch)}</h2>
     {/if}
     {#if event.image}
       <img
@@ -178,52 +180,52 @@
         src="{patchfox.blobUrl(encodeURIComponent(event.image.link))}"
         alt={event.image.name} />
     {/if}
+    
+    <div class="prose">
     {@html ssb.markdown(event.description)}
-    <h3 class="h3">Attending</h3>
+    </div>
+
+    <h3 class="uppercase font-medium mt-4">Attending</h3>
+
+    <AvatarContainer>
     {#each event.attendees as attendee}
-      <span class="contains-avatar">
-        <AvatarRound feed={attendee} on:avatarClick={avatarClick} />
-      </span>
+        <AvatarChip feed={attendee} on:avatarClick={avatarClick} />
     {:else}
       <p>This gathering has no atteendees yet</p>
     {/each}
-    <h3 class="h3">Not Attending</h3>
+    </AvatarContainer>
 
+    <h3 class="uppercase font-medium mt-4">Not Attending</h3>
+
+    <AvatarContainer>
     {#each event.notAttendees as notAttendee}
-      <span class="contains-avatar">
-        <AvatarRound
-          dim="true"
+        <AvatarChip
           feed={notAttendee}
           on:avatarClick={avatarClick} />
-      </span>
     {:else}
       <p>This gathering has no people not attending it yet</p>
     {/each}
-    <div class="card-footer" slot="card-footer">
-      <div class="columns col-gapless">
-        <div class="column col-6">
-          <div class="btn-group btn-group-block">
+    </AvatarContainer>
+
+    <div class="card-actions" slot="card-actions">
+          <div class="btn-group">
             <button
-              class="btn"
+              class="btn btn-outline"
               on:click={notAttend}
-              class:btn-primary={notAttending === true}>
+              class:btn-active={notAttending === true}>
               Not Attending
             </button>
             <button
-              class="btn"
+              class="btn btn-outline"
               on:click={attend}
-              class:btn-primary={attending === true}>
+              class:btn-active={attending === true}>
               Attending
             </button>
           </div>
-        </div>
-        <div class="column col-6 text-right">
           <button class="btn" disabled={!loadedAllData} on:click={exportToICS}>
             Export as iCal
           </button>
-        </div>
       </div>
-    </div>
   </Card>
 {:else}
   <div class="loading" />

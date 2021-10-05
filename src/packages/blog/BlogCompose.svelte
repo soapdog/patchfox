@@ -25,7 +25,7 @@
   let ipfsDaemonRunning = false
   let datDaemonRunning = false
 
-  document.title = `Patchfox - compose new blog post`
+  patchfox.title("compose new blog post")
 
   onMount(() => {
     error = false
@@ -274,9 +274,7 @@
   }
 </style>
 
-<div class="container">
-  <div class="columns">
-    <div class="column">
+<div>
       {#if msg}
         {#if error}
           <div class="toast toast-error">{msg}</div>
@@ -293,49 +291,65 @@
       {/if}
       {#if !showPreview}
         <div class="form-group" in:slide out:slide>
-          <label class="form-label" for="channel">Channel</label>
+          <div class="form-control">
+          <label class="label" for="channel">
+            <span class="label-text">Channel</span>
+          </label>
           <input
-            class="form-input"
+            class="input input-bordered"
             type="text"
             id="channel"
             placeholder="channel"
             bind:value={channel} />
+          </div>
 
-          <label class="form-label" for="title">Title</label>
+          <div class="form-control">
+          <label class="label" for="title">
+            <span class="label-text">Title</span>
+          </label>
           <input
-            class="form-input"
+            class="input input-bordered"
             type="text"
             id="title"
             placeholder="title"
             bind:value={title} />
+          </div>
 
-          <label class="form-label" for="summary">Summary</label>
+          <div class="form-control">
+          <label class="label" for="summary">
+            <span class="label-text">Summary</span>
+          </label>
           <textarea
-            class="form-input"
+            class="textarea h-24 textarea-bordered"
             id="summary"
             placeholder="Type in your summary"
-            rows="5"
             on:dragover|preventDefault|stopPropagation={dragOver}
             on:dragleave|preventDefault|stopPropagation={dragLeave}
             class:file-on-top={fileOnTop}
             bind:value={summary} />
+          </div>
 
-          <label class="form-label" for="content">Content</label>
+          <div class="form-control">
+          <label class="label" for="content">
+            <span class="label-text">Content</span>
+          </label>
           <textarea
-            class="form-input"
+            class="textarea h-96 textarea-bordered"
             id="content"
             placeholder="Type in your blog post content"
-            rows="20"
             on:dragover|preventDefault|stopPropagation={dragOver}
             on:dragleave|preventDefault|stopPropagation={dragLeave}
             class:file-on-top={fileOnTop}
             bind:value={content} />
-          <div class="d-block m-2">
+          </div>
+
+          <div class="block m-2">
             <button class="btn btn-link" on:click={toggleContentWarning}>
               CW
             </button>
             {#if showContentWarningField}
               <input
+                class="input input-bordered"
                 type="text"
                 size="50"
                 bind:value={contentWarning}
@@ -343,8 +357,9 @@
                 use it)" />
             {/if}
           </div>
+
           {#if thumbnail}
-            <div class="d-block m-2">
+            <div class="block m-2">
               <p>Thumbnail</p>
               <img
                 class="thumbnail-preview"
@@ -352,30 +367,22 @@
                 alt="post thumbnail" />
             </div>
           {/if}
+
           <input type="file" on:input={attachThumbnail} id="thumbnailInput" />
+          
           <button class="btn" on:click={attachThumbnailTrigger}>
             Attach Thumbnail Image
           </button>
           <input type="file" on:input={attachFile} id="fileInput" />
+          
           <button class="btn" on:click={attachFileTrigger}>Attach File</button>
-          {#if ipfsDaemonRunning}
-            <input type="file" on:input={attachFileIPFS} id="fileInputIPFS" />
-            <button class="btn" on:click={attachFileIPFSTrigger}>
-              Attach File using IPFS
-            </button>
-          {/if}
-          {#if datDaemonRunning}
-            <input type="file" on:input={attachFileDAT} id="fileInputDAT" />
-            <button class="btn" on:click={attachFileDATTrigger}>
-              Attach File using Dat
-            </button>
-          {/if}
+          
           <button class="btn btn-primary float-right" on:click={preview}>
             Preview
           </button>
         </div>
       {:else}
-        <div class="column col-md-12">
+        <div>
           <Preview
             {channel}
             {title}
@@ -384,20 +391,21 @@
             {contentWarning}
             {thumbnail} />
           <div class="divider" />
-          <div class="columns">
-            <div class="column col-md-12 col-lg-10">
-              <span class="label label-warning">
+          <div class="alert alert-info">
+            <div class="flex-1">
+              <i class="fas fa-exclamation-triangle"></i>
+              <label class="ml-2">
                 This message will be public and can't be edited or deleted
-              </span>
+              </label>
             </div>
-            <div class="column col-md-12 col-lg-2">
-              <button class="btn" on:click={() => (showPreview = false)}>
+            <div class="flex-none">
+              <button class="btn mr-2" on:click={() => (showPreview = false)}>
                 Go Back
               </button>
               <button
                 class="btn btn-primary"
                 class:loading={posting}
-                disabled={!error && typeof msg.key == 'string'}
+                disabled={!error && typeof msg.key == "string"}
                 on:click={post}>
                 Post
               </button>
@@ -405,6 +413,4 @@
           </div>
         </div>
       {/if}
-    </div>
-  </div>
 </div>

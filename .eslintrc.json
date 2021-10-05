@@ -32,7 +32,7 @@
         "indent": ["error", 2],
         "linebreak-style": ["error", "unix"],
         "quotes": ["error", "double", { "allowTemplateLiterals": true }],
-
+        "a11y-label-has-associated-control": "off",
         "no-console": "off",
         "no-unused-vars": "off",
         "no-prototype-builtins": "off",

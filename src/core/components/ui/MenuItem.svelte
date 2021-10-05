@@ -1,27 +1,21 @@
 <script>
-  const { createEventDispatcher } = require("svelte");
+  const { createEventDispatcher } = require("svelte")
 
-  export let label;
-  export let icon = false;
-  export let link;
+  export let label
+  export let icon = false
+  export let link
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher()
 
   const click = () => {
-      dispatch("click")
+    dispatch("click")
   }
 </script>
 
-<style>
-.menu-item {
-    cursor: pointer;
-}
-</style>
-
-<li class="menu-item">
+<li class="cursor-pointer">
   <a href={link} on:click|preventDefault={click} target="_blank">
     {#if icon}
-      <i class="icon icon-{icon}" />
+      <i class="fas fa-{icon}" />&nbsp;&nbsp;
     {/if}
     {label}
   </a>

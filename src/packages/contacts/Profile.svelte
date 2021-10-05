@@ -1,4 +1,5 @@
 <script>
+  const Spinner = require("../../core/components/Spinner.svelte")
   const Posts = require("./Posts.svelte")
   const Following = require("./Following.svelte")
   const Followers = require("./Followers.svelte")
@@ -28,7 +29,7 @@
     moreInfo: MoreInfo
   }
   
-  export let currentSubView = "posts"
+  export let currentSubView = "friends"
 
   let name = feed
   let followersCount = false
@@ -36,12 +37,12 @@
   let friendsCount = false
   let showEditor = false
 
-  document.title = `Patchfox - Feed: ${feed}`
+  patchfox.title(feed)
 
   avatarPromise = ssb.avatar(feed).then(data => {
     name = data.name
     image = data.image
-    patchfox.title(`Feed: ${name}`)
+    patchfox.title(name)
   })
 
   aboutPromise = ssb.profile(feed).then(data => {
@@ -131,58 +132,66 @@
   {image}
   on:cancelEdit={() => (showEditor = false)} />
   {:else}
-  <div class="columns">
+  <div class="flex">
 
-    <div class="column col-6">
-      <div class="container">
+    <div class="flex-1">
+      <div class="container p-4">
         <img
-        class="img-responsive"
+        class="rounded-xl object-contain md:object-scale-down"
         src={patchfox.httpUrl("/blobs/get/" + image)}
         alt={feed} />
       </div>
     </div>
-    <div class="column col-6">
+    <div class="flex-1">
       {#if feed === ssb.feed}
-      <span class="chip">❤ Thats You ❤</span>
-      <span class="c-hand" on:click={toggleEditor}>
-        <i class="icon icon-edit" />
-        Edit your profile
-      </span>
+      <div class="bg-accent text-accent-content p-2 mb-4 rounded">
+        <span class="">❤ Thats You ❤</span>
+        <span class="cursor-pointer float-right" on:click={toggleEditor}>
+          <i class="fas fa-edit" />
+          Edit your profile
+        </span>
+      </div>
       {/if}
-      <h1>{name}</h1>
+      <h1 class="uppercase font-medium text-md mt-4">{name}</h1>
       <a href="{ssbUri.fromFeedSigil(feed)}">
-        <span class="chip">{feed}</span>
+        <span class="text-sm font-extralight">{feed}</span>
       </a>
       {#if feed !== ssb.feed}
-      <div class="container">
+      <div class="container mt-2">
         <div class="divider" />
-        <div class="form-group">
-          <label class="form-switch form-inline">
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">
+              following
+            </span>
             <input
             type="checkbox"
+            class="toggle"
             on:change={followingChanged}
             bind:checked={following} />
-            <i class="form-icon" />
-            following
           </label>
-          <label class="form-switch form-inline">
+        </div>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">
+            blocking
+           </span>
             <input
             type="checkbox"
+            class="toggle"
             on:change={blockingChanged}
             bind:checked={blocking} />
-            <i class="form-icon" />
-            blocking
           </label>
         </div>
         <div class="divider" />
       </div>
       {/if}
       {#await aboutPromise}
-      <div class="loading" />
+      <Spinner />
       {:then}
-      <p>
+      <div class="prose mt-4 mb-4">
         {@html ssb.markdown(description)}
-      </p>
+      </div>
       {/await}
       <div class="extra-actions">
         <a href="{patchfox.url("post", "compose", { replyfeed: feed })}" class="btn btn-sm">New post mentioning {name}</a>
@@ -190,7 +199,7 @@
       <div class="extra-actions">
         <h4>Aliases</h4>
         {#await aliasesPromise}
-        <div class="loading"></div>
+        <Spinner />
         {:then}
         {#if aliases.length > 0}
         <ul>
@@ -207,13 +216,13 @@
   </div>
   {/if}
   <br />
-  <ul class="tab tab-block">
-    <li class="tab-item" class:active={currentSubView === "posts"}>
+  <ul class="tabs tabs-boxed mb-4">
+    <li class="tab" class:tab-active={currentSubView === "posts"}>
       <a href="#" on:click|preventDefault={() => (currentSubView = "posts")}>
         Posts
       </a>
     </li>
-    <li class="tab-item" class:active={currentSubView === "friends"}>
+    <li class="tab" class:tab-active={currentSubView === "friends"}>
       <a
       href="#"
       on:click|preventDefault={() => (currentSubView = "friends")}>
@@ -221,7 +230,7 @@
       {#if friendsCount}({friendsCount}){/if}
     </a>
   </li>
-  <li class="tab-item" class:active={currentSubView === "following"}>
+  <li class="tab" class:tab-active={currentSubView === "following"}>
     <a
     href="#"
     on:click|preventDefault={() => (currentSubView = "following")}>
@@ -229,7 +238,7 @@
     {#if followingCount}({followingCount}){/if}
   </a>
 </li>
-<li class="tab-item" class:active={currentSubView === "followers"}>
+<li class="tab" class:tab-active={currentSubView === "followers"}>
   <a
   href="#"
   on:click|preventDefault={() => (currentSubView = "followers")}>
@@ -237,7 +246,7 @@
   {#if followersCount}({followersCount}){/if}
 </a>
 </li>
-<li class="tab-item" class:active={currentSubView === "moreInfo"}>
+<li class="tab" class:tab-active={currentSubView === "moreInfo"}>
   <a href="#" on:click|preventDefault={() => (currentSubView = "moreInfo")}>
     More Info
   </a>

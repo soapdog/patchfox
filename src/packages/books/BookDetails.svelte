@@ -1,12 +1,14 @@
 <script>
-  const pull = require("pull-stream");
-  const { timestamp } = require("../../core/components/timestamp.js");
+  const pull = require("pull-stream")
+  const { timestamp } = require("../../core/components/timestamp.js")
   const Book = require("scuttle-book")
   const b = Book(ssb.sbot)
-  const AvatarChip = require("../../core/components/AvatarChip.svelte");
+  const AvatarRound = require("../../core/components/AvatarRound.svelte")
+  const AvatarContainer = require("../../core/components/AvatarContainer.svelte")
 
 
-  export let bookKey = false;
+
+  export let bookKey = false
 
   let book = false
   let currentSubView = "readers-and-reviews"
@@ -23,14 +25,15 @@
         newReviewText = book.reviews[ssb.feed].review || ""
         newShelves = book.reviews[ssb.feed].shelves.join(", ") || ""
       }
+      patchfox.title(book.common.title)
     })
   }
 
   const avatarClick = ev => {
-    let feed = ev.detail.feed;
+    let feed = ev.detail.feed
 
-    patchfox.go("contacts", "profile", { feed });
-  };
+    patchfox.go("contacts", "profile", { feed })
+  }
 
   let newRating = ""
   let newRatingType = ":star:"
@@ -87,7 +90,7 @@
 }
 
 .speech-bubble:after {
-	content: '';
+	content: "";
 	position: absolute;
 	left: 0;
 	top: 50%;
@@ -100,74 +103,81 @@
 	margin-left: -15px;
 }
 </style>
-<div class="cyberpunk-container" augmented-ui="tr-clip-x br-clip-x exe">
-  <div class="container">
-    <span class="chip"><a href="{patchfox.url('books')}">Go Back To Book List</a></span>
+
+  <div class="container mx-auto lg:px-4">
+    <a class="btn btn-sm btn-ghost mb-2" href="{patchfox.url("books")}">Go Back To Book List</a>
     {#if book == false}
     <div class="loading loading-lg" />
     {:else}
-    <div class="columns">
-      <div class="column col-6">
-        <div class="container">
+    <div class="flex">
+
+      <div class="flex-initial">
+        <div class="container m-4">
           {#if book.common.image}
-            <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.image.link)}" alt="{book.common.image.name}">
+            <img class="img-responsive" src="{patchfox.httpUrl("/blobs/get/" + book.common.image.link)}" alt="{book.common.image.name}">
           {:else if Array.isArray(book.common.images)}
-            <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images[0].link)}" alt="{book.common.images[0].name}">
+            <img class="img-responsive" src="{patchfox.httpUrl("/blobs/get/" + book.common.images[0].link)}" alt="{book.common.images[0].name}">
           {:else if book.common.images.hasOwnProperty("link")}
-            <img class="img-responsive" src="{patchfox.httpUrl('/blobs/get/' + book.common.images.link)}" alt="{book.common.images.name}">
+            <img class="img-responsive" src="{patchfox.httpUrl("/blobs/get/" + book.common.images.link)}" alt="{book.common.images.name}">
           {/if}
         </div>
+
       </div>
-      <div class="column col-6">
-        <h1>
-          {book.common.title}
-        </h1>
-        <h3 class="card-subtitle text-gray">
-          {book.common.authors}
-        </h3>
-        {#if book.common.series && book.common.seriesNo}
-        <h3 class="card-subtitle text-gray">
-          Book #{book.common.seriesNo.replace("#",'')} in the {book.common.series} series.
-        </h3>
-        {:else if book.common.series }
-        <h3 class="card-subtitle text-gray">
-          Part of {book.common.series} series.
-        </h3>
-        {/if}
-        <p>
+      <div class="flex-1">
+        <div class="prose">
+          <h1>
+            {book.common.title}
+          </h1>
+          <h3 class="card-subtitle text-gray">
+            {book.common.authors}
+          </h3>
+          {#if book.common.series && book.common.seriesNo}
+          <h3 class="card-subtitle text-gray">
+            Book #{book.common.seriesNo.replace("#","")} in the {book.common.series} series.
+          </h3>
+          {:else if book.common.series }
+          <h3 class="card-subtitle text-gray">
+            Part of {book.common.series} series.
+          </h3>
+          {/if}
+
           {@html ssb.markdown(book.common.description)}
-        </p>
-        <a class="btn btn-primary" href="{patchfox.url('books', 'edit', {bookKey: book.key})}">Edit Book</a>
+        </div>
+        
+        <a class="btn btn-sm" href="{patchfox.url("books", "edit", {bookKey: book.key})}">Edit Book</a>
 
       </div>
     </div>
     <br/>
-    <ul class="tab tab-block">
-      <li class="tab-item" class:active={currentSubView === 'readers-and-reviews'}>
-        <a href="#" on:click|preventDefault={() => (currentSubView = 'readers-and-reviews')}>
+    <div class="tabs tabs-boxed mb-4">
+      <li class="tab" class:tab-active={currentSubView === "readers-and-reviews"}>
+        <a href="#" on:click|preventDefault={() => (currentSubView = "readers-and-reviews")}>
           Readers & Reviews
         </a>
       </li>
-      <li class="tab-item" class:active={currentSubView === 'new-review'}>
-        <a href="#" on:click|preventDefault={() => (currentSubView = 'new-review')}>
+      <li class="tab" class:tab-active={currentSubView === "new-review"}>
+        <a href="#" on:click|preventDefault={() => (currentSubView = "new-review")}>
           Submit Review
         </a>
       </li>
-    </ul>
+    </div>
     {#if currentSubView === "readers-and-reviews"}
+    <div>
     {#if book.readers}
-      <h3>Readers</h3>
+      <h3 class="uppercase font-medium">Readers</h3>
+      <AvatarContainer>
       {#each book.readers as reader}
-        <AvatarChip feed={reader} on:avatarClick={avatarClick} />
+        <AvatarRound feed={reader} on:avatarClick={avatarClick} />
       {/each}
+      </AvatarContainer>
     {/if}
     <br/>
-    <h3>Reviews</h3>
+    <h3 class="uppercase font-medium">Reviews</h3>
       {#each Array.from(Object.entries(book.reviews)) as [reader, review]}
           {#if review.key !== ""}
           <div class="review">
-            <div>
-              <AvatarChip feed={reader} on:avatarClick={avatarClick} />
+            <div class="mr-2">
+              <AvatarRound feed={reader} on:avatarClick={avatarClick} />
             </div>
           <div class="speech-bubble">
             <div class="container">
@@ -181,7 +191,9 @@
                 {/if}
               {/if}
               {#if review.review.length > 0}
+              <div class="prose">
                 {@html ssb.markdown(review.review)}
+              </div>
               {/if}
               {#if review.shelves && review.shelves !== ""}
               <p><b>Shelved in: </b> {#if Array.isArray(review.shelves)}{review.shelves.join(", ")}{:else}{review.shelves}{/if}</p>
@@ -191,50 +203,65 @@
         </div>
         {/if}
       {/each}
+    </div>
     {:else if currentSubView === "new-review"}
         <div>
-          <h2 class="title">Submit Review</h2>
+          <h2 class="uppercase font-medium">Submit Review</h2>
           <form on:submit|preventDefault={newReview}>
-            <div class="form-group">
-              <label class="form-label" for="field-rating">Rating</label>
+
+            <div class="form-control">
+              <label class="label" for="field-rating">
+                <span class="label-text">Rating</span>
+              </label>
               <input
-                class="form-input"
+                class="input input-bordered"
                 type="text"
                 id="field-rating"
                 bind:value={newRating}
                 placeholder="Rating" />
             </div>
-            <div class="form-group">
-              <label class="form-label" for="field-rating-type">Type</label>
+
+            <div class="form-control">
+              <label class="label" for="field-rating-type"><span class="label-text">Type</span></label>
               <input
-                class="form-input"
+                class="input input-bordered"
                 type="text"
                 id="field-rating-type"
                 bind:value={newRatingType}
                 placeholder="Rating Type" />
             </div>
-            <div class="form-group">
-              <label class="form-label" for="field-rating-max">Rating Maximum Value</label>
+
+            <div class="form-control">
+              <label class="label" for="field-rating-max">
+                <span class="label-text">Rating Maximum Value</span>
+              </label>
               <input
-                class="form-input"
+                class="input input-bordered"
                 type="text"
                 id="field-rating-max"
                 bind:value={newRatingMax}
                 placeholder="" />
             </div>
-            <div class="form-group">
-              <label class="form-label" for="field-review">Review</label>
-              <textarea bind:value={newReviewText} class="form-input" id="field-review" placeholder="Textarea" rows="5"></textarea>
+
+            <div class="form-control">
+              <label class="label" for="field-review">
+                <span class="label-text">Review</span>
+              </label>
+              <textarea bind:value={newReviewText} class="textarea textarea-bordered" id="field-review" placeholder="Your review"></textarea>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="field-shelves">Shelves</label>
+
+            <div class="form-control">
+              <label class="label" for="field-shelves">
+                <span class="label-text">Shelves</span>
+              </label>
               <input
-                class="form-input"
+                class="input input-bordered"
                 type="text"
                 id="field-shelves"
                 bind:value={newShelves}
                 placeholder="comma separated shelves" />
             </div>
+            
             <input
               id="save-field-button"
               type="submit"
@@ -247,4 +274,3 @@
     {/if}
     {/if}
   </div>
-</div>

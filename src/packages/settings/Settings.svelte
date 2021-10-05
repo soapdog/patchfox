@@ -38,11 +38,11 @@
   }
 </style>
 
-<div class="columns">
-  <div class="column col-auto">
+<div class="flex gap-4">
+  <div class="flex-none">
     <Menu {subView} on:message="{handleMenuChange}" />
   </div>
-  <div class="column">
+  <div class="flex-1 p-4 rounded-box shadow bg-base-100">
     <svelte:component this="{views[subView]}" />
   </div>
 </div>

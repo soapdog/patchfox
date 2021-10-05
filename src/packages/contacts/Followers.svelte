@@ -2,6 +2,8 @@
   const QueryRepeater = require("../../core/components/QueryRepeater.svelte")
   const AvatarChip = require("../../core/components/AvatarChip.svelte")
   const AvatarContainer = require("../../core/components/AvatarContainer.svelte")
+  const Spinner = require("../../core/components/Spinner.svelte")
+
   const _ = require("lodash")
   const { onDestroy } = require("svelte")
   const { createEventDispatcher } = require("svelte")
@@ -38,5 +40,5 @@
   {/each}
 </AvatarContainer>
 {#if loading}
-  <div class="loading" />
+  <Spinner />
 {/if}

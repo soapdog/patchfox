@@ -19,11 +19,19 @@
     ssb.avatar(msg.value.content.about).then(data => (otherName = data.name))
   }
 
-  let image = msg.value.content.image
-    ? patchfox.httpUrl(`/blobs/get/${encodeURIComponent(
-        msg.value.content.image.link
-      )}`)
-    : false
+  let image = false
+
+  if (msg.value.content.image) {
+    switch(typeof msg.value.content.image.link) { 
+    case "string":
+      image = patchfox.httpUrl(`/blobs/get/${encodeURIComponent(msg.value.content.image.link)}`)
+      break
+    case "function":
+      // eslint-disable-next-line no-case-declarations
+      image = patchfox.httpUrl(`/blobs/get/${encodeURIComponent(msg.value.content.image)}`)
+
+    }
+  }
 
   if (msg.value.content.description) {
     verb += " with description"
@@ -37,24 +45,28 @@
 <Card {msg} {showRaw}>
   {#if isThisAboutFeeds}
     {person} {verb}
-    <a href="?pkg=contacts&view=profile&feed={otherLink}"
+    <div class="flex flex-row cursor-pointer"
       on:click|preventDefault={() => patchfox.go("contacts","profile", {feed: otherLink})}>
-      {#if image}
-        <div class="chip">
-          <img src={image} class="avatar avatar-sm" alt={otherName} />
-           {otherName}
+       {#if image}
+        <div class="avatar">
+          <div class="m-2 w-14 h-14 mask mask-squircle">
+            <img src={image} alt={otherName} />
+          </div>
         </div>
-      {:else}
-        <span class="chip">{otherName}</span>
-      {/if}
-    </a>
+        <div class="tile-content">
+          <div class="tile-title">{otherName}</div>
+        </div>
+        {:else}
+        <span>{otherName}</span>
+        {/if}
+    </div>
     {#if msg.value.content.description}
-      <blockquote>
+      <article class="prose mt-2">
         {@html ssb.markdown(msg.value.content.description)}
-      </blockquote>
+      </article>
     {/if}
   {:else}
-    <div class="toast">
+    <div class="alert">
        {person} is doing something related to a gathering but gatherings are not
       supported yet, sorry.
     </div>

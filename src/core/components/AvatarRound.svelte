@@ -22,24 +22,16 @@
   }
 </script>
 
-<style>
-  .clickable:hover {
-    cursor: pointer;
-  }
-
-  .dim {
-    opacity: 0.4;
-  }
-
-  .fix {
-    object-fit: cover;
-  }
-</style>
-
 {#if image}
-  <figure class="avatar avatar-xl clickable" on:click={avatarClick} class:dim>
-    <img class="fit" src={image} alt={name} />
+  <figure class="avatar cursor-pointer" on:click={avatarClick}>
+    <div class="mb-8 w-14 h-14  mask mask-squircle">
+      <img src={image} alt={name} />
+    </div>
   </figure>
 {:else}
-  <figure class="avatar avatar-xl clickable" data-initial="{name.slice(1,3)}" on:click={avatarClick} class:dim></figure>
+  <figure class="avatar cursor-pointer" data-initial="{name.slice(1,3)}" on:click={avatarClick} class:dim>
+     <div class="mb-8 bg-neutral-focus text-neutral-content w-14 h-14  mask mask-squircle">
+        <span class="text-3xl">{name.slice(1,3)}</span>
+    </div>
+  </figure>
 {/if}

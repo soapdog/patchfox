@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 img.is-image-from-blob {
     max-width: 100%;
     display:block;
@@ -13,4 +18,20 @@ a.image-link {
 
 .blured img {
     filter: blur(20px) !important;
+}
+
+figure.avatar {
+    width: unset !important;
+}
+
+@layer utilities {
+  @variants responsive {
+    .masonry {
+      column-count: 4;
+      column-gap: 1.5em;
+    }
+    .break-inside {
+      break-inside: avoid;
+    }
+  }
 }

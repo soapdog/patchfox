@@ -1,26 +1,26 @@
 <script>
-  const { getPref, setPref } = patchfox;
+  const { getPref, setPref } = patchfox
   const {
     getFilters,
     addFilter,
     deleteFilter
-  } = require("../../core/platforms/nodejs-ssb/abusePrevention.js");
+  } = require("../../core/platforms/nodejs-ssb/abusePrevention.js")
 
   // Abuse Prevention - filters
-  let currentFilters = getFilters();
-  let filterFeed = "";
-  let filterChannel = "";
-  let filterKeywords = "";
-  let filterExpiry = "";
-  let filterAction = "";
+  let currentFilters = getFilters()
+  let filterFeed = ""
+  let filterChannel = ""
+  let filterKeywords = ""
+  let filterExpiry = ""
+  let filterAction = ""
 
   const addNewFilter = () => {
-    let filter = {};
+    let filter = {}
 
     let keywords = filterKeywords
       .split(",")
       .map(v => v.trim())
-      .filter(v => v.length !== 0);
+      .filter(v => v.length !== 0)
 
     if (keywords.length > 0) {
       filter.keywords = keywords
@@ -44,7 +44,7 @@
 
 
     if (filter.channel && filter.channel.startsWith("#")) {
-      filter.channel = filter.channel.slice(1);
+      filter.channel = filter.channel.slice(1)
     }
 
     console.log("new filter", filter)
@@ -52,29 +52,29 @@
       filter.action &&
       (filter.feed || filter.channel || filter.keywords.length > 0)
     ) {
-      addFilter(filter);
+      addFilter(filter)
 
-      currentFilters = getFilters();
+      currentFilters = getFilters()
 
-      console.dir("filters", currentFilters);
+      console.dir("filters", currentFilters)
 
-      filterFeed = "";
-      filterChannel = "";
-      filterKeywords = "";
-      filterExpiry = "";
-      filterAction = "";
+      filterFeed = ""
+      filterChannel = ""
+      filterKeywords = ""
+      filterExpiry = ""
+      filterAction = ""
     } else {
-      alert("Fill at least filter action and one of feed, channel or keywords");
+      alert("Fill at least filter action and one of feed, channel or keywords")
     }
-  };
+  }
 </script>
 
+<div class="prose">
 <h1 class="title">Filters</h1>
 <p>
   Use the features from this section to tailor your Patchfox experience to suit
   your needs.
 </p>
-<h5>Filters</h5>
 <p>
   Use filters to hide messages and blur images. Use any combination of channel,
   feeds and keywords (separated by commas) to create your triggers and make SSB
@@ -88,16 +88,13 @@
   </a>
   You can create as many filters as you want.
 </p>
-<div class="container">
-  <div class="columns">
+</div>
+<div class="container bg-base-100 bordered p-4">
     {#each currentFilters as filter}
-      <div class="column col-12">
-        <div class="card filter">
-          <div class="card-header">
-            <div class="card-title h5">{filter.action}</div>
-          </div>
+        <div class="card shadow filter">
           <div class="card-body">
-            <ul>
+            <div class="card-title uppercase">{filter.action}</div>
+            <ul class="list-disc">
               {#if filter.feed}
                 <li>
                   From
@@ -122,79 +119,109 @@
               {/if}
               {#if filter.keywords && filter.keywords.length > 0}
                 <i>
-                  <li>Containing: {filter.keywords.join(', ')}</li>
+                  <li>Containing: {filter.keywords.join(", ")}</li>
                 </i>
               {/if}
               {#if filter.expires}
                 <li>Expiring in {filter.expires}</li>
               {/if}
             </ul>
-          </div>
-          <div class="card-footer">
+          <div class="card-actions">
             <button
               class="btn"
               aria-label="Delete"
               on:click={() => {
-                deleteFilter(filter);
-                currentFilters = getFilters();
+                deleteFilter(filter)
+                currentFilters = getFilters()
               }}>
               Delete
             </button>
           </div>
+          </div>
         </div>
-      </div>
     {:else}
-      <div class="column col-12">
-        <p class="label">You don't have any filter yet.</p>
+      <div class="mx-auto">
+        <p class="label text-md">You don't have any filter yet.</p>
       </div>
     {/each}
   </div>
-</div>
-<h5>New Filter</h5>
-<form-group>
-  <label class="form-radio">
-    <input
+
+
+<h5 class="uppercase font-medium text-xl mb-4">New Filter</h5>
+
+<div class="w-24 md:w-auto">
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text cursor-pointer">Hide Message</span>
+      <input
+      class="radio"
       type="radio"
       name="filter-action"
       bind:group={filterAction}
-      value="hide" />
-    <i class="form-icon" />
-    Hide Message
-  </label>
-  <label class="form-radio">
-    <input
+      value="hide">
+
+    </label>
+  </div>
+
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text cursor-pointer">
+        Blur Images
+      </span>
+      <input
       type="radio"
+      class="radio"
       name="filter-action"
       bind:group={filterAction}
       value="blur" />
-    <i class="form-icon" />
-    Blur Images
-  </label>
-  <label class="form-label" for="remote">Channel</label>
+    </label>
+  </div>
+</div>
+
+  <div class="form-control">
+  <label class="label">
+    <span class="label-text">Channel</span>
+  </label> 
   <input
-    class="form-input"
+    class="input input-bordered"
     type="text"
     placeholder="Channel"
-    bind:value={filterChannel} />
-  <label class="form-label" for="remote">Feed</label>
+    bind:value={filterChannel}>
+</div>
+
+  <div class="form-control">
+  <label class="label">
+    <span class="label-text">Feed</span>
+  </label>
   <input
-    class="form-input"
+    class="input input-bordered"
     type="text"
     placeholder="Feed"
     bind:value={filterFeed} />
-  <label class="form-label" for="remote">Keywords</label>
+  </div>
+
+  <div class="form-control">
+  <label class="label">
+    <span class="label-text">Keywords</span>
+  </label>
   <input
-    class="form-input"
+    class="input input-bordered"
     type="text"
     placeholder="Keywords separated by commas"
     bind:value={filterKeywords} />
-  <label class="form-label" for="remote">Expiration Date</label>
+  </div>
+
+  <div class="form-control">
+  <label class="label">
+    <span class="label-text">Expiration Date</span>
+  </label>
   <input
-    class="form-input"
+    class="input input-bordered"
     type="date"
     placeholder="When should this filter expiry"
     bind:value={filterExpiry} />
-</form-group>
+  </div>
+
 <br />
 <button class="btn btn-primary" on:click={addNewFilter}>Add Filter</button>
 <br />
