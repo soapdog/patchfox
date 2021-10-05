@@ -25,7 +25,7 @@
   let ipfsDaemonRunning = false
   let datDaemonRunning = false
 
-  document.title = `Patchfox - compose new blog post`
+  patchfox.title("compose new blog post")
 
   onMount(() => {
     error = false
@@ -334,7 +334,7 @@
             <span class="label-text">Content</span>
           </label>
           <textarea
-            class="textarea h-24 textarea-bordered"
+            class="textarea h-96 textarea-bordered"
             id="content"
             placeholder="Type in your blog post content"
             on:dragover|preventDefault|stopPropagation={dragOver}
