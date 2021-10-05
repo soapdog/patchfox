@@ -34,11 +34,15 @@
 </script>
 
 <p class="m-2">
-  <AvatarChip feed={msg.value.author} on:avatarClick={avatarClick} />
+  <AvatarChip inline={true} arrow={true} feed={msg.value.author} on:avatarClick={avatarClick} />
+  
+  <span class="m-2">    
   {verb}
   <a
+    class="link"
     href="?pkg=contacts&view=profile&feed={otherPersonFeed}"
     on:click={goProfile}>
     {otherPersonName}
   </a>
+  </span>
 </p>

@@ -69,13 +69,12 @@
   }
 </script>
 
-<div class="columns">
+<div class="flex">
 
-  <div class="column col-6">
+  <div class="flex-1">
     <div class="container">
       <img
-        class="img-responsive"
-        src={patchfox.httpUrl('/blobs/get/' + image)}
+        src={patchfox.httpUrl("/blobs/get/" + image)}
         alt={feed} />
     </div>
     <input
@@ -84,35 +83,35 @@
       on:input={attachFile}
       id="fileInput" />
   </div>
-  <div class="column col-6">
-    <span class="chip">📝 Editing Your Profile 📝</span>
+  <div class="flex-1">
+    <span class="bg-accent text-accent-content p-2 rounded">📝 Editing Your Profile 📝</span>
     <form on:submit|preventDefault={save}>
-      <div class="form-group">
-        <label class="form-label" for="name">Name</label>
+      <div class="form-control">
+        <label class="label" for="name"><span class="label-text">Name</span></label>
         <input
-          class="form-input"
+          class="input input-bordered"
           type="text"
           id="name"
           bind:value={name}
           placeholder="Name" />
       </div>
-      <div class="form-group">
-        <label class="form-label" for="description">Description</label>
+      <div class="form-control">
+        <label class="label" for="description"><span class="label-text">Description</span></label>
         <textarea
-          class="form-input"
+          class="textarea textarea-bordered h-80"
           id="description"
           placeholder="Your description"
           bind:value={description}
-          rows="6" />
+           />
       </div>
-      <div class="columns">
-        <button class="btn column m-2" on:click={() => dispach('cancelEdit')}>
+      <div class="flex">
+        <button class="btn flex-1 m-2" on:click={() => dispach("cancelEdit")}>
           Cancel
         </button>
         <input
           id="save-button"
           type="submit"
-          class="btn btn-primary column m-2"
+          class="btn btn-primary flex-1 m-2"
           class:loading={submitting}
           value="Save" />
       </div>
