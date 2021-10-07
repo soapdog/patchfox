@@ -695,7 +695,7 @@ class NodeJsSSB {
     return div.innerText
   }
 
-  markdown(text) {
+  markdown(text, removePara = false) {
     let cs = queryString.parse(location.search)
     let identity = ""
     
@@ -706,26 +706,30 @@ class NodeJsSSB {
     function replaceMsgID(match, id, offset, string) {
       let eid = encodeURIComponent(`%${id}`)
 
-      return `<a class="thread-link" href="?pkg=hub&view=thread&thread=${eid}${identity}`
+      return `<a class="link link-accent thread-link" href="?pkg=hub&view=thread&thread=${eid}${identity}`
     }
 
     function replaceChannel(match, id, offset, string) {
       let eid = encodeURIComponent(id)
 
-      return `<a class="channel-link" href="?pkg=hub&view=channel&channel=${eid}${identity}`
+      return `<a class="link link-accent channel-link" href="?pkg=hub&view=channel&channel=${eid}${identity}`
+    }
+
+    function replaceLinks(match, link, offset, string) {
+      return `<a class="link" target="_blank" href="${link}`
     }
 
     function replaceFeedID(match, id, offset, string) {
       let eid = encodeURIComponent(`@${id}`)
       return (
         // eslint-disable-next-line quotes
-        '<a class="profile-link" href="?pkg=contacts&view=profile&feed=' + eid + identity
+        '<a class="link link-accent profile-link" href="?pkg=contacts&view=profile&feed=' + eid + identity
       )
     }
 
     function replaceImageLinks(match, id, offset, string) {
       return (
-        `<a class="image-link" target="_blank" href="${patchfox.httpUrl(
+        `<a class="link  link-accent image-link" target="_blank" href="${patchfox.httpUrl(
           "/blobs/get/&"
         )}` + encodeURIComponent(id)
       )
@@ -771,6 +775,13 @@ class NodeJsSSB {
       .replace(/<video controls src="&([^"]*)/gi, replaceVideos)
       .replace(/<audio controls src="&([^"]*)/gi, replaceAudios)
       .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
+      .replace(/<a href="([^"]*)/gi, replaceLinks)
+
+    if (removePara) {
+      html = html
+        .replace(/<p>/gi,"")
+        .replace(/<\/p>/gi,"")
+    }
 
     return html
   }
@@ -1609,14 +1620,9 @@ class NodeJsSSB {
               pull.take(Math.min(length, maxMessages)),
               pull.map(([key]) => key),
               pullParallelMap(async (key, cb) => {
-                try {
-                  const msg = await this.get(key)
-                  const data = { key: key, value: msg }
-                  cb(null, data)
-                } catch (e) {
-                  console.log("errorrrrr!!!", e)
-                  cb(null, null)
-                }
+                const msg = await this.get(key)
+                const data = { key: key, value: msg }
+                cb(null, data)
               }),
               followingFilter,
               pull.apply(pull, pipeline),

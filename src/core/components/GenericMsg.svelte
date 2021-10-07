@@ -1,7 +1,7 @@
 <script>
-  export let msg;
+  export let msg
 
-  let rawContent = JSON.stringify(msg, null, 2);
+  let rawContent = JSON.stringify(msg, null, 2)
 </script>
 <style>
 pre.code {

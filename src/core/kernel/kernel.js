@@ -57,6 +57,9 @@ function go(pkg, view, data) {
   if (cs.identity && !data.identity) {
     data.identity = cs.identity
   }
+  if (typeof view === "undefined") {
+    view = "view"
+  }
   PubSub.publishSync("package:go", { pkg, view, data })
 }
 
@@ -130,12 +133,7 @@ function packageForType(msg) {
   return selectedPackage
 }
 
-const title = (title) => {
-  window.title = `Patchfox - ${title}`
-}
-
 module.exports = {
-  title,
   // package related
   package,
   packages,

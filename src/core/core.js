@@ -20,7 +20,6 @@ const start = async () => {
     let identity = qs?.identity ? kernel.configurationForIdentity(qs.identity) : kernel.getDefaultIdentity() 
     console.info(`server: ${identity.type}, key: ${identity.keys.public}`)
     setServerType(identity.type)
-    console.log("ssb", window.ssb)
     let server = await ssb.connect(identity.keys, identity.remote)
     window.ssb.remote = identity.remote
     window.ssb.feed = server.id

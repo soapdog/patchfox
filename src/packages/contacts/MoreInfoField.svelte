@@ -1,14 +1,14 @@
 <script>
-  const { createEventDispatcher } = require("svelte");
-  const dispatch = createEventDispatcher();
+  const { createEventDispatcher } = require("svelte")
+  const dispatch = createEventDispatcher()
 
   export let field = {
     name: "",
     type: "",
     value: ""
-  };
+  }
 
-  export let index;
+  export let index
 
   const deleteField = ev => {
     if (
@@ -16,9 +16,9 @@
         `Are you sure you want to remove ${field.type} ${field.name}: ${field.value}?`
       )
     ) {
-      dispatch("deleteField", { index });
+      dispatch("deleteField", { index })
     }
-  };
+  }
 </script>
 
 <tr>

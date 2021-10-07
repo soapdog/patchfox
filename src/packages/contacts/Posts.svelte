@@ -1,5 +1,6 @@
 <script>
   const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
+  const Spinner = require("../../core/components/Spinner.svelte")
 
   export let feed
 
@@ -39,7 +40,7 @@
 
 <div>
   {#await messagePromise}
-    <div class="loading" />
+    <Spinner />
   {:then data}
     {#each lastMsgs as msg (msg.key)}
       <MessageRenderer {msg} />

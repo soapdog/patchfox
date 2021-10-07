@@ -1,4 +1,5 @@
-require("./default/spectre-icons.min.css");
-require("./default/default.scss");
+let currentTheme = patchfox.getPref("theme", "light")
+document.documentElement.setAttribute("data-theme", currentTheme)
 
-module.exports = {};
+
+module.exports = {}

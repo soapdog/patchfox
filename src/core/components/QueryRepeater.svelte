@@ -1,11 +1,11 @@
 <script>
-  export let filter;
-  export let reverse = false;
-  export let map = null; 
-  export let reduce = null;
-  export let limit = false;
+  export let filter
+  export let reverse = false
+  export let map = null 
+  export let reduce = null
+  export let limit = false
 
-  let promise = ssb.query(filter, reverse, map, reduce, limit);
+  let promise = ssb.query(filter, reverse, map, reduce, limit)
 </script>
 
 {#await promise}

@@ -4,13 +4,16 @@
   const sort = require("pull-sort")
   const { onDestroy, tick } = require("svelte")
   const { timestamp } = require("../../core/components/timestamp.js")
+  const Spinner = require("../../core/components/Spinner.svelte")
+
 
   export let filter = "everyone"
   export let channel = false
   let sbot = ssb.sbot
   let content = []
   let channels = []
-  let limit = 20
+  let limit = 50
+  let dropdownActive = false
 
 
   let opts = {}
@@ -37,6 +40,7 @@
         pull.map("channel"),
         pull.collect((e, c) => {
           channels = c
+          channels.sort()
           channel = channel || channels[0]
           getContentForChannel(channel)
         })
@@ -45,6 +49,7 @@
   }
 
   const getContentForChannel = c => {
+    dropdownActive = false
     if (ssb.platform === "nodejs-ssb") {
       content = []
       channel = c
@@ -121,15 +126,15 @@
     </button>
   </div> -->
 
-  <div class="dropdown">
-    <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
+  <div class="dropdown" class:dropdown-open={dropdownActive}>
+    <button class="btn" tabindex="0" on:click={() => dropdownActive = true}>
       {channel}
       <i class="icon icon-caret" />
-    </a>
+    </button>
     <!-- menu component -->
-    <ul class="menu">
+    <ul tabindex="0" class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52 h-80 overflow-scroll">
       {#each channels as c}
-        <li class="menu-item">
+        <li>
           <a on:click|preventDefault={() => getContentForChannel(c)} href="#">
             {c}
           </a>
@@ -138,46 +143,50 @@
     </ul>
   </div>
 </div>
+<br>
 
 <div class="zine">
   {#if content.length == 0}
-    <div class="loading" />
+    <Spinner />
   {:else}
-    <div class="masonry">
+    <div class="box-border mx-auto md:masonry before:box-inherit after:box-inherit">
       {#each content as msg}
-        <div class="item">
-          {#if msg.value.content.type === 'post'}
-            <div class="card">
+        <div class="break-inside my-6 rounded-lg">
+          {#if msg.value.content.type === "post"}
+            <div class="card shadow bg-base-200">
               <div class="card-body">
+
+                <div class="prose">
                 {@html ssb.markdown(msg.value.content.text).slice(0, 500).replace(/h1/gi, "h3")}
+                <p>{timestamp(msg.value.timestamp)}</p>
               </div>
-              <div class="card-footer">
-                <span class="float-left">{timestamp(msg.value.timestamp)}</span>
+              <div class="card-actions">
                 <a
-                  href={patchfox.url('hub', 'thread', { thread: msg.key })}
-                  class="btn btn-link float-right">
-                  &rarr;
+                  href={patchfox.url("hub", "thread", { thread: msg.key })}
+                  class="btn btn-link">
+                  Read More
                 </a>
+              </div>
               </div>
             </div>
           {/if}
-          {#if msg.value.content.type === 'blog'}
-            <div class="card">
-              <div class="card-header">
+          {#if msg.value.content.type === "blog"}
+            <div class="card shadow bg-base-200">
+              <div class="card-body">
                 {#if msg.value.content.title}
                   <div class="card-title h5">{msg.value.content.title}</div>
                 {/if}
-              </div>
-              <div class="card-body">
+                <div class="prose">
                 {ssb.markdown(msg.value.content.summary)}
+                  <p>{timestamp(msg.value.timestamp)}</p>
               </div>
-              <div class="card-footer">
-                <span class="float-left">{timestamp(msg.value.timestamp)}</span>
+              <div class="card-actions">
                 <a
-                  href={patchfox.url('hub', 'thread', { thread: msg.key })}
-                  class="btn btn-link float-right">
-                  &rarr;
+                  href={patchfox.url("hub", "thread", { thread: msg.key })}
+                  class="btn btn-link">
+                  Read More
                 </a>
+              </div>
               </div>
             </div>
           {/if}

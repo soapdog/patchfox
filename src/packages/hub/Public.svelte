@@ -57,33 +57,24 @@
   }
 </style>
 
-<div class="container">
-  <div class="columns">
-    <h4 class="column">Public Feed</h4>
-    <div class="column" />
-  </div>
-</div>
+
 {#if error}
   <div class="toast toast-error">Error: {error}</div>
 {/if}
 {#await promise}
-  <div class="loading loading-lg" />
+<div class="flex justify-center">
+  <i class="fas fa-spinner fa-3x fa-spin" />
+</div>
 {:then}
   {#if msgs.length > 0}
     {#each msgs as msg (msg.key)}
       <MessageRenderer {msg} />
     {/each}
-    <ul class="pagination">
-      <li class="page-item page-previous">
-        <a href="#/public" on:click|stopPropagation|preventDefault={goPrevious}>
-          <div class="page-item-subtitle">Previous</div>
-        </a>
-      </li>
-      <li class="page-item page-next">
-        <a href={urlForNext()} on:click|stopPropagation|preventDefault={goNext}>
-          <div class="page-item-subtitle">Next</div>
-        </a>
-      </li>
-    </ul>
+    <br>
+    <div class="btn-group">
+        <button class="btn btn-outline btn-wide" on:click={goPrevious}>Previous</button>
+    
+        <button class="btn btn-outline btn-wide" on:click={goNext}>Next</button>
+    </div>
   {/if}
 {/await}

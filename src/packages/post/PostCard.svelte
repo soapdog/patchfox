@@ -1,72 +1,72 @@
 <script>
-  const { getPref } = require("../../core/kernel/prefs.js");
-  const Card = require("../../core/components/ui/Card.svelte");
-  const VoteCounter = require("../../core/components/VoteCounter.svelte");
+  const { getPref } = require("../../core/kernel/prefs.js")
+  const Card = require("../../core/components/ui/Card.svelte")
+  const VoteCounter = require("../../core/components/VoteCounter.svelte")
 
-  export let msg;
+  export let msg
   let contentWarningsExpandByDefault = getPref(
     "content-warnings-expand",
     "collapsed"
-  );
-  let content = ssb.markdown(msg.value.content.text);
-  let liked = false;
-  let showRaw = false;
-  let hasContentWarning = msg.value.content.contentWarning || false;
-  let showContentWarning = contentWarningsExpandByDefault === "collapsed";
+  )
+  let content = ssb.markdown(msg.value.content.text)
+  let liked = false
+  let showRaw = false
+  let hasContentWarning = msg.value.content.contentWarning || false
+  let showContentWarning = contentWarningsExpandByDefault === "collapsed"
 
   ssb.votes(msg.key).then(ms => {
-    liked = ms.includes(ssb.feed);
-  });
+    liked = ms.includes(ssb.feed)
+  })
 
   const likeChanged = ev => {
-    let v = ev.target.checked;
+    let v = ev.target.checked
     if (v) {
       ssb
         .like(msg.key)
         .then(() => console.log("liked", msg.key))
-        .catch(() => (liked = false));
+        .catch(() => (liked = false))
     } else {
       ssb
         .unlike(msg.key)
         .then(() => console.log("unliked", msg.key))
-        .catch(() => (liked = true));
+        .catch(() => (liked = true))
     }
-  };
+  }
 
   const reply = ev => {
-    let root = msg.value.content.root || msg.key;
-    let channel = msg.value.content.channel;
-    let replyfeed = msg.value.author;
+    let root = msg.value.content.root || msg.key
+    let channel = msg.value.content.channel
+    let replyfeed = msg.value.author
     patchfox.go("post", "compose", {
       root,
       branch: msg.key,
       channel,
       replyfeed
-    });
-  };
+    })
+  }
 
   const fork = ev => {
-    let originalRoot = msg.value.content.root || msg.key;
-    let channel = msg.value.content.channel;
-    let replyfeed = msg.value.author;
+    let originalRoot = msg.value.content.root || msg.key
+    let channel = msg.value.content.channel
+    let replyfeed = msg.value.author
     patchfox.go("post", "compose", {
       root: msg.key,
       branch: msg.key,
       fork: originalRoot,
       channel,
       replyfeed
-    });
-  };
+    })
+  }
 
   const goRoot = ev => {
-    let rootId = msg.value.content.root || msg.key;
-    patchfox.go("hub", "thread", { thread: rootId });
-  };
+    let rootId = msg.value.content.root || msg.key
+    patchfox.go("hub", "thread", { thread: rootId })
+  }
 
   const goBranch = ev => {
-    let branchId = msg.value.content.branch || msg.key;
-    patchfox.go("hub", "thread", { thread: branchId });
-  };
+    let branchId = msg.value.content.branch || msg.key
+    patchfox.go("hub", "thread", { thread: branchId })
+  }
 </script>
 
 <style>
@@ -101,48 +101,49 @@
         </p>
       </div>
     {/if}
-    {@html content}
+    <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
+      {@html content}
+    </div>
   {/if}
 
-  <div class="card-footer" slot="card-footer">
-    <div class="columns col-gapless">
-      <div class="column col-6">
-        <label class="form-switch d-inline">
-          <input type="checkbox" on:change={likeChanged} checked={liked} />
-          <i class="form-icon" />
-          Like
-        </label>
+  <div class="card-actions justifty-end" slot="card-actions">
+    <div>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">Like</span> 
+            <input class="toggle" type="checkbox" on:change={likeChanged} checked={liked} />
+          </label>
+        </div>
         <span>
           <VoteCounter {msg} />
         </span>
-
+      </div>
+      <div class="flex-1"></div>
         {#if msg.value.content.root}
+
           <span>
             <a
+             class="btn btn-ghost"
               href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.root)}"
               on:click|preventDefault={goRoot}>
-              (root)
+              Root msg
             </a>
           </span>
         {/if}
         {#if msg.value.content.branch}
           <span>
             <a
+              class="btn btn-ghost"
               href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.value.content.branch)}"
               on:click|preventDefault={goBranch}>
-              (in reply to)
+              In reply to
             </a>
           </span>
         {/if}
-      </div>
-
       {#if !msg.value.private}
-        <div class="column col-6 text-right">
-          <button class="btn" on:click={fork}>Fork</button>
+        <button class="btn btn-primary" on:click={fork}>Fork</button>
 
-          <button class="btn" on:click={reply}>Reply</button>
-        </div>
+        <button class="btn btn-primary" on:click={reply}>Reply</button>
       {/if}
-    </div>
   </div>
 </Card>

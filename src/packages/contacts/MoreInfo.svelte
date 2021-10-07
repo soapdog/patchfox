@@ -1,4 +1,5 @@
 <script>
+  const Spinner = require("../../core/components/Spinner.svelte")
   const MoreInfoField = require("./MoreInfoField.svelte")
   const pull = require("pull-stream")
   const _ = require("lodash")
@@ -113,17 +114,17 @@
 
 <div>
   {#if error}
-    <div class="toast toast-error">
+    <div class="alert alert-error">
       An error happening when saving the new information: {error.message}.
     </div>
     <br />
   {/if}
   {#if msg && !dirty}
-    <div class="toast toast-success">Information saved.</div>
+    <div class="alert alert-success">Information saved.</div>
     <br />
   {/if}
   {#if dirty}
-    <div class="toast toast-warning">
+    <div class="alert alert-warning">
       Your edits are not saved. Remember to press the
       <em>Save</em>
       button to save them.
@@ -132,12 +133,12 @@
   {/if}
   <div class="current-fields">
     {#if loading}
-      <div class="loading" />
+      <Spinner />
     {:else}
       <!-- {#if currentFields.length > 0}
         <button class="float-right btn btn-link">Export to vCard</button>
       {/if} -->
-      <table class="table table-striped table-hover">
+      <table class="table w-full table-zebra">
         <tbody>
           {#each currentFields as field, index}
             <MoreInfoField {field} {index} on:deleteField={deleteField} />
@@ -152,29 +153,29 @@
     {/if}
   </div>
   <div class="more-fields">
-    <h2 class="title">Add new field</h2>
+    <h2 class="uppercase font-medium text-md mb-2 mt-4 border-t-2">Add new field</h2>
     <form on:submit|preventDefault={addNewField}>
-      <div class="form-group">
-        <label class="form-label" for="field-name">Name</label>
+      <div class="form-control">
+        <label class="label" for="field-name"><span class="label-text">Name</span></label>
         <input
-          class="form-input"
+          class="input input-bordered w-full max-w-xs"
           type="text"
           id="field-name"
           bind:value={newFieldName}
           placeholder="Field Name" />
       </div>
-      <div class="form-group">
-        <label class="form-label" for="field-type">Type</label>
-        <select class="form-select" bind:value={newFieldType}>
+      <div class="form-control">
+        <label class="label" for="field-type"><span class="label-text">Type</span></label>
+        <select class="select select-bordered w-full max-w-xs" bind:value={newFieldType}>
           {#each fieldTypes as type}
             <option value={type}>{type}</option>
           {/each}
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="field-value">Value</label>
+      <div class="form-control">
+        <label class="label" for="field-value"><span class="label-text">Value</span></label>
         <input
-          class="form-input"
+          class="input input-bordered w-full max-w-xs"
           type="text"
           id="field-value"
           bind:value={newFieldValue}
