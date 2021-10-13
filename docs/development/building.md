@@ -2,15 +2,14 @@
 
 ## Requirements
 
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (needed so that you can sideload unsigned add-ons)
+* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (needed to sideload unsigned add-ons)
 * [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or use another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) to provide a running _sbot_.
-
 
 ## Setup & building
 
-Patchfox uses [Svelte](https://svelte.dev/) and requires [NodeJS](https://nodejs.org) for development.
+Patchfox uses [Svelte](https://svelte.dev/) and requires [Node.js](https://nodejs.org) for development.
 
-After you have NodeJS installed, you can navigate to the Patchfox directory and install dependencies with:
+After you have Node installed, you can navigate to the Patchfox directory and install dependencies with:
 
 ```
 $ npm install
@@ -46,18 +45,18 @@ After saving, Patchfox will attempt to load your public feed. You need to have a
 
 ## Other NPM scripts
 
-Patchfox contains many granular NPM scripts. I originally created Patchfox on a small Microsoft Surface Go with a Pentium CPU, so breaking the scripts into small, discrete actions made development faster.
+Patchfox contains many granular NPM scripts. I originally created Patchfox on a Microsoft Surface Go with a Pentium CPU, so breaking the scripts into small, discrete actions made development faster.
 
-As Patchfox is an extensions rather than a regular web app, there is no _watch & rebuild_ script.
+As Patchfox is an extension rather than a regular web app, there is no _watch & rebuild_ script.
 
 ### Cleaning scripts
-These scripts are used to delete files and folders. You normally don't need to run these.
+These scripts are used to delete files and folders. You rarely need to run these.
 
 * **clean** deletes the `dist/` folder.
 * **really-clean** deletes `node_modules/` - used when debugging Windows on ARM vs Windows on x86 emulation on the same machine. You can ignore it.
 
 ### Copying scripts
-A large part of the build process is copying files around. An example is the script that copies the documentation you're reading into `dist/docs`. During day-to-day development, you rarely need to run these. The most common use-case is when changing the documentation, which happens for each release.
+A significant part of the build process is copying files around. An example is the script that copies the documentation you're reading into `dist/docs`. You're unlikely to need these commands During day-to-day development. The most common use-case is when changing the documentation, which happens for each release.
 
 * **copy:manifest** copies `manifest.json` to `dist/`. This is the control file used by the browser that contains the metadata and configuration for the add-on.
 * **copy:static** copies the static resources.
@@ -69,11 +68,11 @@ A large part of the build process is copying files around. An example is the scr
 * **copy:docs-root** copies the root folder of the documentation (don't forget to run this!).
 * **copy:index** copies `index.html`
 * **copy:package-assets** is a tricky one. During development, the _assets_ used by packages are in a folder called `assets`, but in the build they need to be in a directory closer to the packages.
-* **copy:package-docs** is similar to the previous script. During development, each package's documentation lives in a folder inside it. In the build process, these docs need to be moved to `dist/docs`.
-* **copy:browserAction** copies `browserAction.html`. This is the menu you see when you click the Patchfox icon on your browser's toolbar.
+* **copy:package-docs** is similar to the previous script. During development, each package's documentation lives in a folder inside it. In the build process, these docs need to be copied to `dist/docs`.
+* **copy:browserAction** copies `browserAction.html`. This is the menu you see when you click the Patchfox icon in your browser's toolbar.
 
 ### Build scripts
-These scripts deal with all the transpiling and JS juggling used by our crazy ecosystem to turn the fantasy Javascript and Svelte code into something that the browser actually understands.
+These scripts deal with all the transpiling and JS juggling used by our crazy ecosystem to turn the fantasy Javascript and Svelte code into something that the browser understands.
 
 * **build:browserAction** builds the [_browser action_](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_action) JS used by the menu you see on the browser toolbar.
 * **build:background** builds the [background script](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background) for the add-on.
@@ -81,7 +80,7 @@ These scripts deal with all the transpiling and JS juggling used by our crazy ec
 * **build:platform-ssb** builds the _SSB core_.
 
 ### Development build scripts
-These are the same as the previous build scripts but include sourcemaps. We can't use them to ship the add-on because the sourcemaps take up a lot of disk space that end users don't need.
+These are the same as the previous build scripts but include sourcemaps. We can't use them to ship the add-on because the sourcemaps take up a lot of disk space, which would negatively affect end-users.
 
 * **dev:browserAction**
 * **dev:background**
@@ -100,13 +99,13 @@ These are useful convenience scripts that combine multiple scripts from above. O
 
 # Testing the protocol schemas
 
-After installing and configuring patchfox, try visiting:
+After installing and configuring Patchfox, try visiting:
 
 [ssb://message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D](ssb://message/sha256/Acm4sCjCDGWADCw773gfQyQ03tVYmxQLhyUWET8wLPc%3D)
 
 # General information
 
-If you're interested in learning more about the technologies behind this add-on, check out:
+If you're interested in learning more about the technologies behind Patchfox, check out:
 
 * [MDN Web Docs - WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/).
 * [Native Messaging API](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging)
