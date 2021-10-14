@@ -1,6 +1,6 @@
 # Post Package
 
-The `post` package handles messages of type `post`, which is the most common type on SSB.
+The `post` package handles messages of type [`post`](https://scuttlebot.io/docs/message-types/post.html), which is the most common type on SSB.
 
 ## Features
 

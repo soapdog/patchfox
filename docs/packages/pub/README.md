@@ -1,6 +1,6 @@
 # Pub Package
 
-The `pub` package handles displaying _pub announcements_.
+The `pub` package handles displaying [pub announcements](https://scuttlebot.io/docs/message-types/pub.html).
 
 ## Source code
 * [View package `pub` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/pub) 
