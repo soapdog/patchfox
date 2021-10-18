@@ -221,7 +221,7 @@
 
     ssb.addBlob(first)
       .then(hash => {
-        content += ` ![${first.name}](${hash})`
+        thumbnail = hash
         fileOnTop = false
       })
       .catch(err => {
