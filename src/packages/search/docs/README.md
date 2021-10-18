@@ -1,3 +1,3 @@
 # Search Package
 
-The Search package manages searching on SSB. Which can happen by either using the search box on top of the interface or `ssb?` in the omnibox.
+The `search` package manages searching on SSB. Users can search either by using the search box on top of the interface, or by typing `ssb?` in the browser's omnibox.

@@ -53,8 +53,8 @@ These are the packages that Patchfox is loading.
       if (readme.indexOf("## Source code") == -1) {
         fs.appendFileSync(packageReadme, `
 ## Source code
-* [View package \`${packageName}\` at Github](https://github.com/soapdog/patchfox/blob/master/src/packages/${packageName}) 
-* [View package \`${packageName}\` at Sourcehut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${packageName})
+* [View package \`${packageName}\` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/${packageName}) 
+* [View package \`${packageName}\` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${packageName})
 `)
       }
       fs.appendFileSync("dist/docs/packages/README.md", `* [${elems[2]}](/packages/${elems[2]}/)\n`)

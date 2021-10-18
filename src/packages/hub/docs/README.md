@@ -1,6 +1,6 @@
 # Hub Package
 
-The Hub package is the largest package on Patchfox and the main package the users interact on a daily basis. It provides all the following views:
+The `hub` is the largest package in Patchfox and the main one that users interact with on a daily basis. It provides all the following views:
 
 * Public
 * Channel
@@ -8,4 +8,3 @@ The Hub package is the largest package on Patchfox and the main package the user
 * Popular
 * Thread
 * ChannelCard
-
