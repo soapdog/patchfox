@@ -1,4 +1,5 @@
 const { writable } = require("svelte/store")
+const { getPref } = require("./prefs.js")
 
 const httpUrl = (url) => {
   let remote = ssb.remote
@@ -25,5 +26,5 @@ module.exports = {
   title,
   _title,
   httpUrl,
-  blobUrl
+  blobUrl,
 }

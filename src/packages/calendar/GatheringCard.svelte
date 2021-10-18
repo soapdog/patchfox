@@ -31,8 +31,6 @@
 
   const attend = () => {
     gathering.attending(msgid, true, (err, data) => {
-      console.log(err)
-      console.log(data)
       if (!err) {
         attending = true
         notAttending = false

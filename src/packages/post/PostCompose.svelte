@@ -27,6 +27,7 @@
   let error = false
   let posting = false
   let branchedMsg = false
+  let textSize = getPref("composeSize", "text")
 
   patchfox.title(`New Post`)
 
@@ -259,7 +260,7 @@
       <div class="form-control">
       <label class="label" for="content"><span class="label-text">Message</span></label>
       <textarea
-        class="textarea textarea-bordered h-96"
+        class="{textSize} textarea textarea-bordered h-96"
         id="content"
         placeholder="Type in your post"
         on:dragover|preventDefault|stopPropagation={dragOver}

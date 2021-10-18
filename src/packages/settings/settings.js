@@ -11,9 +11,14 @@ patchfox.package({
     label: "Settings",
     items: [
       {
-        label: "Settings",
+        label: "Identity & Connection",
         event: "package:go",
-        data: { pkg: "settings" },
+        data: { pkg: "settings", data: { subView: "identityAndConnection" } },
+      },
+      {
+        label: "Display Preferences",
+        event: "package:go",
+        data: { pkg: "settings", data: { subView: "displayPreferences" } },
       },
       {
         label: "Filters",

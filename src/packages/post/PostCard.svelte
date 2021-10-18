@@ -67,6 +67,10 @@
     let branchId = msg.value.content.branch || msg.key
     patchfox.go("hub", "thread", { thread: branchId })
   }
+
+  let textSize = getPref("textSize", "prose")
+
+  patchfox.listen("prefs:changed:textSize", (newSize) => textSize = newSize)
 </script>
 
 <style>
@@ -101,7 +105,7 @@
         </p>
       </div>
     {/if}
-    <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
+    <div class="{textSize}">
       {@html content}
     </div>
   {/if}

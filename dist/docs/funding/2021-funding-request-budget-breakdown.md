@@ -1,6 +1,6 @@
 # Priorities and Cost Breakdown
 
-The time frame guesstimates on this breakdown are conservative. I'm using long periods to be able to account for unforseen problems and also for bug fixing after users interacted with the features for a bit. The time frames cover what I consider is the necessary time to have it working well.
+The time frame guesstimates on this breakdown are conservative. I'm using long periods to be able to account for unforseen problems and also for bug fixing after users interact with the features for a bit. The time frames cover what I expect to be the necessary time to have it working well.
 
 The features outlined in the [proposal for new funding](%Y2iyBckEhcWvxX6a1+9ELeP6wFYD80QNdhvR50V1C7E=.sha256) can be grouped as:
 
@@ -19,7 +19,7 @@ I guesstimate that they will take a two weeks of work.
 
 ## Wider deployment
 
-This is all the work necessary to get the browser to ship on all the browsers that support WebExtension protocol.
+This is all the work necessary to get Patchfox to ship on all the browsers that support WebExtension protocol.
 
 This will probably take a month worth of work, mostly because Safari will be tricky.
 
@@ -27,7 +27,7 @@ This will probably take a month worth of work, mostly because Safari will be tri
 
 # Tier-2 Tasks
 
-These are the tasks necessary to get Patchfox working with go-ssb and the multiple identities support. The way I idealise this, they can't be implemented separately.
+These are the tasks necessary to get Patchfox working with `go-ssb` and the multiple identities support. The way I idealise this, they can't be implemented separately.
 
 This will take about three months of work.
 
