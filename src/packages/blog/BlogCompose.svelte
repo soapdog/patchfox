@@ -24,6 +24,9 @@
   let sbot = ssb.sbot
   let ipfsDaemonRunning = false
   let datDaemonRunning = false
+  let textSize = getPref("composeSize", "text")
+
+
 
   patchfox.title("compose new blog post")
 
@@ -320,7 +323,7 @@
             <span class="label-text">Summary</span>
           </label>
           <textarea
-            class="textarea h-24 textarea-bordered"
+            class="{textSize} textarea h-24 textarea-bordered"
             id="summary"
             placeholder="Type in your summary"
             on:dragover|preventDefault|stopPropagation={dragOver}
