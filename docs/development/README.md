@@ -8,11 +8,11 @@ That is very true for Patchfox, which [has been through multiple rewrites](ssb:m
 
 The driving ideas behind Patchfox are:
 
-* Everything is a package.
-  * Make most of them removable.
-  * Make it easy to add new ones.
-* Leverage the browser.
-  * Make a new SSB experience that complements and is enriched by being inside a browser.
+* Everything is a package
+  * Make most of them removable
+  * Make it easy to add new ones
+* Leverage the browser
+  * Make a new SSB experience that complements and is enriched by being inside a browser
 
 > I've [posted about packages](ssb:message/sha256/cprDZ3UErP1A-3ttNCtKdiLmMyyF3l767TTru-DtaQ8=) in SSB. That thread is a good glimpse of how my mind works and how this little garden called Patchfox has been built.
 
@@ -23,18 +23,18 @@ The way Patchfox works is:
 
 The main avenues for contribution are:
 
-1. Making the _core_ better as it contains a ton of duplication and doesn't use the best _pull-stream_ combinations that it could
+1. Making the _core_ better as it contains a ton of duplication and doesn't use the best _pull-stream_ combinations that it could.
 2. Working on packages.
 
 Working on packages is easier and more visible. Working on the core benefits all packages but it is harder and requires more intimate knowledge of the plumbing in this old house.
 
 To contribute to Patchfox, it is better to:
 
-* [Learn how to build the source.](/development/building.md)
-* [Learn more about the core.](/development/core.md)
-* [Learn more about packages.](/development/packages.md)
+* [Learn how to build the source](/development/building.md)
+* [Learn more about the core](/development/core.md)
+* [Learn more about packages](/development/packages.md)
 
 ## What do you want to do?
 
-* [Create a new mini-app.](/development/app-development.md)
-* [Add support for a new message type.](/development/add-new-message-type.md)
+* [Create a new mini-app](/development/app-development.md)
+* [Add support for a new message type](/development/add-new-message-type.md)

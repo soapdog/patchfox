@@ -1,7 +1,6 @@
-
 # Packages 
 
-These are the packages that Patchfox is loading. 
+Patchfox loads the following packages:
 
 * [blog](/packages/blog/)
 * [books](/packages/books/)
