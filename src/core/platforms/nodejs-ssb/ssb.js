@@ -27,38 +27,45 @@ const system = require("./system.js")
 const friendship = require("./friendship.js")
 const pipelines = require("../common/pipelines.js")
 const { enqueue } = require("../common/queues.js")
-const { resultFromCache, getMsgCache, setMsgCache } = require("../common/cache.js")
-
-const defaultOptions = {
-  private: true,
-  reverse: true,
-  meta: true,
-}
-
-const configure = (...customOptions) =>
-  Object.assign({}, defaultOptions, ...customOptions)
+const {
+  resultFromCache,
+  getMsgCache,
+  setMsgCache,
+  setAvatarCache,
+  getCachedAvatar,
+  getAllCachedUsers} = require("../common/cache.js")
+const {
+  setSharedFunctionsForFilters,
+  filterTypes,
+  filterLimit,
+  filterRemovePrivateMsgs,
+  filterFollowing,
+  filterWithUserFilters,
+  filterHasContent
+} = require("../common/filters.js")
 
 let sbot = false
 let getPref = () => false
 let isMessageHidden = () => false
 
-let avatarCache = {}
-
+/**
+ * NodeJS SSB Server compatible implementation of high-level SSB API for Patchfox.
+ */
 class NodeJsSSB {
   constructor() {
     this.platform = "nodejs-ssb"
 
     // add basic built-in pipelines
-    pipelines.thread.use(this.filterHasContent)
-    pipelines.thread.use(this.filterTypes)
-    pipelines.thread.use(this.filterRemovePrivateMsgs)
-    pipelines.thread.use(this.filterWithUserFilters)
-    pipelines.thread.use(this.filterLimit)
+    pipelines.thread.use(filterHasContent)
+    pipelines.thread.use(filterTypes)
+    pipelines.thread.use(filterRemovePrivateMsgs)
+    pipelines.thread.use(filterWithUserFilters)
+    pipelines.thread.use(filterLimit)
 
-    pipelines.message.use(this.filterHasContent)
-    pipelines.message.use(this.filterTypes)
-    pipelines.message.use(this.filterRemovePrivateMsgs)
-    pipelines.message.use(this.filterWithUserFilters)
+    pipelines.message.use(filterHasContent)
+    pipelines.message.use(filterTypes)
+    pipelines.message.use(filterRemovePrivateMsgs)
+    pipelines.message.use(filterWithUserFilters)
 
     // imported MUXRPC
     this.rooms2 = rooms2
@@ -76,6 +83,15 @@ class NodeJsSSB {
 
   setIsMessageHiddenFunction(ish) {
     isMessageHidden = ish
+
+    // this is called after `setGetPrefFunction()`.
+    // Use it to pass those values to the filters.
+    // Yes, I agree this is a bad pattern and stupid.
+
+    setSharedFunctionsForFilters({
+      getPref,
+      isMessageHidden
+    })
   }
 
   connect(keys, remote) {
@@ -128,63 +144,6 @@ class NodeJsSSB {
           }
         )
       }
-    })
-  }
-
-  filterHasContent() {
-    return pull.filter((msg) => msg && msg.value && msg.value.content)
-  }
-
-  filterRemovePrivateMsgs() {
-    return pull.filter(
-      (msg) => msg && msg.value && typeof msg.value.content !== "string"
-    )
-  }
-
-  async filterFollowing() {
-    return await this.socialFilter({ following: true })
-  }
-
-  filterLimit() {
-    let limit = getPref("limit", 10)
-    return pull.take(Number(limit))
-  }
-
-  filterWithUserFilters() {
-    return pull.filter((m) => {
-      let res = isMessageHidden(m)
-      if (!res) {
-        console.log(`msg ${m.key} has been filtered.`)
-      }
-      return res
-    })
-  }
-
-  filterTypes() {
-    // TODO: needs better handling that makes it easier to extend known types.
-    let knownMessageTypes = {
-      post: "showTypePost",
-      about: "showTypeAbout",
-      vote: "showTypeVote",
-      contact: "showTypeContact",
-      pub: "showTypePub",
-      blog: "showTypeBlog",
-      channel: "showTypeChannel",
-    }
-
-    let showUnknown = false
-
-    if (showUnknown) {
-      return pull.filter(() => true)
-    }
-
-    return pull.filter((msg) => {
-      let type = msg.value.content.type
-
-      if (typeof type == "string" && knownMessageTypes[type]) {
-        return getPref(knownMessageTypes[type], true)
-      }
-      return getPref("showTypeUnknown", false)
     })
   }
 
@@ -455,20 +414,6 @@ class NodeJsSSB {
     })
   }
 
-  async setAvatarCache(feed, data) {
-    let s = {}
-    s[`profile-${feed}`] = data
-    return browser.storage.local.set(s)
-  }
-
-  async getCachedAvatar(feed) {
-    return browser.storage.local.get(`profile-${feed}`)
-  }
-
-  getAllCachedUsers() {
-    return avatarCache
-  }
-
   async avatar(feed) {
     const avatarPromise = (key) => {
       return new Promise((resolve, reject) => {
@@ -487,35 +432,17 @@ class NodeJsSSB {
     const getAvatarAux = async (feed) => {
       let avatar = await avatarPromise(feed)
       // await this.setAvatarCache(feed, avatar)
-      avatarCache[feed] = avatar
+      setAvatarCache(feed, avatar)
       localStorage.setItem(`profile-${feed}`, JSON.stringify(avatar))
       return avatar
     }
 
-    if (avatarCache[feed]) {
+    if (getCachedAvatar(feed)) {
       setTimeout(() => getAvatarAux(feed), 300) // update cache...
-      return avatarCache[feed]
+      return getCachedAvatar(feed)
     }
 
     return getAvatarAux(feed)
-  }
-
-  async loadCaches() {
-    console.time("avatar cache")
-    let allSavedData = { ...localStorage }
-    delete allSavedData["/.ssb/secret"]
-    let keys = Object.keys(allSavedData)
-    keys.forEach((k) => {
-      let key = k.replace("profile-", "")
-      try {
-        avatarCache[key] = JSON.parse(allSavedData[k])
-      } catch (n) {
-        localStorage.removeItem(`profile-${k}`)
-      }
-    })
-
-    console.timeEnd("avatar cache")
-    console.log(`cached ${Object.keys(avatarCache).length} users`)
   }
 
   async blurbFromMsg(msgid, howManyChars) {
@@ -1382,14 +1309,22 @@ class NodeJsSSB {
       year: 365,
     }
 
-    if (period in periodDict === false) {
+    if (!(period in periodDict)) {
       throw new Error("invalid period")
     }
 
     const myFeedId = sbot.id
-
     const now = new Date()
     const earliest = Number(now) - 1000 * 60 * 60 * 24 * periodDict[period]
+
+    const defaultOptions = {
+      private: true,
+      reverse: true,
+      meta: true,
+    }
+
+    const configure = (...customOptions) =>
+      Object.assign({}, defaultOptions, ...customOptions)
 
     const source = sbot.query.read(
       configure({

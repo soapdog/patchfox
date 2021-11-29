@@ -1,5 +1,7 @@
 
 const caches = {}
+let avatarCache = {}
+
 const cacheResult = (kind, msgId, value) => {
   let key = `cache-${kind}-${msgId}`
   caches[key] = {
@@ -44,6 +46,43 @@ const setMsgCache = (id, data) => {
   sessionStorage.setItem(id, JSON.stringify(data))
 }
 
+async function setAvatarCache(feed, data) {
+  let s = {}
+  s[`profile-${feed}`] = data
+  avatarCache[feed] = data
+  return browser.storage.local.set(s)
+}
+
+async function getCachedAvatar(feed) {
+  if (avatarCache[feed]) {
+    return avatarCache[feed]
+  } else {
+    return browser.storage.local.get(`profile-${feed}`)
+  }
+}
+
+function getAllCachedUsers() {
+  return avatarCache
+}
+
+async function loadCaches() {
+  console.time("avatar cache")
+  let allSavedData = { ...localStorage }
+  delete allSavedData["/.ssb/secret"]
+  let keys = Object.keys(allSavedData)
+  keys.forEach((k) => {
+    let key = k.replace("profile-", "")
+    try {
+      avatarCache[key] = JSON.parse(allSavedData[k])
+    } catch (n) {
+      localStorage.removeItem(`profile-${k}`)
+    }
+  })
+
+  console.timeEnd("avatar cache")
+  console.log(`cached ${Object.keys(avatarCache).length} users`)
+}
+
 
 module.exports = {
   caches,
@@ -51,5 +90,9 @@ module.exports = {
   resultFromCache,
   invalidateCacheResult,
   getMsgCache,
-  setMsgCache
+  setMsgCache,
+  setAvatarCache,
+  getCachedAvatar,
+  getAllCachedUsers,
+  loadCaches
 }
