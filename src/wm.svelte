@@ -11,7 +11,7 @@
   let args = {}
 
   patchfox.listen("package:changed", (event, data) => {
-    console.log(event, data)
+    console.log(`package changed to "${data.packageToOpen.name}.${data.view}"`)
   })
 
   const goPackage = ({ pkg, view, data }) => {

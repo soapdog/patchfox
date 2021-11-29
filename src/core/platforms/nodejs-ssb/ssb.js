@@ -1620,9 +1620,16 @@ class NodeJsSSB {
               pull.take(Math.min(length, maxMessages)),
               pull.map(([key]) => key),
               pullParallelMap(async (key, cb) => {
-                const msg = await this.get(key)
-                const data = { key: key, value: msg }
-                cb(null, data)
+                try {
+                  const msg = await this.get(key)
+                  const data = { key: key, value: msg }
+                  cb(null, data)
+                }catch(n){
+                  // something bad happened.
+                  console.log(key)
+                  console.error(`error getting msg`, n)
+                  cb(null, null)
+                }
               }),
               followingFilter,
               pull.apply(pull, pipeline),
@@ -1671,6 +1678,9 @@ class NodeJsSSB {
       .map(([key]) => key)
 
     return pull.filter((message) => {
+      if (!message?.value) {
+        return false
+      }
       if (message.value.author === id) {
         return me !== false
       } else {
