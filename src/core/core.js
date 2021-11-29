@@ -43,6 +43,7 @@ const start = async () => {
       }
     } else {
       console.error("error on core start", n)
+      throw n
     }
   }
 }
