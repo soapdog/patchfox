@@ -20,6 +20,11 @@
 
   export let subView = "identitiesAndConnections"
 
+  if (!views.hasOwnProperty(subView)) {
+    console.log("no such subview", subView)
+    subView = "about"
+  }
+
   const handleMenuChange = ev => {
     subView = ev.detail.subView
   }
