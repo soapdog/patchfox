@@ -1,3 +1,3 @@
 # Pub Package
 
-The Pub package handles displaying _pub announcements_.
+The `pub` package handles displaying [pub announcements](https://scuttlebot.io/docs/message-types/pub.html).
