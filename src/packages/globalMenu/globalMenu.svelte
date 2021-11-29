@@ -141,7 +141,7 @@
     </li>
     {/if}
     {#if title.length > 0 && (title.toLowerCase() !== currentPackage.view.toLowerCase())}
-    <li class="normal-case">
+    <li>
       {title}
     </li>
     {/if}
