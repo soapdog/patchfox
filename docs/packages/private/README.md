@@ -6,6 +6,7 @@ This is a stub package that displays a padlock message card when a private messa
 * [View package `private` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/private) 
 * [View package `private` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/private)
 
+
 ## Message types handled by this package
 
 * [private](/message_types/private)

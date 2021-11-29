@@ -10,6 +10,7 @@ The `vote` package handles [`vote` messages](https://scuttlebot.io/docs/message-
 * [View package `vote` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/vote) 
 * [View package `vote` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/vote)
 
+
 ## Message types handled by this package
 
 * [vote](/message_types/vote)

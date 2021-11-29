@@ -10,6 +10,7 @@ This package provides the following features:
 * [View package `blog` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/blog) 
 * [View package `blog` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/blog)
 
+
 ## Message types handled by this package
 
 * [blog](/message_types/blog)

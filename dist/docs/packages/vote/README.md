@@ -1,14 +1,14 @@
 # Vote Package
 
-The Vote package manages handling of messages of type `vote` which are quite common messages on SSB. They are what happens when you _like_ or _heart_ a post.
+The `vote` package handles [`vote` messages](https://scuttlebot.io/docs/message-types/vote.html), which are quite common on SSB. They are created when you _like_ or _heart_ a post.
 
 ## Features
 
-* VoteCard to display liking or hearting actions.
+* VoteCard to display liking or hearting actions
 
 ## Source code
-* [View package `vote` at Github](https://github.com/soapdog/patchfox/blob/master/src/packages/vote) 
-* [View package `vote` at Sourcehut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/vote)
+* [View package `vote` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/vote) 
+* [View package `vote` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/vote)
 
 
 ## Message types handled by this package

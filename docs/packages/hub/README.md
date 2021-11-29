@@ -13,6 +13,7 @@ The `hub` is the largest package in Patchfox and the main one that users interac
 * [View package `hub` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/hub) 
 * [View package `hub` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/hub)
 
+
 ## Message types handled by this package
 
 * [channel](/message_types/channel)

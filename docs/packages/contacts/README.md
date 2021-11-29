@@ -13,6 +13,7 @@ The `contacts` package is responsible for dealing with all contact/feed-related 
 * [View package `contacts` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/contacts) 
 * [View package `contacts` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/contacts)
 
+
 ## Message types handled by this package
 
 * [about](/message_types/about)

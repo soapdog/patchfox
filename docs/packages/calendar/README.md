@@ -12,6 +12,7 @@ The `calendar` package provides support for messages of type `gathering`, which 
 * [View package `calendar` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/calendar) 
 * [View package `calendar` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/calendar)
 
+
 ## Message types handled by this package
 
 * [about](/message_types/about)
