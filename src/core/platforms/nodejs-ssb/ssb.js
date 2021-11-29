@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /**
  * NodeJS SSB
  *
@@ -6,9 +8,6 @@
  *
  * This file is fucking big and needs to be refactored.
  */
-
-// const { getPref } = require("../../kernel/prefs.js")
-// const { isMessageHidden } = require("./abusePrevention.js")
 
 const pull = require("pull-stream")
 const sort = require("ssb-sort")
@@ -21,14 +20,14 @@ const pullParallelMap = require("pull-paramap")
 const pullSort = require("pull-sort")
 const _ = require("lodash")
 const ssbHttpInviteClient = require("ssb-http-invite-client")
-const ssbHttpAuthClient = require("ssb-http-auth-client")
-const ssbRoomClient = require("ssb-room-client")
 const fileReader = require("pull-file-reader")
-const queryString = require("query-string");
-
+const queryString = require("query-string")
 const rooms2 = require("./rooms2.js")
 const system = require("./system.js")
 const friendship = require("./friendship.js")
+const pipelines = require("../common/pipelines.js")
+const { enqueue } = require("../common/queues.js")
+const { resultFromCache, getMsgCache, setMsgCache } = require("../common/cache.js")
 
 const defaultOptions = {
   private: true,
@@ -36,119 +35,14 @@ const defaultOptions = {
   meta: true,
 }
 
-const pipelines = {
-  threadPipes: new Set(),
-  messagePipes: new Set(),
-  thread: {
-    use: (func) => pipelines.threadPipes.add(func),
-    get: () => [...pipelines.threadPipes].map((p) => p.apply(p)),
-  },
-  message: {
-    use: (func) => pipelines.messagePipes.add(func),
-    get: () => [...pipelines.messagePipes].map((p) => p.apply(p)),
-  },
-}
-
 const configure = (...customOptions) =>
   Object.assign({}, defaultOptions, ...customOptions)
-
-const caches = {}
-const cacheResult = (kind, msgId, value) => {
-  let key = `cache-${kind}-${msgId}`
-  caches[key] = {
-    time: Date.now(),
-    value,
-  }
-}
-const invalidateCacheResult = (kind, msgId) => {
-  let key = `cache-${kind}-${msgId}`
-  delete caches[key]
-}
-
-const resultFromCache = (kind, msgId, falseIfOlderThan) => {
-  let key = `cache-${kind}-${msgId}`
-  let currentDate = Date.now()
-  if (caches.hasOwnProperty(key)) {
-    let expiryDate = caches[key].time + falseIfOlderThan * 1000
-    if (expiryDate > currentDate) {
-      return caches[key].value
-    }
-  }
-  // console.log("no cached result for", key)
-  return false
-}
-
-const workQueue = {}
-let parallelJobs = 0
-const maxParallelJobs = 5
-const enqueue = (kind, msgId, falseIfOlderThan, work, cb) => {
-  let key = `queue-${kind}-${msgId}`
-  let possibleResult = resultFromCache(kind, msgId, falseIfOlderThan)
-
-  if (possibleResult) {
-    cb(possibleResult)
-  } else {
-    if (workQueue.hasOwnProperty(key)) {
-      // is in the queue, should wait for result.
-      setTimeout(() => {
-        enqueue(kind, msgId, falseIfOlderThan, work, cb)
-      }, (falseIfOlderThan * 1000) / 2)
-    } else {
-      // not in the queue, should enqueue and block for  result.
-      workQueue[key] = { work, cb, kind, msgId }
-    }
-    processQueue()
-  }
-}
-
-const processQueue = () => {
-  if (Object.keys(workQueue).length > 0 && parallelJobs < maxParallelJobs) {
-    // entries in the queue.
-    let jobs = Object.keys(workQueue).slice(0, maxParallelJobs)
-    parallelJobs += jobs.length
-
-    jobs.forEach(async (job) => {
-      let work = workQueue[job]
-      try {
-        // console.log("starting job...", job)
-        let res = await work.work()
-        cacheResult(work.kind, work.msgId, res)
-        delete workQueue[job]
-        work.cb(res)
-        console.log("remaining jobs", Object.keys(workQueue).length)
-        setTimeout(processQueue, 10)
-      } catch (n) {
-        console.log("work", work)
-        console.error("error with work", n)
-      }
-      parallelJobs = parallelJobs >= 0 ? parallelJobs - 1 : 0
-    })
-  }
-}
 
 let sbot = false
 let getPref = () => false
 let isMessageHidden = () => false
 
 let avatarCache = {}
-
-const getMsgCache = (id) => {
-  let data = sessionStorage.getItem(id)
-  if (data) {
-    try {
-      return JSON.parse(data)
-    } catch (n) {
-      sessionStorage.removeItem(id)
-      return false
-    }
-  } else {
-    return false
-  }
-}
-
-const setMsgCache = (id, data) => {
-  sessionStorage.setItem(id, JSON.stringify(data))
-}
 
 class NodeJsSSB {
   constructor() {
@@ -159,15 +53,14 @@ class NodeJsSSB {
     pipelines.thread.use(this.filterTypes)
     pipelines.thread.use(this.filterRemovePrivateMsgs)
     pipelines.thread.use(this.filterWithUserFilters)
-    // pipelines.thread.use(this.transform)
     pipelines.thread.use(this.filterLimit)
 
     pipelines.message.use(this.filterHasContent)
     pipelines.message.use(this.filterTypes)
     pipelines.message.use(this.filterRemovePrivateMsgs)
     pipelines.message.use(this.filterWithUserFilters)
-    // pipelines.message.use(this.transform)
 
+    // imported MUXRPC
     this.rooms2 = rooms2
     this.system = system
     this.friendship = friendship
@@ -354,7 +247,7 @@ class NodeJsSSB {
       const pipeline = pipelines.thread.get()
 
       const createBacklinkStream = (id) => {
-        var filterQuery = {
+        let filterQuery = {
           $filter: {
             dest: id,
           },
@@ -368,35 +261,6 @@ class NodeJsSSB {
           query: [filterQuery],
           index: "DTA", // use asserted timestamps
           reverse: true,
-        })
-      }
-
-      const uniqueRoots = (msg) => {
-        return pull.filter((msg) => {
-          let msgKey = msg.key
-          if (msg.value.content.type !== "post") {
-            return true
-          }
-          let rootKey = msg.value.content.root || false
-          if (rootKey) {
-            if (msgs.some((m) => m.value.content.root === rootKey)) {
-              return false
-            }
-          }
-          return true
-        })
-      }
-
-      const mentionUser = (msg) => {
-        return pull.filter((msg) => {
-          if (msg.value.content.type !== "post") {
-            return true
-          }
-          let mentions = msg.value.content.mentions || []
-          if (mentions.some((m) => m.link == sbot.id)) {
-            return true
-          }
-          return false
         })
       }
 
@@ -518,32 +382,29 @@ class NodeJsSSB {
   }
 
   async profile(feedid) {
-    return new Promise(async (resolve, reject) => {
-      let opts = {
-        id: feedid,
-        reverse: true,
-      }
+    let opts = {
+      id: feedid,
+      reverse: true,
+    }
 
-      let user = {
-        msgs: [],
-        about: await this.aboutMessages(feedid, feedid),
-      }
+    let user = {
+      msgs: [],
+      about: await this.aboutMessages(feedid, feedid),
+    }
+    const pipeline = pipelines.thread.get()
 
-      const pipeline = pipelines.thread.get()
-
-      pull(
-        sbot.createUserStream(opts),
-        pull.apply(pull, pipeline),
-        pull.collect(function (err, data) {
-          if (err) {
-            reject(err)
-          } else {
-            user.msgs = data
-            resolve(user)
-          }
-        })
-      )
-    })
+    pull(
+      sbot.createUserStream(opts),
+      pull.apply(pull, pipeline),
+      pull.collect(function (err, data) {
+        if (err) {
+          throw err
+        } else {
+          user.msgs = data
+          return user
+        }
+      })
+    )
   }
 
   get(id) {
@@ -635,11 +496,8 @@ class NodeJsSSB {
       setTimeout(() => getAvatarAux(feed), 300) // update cache...
       return avatarCache[feed]
     }
-    try {
-      return getAvatarAux(feed)
-    } catch (n) {
-      throw n
-    }
+
+    return getAvatarAux(feed)
   }
 
   async loadCaches() {
@@ -670,7 +528,7 @@ class NodeJsSSB {
         data = await ssb.get(msgid)
       }
 
-      if (typeof data === "undefined" || typeof data === "null") {
+      if ((data ?? null) !== null) {
         retVal = `Patchfox error: message ${msgid} is null`
       }
 
