@@ -33,7 +33,8 @@ const {
   setMsgCache,
   setAvatarCache,
   getCachedAvatar,
-  getAllCachedUsers} = require("../common/cache.js")
+  getAllCachedUsers,
+  loadCaches} = require("../common/cache.js")
 const {
   setSharedFunctionsForFilters,
   filterTypes,
@@ -71,6 +72,16 @@ class NodeJsSSB {
     this.rooms2 = rooms2
     this.system = system
     this.friendship = friendship
+
+    // merging from common
+    // TODO: automate this with auxiliary function in commons.
+    this.loadCaches = loadCaches
+    this.resultFromCache = resultFromCache
+    this.getMsgCache = getMsgCache
+    this.setMsgCache = setMsgCache
+    this.setAvatarCache = setAvatarCache
+    this.getCachedAvatar = getCachedAvatar
+    this.getAllCachedUsers = getAllCachedUsers
   }
 
   log(pMsg, pVal = "") {
