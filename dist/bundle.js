@@ -100042,7 +100042,7 @@ function add_css(target) {
 	append_styles(target, "svelte-w70li9", ".file-on-top.svelte-w70li9{border:solid 2px rgb(26, 192, 11)}input[type=\"file\"].svelte-w70li9{display:none}.thumbnail-preview.svelte-w70li9{max-height:200px}");
 }
 
-// (281:6) {#if msg}
+// (281:2) {#if msg}
 function create_if_block_3(ctx) {
 	let if_block_anchor;
 
@@ -100083,9 +100083,11 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (284:8) {:else}
+// (284:4) {:else}
 function create_else_block_1(ctx) {
-	let div;
+	let div1;
+	let div0;
+	let label;
 	let t0;
 	let a;
 	let t1;
@@ -100093,32 +100095,38 @@ function create_else_block_1(ctx) {
 
 	return {
 		c() {
-			div = element("div");
-			t0 = text("Your blog post has been posted. Do you want to\n            ");
+			div1 = element("div");
+			div0 = element("div");
+			label = element("label");
+			t0 = text("Your blog post has been posted. Do you want to\n        ");
 			a = element("a");
 			t1 = text("Check it out?");
+			attr(a, "class", "link");
 			attr(a, "target", "_blank");
-			attr(a, "href", a_href_value = "?thread=" + encodeURIComponent(/*msg*/ ctx[6].key) + "#/thread");
-			attr(div, "class", "toast toast-success");
+			attr(a, "href", a_href_value = "?pkg=hub&view=thread&thread=" + encodeURIComponent(/*msg*/ ctx[6].key));
+			attr(div0, "class", "flex-1");
+			attr(div1, "class", "alert alert-success");
 		},
 		m(target, anchor) {
-			insert(target, div, anchor);
-			append(div, t0);
-			append(div, a);
+			insert(target, div1, anchor);
+			append(div1, div0);
+			append(div0, label);
+			append(label, t0);
+			append(label, a);
 			append(a, t1);
 		},
 		p(ctx, dirty) {
-			if (dirty[0] & /*msg*/ 64 && a_href_value !== (a_href_value = "?thread=" + encodeURIComponent(/*msg*/ ctx[6].key) + "#/thread")) {
+			if (dirty[0] & /*msg*/ 64 && a_href_value !== (a_href_value = "?pkg=hub&view=thread&thread=" + encodeURIComponent(/*msg*/ ctx[6].key))) {
 				attr(a, "href", a_href_value);
 			}
 		},
 		d(detaching) {
-			if (detaching) detach(div);
+			if (detaching) detach(div1);
 		}
 	};
 }
 
-// (282:8) {#if error}
+// (282:4) {#if error}
 function create_if_block_4(ctx) {
 	let div;
 	let t;
@@ -100127,7 +100135,7 @@ function create_if_block_4(ctx) {
 		c() {
 			div = element("div");
 			t = text(/*msg*/ ctx[6]);
-			attr(div, "class", "toast toast-error");
+			attr(div, "class", "alert alert-error");
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
@@ -100142,7 +100150,7 @@ function create_if_block_4(ctx) {
 	};
 }
 
-// (387:6) {:else}
+// (392:6) {:else}
 function create_else_block(ctx) {
 	let div4;
 	let preview_1;
@@ -100263,7 +100271,7 @@ function create_else_block(ctx) {
 	};
 }
 
-// (295:6) {#if !showPreview}
+// (300:6) {#if !showPreview}
 function create_if_block(ctx) {
 	let div5;
 	let div0;
@@ -100540,7 +100548,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (353:12) {#if showContentWarningField}
+// (358:12) {#if showContentWarningField}
 function create_if_block_2(ctx) {
 	let input;
 	let mounted;
@@ -100576,7 +100584,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (364:10) {#if thumbnail}
+// (369:10) {#if thumbnail}
 function create_if_block_1(ctx) {
 	let div;
 	let p;
