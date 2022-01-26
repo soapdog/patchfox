@@ -101311,7 +101311,7 @@ function create_if_block_1(ctx) {
 			t1 = space();
 			img = element("img");
 			attr(img, "class", "thumbnail-preview svelte-guvemt");
-			if (!src_url_equal(img.src, img_src_value = patchfox.bloburl(/*thumbnail*/ ctx[5]))) attr(img, "src", img_src_value);
+			if (!src_url_equal(img.src, img_src_value = patchfox.blobUrl(/*thumbnail*/ ctx[5]))) attr(img, "src", img_src_value);
 			attr(img, "alt", "post thumbnail");
 		},
 		m(target, anchor) {
@@ -101321,7 +101321,7 @@ function create_if_block_1(ctx) {
 			append(p, img);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*thumbnail*/ 32 && !src_url_equal(img.src, img_src_value = patchfox.bloburl(/*thumbnail*/ ctx[5]))) {
+			if (dirty & /*thumbnail*/ 32 && !src_url_equal(img.src, img_src_value = patchfox.blobUrl(/*thumbnail*/ ctx[5]))) {
 				attr(img, "src", img_src_value);
 			}
 		},
