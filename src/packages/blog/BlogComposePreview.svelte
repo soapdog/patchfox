@@ -38,7 +38,7 @@
   {/if} {#if thumbnail}
   <p>
     <b>Thumbnail:</b>
-    <img class="thumbnail-preview" src="{patchfox.bloburl(thumbnail)}" alt="post thumbnail" />
+    <img class="thumbnail-preview" src="{patchfox.blobUrl(thumbnail)}" alt="post thumbnail" />
   </p>
   {/if} {/if} {@html ssb.markdown(content)}
 </article>

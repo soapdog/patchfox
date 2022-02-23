@@ -278,20 +278,25 @@
 </style>
 
 <div>
-      {#if msg}
-        {#if error}
-          <div class="toast toast-error">{msg}</div>
-        {:else}
-          <div class="toast toast-success">
-            Your blog post has been posted. Do you want to
-            <a
-              target="_blank"
-              href="?thread={encodeURIComponent(msg.key)}#/thread">
-              Check it out?
-            </a>
-          </div>
-        {/if}
-      {/if}
+  {#if msg}
+    {#if error}
+      <div class="alert alert-error">{msg}</div>
+    {:else}
+      <div class="alert alert-success">
+        <div class="flex-1">
+        <label>
+        Your blog post has been posted. Do you want to
+        <a
+          class="link"
+          target="_blank"
+          href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.key)}">
+          Check it out?
+        </a>
+      </label>
+      </div>
+      </div>
+    {/if}
+  {/if}
       {#if !showPreview}
         <div class="form-group" in:slide out:slide>
           <div class="form-control">

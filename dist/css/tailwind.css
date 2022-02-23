@@ -4531,10 +4531,6 @@ html {
   text-transform: capitalize;
 }
 
-.normal-case {
-  text-transform: none;
-}
-
 .text-base-content {
   --tw-text-opacity: 1;
   color: hsla(var(--bc) / var(--tw-text-opacity));

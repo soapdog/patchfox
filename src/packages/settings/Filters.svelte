@@ -4,7 +4,7 @@
     getFilters,
     addFilter,
     deleteFilter
-  } = require("../../core/platforms/nodejs-ssb/abusePrevention.js")
+  } = require("../../core/platforms/common/abusePrevention.js")
 
   // Abuse Prevention - filters
   let currentFilters = getFilters()

@@ -1,14 +1,11 @@
 // noinspection DuplicatedCode
 
 /**
- * NodeJS SSB
+ * Browser SSB
  *
- * Things I don't currently like here:
- * - usage of getPref and abuse prevention. This should be pluggable!
- *
- * This file is fucking big and needs to be refactored.
  */
 
+const ssbSingleton = require("ssb-browser-core/ssb-singleton")
 const pull = require("pull-stream")
 const sort = require("ssb-sort")
 const ssbMarkdown = require("ssb-markdown")
@@ -49,12 +46,17 @@ let sbot = false
 let getPref = () => false
 let isMessageHidden = () => false
 
+function extraModules(secretStack) {
+  // add extra modules here
+  return secretStack
+}
+
 /**
- * NodeJS SSB Server compatible implementation of high-level SSB API for Patchfox.
+ * Browser SSB Server compatible implementation of high-level SSB API for Patchfox.
  */
-class NodeJsSSB {
+class BrowserSSB {
   constructor() {
-    this.platform = "nodejs-ssb"
+    this.platform = "browser-ssb"
 
     // add basic built-in pipelines
     pipelines.thread.use(filterHasContent)
@@ -105,6 +107,8 @@ class NodeJsSSB {
     })
   }
 
+
+
   connect(keys, remote) {
     let port = remote.match(/:([0-9]*)~/)[2] 
 
@@ -115,15 +119,14 @@ class NodeJsSSB {
       if (sbot) {
         resolve(sbot)
       } else {
-        ssbClient(
-          keys,
-          {
-            remote: remote || `ws://127.0.0.1:${port}/~shs:${keys.public}`,
-            caps: {
-              shs: "1KHLiKZvAvjbY1ziZEHMXawbCEIM6qwjCDm3VYRan/s=",
-              sign: null,
-            },
-          },
+        // in case you want to add or overwrite something from here
+        // https://github.com/arj03/ssb-browser-core/blob/master/net.js#L11
+        let config = {}
+
+        // setup ssb browser core
+        ssbSingleton.setup("/.browser-ssb", config, extraModules, () => {})
+
+        ssbSingleton.getSimpleSSBEventually(
           (err, server) => {
             if (err) {
               reject("can't connect to sbot")
@@ -1682,4 +1685,4 @@ class NodeJsSSB {
   }
 }
 
-module.exports.NodeJsSSB = NodeJsSSB
+module.exports.BrowserSSB = BrowserSSB

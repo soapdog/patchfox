@@ -13,6 +13,16 @@ const loadSavedData = async () => {
     if (data.hasOwnProperty("identities")) {
       savedData = data
       return savedData
+    } else if (data.hasOwnProperty("keys")) {
+      let tempKeys = data.keys
+      let tempRemote = data.remote 
+      savedData = {
+        [tempKeys.public]: {
+          keys: tempKeys,
+          remote: tempRemote,
+          type: "nodejs-ssb"
+        }
+      }
     } else {
       throw "Configuration is missing"
     }
@@ -71,9 +81,13 @@ const setDefaultIdentity = (feedId) => {
 const getDefaultIdentity = () => {
   if (savedData?.defaultIdentity) {
     return configurationForIdentity(savedData.defaultIdentity)
-  } else {
-    savedData?.identities[0]
   }
+
+  if (savedData.hasOwnProperty("identities")) {
+    return savedData?.identities[Object.keys(savedData?.identities)[0]]
+  }
+
+  throw "Configuration is missing"
 }
 
 module.exports = {

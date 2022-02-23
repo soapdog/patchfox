@@ -1,7 +1,7 @@
 const kernel = require("./kernel/kernel.js")
 const runtimes = require("./runtimes/runtimes.js")
 const queryString = require("query-string")
-const { isMessageHidden } = require("./platforms/nodejs-ssb/abusePrevention.js")
+const { isMessageHidden } = require("./platforms/common/abusePrevention.js")
 
 
 if (window) {
@@ -39,11 +39,12 @@ const start = async () => {
         location = "/docs/index.html#/troubleshooting/no-connection"
         break
       default:
+        console.error("Exception not caught", n)
         throw n
       }
     } else {
       console.error("error on core start", n)
-      throw n
+      //throw n
     }
   }
 }

@@ -4,7 +4,7 @@
     isChannelFiltered,
     addFilter,
     deleteFilter
-  } = require("../../core/platforms/nodejs-ssb/abusePrevention.js")
+  } = require("../../core/platforms/common/abusePrevention.js")
 
   const { onMount, onDestroy } = require("svelte")
 
