@@ -39,11 +39,12 @@ const start = async () => {
         location = "/docs/index.html#/troubleshooting/no-connection"
         break
       default:
+        console.error("Exception not caught", n)
         throw n
       }
     } else {
       console.error("error on core start", n)
-      throw n
+      //throw n
     }
   }
 }

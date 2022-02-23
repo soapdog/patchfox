@@ -81,9 +81,13 @@ const setDefaultIdentity = (feedId) => {
 const getDefaultIdentity = () => {
   if (savedData?.defaultIdentity) {
     return configurationForIdentity(savedData.defaultIdentity)
-  } else {
-    savedData?.identities[Object.keys(savedData?.identities)[0]]
   }
+
+  if (savedData.hasOwnProperty("identities")) {
+    return savedData?.identities[Object.keys(savedData?.identities)[0]]
+  }
+
+  throw "Configuration is missing"
 }
 
 module.exports = {
