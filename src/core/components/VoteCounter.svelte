@@ -1,30 +1,42 @@
 <script>
-  const AvatarMenuItem = require("./AvatarMenuItem.svelte");
-  const { createEventDispatcher } = require("svelte");
+  const AvatarMenuItem = require("./AvatarMenuItem.svelte")
+  const AvatarContainer = require("./AvatarContainer.svelte")
+  const AvatarChip = require("./AvatarChip.svelte")
 
-  export let msg;
-  let dropdownActive = false;
-  let state = "waitclick"; // "loading", "loaded", "error"
 
-  let voters = [];
+  const { createEventDispatcher } = require("svelte")
+  const dispatch = createEventDispatcher()
+
+
+  export let msg
+  let dropdownActive = false
+  let state = "waitclick" // "loading", "loaded", "error"
+  let error = ""
+
+  let voters = []
 
   const loadVotes = () => {
-    state = "loading";
+    state = "loading"
     ssb
       .votes(msg)
       .then(vs => {
-        voters = vs;
-        state = "loaded";
+        voters = vs
+        state = "loaded"
       })
       .catch(n => {
-        error = n;
-        state = "error";
-      });
-  };
+        error = n
+        state = "error"
+      })
+  }
 
-  const avatarClick = () => {
-    dispatch("avatarClick", { feed, name });
-  };
+  const avatarClick = ev => {
+    let feed = ev.detail.feed
+    let name = ev.detail.name
+
+    patchfox.go("contacts", "profile", { feed })
+  }
+
+  setTimeout(loadVotes, 500)
 </script>
 
 <style>
@@ -41,23 +53,27 @@
 
 <div class="vote-counter">
   {#if state == "loading"}
-    <span class="loading" />
+    <div class="flex justify-center">
+      <i class="fas fa-spinner fa-spin" />
+    </div>
   {:else if state == "loaded" && voters.length > 0}
     <div class="dropdown">
-      <span
-        class:active={dropdownActive}
+      <label
+        class:dropdown-open={dropdownActive}
         on:click={() => (dropdownActive = !dropdownActive)}
-        class="btn btn-link dropdown-toggle"
+        class="btn btn-link"
         tabindex="0">
         💜 {voters.length}
-      </span>
-      <ul class="menu">
+      </label>
+      <div tabindex=0 class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+        <AvatarContainer>
         {#each voters as user}
-          <li class="menu-item">
-            <AvatarMenuItem feed={user} />
+          <li>
+            <AvatarChip feed={user} on:avatarClick={avatarClick}/>
           </li>
         {/each}
-      </ul>
+      </AvatarContainer>
+      </div>
     </div>
   {:else if state == "loaded" && voters.length == 0}
     <span>💜 0</span>

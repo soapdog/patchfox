@@ -1581,18 +1581,20 @@ class NodeJsSSB {
         return voters
       }
 
-      enqueue(
-        "votes",
-        msg.key,
-        10,
-        async function work() {
-          let res = await voteQuery(msg)
-          return res
-        },
-        function callback(votes) {
-          resolve(votes)
-        }
-      )
+      voteQuery(msg).then(votes => resolve(votes))
+
+    //   enqueue(
+    //     "votes",
+    //     msg.key,
+    //     10,
+    //     async function work() {
+    //       let res = await voteQuery(msg)
+    //       return res
+    //     },
+    //     function callback(votes) {
+    //       resolve(votes)
+    //     }
+    //   )
     })
   }
 
