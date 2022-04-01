@@ -11,6 +11,7 @@
     "@tailwindcss/typography": "^0.4.1",
     "autoprefixer": "^10.3.1",
     "browserify": "^17.0.0",
+    "calendarize": "^1.1.1",
     "copyfiles": "^2.1.1",
     "cross-env": "^7.0.3",
     "daisyui": "^1.10.0",

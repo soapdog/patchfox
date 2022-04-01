@@ -596,6 +596,14 @@ video {
 }
 
 *, ::before, ::after {
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   --tw-border-opacity: 1;
   border-color: rgba(229, 231, 235, var(--tw-border-opacity));
   --tw-ring-offset-shadow: 0 0 #0000;
@@ -2165,6 +2173,32 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition-property: background-color,border-color,color,fill,stroke,opacity,box-shadow,transform;
+  transition-duration: .15s;
+  transition-duration: .2s;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+  height: 1.25rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding-left: .563rem;
+  padding-right: .563rem;
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--n)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--n)/var(--tw-border-opacity,1));
+  border-width: 1px;
+  --tw-text-opacity: 1;
+  color: hsla(var(--nc)/var(--tw-text-opacity,1));
+  border-radius: var(--rounded-badge,1.9rem);
 }
 
 .breadcrumbs {
@@ -4105,6 +4139,38 @@ html {
   box-shadow: 0 0 0 2px hsl(var(--b1));
 }
 
+.badge-secondary {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--s)/var(--tw-bg-opacity,1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--s)/var(--tw-border-opacity,1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--sc)/var(--tw-text-opacity,1));
+}
+
+.badge-outline {
+  background-color: transparent;
+  border-color: currentColor;
+  --tw-border-opacity: 0.5;
+  --tw-text-opacity: 1;
+  color: hsla(var(--bc)/var(--tw-text-opacity,1));
+}
+
+.badge-outline.badge-primary {
+  --tw-text-opacity: 1;
+  color: hsla(var(--p)/var(--tw-text-opacity,1));
+}
+
+.badge-outline.badge-secondary {
+  --tw-text-opacity: 1;
+  color: hsla(var(--s)/var(--tw-text-opacity,1));
+}
+
+.badge-outline.badge-accent {
+  --tw-text-opacity: 1;
+  color: hsla(var(--a)/var(--tw-text-opacity,1));
+}
+
 .absolute {
   position: absolute;
 }
@@ -4296,12 +4362,12 @@ html {
   width: 100%;
 }
 
-.w-11\/12 {
-  width: 91.666667%;
-}
-
 .w-6 {
   width: 1.5rem;
+}
+
+.w-11\/12 {
+  width: 91.666667%;
 }
 
 .w-48 {
@@ -4338,6 +4404,10 @@ html {
 
 .flex-shrink {
   flex-shrink: 1;
+}
+
+.transform {
+  transform: var(--tw-transform);
 }
 
 .cursor-pointer {
