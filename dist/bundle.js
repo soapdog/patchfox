@@ -99263,9 +99263,10 @@ core.start().then(() => {
   })
 })
 
-},{"./core/core.js":676,"./packages/packages.js":732,"./themes/themes.js":763,"./wm.svelte":764}],685:[function(require,module,exports){
+},{"./core/core.js":676,"./packages/packages.js":732,"./themes/themes.js":765,"./wm.svelte":766}],685:[function(require,module,exports){
 patchfox.package({
   name: "KoFiIntegration",
+  title: "Ko-Fi Integration",
   supportedPlatforms: ["all"],
   menu: [
     {
@@ -112980,6 +112981,7 @@ patchfox.package({
 },{"./ErrorView.svelte":714}],716:[function(require,module,exports){
 patchfox.package({
   name: "githubIntegration",
+  title: "Github Integration",
   supportedPlatforms: ["all"],
   menu: [
     {
@@ -112999,7 +113001,7 @@ patchfox.package({
       ]
     }
   ]
-});
+})
 
 },{}],717:[function(require,module,exports){
 const view = require("./globalMenu.svelte")
@@ -113049,7 +113051,7 @@ function create_if_block_6(ctx) {
 			button = element("button");
 			button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sidebar"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>`;
 			attr(button, "class", "btn btn-square btn-ghost");
-			attr(div, "class", "flex-none md:hidden");
+			attr(div, "class", "flex-none sm:hidden");
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
@@ -116473,16 +116475,16 @@ patchfox.package({
 const { SvelteComponent, append, append_styles, attr, destroy_each, detach, element, init, insert, listen, noop, run_all, safe_not_equal, set_data, space, src_url_equal, text, toggle_class } = require("svelte/internal");
 
 function add_css(target) {
-	append_styles(target, "svelte-1s6scuh", ".grid.svelte-1s6scuh.svelte-1s6scuh{display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));grid-auto-rows:auto;grid-gap:1rem}.package.svelte-1s6scuh.svelte-1s6scuh{border-radius:4px;padding:0.5rem;text-align:center;cursor:pointer}.package-title.svelte-1s6scuh.svelte-1s6scuh{text-transform:capitalize}.package-icon.svelte-1s6scuh img.svelte-1s6scuh{width:42px}");
+	append_styles(target, "svelte-j8mr9f", ".grid.svelte-j8mr9f.svelte-j8mr9f{display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));grid-auto-rows:auto;grid-gap:1rem}.package.svelte-j8mr9f.svelte-j8mr9f{border-radius:4px;padding:0.5rem;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center}.package-title.svelte-j8mr9f.svelte-j8mr9f{text-transform:capitalize}.package-icon.svelte-j8mr9f img.svelte-j8mr9f{width:42px}");
 }
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[17] = list[i];
+	child_ctx[20] = list[i];
 	return child_ctx;
 }
 
-// (153:4) {:else}
+// (164:4) {:else}
 function create_else_block(ctx) {
 	let p;
 	let t0;
@@ -116511,7 +116513,7 @@ function create_else_block(ctx) {
 	};
 }
 
-// (132:6) {#each packageKeys as pkg}
+// (138:6) {#each packageKeys as pkg}
 function create_each_block(ctx) {
 	let div3;
 	let div0;
@@ -116521,7 +116523,7 @@ function create_each_block(ctx) {
 	let t0;
 	let div2;
 	let div1;
-	let t1_value = /*titleForPackage*/ ctx[4](/*pkg*/ ctx[17]) + "";
+	let t1_value = /*titleForPackage*/ ctx[6](/*pkg*/ ctx[20]) + "";
 	let t1;
 	let div1_href_value;
 	let t2;
@@ -116530,7 +116532,7 @@ function create_each_block(ctx) {
 	let dispose;
 
 	function click_handler_4() {
-		return /*click_handler_4*/ ctx[12](/*pkg*/ ctx[17]);
+		return /*click_handler_4*/ ctx[14](/*pkg*/ ctx[20]);
 	}
 
 	return {
@@ -116543,16 +116545,16 @@ function create_each_block(ctx) {
 			div1 = element("div");
 			t1 = text(t1_value);
 			t2 = space();
-			attr(img, "class", "centered svelte-1s6scuh");
-			if (!src_url_equal(img.src, img_src_value = /*iconForPackage*/ ctx[3](/*pkg*/ ctx[17]))) attr(img, "src", img_src_value);
-			attr(img, "alt", img_alt_value = /*titleForPackage*/ ctx[4](/*pkg*/ ctx[17]));
-			attr(div0, "class", "package-icon svelte-1s6scuh");
-			attr(div1, "class", "package-title svelte-1s6scuh");
-			attr(div1, "href", div1_href_value = /*urlForPackage*/ ctx[6](/*pkg*/ ctx[17]));
+			attr(img, "class", "centered svelte-j8mr9f");
+			if (!src_url_equal(img.src, img_src_value = /*iconForPackage*/ ctx[5](/*pkg*/ ctx[20]))) attr(img, "src", img_src_value);
+			attr(img, "alt", img_alt_value = /*titleForPackage*/ ctx[6](/*pkg*/ ctx[20]));
+			attr(div0, "class", "package-icon svelte-j8mr9f");
+			attr(div1, "class", "package-title svelte-j8mr9f");
+			attr(div1, "href", div1_href_value = /*urlForPackage*/ ctx[8](/*pkg*/ ctx[20]));
 			attr(div2, "class", "package-content");
-			attr(div3, "class", "package c-hand svelte-1s6scuh");
-			attr(div3, "data-tooltip", div3_data_tooltip_value = /*descriptionForPackage*/ ctx[5](/*pkg*/ ctx[17]));
-			toggle_class(div3, "tooltip", /*descriptionForPackage*/ ctx[5](/*pkg*/ ctx[17]));
+			attr(div3, "class", "package c-hand svelte-j8mr9f");
+			attr(div3, "data-tooltip", div3_data_tooltip_value = /*descriptionForPackage*/ ctx[7](/*pkg*/ ctx[20]));
+			toggle_class(div3, "tooltip", /*descriptionForPackage*/ ctx[7](/*pkg*/ ctx[20]));
 		},
 		m(target, anchor) {
 			insert(target, div3, anchor);
@@ -116572,26 +116574,26 @@ function create_each_block(ctx) {
 		p(new_ctx, dirty) {
 			ctx = new_ctx;
 
-			if (dirty & /*packageKeys*/ 4 && !src_url_equal(img.src, img_src_value = /*iconForPackage*/ ctx[3](/*pkg*/ ctx[17]))) {
+			if (dirty & /*packageKeys*/ 16 && !src_url_equal(img.src, img_src_value = /*iconForPackage*/ ctx[5](/*pkg*/ ctx[20]))) {
 				attr(img, "src", img_src_value);
 			}
 
-			if (dirty & /*packageKeys*/ 4 && img_alt_value !== (img_alt_value = /*titleForPackage*/ ctx[4](/*pkg*/ ctx[17]))) {
+			if (dirty & /*packageKeys*/ 16 && img_alt_value !== (img_alt_value = /*titleForPackage*/ ctx[6](/*pkg*/ ctx[20]))) {
 				attr(img, "alt", img_alt_value);
 			}
 
-			if (dirty & /*packageKeys*/ 4 && t1_value !== (t1_value = /*titleForPackage*/ ctx[4](/*pkg*/ ctx[17]) + "")) set_data(t1, t1_value);
+			if (dirty & /*packageKeys*/ 16 && t1_value !== (t1_value = /*titleForPackage*/ ctx[6](/*pkg*/ ctx[20]) + "")) set_data(t1, t1_value);
 
-			if (dirty & /*packageKeys*/ 4 && div1_href_value !== (div1_href_value = /*urlForPackage*/ ctx[6](/*pkg*/ ctx[17]))) {
+			if (dirty & /*packageKeys*/ 16 && div1_href_value !== (div1_href_value = /*urlForPackage*/ ctx[8](/*pkg*/ ctx[20]))) {
 				attr(div1, "href", div1_href_value);
 			}
 
-			if (dirty & /*packageKeys*/ 4 && div3_data_tooltip_value !== (div3_data_tooltip_value = /*descriptionForPackage*/ ctx[5](/*pkg*/ ctx[17]))) {
+			if (dirty & /*packageKeys*/ 16 && div3_data_tooltip_value !== (div3_data_tooltip_value = /*descriptionForPackage*/ ctx[7](/*pkg*/ ctx[20]))) {
 				attr(div3, "data-tooltip", div3_data_tooltip_value);
 			}
 
-			if (dirty & /*descriptionForPackage, packageKeys*/ 36) {
-				toggle_class(div3, "tooltip", /*descriptionForPackage*/ ctx[5](/*pkg*/ ctx[17]));
+			if (dirty & /*descriptionForPackage, packageKeys*/ 144) {
+				toggle_class(div3, "tooltip", /*descriptionForPackage*/ ctx[7](/*pkg*/ ctx[20]));
 			}
 		},
 		d(detaching) {
@@ -116602,9 +116604,232 @@ function create_each_block(ctx) {
 	};
 }
 
+// (170:4) {#if selectedPackage}
+function create_if_block(ctx) {
+	let div0;
+	let img;
+	let img_src_value;
+	let img_alt_value;
+	let t0;
+	let div2;
+	let div1;
+	let h2;
+	let t1_value = /*titleForPackage*/ ctx[6](/*selectedPackage*/ ctx[3]) + "";
+	let t1;
+	let div1_href_value;
+	let t2;
+	let p0;
+	let t3;
+	let a0;
+	let t4_value = /*titleForPackage*/ ctx[6](/*selectedPackage*/ ctx[3]) + "";
+	let t4;
+	let t5;
+	let a0_href_value;
+	let t6;
+	let br0;
+	let t7;
+	let p1;
+	let t9;
+	let br1;
+	let t10;
+	let ul;
+	let li0;
+	let a1;
+	let t11;
+	let b0;
+	let t12;
+	let t13;
+	let t14;
+	let a1_href_value;
+	let t15;
+	let li1;
+	let a2;
+	let t16;
+	let b1;
+	let t17;
+	let t18;
+	let t19;
+	let a2_href_value;
+	let t20;
+	let br2;
+	let t21;
+	let p2;
+	let a3;
+	let mounted;
+	let dispose;
+
+	return {
+		c() {
+			div0 = element("div");
+			img = element("img");
+			t0 = space();
+			div2 = element("div");
+			div1 = element("div");
+			h2 = element("h2");
+			t1 = text(t1_value);
+			t2 = space();
+			p0 = element("p");
+			t3 = text("Open\n        ");
+			a0 = element("a");
+			t4 = text(t4_value);
+			t5 = text(" documentation");
+			t6 = space();
+			br0 = element("br");
+			t7 = space();
+			p1 = element("p");
+			p1.textContent = "Do you want to see the source-code for this package?";
+			t9 = space();
+			br1 = element("br");
+			t10 = space();
+			ul = element("ul");
+			li0 = element("li");
+			a1 = element("a");
+			t11 = text("See source for ");
+			b0 = element("b");
+			t12 = text(/*selectedPackage*/ ctx[3]);
+			t13 = text(" package");
+			t14 = text(" at GitHub.");
+			t15 = space();
+			li1 = element("li");
+			a2 = element("a");
+			t16 = text("See source for ");
+			b1 = element("b");
+			t17 = text(/*selectedPackage*/ ctx[3]);
+			t18 = text(" package");
+			t19 = text(" at SourceHut.");
+			t20 = space();
+			br2 = element("br");
+			t21 = space();
+			p2 = element("p");
+			a3 = element("a");
+			a3.textContent = "Close";
+			attr(img, "class", "centered svelte-j8mr9f");
+			if (!src_url_equal(img.src, img_src_value = /*iconForPackage*/ ctx[5](/*selectedPackage*/ ctx[3]))) attr(img, "src", img_src_value);
+			attr(img, "alt", img_alt_value = /*titleForPackage*/ ctx[6](/*selectedPackage*/ ctx[3]));
+			attr(div0, "class", "package-icon svelte-j8mr9f");
+			attr(h2, "class", "text-xl");
+			attr(div1, "class", "package-title svelte-j8mr9f");
+			attr(div1, "href", div1_href_value = /*urlForPackage*/ ctx[8](/*selectedPackage*/ ctx[3]));
+			attr(div2, "class", "package-content");
+			attr(a0, "class", "link link-accent");
+			attr(a0, "target", "_blank");
+			attr(a0, "href", a0_href_value = "/docs/index.html#/packages/" + /*selectedPackage*/ ctx[3] + "/");
+			attr(a1, "class", "link");
+			attr(a1, "target", "_blank");
+			attr(a1, "href", a1_href_value = "https://github.com/soapdog/patchfox/blob/master/src/packages/" + /*selectedPackage*/ ctx[3] + "/");
+			attr(a2, "class", "link");
+			attr(a2, "target", "_blank");
+			attr(a2, "href", a2_href_value = "https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/" + /*selectedPackage*/ ctx[3] + "/");
+			attr(a3, "class", "btn btn-primary");
+		},
+		m(target, anchor) {
+			insert(target, div0, anchor);
+			append(div0, img);
+			insert(target, t0, anchor);
+			insert(target, div2, anchor);
+			append(div2, div1);
+			append(div1, h2);
+			append(h2, t1);
+			insert(target, t2, anchor);
+			insert(target, p0, anchor);
+			append(p0, t3);
+			append(p0, a0);
+			append(a0, t4);
+			append(a0, t5);
+			insert(target, t6, anchor);
+			insert(target, br0, anchor);
+			insert(target, t7, anchor);
+			insert(target, p1, anchor);
+			insert(target, t9, anchor);
+			insert(target, br1, anchor);
+			insert(target, t10, anchor);
+			insert(target, ul, anchor);
+			append(ul, li0);
+			append(li0, a1);
+			append(a1, t11);
+			append(a1, b0);
+			append(b0, t12);
+			append(b0, t13);
+			append(a1, t14);
+			append(ul, t15);
+			append(ul, li1);
+			append(li1, a2);
+			append(a2, t16);
+			append(a2, b1);
+			append(b1, t17);
+			append(b1, t18);
+			append(a2, t19);
+			insert(target, t20, anchor);
+			insert(target, br2, anchor);
+			insert(target, t21, anchor);
+			insert(target, p2, anchor);
+			append(p2, a3);
+
+			if (!mounted) {
+				dispose = listen(a3, "click", /*click_handler_5*/ ctx[15]);
+				mounted = true;
+			}
+		},
+		p(ctx, dirty) {
+			if (dirty & /*selectedPackage*/ 8 && !src_url_equal(img.src, img_src_value = /*iconForPackage*/ ctx[5](/*selectedPackage*/ ctx[3]))) {
+				attr(img, "src", img_src_value);
+			}
+
+			if (dirty & /*selectedPackage*/ 8 && img_alt_value !== (img_alt_value = /*titleForPackage*/ ctx[6](/*selectedPackage*/ ctx[3]))) {
+				attr(img, "alt", img_alt_value);
+			}
+
+			if (dirty & /*selectedPackage*/ 8 && t1_value !== (t1_value = /*titleForPackage*/ ctx[6](/*selectedPackage*/ ctx[3]) + "")) set_data(t1, t1_value);
+
+			if (dirty & /*selectedPackage*/ 8 && div1_href_value !== (div1_href_value = /*urlForPackage*/ ctx[8](/*selectedPackage*/ ctx[3]))) {
+				attr(div1, "href", div1_href_value);
+			}
+
+			if (dirty & /*selectedPackage*/ 8 && t4_value !== (t4_value = /*titleForPackage*/ ctx[6](/*selectedPackage*/ ctx[3]) + "")) set_data(t4, t4_value);
+
+			if (dirty & /*selectedPackage*/ 8 && a0_href_value !== (a0_href_value = "/docs/index.html#/packages/" + /*selectedPackage*/ ctx[3] + "/")) {
+				attr(a0, "href", a0_href_value);
+			}
+
+			if (dirty & /*selectedPackage*/ 8) set_data(t12, /*selectedPackage*/ ctx[3]);
+
+			if (dirty & /*selectedPackage*/ 8 && a1_href_value !== (a1_href_value = "https://github.com/soapdog/patchfox/blob/master/src/packages/" + /*selectedPackage*/ ctx[3] + "/")) {
+				attr(a1, "href", a1_href_value);
+			}
+
+			if (dirty & /*selectedPackage*/ 8) set_data(t17, /*selectedPackage*/ ctx[3]);
+
+			if (dirty & /*selectedPackage*/ 8 && a2_href_value !== (a2_href_value = "https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/" + /*selectedPackage*/ ctx[3] + "/")) {
+				attr(a2, "href", a2_href_value);
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(div0);
+			if (detaching) detach(t0);
+			if (detaching) detach(div2);
+			if (detaching) detach(t2);
+			if (detaching) detach(p0);
+			if (detaching) detach(t6);
+			if (detaching) detach(br0);
+			if (detaching) detach(t7);
+			if (detaching) detach(p1);
+			if (detaching) detach(t9);
+			if (detaching) detach(br1);
+			if (detaching) detach(t10);
+			if (detaching) detach(ul);
+			if (detaching) detach(t20);
+			if (detaching) detach(br2);
+			if (detaching) detach(t21);
+			if (detaching) detach(p2);
+			mounted = false;
+			dispose();
+		}
+	};
+}
+
 function create_fragment(ctx) {
-	let div5;
-	let div4;
+	let div7;
+	let div6;
 	let a0;
 	let t0;
 	let div1;
@@ -116613,15 +116838,18 @@ function create_fragment(ctx) {
 	let t1;
 	let h1;
 	let t3;
+	let div4;
 	let div2;
 	let a2;
 	let t5;
 	let a3;
 	let t7;
 	let div3;
+	let t8;
+	let div5;
 	let mounted;
 	let dispose;
-	let each_value = /*packageKeys*/ ctx[2];
+	let each_value = /*packageKeys*/ ctx[4];
 	let each_blocks = [];
 
 	for (let i = 0; i < each_value.length; i += 1) {
@@ -116634,10 +116862,12 @@ function create_fragment(ctx) {
 		each_1_else = create_else_block(ctx);
 	}
 
+	let if_block = /*selectedPackage*/ ctx[3] && create_if_block(ctx);
+
 	return {
 		c() {
-			div5 = element("div");
-			div4 = element("div");
+			div7 = element("div");
+			div6 = element("div");
 			a0 = element("a");
 			t0 = space();
 			div1 = element("div");
@@ -116648,6 +116878,7 @@ function create_fragment(ctx) {
 			h1 = element("h1");
 			h1.textContent = "Launcher";
 			t3 = space();
+			div4 = element("div");
 			div2 = element("div");
 			a2 = element("a");
 			a2.textContent = "Apps";
@@ -116665,6 +116896,9 @@ function create_fragment(ctx) {
 				each_1_else.c();
 			}
 
+			t8 = space();
+			div5 = element("div");
+			if (if_block) if_block.c();
 			attr(a0, "href", "#close");
 			attr(a0, "class", "modal-overlay");
 			attr(a0, "aria-label", "Close");
@@ -116681,22 +116915,25 @@ function create_fragment(ctx) {
 			attr(a3, "href", "#");
 			toggle_class(a3, "tab-active", /*subView*/ ctx[1] == "All Packages");
 			attr(div2, "class", "tabs tabs-boxed mb-4");
-			attr(div3, "class", "grid svelte-1s6scuh");
-			attr(div4, "class", "modal-box");
-			attr(div5, "class", "modal");
-			toggle_class(div5, "modal-open", /*active*/ ctx[0]);
+			attr(div3, "class", "grid svelte-j8mr9f");
+			toggle_class(div4, "hidden", /*descriptionOpen*/ ctx[2]);
+			toggle_class(div5, "hidden", !/*descriptionOpen*/ ctx[2]);
+			attr(div6, "class", "modal-box w-11/12 max-w-5xl");
+			attr(div7, "class", "modal");
+			toggle_class(div7, "modal-open", /*active*/ ctx[0]);
 		},
 		m(target, anchor) {
-			insert(target, div5, anchor);
-			append(div5, div4);
-			append(div4, a0);
-			append(div4, t0);
-			append(div4, div1);
+			insert(target, div7, anchor);
+			append(div7, div6);
+			append(div6, a0);
+			append(div6, t0);
+			append(div6, div1);
 			append(div1, div0);
 			append(div0, a1);
 			append(div0, t1);
 			append(div0, h1);
-			append(div4, t3);
+			append(div6, t3);
+			append(div6, div4);
 			append(div4, div2);
 			append(div2, a2);
 			append(div2, t5);
@@ -116712,12 +116949,16 @@ function create_fragment(ctx) {
 				each_1_else.m(div3, null);
 			}
 
+			append(div6, t8);
+			append(div6, div5);
+			if (if_block) if_block.m(div5, null);
+
 			if (!mounted) {
 				dispose = [
-					listen(a0, "click", /*click_handler*/ ctx[8]),
-					listen(a1, "click", /*click_handler_1*/ ctx[9]),
-					listen(a2, "click", /*click_handler_2*/ ctx[10]),
-					listen(a3, "click", /*click_handler_3*/ ctx[11])
+					listen(a0, "click", /*click_handler*/ ctx[10]),
+					listen(a1, "click", /*click_handler_1*/ ctx[11]),
+					listen(a2, "click", /*click_handler_2*/ ctx[12]),
+					listen(a3, "click", /*click_handler_3*/ ctx[13])
 				];
 
 				mounted = true;
@@ -116732,8 +116973,8 @@ function create_fragment(ctx) {
 				toggle_class(a3, "tab-active", /*subView*/ ctx[1] == "All Packages");
 			}
 
-			if (dirty & /*descriptionForPackage, packageKeys, active, patchfox, urlForPackage, titleForPackage, iconForPackage, subView*/ 127) {
-				each_value = /*packageKeys*/ ctx[2];
+			if (dirty & /*descriptionForPackage, packageKeys, patchfox, active, selectedPackage, descriptionOpen, urlForPackage, titleForPackage, iconForPackage, subView*/ 511) {
+				each_value = /*packageKeys*/ ctx[4];
 				let i;
 
 				for (i = 0; i < each_value.length; i += 1) {
@@ -116766,16 +117007,38 @@ function create_fragment(ctx) {
 				}
 			}
 
+			if (dirty & /*descriptionOpen*/ 4) {
+				toggle_class(div4, "hidden", /*descriptionOpen*/ ctx[2]);
+			}
+
+			if (/*selectedPackage*/ ctx[3]) {
+				if (if_block) {
+					if_block.p(ctx, dirty);
+				} else {
+					if_block = create_if_block(ctx);
+					if_block.c();
+					if_block.m(div5, null);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
+			}
+
+			if (dirty & /*descriptionOpen*/ 4) {
+				toggle_class(div5, "hidden", !/*descriptionOpen*/ ctx[2]);
+			}
+
 			if (dirty & /*active*/ 1) {
-				toggle_class(div5, "modal-open", /*active*/ ctx[0]);
+				toggle_class(div7, "modal-open", /*active*/ ctx[0]);
 			}
 		},
 		i: noop,
 		o: noop,
 		d(detaching) {
-			if (detaching) detach(div5);
+			if (detaching) detach(div7);
 			destroy_each(each_blocks, detaching);
 			if (each_1_else) each_1_else.d();
+			if (if_block) if_block.d();
 			mounted = false;
 			run_all(dispose);
 		}
@@ -116790,6 +117053,8 @@ function instance($$self, $$props, $$invalidate) {
 	const keymage = require("keymage");
 	let { active = false } = $$props;
 	let { subView = "Apps" } = $$props;
+	let descriptionOpen = false;
+	let selectedPackage = false;
 	let packageKeys = [];
 
 	let removeHotKey = keymage(
@@ -116812,7 +117077,7 @@ function instance($$self, $$props, $$invalidate) {
 	};
 
 	const titleForPackage = pkg => {
-		let name = patchfox.packages[pkg].title || patchfox.packages[pkg].name;
+		let name = patchfox.packages[pkg]?.title || patchfox.packages[pkg].name;
 		return name;
 	};
 
@@ -116829,15 +117094,15 @@ function instance($$self, $$props, $$invalidate) {
 	const filter = key => {
 		switch (key) {
 			case "All Packages":
-				$$invalidate(2, packageKeys = Object.keys(patchfox.packages));
+				$$invalidate(4, packageKeys = Object.keys(patchfox.packages));
 				break;
 			case "Apps":
-				$$invalidate(2, packageKeys = Object.keys(patchfox.packages).filter(pkg => {
+				$$invalidate(4, packageKeys = Object.keys(patchfox.packages).filter(pkg => {
 					return patchfox.packages[pkg].app && patchfox.packages[pkg].app === true;
 				}));
 				break;
 			default:
-				$$invalidate(2, packageKeys = []);
+				$$invalidate(4, packageKeys = []);
 		}
 
 		$$invalidate(1, subView = key);
@@ -116861,9 +117126,16 @@ function instance($$self, $$props, $$invalidate) {
 	const click_handler_3 = () => filter("All Packages");
 
 	const click_handler_4 = pkg => {
-		$$invalidate(0, active = false);
-		patchfox.go(pkg, "view");
+		if (patchfox.packages[pkg]?.app) {
+			$$invalidate(0, active = false);
+			patchfox.go(pkg, "view");
+		} else {
+			$$invalidate(3, selectedPackage = pkg);
+			$$invalidate(2, descriptionOpen = true);
+		}
 	};
+
+	const click_handler_5 = () => $$invalidate(2, descriptionOpen = false);
 
 	$$self.$$set = $$props => {
 		if ('active' in $$props) $$invalidate(0, active = $$props.active);
@@ -116873,6 +117145,8 @@ function instance($$self, $$props, $$invalidate) {
 	return [
 		active,
 		subView,
+		descriptionOpen,
+		selectedPackage,
 		packageKeys,
 		iconForPackage,
 		titleForPackage,
@@ -116883,7 +117157,8 @@ function instance($$self, $$props, $$invalidate) {
 		click_handler_1,
 		click_handler_2,
 		click_handler_3,
-		click_handler_4
+		click_handler_4,
+		click_handler_5
 	];
 }
 
@@ -116899,6 +117174,7 @@ module.exports = Launcher;
 },{"keymage":207,"svelte":573,"svelte/internal":574}],731:[function(require,module,exports){
 patchfox.package({
   name: "openCollectiveIntegration",
+  title: "OpenCollective Integration",
   supportedPlatforms: ["all"],
   menu: [
     {
@@ -116940,6 +117216,7 @@ require("./openCollectiveIntegration/openCollectiveIntegration.js")
 require("./errorHandler/errorHandler.js")
 require("./zine/zine.js")
 require("./books/books.js")
+require("./projectMoonHermit/projectMoonHermit.js")
 // require("./scheme/scheme.js")
 // require("./journal/journal.js")
 
@@ -116947,7 +117224,7 @@ require("./books/books.js")
 
 
 
-},{"./KoFiIntegration/KoFiIntegration.js":685,"./blog/blog.js":691,"./books/books.js":696,"./calendar/calendar.js":702,"./contacts/contacts.js":713,"./errorHandler/errorHandler.js":715,"./githubIntegration/githubIntegration.js":716,"./globalMenu/globalMenu.js":717,"./helpMenu/helpMenu.js":719,"./hub/hub.js":726,"./intercept/intercept.js":728,"./launcher/launcher.js":729,"./openCollectiveIntegration/openCollectiveIntegration.js":731,"./post/post.js":735,"./private/private.js":737,"./pub/pub.js":739,"./search/search.js":741,"./settings/settings.js":751,"./sourcehutIntegration/sourcehutIntegration.js":752,"./system/system.js":758,"./vote/vote.js":760,"./zine/zine.js":762}],733:[function(require,module,exports){
+},{"./KoFiIntegration/KoFiIntegration.js":685,"./blog/blog.js":691,"./books/books.js":696,"./calendar/calendar.js":702,"./contacts/contacts.js":713,"./errorHandler/errorHandler.js":715,"./githubIntegration/githubIntegration.js":716,"./globalMenu/globalMenu.js":717,"./helpMenu/helpMenu.js":719,"./hub/hub.js":726,"./intercept/intercept.js":728,"./launcher/launcher.js":729,"./openCollectiveIntegration/openCollectiveIntegration.js":731,"./post/post.js":735,"./private/private.js":737,"./projectMoonHermit/projectMoonHermit.js":739,"./pub/pub.js":741,"./search/search.js":743,"./settings/settings.js":753,"./sourcehutIntegration/sourcehutIntegration.js":754,"./system/system.js":760,"./vote/vote.js":762,"./zine/zine.js":764}],733:[function(require,module,exports){
 /* PostCard.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -117564,7 +117841,7 @@ function add_css(target) {
 	append_styles(target, "svelte-1kmc4x", ".file-on-top.svelte-1kmc4x{border:solid 2px rgb(26, 192, 11)}input[type=\"file\"].svelte-1kmc4x{display:none}");
 }
 
-// (209:2) {#if fork}
+// (222:2) {#if fork}
 function create_if_block_11(ctx) {
 	let div;
 	let t0;
@@ -117591,7 +117868,7 @@ function create_if_block_11(ctx) {
 	};
 }
 
-// (212:2) {#if msg}
+// (225:2) {#if msg}
 function create_if_block_9(ctx) {
 	let if_block_anchor;
 
@@ -117632,7 +117909,7 @@ function create_if_block_9(ctx) {
 	};
 }
 
-// (215:4) {:else}
+// (228:4) {:else}
 function create_else_block_2(ctx) {
 	let div1;
 	let div0;
@@ -117675,7 +117952,7 @@ function create_else_block_2(ctx) {
 	};
 }
 
-// (213:4) {#if error}
+// (226:4) {#if error}
 function create_if_block_10(ctx) {
 	let div;
 	let t;
@@ -117699,7 +117976,7 @@ function create_if_block_10(ctx) {
 	};
 }
 
-// (293:2) {:else}
+// (306:2) {:else}
 function create_else_block_1(ctx) {
 	let div5;
 	let h2;
@@ -117826,7 +118103,7 @@ function create_else_block_1(ctx) {
 	};
 }
 
-// (231:2) {#if !showPreview}
+// (244:2) {#if !showPreview}
 function create_if_block(ctx) {
 	let div3;
 	let div0;
@@ -118031,7 +118308,7 @@ function create_if_block(ctx) {
 	};
 }
 
-// (297:6) {#if channel || root || branch || contentWarning.length > 0}
+// (310:6) {#if channel || root || branch || contentWarning.length > 0}
 function create_if_block_4(ctx) {
 	let t0;
 	let t1;
@@ -118129,7 +118406,7 @@ function create_if_block_4(ctx) {
 	};
 }
 
-// (298:10) {#if channel}
+// (311:10) {#if channel}
 function create_if_block_8(ctx) {
 	let p;
 	let b;
@@ -118166,7 +118443,7 @@ function create_if_block_8(ctx) {
 	};
 }
 
-// (304:10) {#if root}
+// (317:10) {#if root}
 function create_if_block_7(ctx) {
 	let p;
 	let b;
@@ -118196,7 +118473,7 @@ function create_if_block_7(ctx) {
 	};
 }
 
-// (310:10) {#if branch}
+// (323:10) {#if branch}
 function create_if_block_6(ctx) {
 	let p;
 	let b;
@@ -118226,7 +118503,7 @@ function create_if_block_6(ctx) {
 	};
 }
 
-// (316:10) {#if contentWarning.length > 0}
+// (329:10) {#if contentWarning.length > 0}
 function create_if_block_5(ctx) {
 	let p;
 	let b;
@@ -118256,7 +118533,7 @@ function create_if_block_5(ctx) {
 	};
 }
 
-// (243:6) {#if branch}
+// (256:6) {#if branch}
 function create_if_block_2(ctx) {
 	let div;
 	let label;
@@ -118365,7 +118642,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (255:8) {:else}
+// (268:8) {:else}
 function create_else_block(ctx) {
 	let spinner;
 	let current;
@@ -118395,7 +118672,7 @@ function create_else_block(ctx) {
 	};
 }
 
-// (253:8) {#if branchedMsg}
+// (266:8) {#if branchedMsg}
 function create_if_block_3(ctx) {
 	let messagerenderer;
 	let current;
@@ -118429,7 +118706,7 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (276:8) {#if showContentWarningField}
+// (289:8) {#if showContentWarningField}
 function create_if_block_1(ctx) {
 	let input;
 	let mounted;
@@ -118653,9 +118930,9 @@ function instance($$self, $$props, $$invalidate) {
 			var first = files[0];
 			console.log(first);
 
-			if (!first.type.startsWith("image")) {
+			if (!first.type.startsWith("image") && !first.type.startsWith("video") && !first.type.startsWith("audio")) {
 				$$invalidate(10, error = true);
-				$$invalidate(9, msg = `You can only drag & drop image, this file is a ${first.type}`);
+				$$invalidate(9, msg = `You can only drag & drop images, videos, or audio, this file is a ${first.type}`);
 				return false;
 			}
 
@@ -118666,7 +118943,21 @@ function instance($$self, $$props, $$invalidate) {
 			}
 
 			ssb.addBlob(first).then(hash => {
-				$$invalidate(2, content += ` ![${first.name}](${hash})`);
+				switch (first.type) {
+					case "image/png":
+					case "image/jpeg":
+					case "image/gif":
+					case "image/svg":
+						$$invalidate(2, content += ` ![${first.name}](${hash})`);
+						break;
+					case "video/mp4":
+						$$invalidate(2, content += ` ![video:${first.name}](${hash})`);
+						break;
+					case "audio/mp3":
+						$$invalidate(2, content += ` ![audio:${first.name}](${hash})`);
+						break;
+				}
+
 				$$invalidate(5, fileOnTop = false);
 			}).catch(err => {
 				$$invalidate(10, error = true);
@@ -118958,6 +119249,53 @@ patchfox.package({
 })
 
 },{"./Private.svelte":736}],738:[function(require,module,exports){
+/* ProjectMoonHermit.svelte generated by Svelte v3.42.4 */
+"use strict";
+
+const { SvelteComponent, detach, element, init, insert, noop, safe_not_equal } = require("svelte/internal");
+
+function create_fragment(ctx) {
+	let div;
+
+	return {
+		c() {
+			div = element("div");
+			div.textContent = "Not implemented";
+		},
+		m(target, anchor) {
+			insert(target, div, anchor);
+		},
+		p: noop,
+		i: noop,
+		o: noop,
+		d(detaching) {
+			if (detaching) detach(div);
+		}
+	};
+}
+
+class ProjectMoonHermit extends SvelteComponent {
+	constructor(options) {
+		super();
+		init(this, options, null, create_fragment, safe_not_equal, {});
+	}
+}
+
+module.exports = ProjectMoonHermit;
+
+},{"svelte/internal":574}],739:[function(require,module,exports){
+const ProjectMoonHermit = require("./ProjectMoonHermit.svelte")
+
+patchfox.package({
+  name: "projectMoonHermit",
+  title: "Project Moon Hermit",
+  supportedPlatforms: ["nodejs-ssb"],
+  app: true,
+  icon: "crescent-moon.png",
+  view: ProjectMoonHermit,
+})
+
+},{"./ProjectMoonHermit.svelte":738}],740:[function(require,module,exports){
 /* Pub.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -119065,7 +119403,7 @@ class Pub extends SvelteComponent {
 
 module.exports = Pub;
 
-},{"../../core/components/AvatarChip.svelte":659,"svelte/internal":574}],739:[function(require,module,exports){
+},{"../../core/components/AvatarChip.svelte":659,"svelte/internal":574}],741:[function(require,module,exports){
 const Pub = require("./Pub.svelte")
 
 patchfox.package({
@@ -119079,7 +119417,7 @@ patchfox.package({
   ]
 })
 
-},{"./Pub.svelte":738}],740:[function(require,module,exports){
+},{"./Pub.svelte":740}],742:[function(require,module,exports){
 /* SearchView.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -119433,7 +119771,7 @@ class SearchView extends SvelteComponent {
 
 module.exports = SearchView;
 
-},{"../../core/components/MessageRenderer.svelte":668,"../../core/components/Spinner.svelte":670,"svelte":573,"svelte/internal":574}],741:[function(require,module,exports){
+},{"../../core/components/MessageRenderer.svelte":668,"../../core/components/Spinner.svelte":670,"svelte":573,"svelte/internal":574}],743:[function(require,module,exports){
 const SearchView = require("./SearchView.svelte")
 
 patchfox.package({
@@ -119443,7 +119781,7 @@ patchfox.package({
   query: SearchView,
 })
 
-},{"./SearchView.svelte":740}],742:[function(require,module,exports){
+},{"./SearchView.svelte":742}],744:[function(require,module,exports){
 /* About.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -119520,7 +119858,7 @@ class About extends SvelteComponent {
 
 module.exports = About;
 
-},{"svelte/internal":574}],743:[function(require,module,exports){
+},{"svelte/internal":574}],745:[function(require,module,exports){
 /* ContentWarnings.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -119677,7 +120015,7 @@ class ContentWarnings extends SvelteComponent {
 
 module.exports = ContentWarnings;
 
-},{"svelte/internal":574}],744:[function(require,module,exports){
+},{"svelte/internal":574}],746:[function(require,module,exports){
 /* DisplayPreferences.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -120337,7 +120675,7 @@ class DisplayPreferences extends SvelteComponent {
 
 module.exports = DisplayPreferences;
 
-},{"svelte/internal":574}],745:[function(require,module,exports){
+},{"svelte/internal":574}],747:[function(require,module,exports){
 /* Filters.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -121135,7 +121473,7 @@ class Filters extends SvelteComponent {
 
 module.exports = Filters;
 
-},{"../../core/platforms/common/abusePrevention.js":682,"svelte/internal":574}],746:[function(require,module,exports){
+},{"../../core/platforms/common/abusePrevention.js":682,"svelte/internal":574}],748:[function(require,module,exports){
 /* IdentitiesAndConnections.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -121903,7 +122241,7 @@ class IdentitiesAndConnections extends SvelteComponent {
 
 module.exports = IdentitiesAndConnections;
 
-},{"../../core/components/AvatarChip.svelte":659,"svelte/internal":574}],747:[function(require,module,exports){
+},{"../../core/components/AvatarChip.svelte":659,"svelte/internal":574}],749:[function(require,module,exports){
 /* Menu.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -122058,7 +122396,7 @@ class Menu extends SvelteComponent {
 
 module.exports = Menu;
 
-},{"svelte":573,"svelte/internal":574}],748:[function(require,module,exports){
+},{"svelte":573,"svelte/internal":574}],750:[function(require,module,exports){
 /* PlatformDAT.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -122215,7 +122553,7 @@ class PlatformDAT extends SvelteComponent {
 
 module.exports = PlatformDAT;
 
-},{"svelte/internal":574}],749:[function(require,module,exports){
+},{"svelte/internal":574}],751:[function(require,module,exports){
 /* PlatformIPFS.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -122372,7 +122710,7 @@ class PlatformIPFS extends SvelteComponent {
 
 module.exports = PlatformIPFS;
 
-},{"svelte/internal":574}],750:[function(require,module,exports){
+},{"svelte/internal":574}],752:[function(require,module,exports){
 /* Settings.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -122518,7 +122856,7 @@ class Settings extends SvelteComponent {
 
 module.exports = Settings;
 
-},{"./About.svelte":742,"./ContentWarnings.svelte":743,"./DisplayPreferences.svelte":744,"./Filters.svelte":745,"./IdentitiesAndConnections.svelte":746,"./Menu.svelte":747,"./PlatformDAT.svelte":748,"./PlatformIPFS.svelte":749,"svelte/internal":574}],751:[function(require,module,exports){
+},{"./About.svelte":744,"./ContentWarnings.svelte":745,"./DisplayPreferences.svelte":746,"./Filters.svelte":747,"./IdentitiesAndConnections.svelte":748,"./Menu.svelte":749,"./PlatformDAT.svelte":750,"./PlatformIPFS.svelte":751,"svelte/internal":574}],753:[function(require,module,exports){
 const view = require("./Settings.svelte")
 
 patchfox.package({
@@ -122550,9 +122888,10 @@ patchfox.package({
   },
 })
 
-},{"./Settings.svelte":750}],752:[function(require,module,exports){
+},{"./Settings.svelte":752}],754:[function(require,module,exports){
 patchfox.package({
   name: "sourcehutIntegration",
+  title: "Sourcehut Integration",
   supportedPlatforms: ["all"],
   menu: [
     {
@@ -122567,9 +122906,9 @@ patchfox.package({
       ]
     }
   ]
-});
+})
 
-},{}],753:[function(require,module,exports){
+},{}],755:[function(require,module,exports){
 /* JoinPub.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -122764,7 +123103,7 @@ class JoinPub extends SvelteComponent {
 
 module.exports = JoinPub;
 
-},{"svelte/internal":574}],754:[function(require,module,exports){
+},{"svelte/internal":574}],756:[function(require,module,exports){
 /* JoinRoom.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -122943,7 +123282,7 @@ class JoinRoom extends SvelteComponent {
 
 module.exports = JoinRoom;
 
-},{"ssb-uri2":535,"svelte/internal":574}],755:[function(require,module,exports){
+},{"ssb-uri2":535,"svelte/internal":574}],757:[function(require,module,exports){
 /* Peers.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -123198,7 +123537,7 @@ class Peers extends SvelteComponent {
 
 module.exports = Peers;
 
-},{"svelte/internal":574}],756:[function(require,module,exports){
+},{"svelte/internal":574}],758:[function(require,module,exports){
 /* Status.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -123318,7 +123657,7 @@ class Status extends SvelteComponent {
 
 module.exports = Status;
 
-},{"svelte/internal":574}],757:[function(require,module,exports){
+},{"svelte/internal":574}],759:[function(require,module,exports){
 /* httpAuth.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -123480,7 +123819,7 @@ class HttpAuth extends SvelteComponent {
 
 module.exports = HttpAuth;
 
-},{"ssb-uri2":535,"svelte/internal":574}],758:[function(require,module,exports){
+},{"ssb-uri2":535,"svelte/internal":574}],760:[function(require,module,exports){
 const Peers = require("./Peers.svelte")
 const JoinPub = require("./JoinPub.svelte")
 const JoinRoom = require("./JoinRoom.svelte")
@@ -123529,7 +123868,7 @@ patchfox.package({
   ]
 })
 
-},{"./JoinPub.svelte":753,"./JoinRoom.svelte":754,"./Peers.svelte":755,"./Status.svelte":756,"./httpAuth.svelte":757}],759:[function(require,module,exports){
+},{"./JoinPub.svelte":755,"./JoinRoom.svelte":756,"./Peers.svelte":757,"./Status.svelte":758,"./httpAuth.svelte":759}],761:[function(require,module,exports){
 /* Vote.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -123661,7 +124000,7 @@ class Vote extends SvelteComponent {
 
 module.exports = Vote;
 
-},{"../../core/components/AvatarChip.svelte":659,"svelte/internal":574}],760:[function(require,module,exports){
+},{"../../core/components/AvatarChip.svelte":659,"svelte/internal":574}],762:[function(require,module,exports){
 const Vote = require("./Vote.svelte")
 
 patchfox.package({
@@ -123676,7 +124015,7 @@ patchfox.package({
   ],
 })
 
-},{"./Vote.svelte":759}],761:[function(require,module,exports){
+},{"./Vote.svelte":761}],763:[function(require,module,exports){
 /* Zine.svelte generated by Svelte v3.42.4 */
 "use strict";
 
@@ -124384,7 +124723,7 @@ class Zine extends SvelteComponent {
 
 module.exports = Zine;
 
-},{"../../core/components/Spinner.svelte":670,"../../core/components/timestamp.js":673,"pull-paramap":409,"pull-sort":413,"pull-stream":414,"svelte":573,"svelte/internal":574}],762:[function(require,module,exports){
+},{"../../core/components/Spinner.svelte":670,"../../core/components/timestamp.js":673,"pull-paramap":409,"pull-sort":413,"pull-stream":414,"svelte":573,"svelte/internal":574}],764:[function(require,module,exports){
 const Zine = require("./Zine.svelte")
 
 patchfox.package({
@@ -124395,14 +124734,14 @@ patchfox.package({
   view: Zine,
 })
 
-},{"./Zine.svelte":761}],763:[function(require,module,exports){
+},{"./Zine.svelte":763}],765:[function(require,module,exports){
 let currentTheme = patchfox.getPref("theme", "light")
 document.documentElement.setAttribute("data-theme", currentTheme)
 
 
 module.exports = {}
 
-},{}],764:[function(require,module,exports){
+},{}],766:[function(require,module,exports){
 /* wm.svelte generated by Svelte v3.42.4 */
 "use strict";
 

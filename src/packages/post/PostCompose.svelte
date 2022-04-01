@@ -79,9 +79,9 @@
       var first = files[0]
       console.log(first)
 
-      if (!first.type.startsWith("image")) {
+      if (!first.type.startsWith("image") &&  !first.type.startsWith("video") && !first.type.startsWith("audio")) {
         error = true
-        msg = `You can only drag & drop image, this file is a ${first.type}`
+        msg = `You can only drag & drop images, videos, or audio, this file is a ${first.type}`
         return false
       }
 
@@ -96,7 +96,20 @@
 
       ssb.addBlob(first)
         .then(hash => {
-          content += ` ![${first.name}](${hash})`
+          switch(first.type) { 
+          case "image/png":
+          case "image/jpeg":
+          case "image/gif":
+          case "image/svg":
+            content += ` ![${first.name}](${hash})`
+            break
+          case "video/mp4":
+            content += ` ![video:${first.name}](${hash})`
+            break
+          case "audio/mp3":
+            content += ` ![audio:${first.name}](${hash})`
+            break
+          }
           fileOnTop = false
         })
         .catch(err => {

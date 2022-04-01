@@ -7,6 +7,8 @@
   export let subView = "Apps"
   let packageBeingHovered = false
   let description = ""
+  let descriptionOpen = false
+  let selectedPackage = false
 
   let packageKeys = []
 
@@ -17,7 +19,7 @@
       active = !active
     },
     { preventDefault: true }
-    )
+  )
 
   const iconForPackage = pkg => {
     let icon = "/images/package.svg"
@@ -28,7 +30,7 @@
   }
 
   const titleForPackage = pkg => {
-    let name = patchfox.packages[pkg].title || patchfox.packages[pkg].name
+    let name = patchfox.packages[pkg]?.title || patchfox.packages[pkg].name
     return name
   }
 
@@ -44,17 +46,17 @@
 
   const filter = key => {
     switch (key) {
-      case "All Packages":
+    case "All Packages":
       packageKeys = Object.keys(patchfox.packages)
       break
-      case "Apps":
+    case "Apps":
       packageKeys = Object.keys(patchfox.packages).filter(pkg => {
         return (
           patchfox.packages[pkg].app && patchfox.packages[pkg].app === true
-          )
+        )
       })
       break
-      default:
+    default:
       packageKeys = []
     }
     subView = key
@@ -85,6 +87,9 @@
     padding: 0.5rem;
     text-align: center;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .package-title {
@@ -97,7 +102,7 @@
 </style>
 
 <div class:modal-open={active} class="modal">
-  <div class="modal-box">
+  <div class="modal-box w-11/12 max-w-5xl">
     <a
     href="#close"
     class="modal-overlay"
@@ -112,6 +117,7 @@
         on:click={() => (active = false)}><i class="fas fa-times" /></a>
         <h1 class="uppercase font-medium text-center mb-4">Launcher</div>
       </div>
+      <div class:hidden={descriptionOpen}>
       <div class="tabs tabs-boxed mb-4">
             <a
             class="tab"
@@ -135,8 +141,13 @@
       class:tooltip={descriptionForPackage(pkg)}
       data-tooltip={descriptionForPackage(pkg)}
       on:click={() => {
-        active = false
-        patchfox.go(pkg, "view")
+        if (patchfox.packages[pkg]?.app) {
+          active = false
+          patchfox.go(pkg, "view")
+        } else {
+          selectedPackage = pkg 
+          descriptionOpen = true
+        }
       }}>
       <div class="package-icon">
         <img
@@ -154,5 +165,45 @@
     <p>No packages matching the {subView} filter</p>
     {/each}
   </div>
+  </div>
+  <div class:hidden={!descriptionOpen}>
+    {#if selectedPackage}
+    <div class="package-icon">
+        <img
+        class="centered"
+        src={iconForPackage(selectedPackage)}
+        alt={titleForPackage(selectedPackage)} />
+    </div>
+      <div class="package-content">
+        <div class="package-title" href={urlForPackage(selectedPackage)}>
+          <h2 class="text-xl">{titleForPackage(selectedPackage)}</h2>
+        </div>
+      </div>
+      <p>
+        Open
+        <a class="link link-accent" target="_blank" href="/docs/index.html#/packages/{selectedPackage}/">
+          {titleForPackage(selectedPackage)} documentation
+        </a>
+      </p>
+      <br>
+      <p>Do you want to see the source-code for this package?</p>
+      <br>
+      <ul>
+        <li>
+          <a class="link" target="_blank" href="https://github.com/soapdog/patchfox/blob/master/src/packages/{selectedPackage}/">
+            See source for <b>{selectedPackage} package</b> at GitHub.
+          </a>
+        </li>
+        <li>
+          <a class="link" target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/{selectedPackage}/">
+            See source for <b>{selectedPackage} package</b> at SourceHut.
+          </a>
+        </li>
+      </ul>
+      <br>
+      <p><a class="btn btn-primary" on:click={() => descriptionOpen = false}>Close</a>
+    {/if}
+  </div>
+
 </div>
 </div>

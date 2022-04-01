@@ -22,6 +22,7 @@ require("./openCollectiveIntegration/openCollectiveIntegration.js")
 require("./errorHandler/errorHandler.js")
 require("./zine/zine.js")
 require("./books/books.js")
+require("./projectMoonHermit/projectMoonHermit.js")
 // require("./scheme/scheme.js")
 // require("./journal/journal.js")
 

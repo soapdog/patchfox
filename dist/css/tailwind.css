@@ -4296,6 +4296,10 @@ html {
   width: 100%;
 }
 
+.w-11\/12 {
+  width: 91.666667%;
+}
+
 .w-6 {
   width: 1.5rem;
 }
@@ -4314,6 +4318,10 @@ html {
 
 .max-w-xs {
   max-width: 20rem;
+}
+
+.max-w-5xl {
+  max-width: 64rem;
 }
 
 .flex-1 {
@@ -4612,11 +4620,13 @@ figure.avatar {
   width: unset !important;
 }
 
-@media (min-width: 768px) {
-  .md\:hidden {
+@media (min-width: 640px) {
+  .sm\:hidden {
     display: none;
   }
+}
 
+@media (min-width: 768px) {
   .md\:w-auto {
     width: auto;
   }

@@ -1,5 +1,6 @@
 patchfox.package({
   name: "openCollectiveIntegration",
+  title: "OpenCollective Integration",
   supportedPlatforms: ["all"],
   menu: [
     {

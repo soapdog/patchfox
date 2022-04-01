@@ -1,5 +1,6 @@
 patchfox.package({
   name: "githubIntegration",
+  title: "Github Integration",
   supportedPlatforms: ["all"],
   menu: [
     {
@@ -19,4 +20,4 @@ patchfox.package({
       ]
     }
   ]
-});
+})

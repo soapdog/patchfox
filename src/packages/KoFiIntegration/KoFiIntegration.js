@@ -1,5 +1,6 @@
 patchfox.package({
   name: "KoFiIntegration",
+  title: "Ko-Fi Integration",
   supportedPlatforms: ["all"],
   menu: [
     {

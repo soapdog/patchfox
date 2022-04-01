@@ -1,5 +1,6 @@
 patchfox.package({
   name: "sourcehutIntegration",
+  title: "Sourcehut Integration",
   supportedPlatforms: ["all"],
   menu: [
     {
@@ -14,4 +15,4 @@ patchfox.package({
       ]
     }
   ]
-});
+})
