@@ -46,7 +46,6 @@
   })
 
   aboutPromise = ssb.profile(feed).then(data => {
-    console.log(data)
     lastAbout = data.about.reverse().find(m => {
       let a = m.value.content
       return a.hasOwnProperty("description")
@@ -106,7 +105,6 @@
   
   aliasesPromise = ssb.rooms2.getAliases(feed)
     .then(data => {
-      console.log(data)
       aliases = data
     })
     .catch(err => console.error(err))
