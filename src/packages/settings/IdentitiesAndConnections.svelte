@@ -1,5 +1,5 @@
 <script>
-  const { getPref, setPref, saveIdentityConfiguration, setDefaultIdentity } = patchfox
+  const { getPref, setPref, saveIdentityConfiguration, setDefaultIdentity, removeIdentity } = patchfox
   const AvatarChip = require("../../core/components/AvatarChip.svelte")
 
   let keys = ""
@@ -99,7 +99,10 @@
       reloadSavedConfiguration()
     }}>Set as default</button>
     {/if}
-    <button class="btn btn-error">Remove</button>
+    <button class="btn btn-error" on:click={ ()=> {
+      removeIdentity(key)
+      reloadSavedConfiguration()
+    }}>Remove</button>
     <button class="btn" on:click={() => {
       window.open(patchfox.url("settings","view",{identity: identities[key].keys.public}))
     }}>Open in new tab</button>

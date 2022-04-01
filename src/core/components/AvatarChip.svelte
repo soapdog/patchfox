@@ -15,9 +15,15 @@
   const dispatch = createEventDispatcher()
 
   ssb.avatar(feed).then(data => {
+    if (!data.hasOwnProperty("name")) {
+      name = feed
+      return
+    }
+
     if (data.image !== null && data.image !== undefined) {
       image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`
     }
+
     name = data.name
   })
 

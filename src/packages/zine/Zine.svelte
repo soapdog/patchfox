@@ -126,6 +126,7 @@
     </button>
   </div> -->
 
+  {#if channel}
   <div class="dropdown" class:dropdown-open={dropdownActive}>
     <button class="btn" tabindex="0" on:click={() => dropdownActive = true}>
       {channel}
@@ -142,6 +143,7 @@
       {/each}
     </ul>
   </div>
+{/if}
 </div>
 <br>
 

@@ -82,6 +82,7 @@ class NodeJsSSB {
     this.setAvatarCache = setAvatarCache
     this.getCachedAvatar = getCachedAvatar
     this.getAllCachedUsers = getAllCachedUsers
+    this.filterWithUserFilters = filterWithUserFilters
   }
 
   log(pMsg, pVal = "") {
@@ -351,30 +352,37 @@ class NodeJsSSB {
     })
   }
 
-  async profile(feedid) {
-    let opts = {
-      id: feedid,
-      reverse: true,
-    }
+  profile(feedid) {
+    return new Promise((resolve, reject) => {
+      let opts = {
+        id: feedid,
+        reverse: true,
+      }
 
-    let user = {
-      msgs: [],
-      about: await this.aboutMessages(feedid, feedid),
-    }
-    const pipeline = pipelines.thread.get()
+      let user = {
+        msgs: [],
+        about: {},
+      }
 
-    pull(
-      sbot.createUserStream(opts),
-      pull.apply(pull, pipeline),
-      pull.collect(function (err, data) {
-        if (err) {
-          throw err
-        } else {
-          user.msgs = data
-          return user
-        }
+      this.aboutMessages(feedid, feedid).then(data => {
+        user.about = data
+
+        const pipeline = pipelines.thread.get()
+
+        pull(
+          sbot.createUserStream(opts),
+          pull.apply(pull, pipeline),
+          pull.collect(function (err, data) {
+            if (err) {
+              reject(err)
+            } else {
+              user.msgs = data
+              resolve(user)
+            }
+          })
+        )
       })
-    )
+    })
   }
 
   get(id) {

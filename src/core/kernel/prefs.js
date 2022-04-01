@@ -52,6 +52,16 @@ const saveIdentityConfiguration = ({ keys, remote, type }) => {
   browser.storage.local.set(savedData)
 }
 
+const removeIdentity = (key) => {
+  savedData.identities = savedData.identities || {}
+
+  if (savedData.identities.hasOwnProperty(key)) {
+    delete savedData.identities[key]
+  }
+
+  browser.storage.local.set(savedData)
+}
+
 
 const setPref = (key, value) => {
   savedData.preferences = savedData.preferences || {}
@@ -99,4 +109,5 @@ module.exports = {
   savedIdentitites,
   getDefaultIdentity,
   setDefaultIdentity,
+  removeIdentity,
 }
