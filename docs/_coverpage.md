@@ -8,7 +8,7 @@
 
 - Simple and lightweight 
 
-[Patchfox Open Collective](https://opencollective.com/patchfox)
+[Buy Me A Coffee](https://ko-fi.com/andreshouldbewriting)
 [Documentation](#readme)
 [Install from Chrome Web Store](https://chrome.google.com/webstore/detail/patchfox/ocanekmedfooidiahhelofknmpobdmdp?hl=en-GB&authuser=0)
 [Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)

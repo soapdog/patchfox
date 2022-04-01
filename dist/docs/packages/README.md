@@ -3,14 +3,15 @@
 
 These are the packages that Patchfox is loading. 
 
+* [KoFiIntegration](/packages/KoFiIntegration/)
 * [blog](/packages/blog/)
 * [books](/packages/books/)
-* [errorHandler](/packages/errorHandler/)
 * [calendar](/packages/calendar/)
+* [errorHandler](/packages/errorHandler/)
 * [githubIntegration](/packages/githubIntegration/)
 * [contacts](/packages/contacts/)
-* [helpMenu](/packages/helpMenu/)
 * [globalMenu](/packages/globalMenu/)
+* [helpMenu](/packages/helpMenu/)
 * [hub](/packages/hub/)
 * [intercept](/packages/intercept/)
 * [launcher](/packages/launcher/)
@@ -19,8 +20,8 @@ These are the packages that Patchfox is loading.
 * [private](/packages/private/)
 * [pub](/packages/pub/)
 * [search](/packages/search/)
-* [sourcehutIntegration](/packages/sourcehutIntegration/)
 * [settings](/packages/settings/)
-* [vote](/packages/vote/)
+* [sourcehutIntegration](/packages/sourcehutIntegration/)
 * [system](/packages/system/)
+* [vote](/packages/vote/)
 * [zine](/packages/zine/)
