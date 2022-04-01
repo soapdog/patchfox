@@ -46,6 +46,7 @@
   })
 
   aboutPromise = ssb.profile(feed).then(data => {
+    console.log(data)
     lastAbout = data.about.reverse().find(m => {
       let a = m.value.content
       return a.hasOwnProperty("description")
