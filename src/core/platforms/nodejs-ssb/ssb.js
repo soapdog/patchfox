@@ -377,7 +377,6 @@ class NodeJsSSB {
               reject(err)
             } else {
               user.msgs = data
-              console.log('user', user)
               resolve(user)
             }
           })
