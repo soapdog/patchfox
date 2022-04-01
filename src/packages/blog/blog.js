@@ -1,7 +1,7 @@
-const BlogCompose = require("./BlogCompose.svelte");
-const BlogCard = require("./BlogCard.svelte");
-const BlogApp = require("./BlogApp.svelte");
-const BlogImport = require("./BlogImport.svelte");
+const BlogCompose = require("./BlogCompose.svelte")
+const BlogCard = require("./BlogCard.svelte")
+const BlogApp = require("./BlogApp.svelte")
+const BlogImport = require("./BlogImport.svelte")
 
 patchfox.package({
   name: "blog",
@@ -23,8 +23,21 @@ patchfox.package({
       group: "Compose",
       items: [
         {
-          label: "Blog",
+          label: "New Blog",
           event: "package:go",
+          data: {
+            pkg: "blog",
+            view: "compose"
+          }
+        }
+      ]
+    },
+    {
+      group: "Compose",
+      items: [
+        {
+          label: "New Blog using Sidebar",
+          event: "package:sidebar",
           data: {
             pkg: "blog",
             view: "compose"

@@ -1,5 +1,5 @@
-const PostCompose = require("./PostCompose.svelte");
-const PostCard = require("./PostCard.svelte");
+const PostCompose = require("./PostCompose.svelte")
+const PostCard = require("./PostCard.svelte")
 
 patchfox.package({
   name: "post",
@@ -18,8 +18,21 @@ patchfox.package({
       group: "Compose",
       items: [
         {
-          label: "Post",
+          label: "New Post",
           event: "package:go",
+          data: {
+            pkg: "post",
+            view: "compose"
+          }
+        }
+      ]
+    },
+    {
+      group: "Compose",
+      items: [
+        {
+          label: "New Post using Sidebar",
+          event: "package:sidebar",
           data: {
             pkg: "post",
             view: "compose"

@@ -31,6 +31,7 @@
         .then(() => console.log("unliked", msg.key))
         .catch(() => (liked = true))
     }
+    msg = msg
   }
 
   const reply = ev => {
@@ -114,7 +115,7 @@
     <div>
         <div class="form-control">
           <label class="cursor-pointer label">
-            <span class="label-text">Like</span> 
+            <span class="label-text mr-2">Like</span> 
             <input class="toggle" type="checkbox" on:change={likeChanged} checked={liked} />
           </label>
         </div>
