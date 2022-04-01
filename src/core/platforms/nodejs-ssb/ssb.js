@@ -82,6 +82,7 @@ class NodeJsSSB {
     this.setAvatarCache = setAvatarCache
     this.getCachedAvatar = getCachedAvatar
     this.getAllCachedUsers = getAllCachedUsers
+    this.filterWithUserFilters = filterWithUserFilters
   }
 
   log(pMsg, pVal = "") {
