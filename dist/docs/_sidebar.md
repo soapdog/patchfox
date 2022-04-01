@@ -10,6 +10,7 @@
 - [Packages](packages/)
 - [Privacy Policy](privacy-policy.md)
 - Release Notes
+  - [Version 2022.4.1](release_notes/2022.4.1.md)
   - [Version 2022.2.1](release_notes/2022.2.1.md)
   - [Version 2022.1.2](release_notes/2022.1.2.md)
   - [Version 2022.1.1](release_notes/2022.1.1.md)
