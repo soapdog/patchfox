@@ -89,7 +89,8 @@
     "turndown": "^7.0.0"
   },
   "dependencies": {
-    "electron": "18.2.4",
+    "electron": "^18.2.3",
+    "electron-default-menu": "^1.0.2",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-store": "^8.0.1",
     "mithril": "^2.2.0",

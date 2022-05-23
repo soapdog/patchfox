@@ -20,7 +20,7 @@ const MenuItem = {
       onclick: click,
       target: "_blank"
     }, [
-      when(icon, m(`i.fas.fa-{icon}`, "&nbsp;&nbsp;")),
+      when(icon, m(`i.fas.fa-{icon}`, m.trust("&nbsp;&nbsp;"))),
       label
     ]))
   }

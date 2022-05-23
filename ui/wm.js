@@ -4,7 +4,6 @@ const { getPref } = require("./core/kernel/prefs.js")
 const queryString = require("query-string")
 const path = require("path")
 
-let systemPackages = patchfox.systemPackages()
 let useShortColumn = true
 let currentView = false
 let currentPackage = false
@@ -103,7 +102,9 @@ const Wm = {
     delete qs.view
     patchfox.go(pkg, view, qs)
   },
-  view: () => {
+  view: (vnode) => {
+    let systemPackages = patchfox.systemPackages()
+    console.log("system", systemPackages)
     return m("div.bg-base-200.min-h-screen", 
       m("div.root.container.mx-auto.p-2.lg:p-10.text-base-content",[
         // system packages

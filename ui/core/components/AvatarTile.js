@@ -3,22 +3,30 @@ const timestamp = require("./timestamp.js")
 const { when } = require("../kernel/utils.js")
 
 const AvatarTile = {
+  oninit: (vnode) => {
+    vnode.state.shouldLoadAvatar = true
+    vnode.state.name = vnode.attrs.feed
+    vnode.state.image = "assets/images/icon.png"
+  },
   view: (vnode) => {
     let feed = vnode.attrs.feed
     let time = vnode.attrs.time || false
     const onclick = vnode.attrs.onclick || false
 
-    let image = "images/icon.png"
-    let name = feed
-
-    ssb.avatar(feed).then((data) => {
-      // console.log(`avatar for ${feed}`, data)
-      if (data.image !== null && data.image !== undefined) {
-        image = patchfox.httpUrl(`/blobs/get/${data.image}`)
-      }
-      name = data.name
-      m.redraw()
-    })
+    if (vnode.state.shouldLoadAvatar) {
+      ssb.avatar(feed).then((data) => {
+        if (!data) {
+          return
+        }
+        // console.log(`avatar for ${feed}`, data)
+        if (data.image !== null && data.image !== undefined) {
+          vnode.state.image = `${patchfox.blobUrl(data.image)}`
+        }
+        vnode.state.name = data.name
+        vnode.state.shouldLoadAvatar = false
+        m.redraw()
+      })
+    }
 
     const click = () => {
       if (onclick) {
@@ -31,11 +39,11 @@ const AvatarTile = {
         ".avatar",
         m(
           ".m-2.w-14.h-14.mask.mask-squircle",
-          m("img", { src: image, alt: name })
+          m("img", { src: vnode.state.image, alt: vnode.state.name })
         )
       ),
       m(".tile-content", [
-        m(".tile-title", name),
+        m(".tile-title", vnode.state.name),
         m("small.tile-subtitle.text-gray", when(time, timestamp(time))),
       ]),
     ])

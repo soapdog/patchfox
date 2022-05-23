@@ -59,3 +59,5 @@ const m = require("mithril")
     }
 }
 
+module.exports = MentionsView
+

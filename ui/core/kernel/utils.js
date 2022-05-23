@@ -1,4 +1,5 @@
 const Stream = require("mithril/stream")
+const path = require("path")
 
 const { getPref } = require("./prefs.js")
 
@@ -14,6 +15,10 @@ const blobUrl = (file) => {
   return httpUrl(`/blobs/get/${file}`)
 }
 
+const docsUrl = (page = "") => {
+  return path.join(__dirname, `../../../docs/index.html#${page}`)
+}
+
 const title = Stream()
 
 const when = (value, vnode) => {
@@ -26,6 +31,7 @@ const when = (value, vnode) => {
 
 module.exports = {
   title,
+  docsUrl,
   httpUrl,
   blobUrl,
   when

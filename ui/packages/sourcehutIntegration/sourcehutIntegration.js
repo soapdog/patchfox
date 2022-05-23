@@ -8,7 +8,7 @@ patchfox.package({
       label: "Sourcehut",
       items: [
         {
-          label: "Source Code",
+          label: "Source Code on SourceHut",
           event: "url:open",
           data: "https://git.sr.ht/~soapdog/patchfox/"
         }

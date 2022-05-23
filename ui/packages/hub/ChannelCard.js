@@ -3,6 +3,7 @@ const AvatarChip = require("../../core/components/AvatarChip.js")
 const ChannelCard = {
   oninit: (vnode) => {
     vnode.state.person = vnode.attrs.msg.value.author
+    vnode.state.shouldLoadAvatar = true
   },
   view: (vnode) => {
     let msg = vnode.attrs.msg
@@ -10,10 +11,15 @@ const ChannelCard = {
     let verb = msg.value.content.subscribed ? "subscribed" : "unsubscribed"
     let channel = encodeURIComponent(msg.value.content.channel)
 
-    ssb.avatar(msg.value.author).then((data) => {
-      vnode.state.person = data.name
-      m.redraw()
-    })
+    if (vnode.state.shouldLoadAvatar) {
+      ssb.avatar(msg.value.author).then((data) => {
+        if (data) {
+          vnode.state.person = data.name
+          vnode.state.shouldLoadAvatar = false
+          m.redraw()
+        }
+      })
+    }
 
     const goChannel = (ev) => {
       ev.stopPropagation()

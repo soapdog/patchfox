@@ -77,8 +77,8 @@ const AvatarChip = {
           ]
         )
       ),
-      when(arrow, m("span.mr-2", "&rarr;")),
-      when(glyph, m("span.mr-2", ssb.markdown(glyph, true))),
+      when(arrow, m("span.mr-2", m.trust("&rarr;"))),
+      when(glyph, m("span.mr-2", m.trust(ssb.markdown(glyph, true)))),
     ]
   },
 }

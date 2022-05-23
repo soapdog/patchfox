@@ -1,6 +1,6 @@
 const version = require("../../../package.json").version
 const path = require("path")
-const releaseNotesUrl = path.join(__dirname, `../../../docs/index.html#/release_notes/${version}`)
+const releaseNotesUrl = path.join(__dirname, `/release_notes/${version}`)
 
 patchfox.package({
   name: "helpMenu",
@@ -11,17 +11,17 @@ patchfox.package({
       items: [
         {
           label: "Documentation",
-          event: "url:open",
-          data: "/docs/index.html",
+          event: "documentation:open",
+          data: "",
         },
         {
           label: "Troubleshooting",
-          event: "url:open",
-          data: "/docs/index.html#/troubleshooting/",
+          event: "documentation:open",
+          data: "/troubleshooting/",
         },
         {
           label: "Release Notes",
-          event: "url:open",
+          event: "documentation:open",
           data: releaseNotesUrl,
         },
       ],

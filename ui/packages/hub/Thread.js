@@ -12,6 +12,7 @@ const ThreadView = {
     let thread = vnode.attrs.thread
 
     if (vnode.state.shouldLoadMessages) {
+      console.log("attempting to load", thread)
       if (thread.startsWith("ssb:")) {
         thread = thread.replace("ssb:", "")
       }
@@ -23,6 +24,7 @@ const ThreadView = {
           vnode.state.msgs = ms
           window.scrollTo(0, 0)
           vnode.state.shouldLoadMessages = false
+          m.redraw()
         })
         .catch((n) => {
           console.dir(n)

@@ -54,7 +54,7 @@ const VoteCounter = {
         m(
           "label.btn.btn-link",
           {
-            classes: dropdownActive ? "dropdown-open" : "",
+            class: dropdownActive ? "dropdown-open" : "",
             onclick: () => {
               dropdownActive = !dropdownActive
             },
@@ -85,14 +85,23 @@ const VoteCounter = {
       m("span", `💜 ${voters.length}`)
     )
 
-    const error = when(vnode.state.state == "error", m("span", `💔 can't load`))
+    const cantLoad = when(
+      vnode.state.state == "error",
+      m("span", `💔 can't load`)
+    )
 
     const waiting = when(
       vnode.state.state == "waitclick",
       m("span.c-hand.text-primary", { onclick: loadVotes }, "(get votes)")
     )
 
-    return m(".vote-counter", [loading, loadedSome, loadedZero, error, waiting])
+    return m(".vote-counter", [
+      loading,
+      loadedSome,
+      loadedZero,
+      cantLoad,
+      waiting,
+    ])
   },
 }
 

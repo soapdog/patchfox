@@ -1,16 +1,16 @@
-const PostCompose = require("./PostCompose.svelte")
-const PostCard = require("./PostCard.svelte")
+const PostCompose = {view: m("p","Not")} // require("./PostCompose.js")
+const PostCard = require("./PostCard.js")
 
 patchfox.package({
   name: "post",
   supportedPlatforms: ["nodejs-ssb"],
   view: PostCompose,
-  compose: PostCompose,
+  //compose: PostCompose,
   messageTypes: [
     {
       type: "post",
       card: PostCard,
-      compose: PostCompose
+      //compose: PostCompose
     }
   ],
   menu: [
@@ -31,8 +31,8 @@ patchfox.package({
       group: "Compose",
       items: [
         {
-          label: "New Post using Sidebar",
-          event: "package:sidebar",
+          label: "New Post in New Window",
+          event: "package:go",
           data: {
             pkg: "post",
             view: "compose"

@@ -1,4 +1,4 @@
-import GlobalMenuView from "./globalMenuView.js"
+const GlobalMenuView = require("./globalMenuView.js")
 
 patchfox.package({
   name: "globalMenu",

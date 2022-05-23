@@ -1,20 +1,21 @@
 const m = require("mithril")
-const MessageDropdown = require("../MessageDropdown.js")
-const MessageRaw = require("../MessageRaw.js")
-const AvatarTile = require("../AvatarTile.js")
-const { isMessageBlured } = require("../../platforms/common/abusePrevention.js")
+const MessageDropdown = require("./MessageDropdown.js")
+const MessageRaw = require("./MessageRaw.js")
+const AvatarTile = require("./AvatarTile.js")
+const { isMessageBlured } = require("../platforms/common/abusePrevention.js")
 
 const Card = {
+  oninit: (vnode) => {
+    vnode.state.showRaw = vnode.attrs.showRaw || false
+  },
   view: (vnode) => {
 
     let msg = vnode.attrs.msg
-    let showRaw = vnode.attrs.showRaw || false
 
     let feed = msg.value.author
     let privateMsgForYou = false
 
     let border = false
-    let dropdownActive = false
 
     if (msg.value.private) {
       privateMsgForYou = true
@@ -33,8 +34,7 @@ const Card = {
     }
 
     const toggleRawMessage = () => {
-      showRaw = !showRaw
-      dropdownActive = false
+      vnode.state.showRaw = !vnode.state.showRaw
     }
 
     const cardCss = () => {
@@ -79,7 +79,10 @@ const Card = {
                   { patchfox.go("hub", "channel", { channel: msg.value.content.channel }) }},
                   msg.value.content.channel ? "#" + msg.value.content.channel : ""
                   ),
-                  m(MessageDropdown, {ontogglerawmessage:toggleRawMessage}, 
+                  m(MessageDropdown, {
+                    msg,
+                    ontogglerawmessage:toggleRawMessage
+                  }, 
                   )
                 ]
               )
@@ -88,10 +91,10 @@ const Card = {
         ]),
       m(".card-body",
         [
-          !showRaw ?
+          !vnode.state.showRaw ?
             vnode.children :
             m(MessageRaw, {msg}), 
-          m(".card-actions", vnode.attrs.actions) 
+          m(".card-actions.justify-end", vnode.attrs.actions) 
                   
         ]
       )

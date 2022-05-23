@@ -4,8 +4,8 @@ const globby = require("globby")
 const rimraf = require("rimraf")
 
 const main = async () => {
-  const packageDocumentationRootPath = "dist/docs/packages"
-  const messageTypesDocumentationRootPath = "dist/docs/message_types"
+  const packageDocumentationRootPath = "docs/packages"
+  const messageTypesDocumentationRootPath = "docs/message_types"
   
   let paths = await globby([
     "src/packages/*/docs/**",
@@ -22,8 +22,8 @@ const main = async () => {
   console.log("*** DOCUMENTATION ASSEMBLY ***")
 
   // Copy main package documentation
-  await fs.ensureDir("dist/docs/packages/")
-  fs.writeFileSync("dist/docs/packages/README.md", `
+  await fs.ensureDir("docs/packages/")
+  fs.writeFileSync("docs/packages/README.md", `
 # Packages 
 
 These are the packages that Patchfox is loading. 
@@ -57,7 +57,7 @@ These are the packages that Patchfox is loading.
 * [View package \`${packageName}\` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${packageName})
 `)
       }
-      fs.appendFileSync("dist/docs/packages/README.md", `* [${elems[2]}](/packages/${elems[2]}/)\n`)
+      fs.appendFileSync("docs/packages/README.md", `* [${elems[2]}](/packages/${elems[2]}/)\n`)
     }
   })
 
@@ -69,8 +69,8 @@ These are the packages that Patchfox is loading.
 
   rimraf.sync(`${messageTypesDocumentationRootPath}/**`)
 
-  await fs.ensureDir("dist/docs/message_types/")
-  fs.writeFileSync("dist/docs/message_types/README.md", `
+  await fs.ensureDir("docs/message_types/")
+  fs.writeFileSync("docs/message_types/README.md", `
 # Secure Scuttlebutt Message Types
 
 A [Scuttlebutt feed](https://ssbc.github.io/scuttlebutt-protocol-guide/#feeds) is a list of all the messages posted by a particular identity. When a user writes a message in a Scuttlebutt client and posts it, that message is put onto the end of their feed.
@@ -118,7 +118,7 @@ Each [message](https://ssbc.github.io/scuttlebutt-protocol-guide/#message-format
       fs.copyFileSync(source, destination)
       console.log(`MESSAGE TYPE: (copy) ${source} --> ${destination}`)
       // This will append that doc to the root message types documentation file.
-      fs.appendFileSync("dist/docs/message_types/README.md", `* [${typeName}](/message_types/${typeName})\n`)
+      fs.appendFileSync("docs/message_types/README.md", `* [${typeName}](/message_types/${typeName})\n`)
     }
   })
 

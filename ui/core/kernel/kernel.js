@@ -12,7 +12,7 @@ function _package(pkg) {
   let name = pkg.name
   let ssb = global.ssb
   if (pkg.supportedPlatforms.includes("all")) {
-    console.log(`SSB Platform not initialized. Loading package ${pkg.name} because it supports *all* platforms.`)
+    console.log(`Loading package ${pkg.name} because it supports *all* platforms.`)
     _.set(packages, name, pkg)
   } else if (pkg.supportedPlatforms.includes(ssb?.platform)) {
     console.log(`Loading package ${pkg.name}`)

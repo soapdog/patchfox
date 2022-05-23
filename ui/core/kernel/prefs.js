@@ -4,13 +4,10 @@
  * This is used to store preferences for Patchfox.
  */
 
-const Store = require("electron-store")
 const fs = require("fs")
 const path = require("path")
 const os = require("os")
 const ssbKeys = require("ssb-keys")
-
-const store = new Store()
 
 let savedData = {}
 
@@ -18,9 +15,9 @@ const loadSavedData = async () => {
   try {
     const keys = ssbKeys.loadOrCreateSync(path.join(os.homedir(), ".ssb", "secret"))
     
-    let data = store.get("data", {})
+    let data = JSON.parse(localStorage.getItem("data"))
 
-    if (data.hasOwnProperty("identities")) {
+    if (data && data.hasOwnProperty("identities")) {
       savedData = data
     } else if (!keys) {
       throw "Configuration is missing"
@@ -70,7 +67,7 @@ const saveIdentityConfiguration = ({ keys, remote, type }) => {
     type,
   }
 
-  store.set("data", savedData)
+  localStorage.setItem("data", JSON.stringify(savedData))
 }
 
 const removeIdentity = (key) => {
@@ -80,7 +77,7 @@ const removeIdentity = (key) => {
     delete savedData.identities[key]
   }
 
-  store.set("data", savedData)
+  localStorage.setItem("data", JSON.stringify(savedData))
 }
 
 
@@ -88,7 +85,7 @@ const setPref = (key, value) => {
   savedData.preferences = savedData.preferences || {}
   savedData.preferences[key] = value
 
-  store.set("data", savedData)
+  localStorage.setItem("data", JSON.stringify(savedData))
 }
 
 const savedIdentitites = () => {
@@ -106,7 +103,7 @@ const configurationForIdentity = (feedId) => {
 const setDefaultIdentity = (feedId) => {
   savedData.defaultIdentity = feedId
 
-  store.set("data", savedData)
+  localStorage.setItem("data", JSON.stringify(savedData))
 }
 
 const getDefaultIdentity = () => {

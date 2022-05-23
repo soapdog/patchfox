@@ -8,12 +8,12 @@ patchfox.package({
       label: "GitHub",
       items: [
         {
-          label: "View Issues",
+          label: "View Issues on Github",
           event: "url:open",
           data: "https://github.com/soapdog/patchfox/issues"
         },
         {
-          label: "Source Code",
+          label: "Source Code on Github",
           event: "url:open",
           data: "https://github.com/soapdog/patchfox/"
         }

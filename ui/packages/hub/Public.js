@@ -1,5 +1,7 @@
 const m = require("mithril")
 const MessageRenderer = require("../../core/components/MessageRenderer.js")
+const timestamp = require("../../core/components/timestamp.js")
+
 const PublicView = {
   oninit: (vnode) => {
     vnode.state.shouldLoadMessages = true
@@ -10,12 +12,10 @@ const PublicView = {
     console.log("hub.public view")
     let limit = vnode.attrs.limit || false
 
-    patchfox.title("Public")
-
     let opts = {}
     if (vnode.state.lt) {
       opts.lt = Number(vnode.state.lt)
-      patchfox.title(`Public - ${vnode.state.lt}`)
+      patchfox.title(timestamp(vnode.state.lt))
     }
 
     console.time("public")
@@ -28,7 +28,6 @@ const PublicView = {
           vnode.state.msgs = ms
           window.scrollTo(0, 0)
           vnode.state.shouldLoadMessages = false
-          console.log("Fetch public, calling redraw!")
           m.redraw()
         })
         .catch((n) => {
@@ -40,7 +39,6 @@ const PublicView = {
       vnode.state.lt = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
-      console.log("olha o redraw!", vnode.state)
       // patchfox.go("hub", "public", { lt })
     }
 

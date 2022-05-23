@@ -1,30 +1,33 @@
 const m = require("mithril")
 const MessageRenderer = require("../../core/components/MessageRenderer.js")
+const Spinner = require("../../core/components/Spinner.js")
 
 const PopularView = {
   oninit: (vnode) => {
     vnode.state.msgs = []
     vnode.state.shouldLoadMessages = true
+    vnode.state.period = vnode.attrs.period || "week"
+    vnode.state.page = vnode.attrs.page || 1
+    
   },
   view: (vnode) => {
-    let period = vnode.attrs.period || "week"
-    let page = vnode.attrs.page || 1
     let limit = vnode.attrs.limit || false
 
     if (vnode.state.shouldLoadMessages) {
-      if (page) {
-        patchfox.title(`Page: ${page}`)
+      if (vnode.state.page) {
+        patchfox.title(`Page: ${vnode.state.page}`)
       }
 
       console.time("popular")
       ssb
-        .popular({ period, page })
+        .popular({ period: vnode.state.period, page: vnode.state.page })
         .then((ms) => {
           console.timeEnd("popular")
-          console.log(`popular for ${period} msgs`, ms)
+          console.log(`popular for ${vnode.state.period} msgs`, ms)
           vnode.state.msgs = ms
           window.scrollTo(0, 0)
           vnode.state.shouldLoadMessages = false
+          m.redraw()
         })
         .catch((n) => {
           patchfox.go("errorHandler", "view", { error: n })
@@ -32,19 +35,17 @@ const PopularView = {
     }
 
     const goNext = () => {
-      let lt = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
       vnode.state.msgs = []
-      patchfox.go("hub", "popular", { page: page + 1, period })
-    }
-
-    const urlForNext = () => {
-      let lt = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
-      return patchfox.url("hub", "popular", { page: page + 1, period })
+      vnode.state.shouldLoadMessages = true
+      vnode.state.page +=1
+      m.redraw()
     }
 
     const goPrevious = () => {
       vnode.state.msgs = []
-      history.back()
+      vnode.state.shouldLoadMessages = true
+      vnode.state.page -=1
+      m.redraw()
     }
 
     const pagination = [
@@ -65,11 +66,16 @@ const PopularView = {
         "name": "period",
         "value": periodValue,
         "data-title": periodLabel,
-        "classes":
-          period == periodValue
+        onclick: () => {
+          vnode.state.msgs = []
+          vnode.state.shouldLoadMessages = true
+          vnode.state.period = periodValue
+        },
+        "class":
+          vnode.state.period == periodValue
             ? "btn btn-outline btn-xs btn-active"
             : "btn btn-outline btn-xs",
-      })
+      }, periodLabel)
 
     return [
       m(".container", [
@@ -82,7 +88,7 @@ const PopularView = {
       ]),
       vnode.state.shouldLoadMessages
         ? m(Spinner)
-        : vnode.state.msgs.map((msgs) => m(MessageRenderer, { msg })),
+        : vnode.state.msgs.map((msg) => m(MessageRenderer, { msg })),
       pagination,
     ]
   },
