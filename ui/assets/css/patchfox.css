@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+img.is-image-from-blob {
+    max-width: 100%;
+    display:block;
+    margin:auto;
+    padding: 5px;
+}
+
+a.image-link {
+    display: block;
+    width: 100%;
+}
+
+
+.blured img {
+    filter: blur(20px) !important;
+}
+
+figure.avatar {
+    width: unset !important;
+}
+
+.blured img {
+filter: blur(20px) !important;
+}
+
+.blured {
+border: solid 2px red;
+}
+
+.raw-content {
+width: 50%;
+}
+
+.private {
+border: solid 2px orange;
+}
+
+.blur img {
+filter: blur(20px) !important;
+}
+
+.blur {
+border: solid 2px red;
+}
+
+.border {
+border: solid 2px orange;
+}
+
+@layer utilities {
+  @variants responsive {
+    .masonry {
+      column-count: 4;
+      column-gap: 1.5em;
+    }
+    .break-inside {
+      break-inside: avoid;
+    }
+  }
+}
+
+ .clickable:hover {
+  cursor: pointer;
+}
+
+.vote-counter {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.menu-right {
+  right: 0px;
+  left: unset;
+  min-width: 300px;
+}

@@ -1,21 +1,24 @@
 {
   "name": "patchfox",
-  "version": "2022.4.1",
+  "version": "2022.5.1-alpha",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
+  "main": "app.js",
   "private": true,
   "license": "MIT",
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.0.0",
     "@tailwindcss/typography": "^0.4.1",
+    "@types/mithril": "^2.0.11",
     "autoprefixer": "^10.3.1",
-    "browserify": "^17.0.0",
     "calendarize": "^1.1.1",
     "copyfiles": "^2.1.1",
     "cross-env": "^7.0.3",
     "daisyui": "^1.10.0",
     "drag-and-drop-files": "0.0.1",
+    "electron-builder": "^23.0.3",
+    "electron-updater": "^5.0.1",
     "eslint": "^7.27.0",
     "eslint-plugin-svelte3": "^3.2.0",
     "factor-bundle": "^2.5.0",
@@ -59,7 +62,6 @@
     "rss-parser": "^3.7.6",
     "scuttle-book": "^2.0.6",
     "scuttle-gathering": "^1.3.6",
-    "spectre.css": "^0.5.8",
     "ssb-avatar": "^0.2.0",
     "ssb-browser-core": "^13.0.0",
     "ssb-client-for-browser": "soapdog/ssb-client-for-browser",
@@ -80,64 +82,28 @@
     "ssb-uri2": "^1.0.2",
     "ssb-web-resolver": "^1.1.2",
     "stream-to-pull-stream": "^1.7.2",
-    "svelte": "^3.7.1",
-    "sveltify": "^3.0.0",
     "tailwindcss": "^2.2.7",
     "timeago-simple": "^1.2.4",
     "to-markdown-cli": "^0.4.4",
     "tributejs": "^5.0.1",
-    "turndown": "^7.0.0",
-    "webextension-polyfill": "^0.8.0"
+    "turndown": "^7.0.0"
+  },
+  "dependencies": {
+    "electron": "18.2.4",
+    "electron-reload": "^2.0.0-alpha.1",
+    "electron-store": "^8.0.1",
+    "mithril": "^2.2.0",
+    "secret-stack": "^6.4.1",
+    "ssb-backlinks": "^2.1.1",
+    "ssb-caps": "^1.1.0",
+    "ssb-client": "^4.9.0",
+    "ssb-config": "^3.2.5",
+    "ssb-db": "^20.4.1",
+    "ssb-keys": "^8.2.0"
   },
   "scripts": {
-    "clean": "rimraf dist",
-    "really-clean": "rimraf node_modules",
-    "copy:manifest": "copyfiles manifest.json dist",
-    "copy:static": "copyfiles -E -u 1 \"static/**/*\" \"dist\"",
-    "copy:tribute-css": "copyfiles -E -u 3 node_modules/tributejs/dist/tribute.css dist/css",
-    "copy:font-awesome-css": "copyfiles -E -u 4 node_modules/@fortawesome/fontawesome-free/css/all.min.css dist/css",
-    "copy:font-awesome-fonts": "copyfiles -E -u 4 node_modules/@fortawesome/fontawesome-free/webfonts/* dist/webfonts",
-    "copy:browser-polyfill": "copyfiles -E -u 3 node_modules/webextension-polyfill/dist/browser-polyfill.js dist",
-    "copy:docs-folders": "copyfiles docs/**/* dist",
-    "copy:docs-root": "copyfiles docs/** dist",
-    "copy:index": "copyfiles -u 1 src/index.html dist",
-    "copy:package-assets": "node scripts/copy-package-assets.js",
-    "copy:package-docs": "node scripts/copy-package-docs.js",
-    "copy:message-types-to-website": "copyfiles -E -u 3 dist/docs/message_types/* docs/message_types",
-    "copy:package-docs-to-website": "copyfiles -E -u 3 dist/docs/packages/**/* docs/packages",
-    "copy:browserAction": "copyfiles -E -u 3 src/core/browserAction/browserAction.html dist",
-    "build:css": "tailwindcss --jit -i ./static/css/patchfox.css -o dist/css/tailwind.css",
-    "build:browserAction": "browserify src/core/browserAction/browserAction.js -o dist/browserAction.js",
-    "build:background": "browserify src/core/background/background.js -o dist/background.js",
-    "build:addon": "browserify src/main.js -o dist/bundle.js",
-    "build:platform-ssb": "browserify src/core/platforms/platforms.js -o dist/ssb.js",
-    "dev:css": "tailwindcss --jit -i ./static/css/patchfox.css -o dist/css/tailwind.css",
-    "dev:browserAction": "browserify -d src/core/browserAction/browserAction.js -o dist/browserAction.js",
-    "dev:background": "browserify -d src/core/background/background.js -o dist/background.js",
-    "dev:addon": "browserify -d src/main.js -o dist/bundle.js",
-    "dev:platform-ssb": "browserify -d src/core/platforms/platforms.js -o dist/ssb.js",
-    "both": "run-s dev:platform-ssb dev:addon",
-    "build": "run-s copy:* build:*",
-    "dev": "run-s copy:* dev:*",
-    "clean-build": "run-s clean build",
-    "clean-dev": "run-s clean dev",
-    "nuke": "run-s clean really-clean",
-    "license-report": "license-report --output=html --config .license-report-config.json >> licenses.html  ",
-    "release": "runs-s license-report clean-build"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "sveltify",
-        {
-          "extensions": [
-            ".svelte"
-          ],
-          "svelte": {
-            "dev": false
-          }
-        }
-      ]
-    ]
+    "start": "NODE_ENV=development npm run electron:start",
+    "electron:start": "electron app.js",
+    "css": "npx tailwindcss -i ./ui/assets/css/patchfox.css -o ./ui/assets/css/tailwind.css"
   }
 }

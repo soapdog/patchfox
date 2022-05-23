@@ -1,0 +1,8 @@
+main.bundle.js
+package-lock.json
+electron-builder.env
+
+builder/node_modules
+builder/package-lock.json
+installers
+node_modules

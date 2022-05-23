@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <script>
+      // Redirect console to main process
+
+      const remoteLog = (args) => electron.ipcRenderer.send('ahoy:remote-log', args) 
+      const remoteError = (err) => electron.ipcRenderer.send('ahoy:remote-error', err) 
+      // NOTE contextIsolation = false means we don't need to require electron
+      // see https://www.electronjs.org/docs/tutorial/context-isolation
+      // in future when contextIsolation we can make safe api accessible here via preload option
+      // TODO mix 2021-04-30 : enable contextIsolation
+
+      var localLog = console.log
+      var localError = console.error
+
+      console.log = function (...args) {
+        localLog.apply(console, args)
+        remoteLog(args)
+      }
+
+      console.error = function (...args) {
+        localError.apply(console, args)
+        remoteError(args)
+      }
+
+      // Redirect errors to stderr
+      window.addEventListener('error', function (e) {
+        e.preventDefault()
+
+        if (e.error && e.error.stack) console.error(e.error.stack)
+        else if (e.error) console.error('Uncaught ' + e.error)
+        else if (e.message && e.message.startsWith('ResizeObserver')) {
+          // HACK: Fix for ResizeObserver freeze / crash.
+          return
+        }
+        else console.error(e) // e.g. some ResizeObserver errors have e.error = null !
+      })
+
+      // process.exit = electron.remote.app.quit
+      // WIP mix 2021-04-28 : re-enable process.exit?
+      // NOTE electron.remote has been deprecated, not sure what this was previously doing
+    </script>
+  </body>
+</html>

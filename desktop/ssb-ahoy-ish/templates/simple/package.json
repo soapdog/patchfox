@@ -1,0 +1,17 @@
+{
+  "name": "simple-ahoy",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "dev": "electron main.js",
+    "start": "electron main.js",
+    "build:ui": "echo 'building ui...'",
+    "pack": "electron-builder --config builder/config.js",
+    "release": "npm run build:ui && npm run pack"
+  },
+  "dependencies": {
+    "ssb-ahoy": "^5.0.0",
+    "ssb-backlinks": "^2.1.1",
+    "ssb-db": "^20.4.1"
+  }
+}

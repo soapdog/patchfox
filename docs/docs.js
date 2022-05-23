@@ -1,8 +1,10 @@
+const path = require("path")
+
 window.$docsify = {
   name: "Patchfox Help",
   repo: "soapdog/patchfox",
-  basePath: typeof browser !== "undefined" ? "/docs/" : "",
+  basePath: typeof global !== "undefined" ? "/docs/" : path.join(__dirname, "docs/"),
   loadSidebar: true,
-  coverpage: typeof browser !== "undefined" ? false : true,
+  coverpage: typeof global !== "undefined" ? false : true,
   subMaxLevel: 2
 }
