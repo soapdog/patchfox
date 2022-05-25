@@ -1,4 +1,4 @@
-const SearchView = require("./SearchView.svelte")
+const SearchView = require("./SearchView.js")
 
 patchfox.package({
   name: "search",

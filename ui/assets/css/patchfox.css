@@ -87,3 +87,14 @@ div img.is-image-from-blob {
 .card-body {
   overflow-wrap: break-word;
 }
+
+.hide-overflow {
+  overflow: hidden;
+}
+
+.join-room.code {
+    border-radius: 5px; 
+    border: 1px solid #BCBEC0;
+    padding: 2px;
+    font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+}

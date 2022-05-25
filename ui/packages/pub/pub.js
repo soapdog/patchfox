@@ -1,4 +1,4 @@
-const Pub = require("./Pub.svelte")
+const PubView = require("./PubView.js")
 
 patchfox.package({
   name: "pub",
@@ -6,7 +6,7 @@ patchfox.package({
   messageTypes: [
     {
       type: "pub",
-      card: Pub
+      card: PubView
     }
   ]
 })

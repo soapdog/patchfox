@@ -2473,6 +2473,10 @@ html {
   margin-right: auto;
 }
 
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
@@ -2559,6 +2563,14 @@ html {
 
 .w-80 {
   width: 20rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-xs {
+  max-width: 20rem;
 }
 
 .flex-1 {
@@ -2869,6 +2881,17 @@ div img.is-image-from-blob {
 
 .card-body {
   overflow-wrap: break-word;
+}
+
+.hide-overflow {
+  overflow: hidden;
+}
+
+.join-room.code {
+  border-radius: 5px;
+  border: 1px solid #BCBEC0;
+  padding: 2px;
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
 }
 
 @media (min-width: 640px) {

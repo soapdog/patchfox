@@ -1,6 +1,6 @@
-const ProfileView = require("./Profile.svelte")
-const ContactCard = require("./ContactCard.svelte")
-const AboutCard = require("./AboutCard.svelte")
+const ProfileView = require("./Profile.js")
+const ContactCard = require("./ContactCard.js")
+const AboutCard = require("./AboutCard.js")
 
 patchfox.package({
   name: "contacts",

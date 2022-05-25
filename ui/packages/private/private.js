@@ -1,4 +1,4 @@
-const Priv = require("./Private.svelte")
+const PrivateCard = require("./PrivateCard.js")
 
 patchfox.package({
   name: "private",
@@ -6,7 +6,7 @@ patchfox.package({
   messageTypes: [
     {
       type: "private", // special type assigned by message handler
-      card: Priv,
+      card: PrivateCard,
     },
   ],
 })

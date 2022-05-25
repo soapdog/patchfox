@@ -1,8 +1,8 @@
-const Peers = require("./Peers.svelte")
-const JoinPub = require("./JoinPub.svelte")
-const JoinRoom = require("./JoinRoom.svelte")
-const Status = require("./Status.svelte")
-const HttpAuth = require("./httpAuth.svelte")
+const Peers = require("./Peers.js")
+const JoinPub = require("./JoinPub.js")
+const JoinRoom = require("./JoinRoom.js")
+const Status = require("./Status.js")
+const HttpAuth = require("./httpAuth.js")
 
 patchfox.package({
   name: "system",
