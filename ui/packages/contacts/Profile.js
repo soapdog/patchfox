@@ -1,136 +1,173 @@
-<script>
-  const Spinner = require("../../core/components/Spinner.svelte")
-  const Posts = require("./Posts.svelte")
-  const Following = require("./Following.svelte")
-  const Followers = require("./Followers.svelte")
-  const Friends = require("./Friends.svelte")
-  const Editor = require("./ProfileEditor.svelte")
-  const MoreInfo = require("./MoreInfo.svelte")
+const m = require("mithril")
+  const Spinner = require("../../core/components/Spinner.js")
+  const Posts = require("./Posts.js")
+  const Following = require("./Following.js")
+  const Followers = require("./Followers.js")
+  const Friends = require("./Friends.js")
+  const Editor = require("./ProfileEditor.js")
+  const MoreInfo = require("./MoreInfo.js")
   const ssbUri  = require("ssb-uri2")
   const pull = require("pull-stream")
-
-  export let feed = ssb.feed
-
-  let profile = false
-  let description = false
-  let following = false
-  let blocking = false
-  let image
-  let lastAbout
-  let avatarPromise 
-  let aboutPromise
-  let aliasesPromise
-
-  let subViews = {
-    posts: Posts,
-    following: Following,
-    followers: Followers,
-    friends: Friends,
-    moreInfo: MoreInfo
-  }
   
-  export let currentSubView = "friends"
+  const ProfileView = {
+    oninit: vnode => {
+      let feed = vnode.attrs.feed || ssb.feed
+      vnode.state.name = feed
+      vnode.state.blocking = false 
+      vnode.state.following = false
+      vnode.state.showEditor = false
+      vnode.state.loadingAvatar = true
+      vnode.state.loadingAbout = true
+      
+      ssb.avatar(feed).then(data => {
+        vnode.state.name = data.name
+        vnode.state.image = data.image
+        vnode.state.loadingAvatar = false
+        patchfox.title(name)
+      })
+    
+      ssb.profile(feed).then(data => {
+        vnode.state.lastAbout = data.about.reverse().find(m => {
+          let a = m.value.content
+          return a.hasOwnProperty("description")
+        })
+        try {
+          vnode.state.description = vnode.state.lastAbout.value.content.description
+        } catch (n) {
+          vnode.state.description = ""
+        }
+        window.scrollTo(0, 0)
+        vnode.state.loadingAbout = false
+      })
+      
+      if (feed !== ssb.feed) {
+        ssb.following(feed).then(f => {
+          vnode.state.following = f
+          m.redraw()
+        })
+        ssb.blocking(feed).then(f => {
+          vnode.state.blocking = f
+          m.redraw()
+        })
+      }
+      
+      vnode.state.aliases = []
+      
+      ssb.rooms2.getAliases(feed)
+        .then(data => {
+          vnode.state.aliases = data
+          m.redraw()
+        })
+        .catch(err => console.error(err))
+    },
+    view: vnode => {
 
-  let name = feed
-  let followersCount = false
-  let followingCount = false
-  let friendsCount = false
-  let showEditor = false
+      let feed = vnode.attrs.feed || ssb.feed
+      let currentSubView = vnode.attrs.currentSubView || "friends"
+    
+      let profile = vnode.state.profile
+      let description = vnode.state.description
+      let following = vnode.state.following 
+      let blocking = vnode.state.blocking 
+      let image = vnode.state.image
+      let lastAbout = vnode.state.lastAbout
+      let name = vnode.state.name
+      let followersCount = false
+      let followingCount = false
+      let friendsCount = false
+      let showEditor = vnode.state.showEditor
+    
+      let subViews = {
+        posts: Posts,
+        following: Following,
+        followers: Followers,
+        friends: Friends,
+        moreInfo: MoreInfo
+      }
+    
+      patchfox.title(feed)
+    
+      const blockingChanged = ev => {
+        let v = ev.target.checked
+        if (v) {
+          ssb.block(feed).catch(() => {
+            vnode.state.blocking = false
+            m.redraw()
+          })
+        } else {
+          ssb.unblock(feed).catch(() => {
+            vnode.state.blocking = true
+            m.redraw()
+          })
+        }
+      }
+    
+      const followingChanged = ev => {
+        let v = ev.target.checked
+        if (v) {
+          ssb.follow(feed).catch(() => {
+            vnode.state.following = false
+            m.redraw()
+          })
+        } else {
+          ssb.unfollow(feed).catch(() => {
+            following = true
+            m.redraw()
+          })
+        }
+      }
+    
+      const countCallback = ev => {
+        let { followers, following, friends } = ev.detail
+    
+        if (followers) {
+          vnode.state.followersCount = followers
+        }
+    
+        if (following) {
+          vnode.state.followingCount = following
+        }
+    
+        if (friends) {
+          vnode.state.friendsCount = friends
+        }
+        
+        m.redraw()
+      }
+    
+      const toggleEditor = () => {
+        vnode.state.showEditor = !vnode.state.showEditor
+      }
+      
+      
+      if (vnode.state.loadingAvatar || vnode.state.loadingAbout) {
+        return m(".container", [
+          m(Spinner)
+        ])
+      }
+      
+      if (vnode.state.showEditor) {
+        return m(".container", m(Editor, {
+          feed,
+          name,
+          description,
+          image,
+          onCancelEdit=() => vnode.state.showEditor = false
+        }))
+      }
+      
+      // TODO: this is completely broken.
+      
+      return m(".container", [
+        m(".flex", 
+          m(".flex-1",
+            m(".container.p-4", 
+              m("img"))))
+      ])
 
-  patchfox.title(feed)
-
-  avatarPromise = ssb.avatar(feed).then(data => {
-    name = data.name
-    image = data.image
-    patchfox.title(name)
-  })
-
-  aboutPromise = ssb.profile(feed).then(data => {
-    lastAbout = data.about.reverse().find(m => {
-      let a = m.value.content
-      return a.hasOwnProperty("description")
-    })
-    try {
-      description = lastAbout.value.content.description
-    } catch (n) {
-      description = ""
-    }
-    window.scrollTo(0, 0)
-  })
-
-  if (feed !== ssb.feed) {
-    ssb.following(feed).then(f => (following = f))
-    ssb.blocking(feed).then(f => (blocking = f))
-  }
-
-  const blockingChanged = ev => {
-    let v = ev.target.checked
-    if (v) {
-      ssb.block(feed).catch(() => (blocking = false))
-    } else {
-      ssb.unblock(feed).catch(() => (blocking = true))
-    }
-  }
-
-  const followingChanged = ev => {
-    let v = ev.target.checked
-    if (v) {
-      ssb.follow(feed).catch(() => (following = false))
-    } else {
-      ssb.unfollow(feed).catch(() => (following = true))
-    }
-  }
-
-  const countCallback = ev => {
-    let { followers, following, friends } = ev.detail
-
-    if (followers) {
-      followersCount = followers
-    }
-
-    if (following) {
-      followingCount = following
-    }
-
-    if (friends) {
-      friendsCount = friends
-    }
-  }
-
-  const toggleEditor = () => {
-    showEditor = !showEditor
-  }
-
-  let aliases = []
-  
-  aliasesPromise = ssb.rooms2.getAliases(feed)
-    .then(data => {
-      aliases = data
-    })
-    .catch(err => console.error(err))
-
-</script>
-
-<style>
-  .extra-actions {
-    padding-top: 10px;
-    margin-top: 10px;
-    border-top: solid 1px lightgray;
-  }
-</style>
 
 <div class="container">
-  {#await aboutPromise && avatarPromise}
-  <div class="loading loading-lg" />
-  {:then}
-  {#if showEditor}
-  <Editor
-  {feed}
-  {name}
-  {description}
-  {image}
-  on:cancelEdit={() => (showEditor = false)} />
-  {:else}
+ 
   <div class="flex">
 
     <div class="flex-1">
@@ -260,3 +297,7 @@ on:count={countCallback} />
 <p>Error: {n.message}</p>
 {/await}
 </div>
+}
+}
+
+module.exports = ProfileView

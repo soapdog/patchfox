@@ -1,19 +1,37 @@
 const { Menu, app, dialog, shell, BrowserWindow, ipcMain } = require("electron")
 const path = require("path")
 const defaultMenu = require("electron-default-menu")
+const windowStateKeeper = require("electron-window-state")
 
 let windows = new Set()
 
-const createWindow = (data = false) => {
-  // Create the browser window.
-  let win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  })
+const createWindow = (data = false, windowState = false) => {
+  let win
+
+  if (!windowState) {
+    // Create the browser window.
+    win = new BrowserWindow({
+      width: 800,
+      height: 600,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    })
+  } else {
+    win = new BrowserWindow({
+      x: windowState.x,
+      y: windowState.y,
+      width: windowState.width,
+      height: windowState.height,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    })
+
+    windowState.manage(win)
+  }
 
   windows.add(win)
 
@@ -51,7 +69,7 @@ const createWindow = (data = false) => {
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
-  if (data.pkg) {
+  if (data?.pkg) {
     win.webContents.send("patchfox:event", { event: "package:go", data })
   }
 }
@@ -112,17 +130,17 @@ ipcMain.on("menu:set", (event, group) => {
         label: "New Window",
         click: () => {
           createWindow()
-        }
-      }
-    ]
+        },
+      },
+    ],
   }
   let helpMenu = newMenus.pop()
-  
-  menu.splice(1,0, fileMenu)
+
+  menu.splice(1, 0, fileMenu)
   menu.splice(3, 0, ...newMenus)
 
   menu.pop() // get rid of original help menu.
-  
+
   menu.push(helpMenu) // insert our own help menu.
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
@@ -132,7 +150,12 @@ ipcMain.on("menu:set", (event, group) => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  createWindow()
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600,
+  })
+
+  createWindow(null, mainWindowState)
 })
 
 // Quit when all windows are closed.

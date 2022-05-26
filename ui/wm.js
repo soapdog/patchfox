@@ -53,20 +53,6 @@ const handleUncaughtException = n => {
   })
 }
 
-patchfox.listen("package:sidebar", (event, { pkg, view, data }) => {
-  if (typeof data === "undefined") {
-    data = {}
-  }
-  let cs = queryString.parse(location.search)
-  let state = { pkg, view, ...data }
-  if (cs.identity) {
-    state.identity = cs.identity
-  }
-  let qs = queryString.stringify(state)
-  browser.sidebarAction.setPanel({ panel: `/index.html?${qs}` })
-  browser.sidebarAction.open()
-})
-
 patchfox.listen("package:go", (event, { pkg, view, data }) => {
   if (typeof data === "undefined") {
     data = {}

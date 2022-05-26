@@ -98,3 +98,9 @@ div img.is-image-from-blob {
     padding: 2px;
     font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
 }
+
+.extra-actions {
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: solid 1px lightgray;
+}

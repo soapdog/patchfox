@@ -1,8 +1,0 @@
-{
-  "filter": [
-    "electron",
-    "fs/promises"
-  ],
-  "ignoreMissing": true,
-  "verbose": true
-}

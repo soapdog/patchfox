@@ -86,13 +86,12 @@
     "timeago-simple": "^1.2.4",
     "to-markdown-cli": "^0.4.4",
     "tributejs": "^5.0.1",
-    "turndown": "^7.0.0"
-  },
-  "dependencies": {
+    "turndown": "^7.0.0",
     "electron": "^18.2.3",
     "electron-default-menu": "^1.0.2",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-store": "^8.0.1",
+    "electron-window-state": "^5.0.3",
     "mithril": "^2.2.0",
     "secret-stack": "^6.4.1",
     "ssb-backlinks": "^2.1.1",
@@ -102,9 +101,18 @@
     "ssb-db": "^20.4.1",
     "ssb-keys": "^8.2.0"
   },
+  "dependencies": {
+  },
+  "postinstall": "electron-builder install-app-deps",
   "scripts": {
     "start": "NODE_ENV=development npm run electron:start",
     "electron:start": "electron app.js",
-    "css": "npx tailwindcss -i ./ui/assets/css/patchfox.css -o ./ui/assets/css/tailwind.css"
+    "css": "npx tailwindcss -i ./ui/assets/css/patchfox.css -o ./ui/assets/css/tailwind.css",
+    "pack": "electron-builder --config electron-builder.config.js --dir",
+    "dist": "electron-builder --config electron-builder.config.js",
+    "build:windows": "electron-builder build --config electron-builder.config.js --win",
+    "build:linux": "electron-builder build --config electron-builder.config.js --linux",
+    "build:mac": "electron-builder build --config electron-builder.config.js --mac",
+    "build": "npm run build:*"
   }
 }
