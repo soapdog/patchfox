@@ -1,6 +1,6 @@
 const version = require("../../../package.json").version
 const path = require("path")
-const releaseNotesUrl = path.join(__dirname, `/release_notes/${version}`)
+const releaseNotesUrl = path.join(`/release_notes/${version}`)
 
 patchfox.package({
   name: "helpMenu",

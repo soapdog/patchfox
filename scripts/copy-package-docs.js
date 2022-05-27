@@ -1,3 +1,4 @@
+// todo: make this a part of the help package. No need to be pregenerated anymore.
 const fs = require("fs-extra")
 const path = require("path")
 const globby = require("globby")
@@ -8,14 +9,14 @@ const main = async () => {
   const messageTypesDocumentationRootPath = "docs/message_types"
   
   let paths = await globby([
-    "src/packages/*/docs/**",
-    "!src/packages/*/docs/message_types/**",
+    "ui/packages/*/docs/**",
+    "!ui/packages/*/docs/message_types/**",
     "!node_modules"
   ]);
 
   let messageTypes = await globby([
-    "!src/packages/*/docs/**",
-    "src/packages/*/docs/message_types/**",
+    "!ui/packages/*/docs/**",
+    "ui/packages/*/docs/message_types/**",
     "!node_modules"
   ]);
 

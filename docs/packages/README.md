@@ -1,18 +1,20 @@
+
 # Packages 
 
-Patchfox loads the following packages:
+These are the packages that Patchfox is loading. 
 
+* [KoFiIntegration](/packages/KoFiIntegration/)
 * [blog](/packages/blog/)
 * [books](/packages/books/)
 * [calendar](/packages/calendar/)
 * [githubIntegration](/packages/githubIntegration/)
-* [globalMenu](/packages/globalMenu/)
 * [contacts](/packages/contacts/)
 * [errorHandler](/packages/errorHandler/)
+* [globalMenu](/packages/globalMenu/)
 * [helpMenu](/packages/helpMenu/)
 * [hub](/packages/hub/)
-* [launcher](/packages/launcher/)
 * [intercept](/packages/intercept/)
+* [launcher](/packages/launcher/)
 * [openCollectiveIntegration](/packages/openCollectiveIntegration/)
 * [post](/packages/post/)
 * [private](/packages/private/)

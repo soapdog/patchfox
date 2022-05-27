@@ -55,7 +55,6 @@ const createWindow = (data = false, windowState = false) => {
   // win.webContents.openDevTools()
 
   win.webContents.setWindowOpenHandler((details) => {
-    console.log("new window", details)
     if (details.url.startsWith("file:")) {
       createWindow({ url: details.url })
       return { action: "deny" }
@@ -65,9 +64,9 @@ const createWindow = (data = false, windowState = false) => {
     }
   })
 
-  const menu = defaultMenu(app, shell)
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
+//   const menu = defaultMenu(app, shell)
+// 
+//   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
   if (data?.pkg) {
     win.webContents.send("patchfox:event", { event: "package:go", data })
@@ -122,6 +121,7 @@ ipcMain.on("menu:set", (event, group) => {
     newMenus.push(m)
   })
 
+  // FIXME: menu has wrong order for toplevel items.
   let fileMenu = {
     label: "File",
     role: "file",
