@@ -7,12 +7,20 @@ const AvatarChip = {
     vnode.state.name = vnode.attrs.feed
 
     ssb.avatar(vnode.attrs.feed).then((data) => {
+      if (data == null) {
+        return
+      }
       if (data?.image) {
-        vnode.state.image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`
+        vnode.state.image = patchfox.httpUrl("/blobs/get/" + data.image)
+      } else {
+        vnode.state.image = false
+        console.log("strange data", data)
       }
 
       vnode.state.name = data?.name || vnode.attrs.feed
       m.redraw()
+    }).catch(n => {
+      console.error("something odd", n)
     })
   },
   view: (vnode) => {
@@ -63,7 +71,7 @@ const AvatarChip = {
                 m("span.text-xl", vnode.state.name.slice(1, 3))
               )
             ),
-            m("span.flex-1.inline-block.align-middle", vnode.state.name),
+            m("span.flex-1.inline-block.align-middle", vnode.state.name.slice(0,5) + "..."),
           ]
         )
       ),

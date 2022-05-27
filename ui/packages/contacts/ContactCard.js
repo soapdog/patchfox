@@ -48,7 +48,7 @@ const ContactCard = {
         onclick: avatarClick,
       }),
       m("span.m-2", [
-        verb,
+        `${verb} `,
         m(
           "a.link",
           {
