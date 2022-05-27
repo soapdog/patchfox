@@ -3,6 +3,7 @@ const QueryRepeater = require("../../core/components/QueryRepeater.js")
 const AvatarChip = require("../../core/components/AvatarChip.js")
 const AvatarContainer = require("../../core/components/AvatarContainer.js")
 const Spinner = require("../../core/components/Spinner.js")
+const { when } = require("../../core/kernel/utils.js")
 
 const _ = require("lodash")
 
@@ -19,7 +20,7 @@ const FriendsView = {
     ssb.friendship.friendsAsArray(feed).then((ids) => {
       vnode.state.contacts = ids
       vnode.state.loading = false
-      oncount({ friends: contacts.length })
+      oncount({ friends: vnode.state.contacts.length })
       console.timeEnd("loading friends")
       m.redraw()
     })
@@ -31,10 +32,8 @@ const FriendsView = {
   view: (vnode) => {
     let feed = vnode.attrs.feed
 
-    const avatarClick = (ev) => {
-      let feed = ev.detail.feed
-
-      patchfox.go("contacts", "profile", { feed })
+    const avatarClick = (data) => {
+      patchfox.go("contacts", "profile", { feed: data.feed })
     }
 
     return [

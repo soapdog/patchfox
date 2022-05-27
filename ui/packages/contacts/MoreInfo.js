@@ -3,6 +3,8 @@ const Spinner = require("../../core/components/Spinner.js")
 const MoreInfoField = require("./MoreInfoField.js")
 const pull = require("pull-stream")
 const _ = require("lodash")
+const { when } = require("../../core/kernel/utils.js")
+
 
 const MoreInfoView = {
   oninit: (vnode) => {
@@ -48,6 +50,7 @@ const MoreInfoView = {
               vnode.state.currentFields = fields
             }
           }
+          m.redraw()
         })
       )
     }
@@ -149,8 +152,8 @@ const MoreInfoView = {
             "table.table.w-full.table-zebra",
             m(
               "tbody",
-              vnode.state.currentFields.map((fields, index) => {
-                m(MoreInfoField, {
+              vnode.state.currentFields.map((field, index) => {
+                return m(MoreInfoField, {
                   field,
                   index,
                   ondelete: deleteField,
@@ -163,7 +166,7 @@ const MoreInfoView = {
             m(
               "button.btn.mt-2",
               {
-                class: saving ? "loading" : "",
+                class: vnode.state.saving ? "loading" : "",
                 onclick: save,
               },
               "Save"
@@ -232,8 +235,8 @@ const MoreInfoView = {
             m("input.btn.btn-primary.mt-2", {
               type: "submit",
               id: "save-field-button",
-              class: saving ? "loading" : "",
-              disabled: saving,
+              class: vnode.state.saving ? "loading" : "",
+              disabled: vnode.state.saving,
               value: "Add",
             }),
           ]

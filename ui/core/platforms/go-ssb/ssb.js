@@ -630,7 +630,10 @@ class GoSSB {
     }
 
     if (avatarCache[feed]) {
-      setTimeout(() => getAvatarAux(feed), 300) // update cache...
+      setTimeout(() => {
+        getAvatarAux(feed)
+        m.redraw()
+      }, 300) // update cache...
       return avatarCache[feed]
     }
     

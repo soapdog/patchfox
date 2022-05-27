@@ -43,6 +43,11 @@ const createWindow = (data = false, windowState = false) => {
   win.on("focus", () => {
     win.webContents.send("window:focus")
   })
+  
+  win.webContents.on("will-navigate", (event, url) => {
+    console.log("event", event)
+    console.log("url", url)
+  })
 
   // and load the index.html of the app.
   if (data?.url) {

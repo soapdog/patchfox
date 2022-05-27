@@ -3,9 +3,17 @@ const m = require("mithril")
 
 const AvatarChip = {
   oninit: (vnode) => {
-    vnode.state.shouldLoadAvatar = true
     vnode.state.image = false
     vnode.state.name = vnode.attrs.feed
+
+    ssb.avatar(vnode.attrs.feed).then((data) => {
+      if (data?.image) {
+        vnode.state.image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`
+      }
+
+      vnode.state.name = data?.name || vnode.attrs.feed
+      m.redraw()
+    })
   },
   view: (vnode) => {
     let feed = vnode.attrs.feed
@@ -16,26 +24,8 @@ const AvatarChip = {
     let onclick = vnode.attrs.onclick || false
     let flexClass = inline ? "inline-flex" : "flex"
 
-    if (vnode.state.shouldLoadAvatar) {
-      ssb.avatar(feed).then((data) => {
-        vnode.state.shouldLoadAvatar = false
-        if (!data || !data.hasOwnProperty("name")) {
-          // failed the request...
-          vnode.state.name = feed
-          m.redraw()
-          return
-        }
-  
-        if (data.image !== null && data.image !== undefined) {
-          vnode.state.image = `${patchfox.httpUrl("/blobs/get/" + data.image)}`
-        }
-  
-        vnode.state.name = data.name
-        m.redraw()
-      })
-    }
-
-    const avatarClick = () => {
+    const avatarClick = (ev) => {
+      ev.preventDefault()
       if (onclick) {
         onclick({ feed, name: vnode.state.name })
       }

@@ -61,8 +61,8 @@ const GlobalMenuView = {
 
       ipcRenderer.send("window:set-title", windowTitle)
       
-      console.log("title", windowTitle)
       window.title = windowTitle
+      
       return m(
         ".text-xl.breadcrumbs.capitalize",
         m("ul", [

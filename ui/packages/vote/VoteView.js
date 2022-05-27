@@ -16,6 +16,10 @@ const VoteView = {
         : msg.value.content.vote.expression
     let msgid = msg.value.content.vote.link
     let encodedid = encodeURIComponent(msgid)
+    
+    if (typeof expression === "undefined") {
+      expression = "like"
+    }
 
     if (vnode.state.loadingBlurb) {
       ssb
@@ -56,8 +60,8 @@ const VoteView = {
       }
     }
 
-    const avatarClick = (ev) => {
-      let feed = ev.detail.feed
+    const avatarClick = (data) => {
+      let feed = data.feed
       patchfox.go("contacts", "profile", { feed })
     }
 

@@ -34,7 +34,7 @@ module.exports = {
   // Electron-builder options --------------------------------------------------
   asar: true,
   npmRebuild: true,
-  electronVersion: PackageJSON.dependencies.electron,
+  electronVersion: PackageJSON.devDependencies.electron,
 
   // All things files and directories ------------------------------------------
   directories: {

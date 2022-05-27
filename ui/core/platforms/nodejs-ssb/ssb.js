@@ -458,7 +458,10 @@ class NodeJsSSB {
     }
 
     if (getCachedAvatar(feed)) {
-      setTimeout(() => getAvatarAux(feed), 300) // update cache...
+      setTimeout(() => {
+        getAvatarAux(feed)
+        m.redraw()
+      }, 300) // update cache...
       return getCachedAvatar(feed)
     }
 

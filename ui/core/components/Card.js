@@ -23,14 +23,8 @@ const Card = {
 
     let blured = isMessageBlured(msg)
 
-    const goProfile = ev => {
-      if (ev.ctrlKey) {
-        window.open(
-          `?pkg=contacts&view=profile&feed=${encodeURIComponent(feed)}#/profile`
-        )
-      } else {
-        patchfox.go("contacts", "profile", { feed })
-      }
+    const goProfile = (data) => {
+        patchfox.go("contacts", "profile", { feed: data.feed })
     }
 
     const toggleRawMessage = () => {

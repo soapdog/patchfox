@@ -63,7 +63,7 @@ patchfox.listen("package:go", (event, { pkg, view, data }) => {
     state.identity = cs.identity
   }
   let qs = queryString.stringify(state)
-  //history.pushState({ pkg, view, data }, "", path.join(__dirname, `index.html?${qs}`))
+  history.pushState({ pkg, view, data }, "", path.join(__dirname, `index.html?${qs}`))
   console.log(`going to ${pkg}.${view} with args`, data)
   goPackage({ pkg, view, data })
   m.redraw()
@@ -90,7 +90,6 @@ const Wm = {
   },
   view: (vnode) => {
     let systemPackages = patchfox.systemPackages()
-    console.log("system", systemPackages)
     return m("div.bg-base-200.min-h-screen", 
       m("div.root.container.mx-auto.p-2.lg:p-10.text-base-content",[
         // system packages
