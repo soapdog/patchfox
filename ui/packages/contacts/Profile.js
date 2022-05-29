@@ -4,7 +4,7 @@ const Posts = require("./Posts.js")
 const Following = require("./Following.js")
 const Followers = require("./Followers.js")
 const Friends = require("./Friends.js")
-const Editor = Spinner //require("./ProfileEditor.js")
+const Editor = require("./ProfileEditor.js")
 const MoreInfo = require("./MoreInfo.js")
 const ssbUri = require("ssb-uri2")
 const pull = require("pull-stream")
@@ -35,12 +35,15 @@ const ProfileView = {
         let a = m.value.content
         return a.hasOwnProperty("description")
       })
+      console.log(vnode.state.lastAbout)
       try {
         vnode.state.description =
           vnode.state.lastAbout.value.content.description
       } catch (n) {
         vnode.state.description = ""
       }
+      console.log(vnode.state.description)
+
       window.scrollTo(0, 0)
       vnode.state.loadingAbout = false
     })

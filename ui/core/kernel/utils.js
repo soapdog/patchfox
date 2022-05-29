@@ -29,10 +29,25 @@ const when = (value, vnode) => {
   }
 }
 
+const idFromLabel = label => {
+  let charsToRemove = [":", "."]
+  
+  label = label.toLowerCase()
+  
+  charsToRemove.forEach(c => {
+    label = label.replaceAll(c, "")
+  })
+  
+  label = label.replaceAll(" ", "-")
+  
+  return label
+}
+
 module.exports = {
   title,
   docsUrl,
   httpUrl,
   blobUrl,
-  when
+  when,
+  idFromLabel
 }

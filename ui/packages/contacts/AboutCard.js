@@ -1,5 +1,6 @@
 const m = require("mithril")
 const Card = require("../../core/components/Card.js")
+const { when } = require("../../core/kernel/utils.js")
 const AboutCard = {
   oninit: (vnode) => {
     let msg = vnode.attrs.msg
@@ -11,7 +12,7 @@ const AboutCard = {
       m.redraw()
     })
 
-    if (otherName === msg.value.content.about) {
+    if (vnode.state.otherName === msg.value.content.about) {
       ssb.avatar(msg.value.content.about).then((data) => {
         vnode.state.otherName = data.name
         m.redraw()
