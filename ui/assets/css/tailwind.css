@@ -1320,7 +1320,7 @@ html {
 }
 
 .card figure,.card figure>* {
-  width: 100%;
+  /* width: 100%; */
 }
 
 .card-actions {
@@ -2762,7 +2762,7 @@ html {
 }
 
 .mb-1 {
-  margin-bottom: 0.25rem;
+  /* margin-bottom: 0.25rem; */
 }
 
 .mb-2 {
@@ -2843,6 +2843,10 @@ html {
 
 .w-14 {
   width: 3.5rem;
+}
+
+.w-52 {
+  width: 13rem;
 }
 
 .w-80 {

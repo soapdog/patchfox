@@ -33,6 +33,7 @@ const AvatarChip = {
     let flexClass = inline ? "inline-flex" : "flex"
 
     const avatarClick = (ev) => {
+      console.log("click")
       ev.preventDefault()
       if (onclick) {
         onclick({ feed, name: vnode.state.name })
@@ -41,12 +42,11 @@ const AvatarChip = {
       }
     }
 
-    return [
+    return m("div", {onclick: avatarClick}, [
       when(
         vnode.state.image,
         m(
           `.${flexClass}.items-center.p-1.gap-1.justify-center.cursor-pointer`,
-          { onclick: avatarClick },
           [
             m(
               "figure.avatar",
@@ -63,7 +63,6 @@ const AvatarChip = {
         !vnode.state.image,
         m(
           `.${flexClass}.items-center.p-1.gap-1.justify-center.cursor-pointer`,
-          { onclick: avatarClick },
           [
             m(
               "figure.avatar",
@@ -79,7 +78,7 @@ const AvatarChip = {
       ),
       when(arrow, m("span.mr-2", m.trust("&rarr;"))),
       when(glyph, m("span.mr-2", m.trust(ssb.markdown(glyph, true)))),
-    ]
+    ])
   },
 }
 

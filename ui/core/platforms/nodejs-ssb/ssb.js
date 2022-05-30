@@ -128,7 +128,7 @@ class NodeJsSSB {
           },
           (err, server) => {
             if (err) {
-              reject(`can't connect to sbot: ${err}`)
+              reject(err.message)
             } else {
               sbot = server
 

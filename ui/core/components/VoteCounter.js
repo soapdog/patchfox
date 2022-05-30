@@ -2,7 +2,6 @@ const m = require("mithril")
 const stream = require("mithril/stream")
 const AvatarMenuItem = require("./AvatarMenuItem.js")
 const AvatarListing = require("./AvatarListing.js")
-const AvatarChip = require("./AvatarChip.js")
 const { when } = require("../kernel/utils.js")
 
 const VoteCounter = {
@@ -44,7 +43,7 @@ const VoteCounter = {
           },
           `💜 ${voters.length}`
         ),
-        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.justify-start", voters.map(feed => m(AvatarChip, {feed}))),
+        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.justify-start.w-52", voters.map(f => m(AvatarMenuItem, {feed: f}))),
       ]))
     )
 

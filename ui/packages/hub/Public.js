@@ -9,7 +9,6 @@ const PublicView = {
     vnode.state.lt = vnode.attrs.lt || false
   },
   view: (vnode) => {
-    console.log("hub.public view")
     let limit = vnode.attrs.limit || false
 
     let opts = {}
@@ -18,9 +17,9 @@ const PublicView = {
       patchfox.title(timestamp(vnode.state.lt))
     }
 
-    console.time("public")
 
     if (vnode.state.shouldLoadMessages == true) {
+      console.time("public")
       ssb
         .public(opts)
         .then((ms) => {

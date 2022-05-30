@@ -35,17 +35,11 @@ const ContactCard = {
       patchfox.go("contacts", "profile", { feed: msg.value.content.contact })
     }
 
-    const avatarClick = (ev) => {
-      let feed = ev.detail.feed
-      patchfox.go("contacts", "profile", { feed })
-    }
-
     return m("p.m-2", [
       m(AvatarChip, {
         inline: true,
         arrow: true,
-        feed: msg.value.author,
-        onclick: avatarClick,
+        feed: msg.value.author
       }),
       m("span.m-2", [
         `${verb} `,

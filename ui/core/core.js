@@ -37,14 +37,14 @@ const start = async () => {
     return server.id
     
   } catch (n) {
-    console.error("problem in core", n)
+    console.log("problem in core", JSON.stringify(n))
     let pkg = qs.pkg
     if (pkg !== "settings") {
       switch (n) {
       case "Configuration is missing":
         window.open(path.join(__dirname, "../../docs/index.html#/troubleshooting/no-configuration"))
         break
-      case "can't connect to sbot":
+      case "could not connect to sbot":
         window.open(path.join(__dirname, "../../docs/index.html#/troubleshooting/no-connection"))
         break
       default:
