@@ -101,9 +101,9 @@ const PostCard = {
     vnode.state.textSize = getPref("textSize", "prose")
 
     const actions = [
-      m("div", [
+      m("div.flex.align-middle", [
         m(
-          ".form-control",
+          ".form-control.flex-1",
           m("label.cursor-pointer.label", [
             m("span.label-text.mr-2", "Like"),
             m("input.toggle", {
@@ -113,7 +113,7 @@ const PostCard = {
             }),
           ])
         ),
-        m("span", m(VoteCounter, { msg })),
+        m(VoteCounter, { msg }),
       ]),
       m("div.flex-1"),
       when(
@@ -198,7 +198,7 @@ const PostCard = {
                   "button.btn-btn-sm.float-right",
                   {
                     onclick: () => {
-                      showContentWarning = !showContentWarning
+                      vnode.state.showContentWarning = !vnode.state.showContentWarning
                     },
                   },
                   "Hide Message"

@@ -3,18 +3,12 @@ const timestamp = require("./timestamp.js")
 const { when } = require("../kernel/utils.js")
 
 const AvatarTile = {
-  oninit: (vnode) => {
-    vnode.state.shouldLoadAvatar = true
+  oninit: vnode => {
     vnode.state.name = vnode.attrs.feed
     vnode.state.image = "assets/images/icon.png"
-  },
-  view: (vnode) => {
-    let feed = vnode.attrs.feed
-    let time = vnode.attrs.time || false
-    const onclick = vnode.attrs.onclick || false
 
-    if (vnode.state.shouldLoadAvatar) {
-      ssb.avatar(feed).then((data) => {
+    const defaultAvatarLoadingFunction = () => {
+      ssb.avatar(vnode.attrs.feed).then(data => {
         if (!data) {
           return
         }
@@ -28,25 +22,37 @@ const AvatarTile = {
       })
     }
 
+    if (vnode.attrs?.avatarLoadingFunction) {
+      vnode.attrs.avatarLoadingFunction().then(( {name, image} ) => {
+        vnode.state.name = name
+        vnode.state.image = image 
+        m.redraw()
+      })
+    } else {
+      defaultAvatarLoadingFunction()
+    }
+  },
+  view: vnode => {
+    let feed = vnode.attrs.feed
+    let time = vnode.attrs.time || false
+    const onclick = vnode.attrs.onclick || false
+
     const click = () => {
       if (onclick) {
         onclick({ feed, time })
       }
     }
 
-    return m(".flex.flex-row.cursor-pointer", { onclick: click }, [
-      m(
-        ".avatar",
-        m(
-          ".m-2.w-14.h-14.mask.mask-squircle",
-          m("img", { src: vnode.state.image, alt: vnode.state.name })
-        )
-      ),
-      m(".tile-content", [
-        m(".tile-title", vnode.state.name),
-        m("small.tile-subtitle.text-gray", when(time, timestamp(time))),
-      ]),
-    ])
+    return m(
+      ".flex.flex-row.cursor-pointer",
+      {
+        onclick: click,
+      },
+      [
+        m(".avatar", m(".m-2.w-14.h-14.mask.mask-squircle", m("img", { src: vnode.state.image, alt: vnode.state.name }))), 
+        m(".tile-content", [m(".tile-title", vnode.state.name), m("small.tile-subtitle.text-gray", when(time, timestamp(time)))])
+      ]
+    )
   },
 }
 

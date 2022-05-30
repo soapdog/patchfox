@@ -1,14 +1,14 @@
 const m = require("mithril")
 const QueryRepeater = require("../../core/components/QueryRepeater.js")
 const AvatarChip = require("../../core/components/AvatarChip.js")
-const AvatarContainer = require("../../core/components/AvatarContainer.js")
+const AvatarListing = require("../../core/components/AvatarListing.js")
 const Spinner = require("../../core/components/Spinner.js")
 const { when } = require("../../core/kernel/utils.js")
 
 const _ = require("lodash")
 
 const FriendsView = {
-  oninit: (vnode) => {
+  oninit: vnode => {
     let feed = vnode.attrs.feed
     let oncount = vnode.attrs.oncount
 
@@ -17,7 +17,7 @@ const FriendsView = {
 
     console.time("loading friends")
 
-    ssb.friendship.friendsAsArray(feed).then((ids) => {
+    ssb.friendship.friendsAsArray(feed).then(ids => {
       vnode.state.contacts = ids
       vnode.state.loading = false
       oncount({ friends: vnode.state.contacts.length })
@@ -25,29 +25,12 @@ const FriendsView = {
       m.redraw()
     })
 
-    patchfox.listen("package:activate:contacts:profile", () =>
-      location.reload()
-    )
+    patchfox.listen("package:activate:contacts:profile", () => location.reload())
   },
-  view: (vnode) => {
+  view: vnode => {
     let feed = vnode.attrs.feed
 
-    const avatarClick = (data) => {
-      patchfox.go("contacts", "profile", { feed: data.feed })
-    }
-
-    return [
-      m(
-        AvatarContainer,
-        vnode.state.contacts.map((contact) =>
-          m(AvatarChip, {
-            feed: contact,
-            onclick: avatarClick,
-          })
-        )
-      ),
-      when(vnode.state.loading, m(Spinner)),
-    ]
+    return [m(AvatarListing, { feeds: vnode.state.contacts }), when(vnode.state.loading, m(Spinner))]
   },
 }
 

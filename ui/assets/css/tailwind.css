@@ -1230,7 +1230,7 @@ html {
   outline-offset: 2px;
 }
 
-.btn[disabled] {
+.btn-disabled,.btn[disabled] {
   pointer-events: none;
   --tw-bg-opacity: 1;
   --tw-bg-opacity: 0.2;
@@ -1408,6 +1408,36 @@ html {
 
 .dropdown-end .dropdown-content {
   right: 0;
+}
+
+.dropdown-left .dropdown-content {
+  top: 0;
+  bottom: auto;
+  right: 100%;
+  transform-origin: right;
+}
+
+.dropdown-right .dropdown-content {
+  top: 0;
+  bottom: auto;
+  left: 100%;
+  transform-origin: left;
+}
+
+.dropdown-top .dropdown-content {
+  top: auto;
+  bottom: 100%;
+  transform-origin: bottom;
+}
+
+.dropdown-end.dropdown-right .dropdown-content {
+  bottom: 0;
+  top: auto;
+}
+
+.dropdown-end.dropdown-left .dropdown-content {
+  bottom: 0;
+  top: auto;
 }
 
 .dropdown.dropdown-hover:hover .dropdown-content,.dropdown.dropdown-open .dropdown-content,.dropdown:not(.dropdown-hover):focus-within .dropdown-content,.dropdown:not(.dropdown-hover):focus .dropdown-content {
@@ -1821,6 +1851,86 @@ html {
   box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--p));
 }
 
+.btn-secondary {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--s) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--s) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--sc) / var(--tw-text-opacity, 1));
+}
+
+.btn-secondary.btn-active,.btn-secondary:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--sf) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--sf) / var(--tw-border-opacity, 1));
+}
+
+.btn-secondary:focus-visible {
+  box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--s));
+}
+
+.btn-success {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--su) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--su) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--b2) / var(--tw-text-opacity, 1));
+}
+
+.btn-success.btn-active,.btn-success:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--su) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--su) / var(--tw-border-opacity, 1));
+}
+
+.btn-success:focus-visible {
+  box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--su));
+}
+
+.btn-warning {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--wa) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--wa) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--b2) / var(--tw-text-opacity, 1));
+}
+
+.btn-warning.btn-active,.btn-warning:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--wa) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--wa) / var(--tw-border-opacity, 1));
+}
+
+.btn-warning:focus-visible {
+  box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--wa));
+}
+
+.btn-error {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--er) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--er) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--b2) / var(--tw-text-opacity, 1));
+}
+
+.btn-error.btn-active,.btn-error:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--er) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--er) / var(--tw-border-opacity, 1));
+}
+
+.btn-error:focus-visible {
+  box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--er));
+}
+
 .btn-ghost {
   background-color: transparent;
   border-color: transparent;
@@ -1884,6 +1994,67 @@ html {
   border-color: hsla(var(--pf) / var(--tw-border-opacity, 1));
   --tw-text-opacity: 1;
   color: hsla(var(--pc) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-secondary {
+  --tw-text-opacity: 1;
+  color: hsla(var(--s) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-secondary:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--sf) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--sf) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--sc) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-success {
+  --tw-text-opacity: 1;
+  color: hsla(var(--su) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-success:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--su) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--su) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--nc) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-warning {
+  --tw-text-opacity: 1;
+  color: hsla(var(--wa) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-warning:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--wa) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--wa) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--nc) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-error {
+  --tw-text-opacity: 1;
+  color: hsla(var(--er) / var(--tw-text-opacity, 1));
+}
+
+.btn-outline.btn-error:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--er) / var(--tw-bg-opacity, 1));
+  --tw-border-opacity: 1;
+  border-color: hsla(var(--er) / var(--tw-border-opacity, 1));
+  --tw-text-opacity: 1;
+  color: hsla(var(--nc) / var(--tw-text-opacity, 1));
+}
+
+.btn.loading.btn-lg:before {
+  height: 1.25rem;
+  width: 1.25rem;
 }
 
 .btn.loading.btn-sm:before,.btn.loading.btn-xs:before {
@@ -2042,6 +2213,13 @@ html {
 .label-text {
   font-size: .875rem;
   line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: hsla(var(--bc) / var(--tw-text-opacity, 1));
+}
+
+.label-text-alt {
+  font-size: .75rem;
+  line-height: 1rem;
   --tw-text-opacity: 1;
   color: hsla(var(--bc) / var(--tw-text-opacity, 1));
 }
@@ -2509,6 +2687,14 @@ html {
   font-size: .875rem;
 }
 
+.btn-lg {
+  height: 4rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  min-height: 4rem;
+  font-size: 1.125rem;
+}
+
 .btn-wide {
   width: 16rem;
 }
@@ -2762,6 +2948,10 @@ html {
   flex-direction: row;
 }
 
+.content-center {
+  align-content: center;
+}
+
 .items-center {
   align-items: center;
 }
@@ -2888,11 +3078,6 @@ html {
   text-transform: capitalize;
 }
 
-.text-primary {
-  --tw-text-opacity: 1;
-  color: hsla(var(--p) / var(--tw-text-opacity));
-}
-
 .text-accent-content {
   --tw-text-opacity: 1;
   color: hsla(var(--ac) / var(--tw-text-opacity));
@@ -2998,12 +3183,6 @@ figure.avatar {
 
 .clickable:hover {
   cursor: pointer;
-}
-
-.vote-counter {
-  display: inline-block;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 
 .menu-right {

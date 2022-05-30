@@ -6,9 +6,9 @@ const { getPref } = require("./prefs.js")
 const httpUrl = (url) => {
   let remote = ssb.remote
   let tildePos = remote.indexOf("~")
-  let colonPos = remote.indexOf(":")
+  let colonPos = remote.indexOf(":") + 1
   let secondColonPos = remote.indexOf(":", 4)
-  return "http" + remote.slice(colonPos, secondColonPos) + ":8989" + url
+  return "http://" + remote.slice(colonPos, secondColonPos) + ":8989" + url
 }
 
 const blobUrl = (file) => {

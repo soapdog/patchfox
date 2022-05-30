@@ -11,7 +11,7 @@ const AvatarChip = {
         return
       }
       if (data?.image) {
-        vnode.state.image = patchfox.httpUrl("/blobs/get/" + data.image)
+        vnode.state.image = patchfox.blobUrl(data.image)
       } else {
         vnode.state.image = false
       }
@@ -20,6 +20,7 @@ const AvatarChip = {
       m.redraw()
     }).catch(n => {
       console.error("something odd", n)
+      m.redraw()
     })
   },
   view: (vnode) => {
@@ -35,6 +36,8 @@ const AvatarChip = {
       ev.preventDefault()
       if (onclick) {
         onclick({ feed, name: vnode.state.name })
+      } else {
+        patchfox.go("contacts", "profile", { feed })
       }
     }
 

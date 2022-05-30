@@ -1,58 +1,40 @@
 const m = require("mithril")
 const stream = require("mithril/stream")
 const AvatarMenuItem = require("./AvatarMenuItem.js")
-const AvatarContainer = require("./AvatarContainer.js")
+const AvatarListing = require("./AvatarListing.js")
 const AvatarChip = require("./AvatarChip.js")
 const { when } = require("../kernel/utils.js")
 
 const VoteCounter = {
-  oninit: (vnode) => {
-    this.state = "waitclick" // "loading", "loaded", "error"
+  oninit: vnode => {
+    vnode.state.voters = []
+    vnode.state.stage = "loading"
+
+    ssb
+      .votes(vnode.attrs.msg)
+      .then(vs => {
+        vnode.state.voters = vs
+        vnode.state.stage = "loaded"
+        m.redraw()
+      })
+      .catch(n => {
+        vnode.state.error = n
+        vnode.state.stage = "error"
+        m.redraw()
+      })
   },
-  view: (vnode) => {
-    const onclick = vnode.attrs.onclick
-    let msg = vnode.attrs.msg
+  view: vnode => {
     let dropdownActive = false
-    let error = ""
-    let voters = []
+    let error = vnode.state.error
+    let voters = vnode.state.voters
 
-    const loadVotes = () => {
-      state = "loading"
-      ssb
-        .votes(msg)
-        .then((vs) => {
-          voters = vs
-          vnode.state.state = "loaded"
-          m.redraw()
-        })
-        .catch((n) => {
-          error = n
-          vnode.state.state = "error"
-          m.redraw()
-        })
-    }
-
-    const avatarClick = (ev) => {
-      let feed = ev.detail.feed
-      let name = ev.detail.name
-
-      patchfox.go("contacts", "profile", { feed })
-    }
-
-    if (vnode.state.state == "waitclick") {
-      setTimeout(loadVotes, 500)
-    }
-
-    const loading = when(
-      vnode.state.state == "loading",
-      m(".flex.justify-center", m("i.fas.fa-spinner.fa-spin"))
-    )
+    const loading = when(vnode.state.stage == "loading", m(".flex.justify-center", m("i.fas.fa-spinner.fa-spin")))
 
     const loadedSome = when(
-      vnode.state.state == "loaded" && voters.length > 0,
-      m(".dropdown", [
+      vnode.state.stage == "loaded" && voters.length > 0,
+      m(".flex.justify-center", m(".dropdown", [
         m(
-          "label.btn.btn-link",
+          "label.label",
           {
             class: dropdownActive ? "dropdown-open" : "",
             onclick: () => {
@@ -62,46 +44,15 @@ const VoteCounter = {
           },
           `💜 ${voters.length}`
         ),
-        m(
-          ".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.w-52",
-          m(
-            AvatarContainer,
-            voters.map((user) => {
-              return m(
-                "li",
-                m(AvatarChip, {
-                  feed: user,
-                  onclick: avatarClick,
-                })
-              )
-            })
-          )
-        ),
-      ])
+        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.w-52", m(AvatarListing, { feeds: voters })),
+      ]))
     )
 
-    const loadedZero = when(
-      vnode.state.state == "loaded" && voters.length == 0,
-      m("span", `💜 ${voters.length}`)
-    )
+    const loadedZero = when(vnode.state.stage == "loaded" && voters.length == 0, m(".flex.justify-center", `💜 ${voters.length}`))
 
-    const cantLoad = when(
-      vnode.state.state == "error",
-      m("span", `💔 can't load`)
-    )
+    const cantLoad = when(vnode.state.stage == "error", m(".flex", `💔 can't load`))
 
-    const waiting = when(
-      vnode.state.state == "waitclick",
-      m("span.c-hand.text-primary", { onclick: loadVotes }, "(get votes)")
-    )
-
-    return m(".vote-counter", [
-      loading,
-      loadedSome,
-      loadedZero,
-      cantLoad,
-      waiting,
-    ])
+    return m(".vote-counter.flex.content-center.items-center", [loading, loadedSome, loadedZero, cantLoad])
   },
 }
 
