@@ -1,13 +1,15 @@
 const m = require("mithril")
-const Spinner = require("../../core/components/Spinner.js")
+const ssbUri = require("ssb-uri2")
+const pull = require("pull-stream")
+
 const Posts = require("./Posts.js")
 const Following = require("./Following.js")
 const Followers = require("./Followers.js")
 const Friends = require("./Friends.js")
 const Editor = require("./ProfileEditor.js")
 const MoreInfo = require("./MoreInfo.js")
-const ssbUri = require("ssb-uri2")
-const pull = require("pull-stream")
+
+const Spinner = require("../../core/components/Spinner.js")
 const { when } = require("../../core/kernel/utils.js")
 
 const ProfileView = {

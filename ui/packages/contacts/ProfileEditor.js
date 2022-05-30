@@ -8,15 +8,18 @@ const TextArea = require("../../core/components/daisyui/TextArea.js")
 const ProfileEditor = {
   oninit: vnode => {
     vnode.state.submitting = false
+    vnode.state.description = vnode.attrs?.description || ""
+    vnode.state.name = vnode.attrs?.name || ""
+    vnode.state.image = vnode.attrs?.image || ""
   },
   view: vnode => {
     const onSaveProfile = vnode.attrs?.onSaveProfile
     const onCancelEdit = vnode.attrs?.onCancelEdit
 
-    let description = vnode.attrs?.description || ""
-    let name = vnode.attrs?.name || ""
-    let image = vnode.attrs?.image || ""
     let feed = vnode.attrs?.feed || ""
+    let description = vnode.state.description
+    let name = vnode.state.name
+    let image = vnode.state.image
 
     let sbot = ssb.sbot
 
@@ -29,6 +32,7 @@ const ProfileEditor = {
       let name = document.getElementById("name").value
       let description = document.getElementById("description").value
       let data = { name, description, image: { link: image } }
+      
       vnode.state.submitting = true
 
       m.redraw()
@@ -66,7 +70,8 @@ const ProfileEditor = {
         ssb
           .addBlob(first)
           .then(hash => {
-            image = hash
+            vnode.state.image = hash
+            m.redraw()
           })
           .catch(err => {
             alert("Couldn't attach file: " + err)
