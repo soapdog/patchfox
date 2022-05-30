@@ -44,7 +44,7 @@ const VoteCounter = {
           },
           `💜 ${voters.length}`
         ),
-        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.w-52", m(AvatarListing, { feeds: voters })),
+        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.justify-start", voters.map(feed => m(AvatarChip, {feed}))),
       ]))
     )
 

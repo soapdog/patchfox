@@ -2845,10 +2845,6 @@ html {
   width: 3.5rem;
 }
 
-.w-52 {
-  width: 13rem;
-}
-
 .w-80 {
   width: 20rem;
 }
@@ -2954,6 +2950,10 @@ html {
 
 .items-center {
   align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
 }
 
 .justify-end {
