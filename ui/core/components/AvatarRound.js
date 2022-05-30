@@ -25,10 +25,20 @@ const AvatarRound = {
       })
     }
 
-    const avatarClick = () => {
+    const avatarClick = ev => {
+      ev.preventDefault()
       if (onclick) {
-        onclick({feed, name})
+        onclick({ feed, name: vnode.state.name })
+        return
+      } 
+
+      if (ev.altKey || ev.button == 1) {
+        let url = patchfox.url("contacts", "profile", { feed })
+        window.open(url)
+        return 
       }
+
+      patchfox.go("contacts", "profile", { feed })
     }
     
     if (image) {

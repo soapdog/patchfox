@@ -32,14 +32,20 @@ const AvatarChip = {
     let onclick = vnode.attrs.onclick || false
     let flexClass = inline ? "inline-flex" : "flex"
 
-    const avatarClick = (ev) => {
-      console.log("click")
+    const avatarClick = ev => {
       ev.preventDefault()
       if (onclick) {
         onclick({ feed, name: vnode.state.name })
-      } else {
-        patchfox.go("contacts", "profile", { feed })
+        return
+      } 
+
+      if (ev.altKey || ev.button == 1) {
+        let url = patchfox.url("contacts", "profile", { feed })
+        window.open(url)
+        return 
       }
+
+      patchfox.go("contacts", "profile", { feed })
     }
 
     return m("div", {onclick: avatarClick}, [

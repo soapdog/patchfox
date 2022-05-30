@@ -37,10 +37,20 @@ const AvatarTile = {
     let time = vnode.attrs.time || false
     const onclick = vnode.attrs.onclick || false
 
-    const click = () => {
+    const avatarClick = ev => {
+      ev.preventDefault()
       if (onclick) {
-        onclick({ feed, time })
+        onclick({ feed, name: vnode.state.name })
+        return
+      } 
+
+      if (ev.altKey || ev.button == 1) {
+        let url = patchfox.url("contacts", "profile", { feed })
+        window.open(url)
+        return 
       }
+
+      patchfox.go("contacts", "profile", { feed })
     }
 
     return m(
