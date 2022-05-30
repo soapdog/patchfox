@@ -23,10 +23,6 @@ const Card = {
 
     let blured = isMessageBlured(msg)
 
-    const goProfile = (data) => {
-        patchfox.go("contacts", "profile", { feed: data.feed })
-    }
-
     const toggleRawMessage = () => {
       vnode.state.showRaw = !vnode.state.showRaw
     }
@@ -55,8 +51,7 @@ const Card = {
                 m(".flex-none", 
                   m(AvatarTile, {
                     feed, 
-                    time: msg.value.timestamp, 
-                    onclick: goProfile
+                    time: msg.value.timestamp
                   })
                 )
               ),

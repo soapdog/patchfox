@@ -30,7 +30,7 @@ const AvatarChip = {
     let arrow = vnode.attrs.arrow || false
     let glyph = vnode.attrs.glyph || false
     let onclick = vnode.attrs.onclick || false
-    let flexClass = inline ? "inline-flex" : "flex"
+    let flexClass = inline ? "inline-flex" : "display-block"
 
     const avatarClick = ev => {
       ev.preventDefault()
@@ -48,11 +48,12 @@ const AvatarChip = {
       patchfox.go("contacts", "profile", { feed })
     }
 
-    return m("div", {onclick: avatarClick}, [
+    return [
       when(
         vnode.state.image,
         m(
           `.${flexClass}.items-center.p-1.gap-1.justify-center.cursor-pointer`,
+          {onclick: avatarClick},
           [
             m(
               "figure.avatar",
@@ -69,6 +70,7 @@ const AvatarChip = {
         !vnode.state.image,
         m(
           `.${flexClass}.items-center.p-1.gap-1.justify-center.cursor-pointer`,
+          {onclick: avatarClick},
           [
             m(
               "figure.avatar",
@@ -84,7 +86,7 @@ const AvatarChip = {
       ),
       when(arrow, m("span.mr-2", m.trust("&rarr;"))),
       when(glyph, m("span.mr-2", m.trust(ssb.markdown(glyph, true)))),
-    ])
+    ]
   },
 }
 

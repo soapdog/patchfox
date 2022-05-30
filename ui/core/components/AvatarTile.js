@@ -56,7 +56,7 @@ const AvatarTile = {
     return m(
       ".flex.flex-row.cursor-pointer",
       {
-        onclick: click,
+        onclick: avatarClick,
       },
       [
         m(".avatar", m(".m-2.w-14.h-14.mask.mask-squircle", m("img", { src: vnode.state.image, alt: vnode.state.name }))), 
