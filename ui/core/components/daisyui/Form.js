@@ -2,20 +2,25 @@ const m = require("mithril")
 
 const Form = {
   view: vnode => {
-    let onsave = vnode.attrs.onsave
-    let oncancel = vnode.attrs?.oncancel
+    let onSave = vnode.attrs.onSave
+    let onCancel = vnode.attrs?.onCancel ? vnode.attrs.onCancel : onCancelDefault
+
     const onSubmit = ev => {
       ev.preventDefault()
-      onsave()
+      onSave()
+    }
+
+    const onCancelDefault = ev => {
+      ev.preventDefault
     }
     
     return m("form.form", {onsubmit: onSubmit},[
       ...vnode.children,
       m("div.flex", [
-        m("button.btn.flex-1.m-2", {
-          onclick: oncancel
+        m("button.btn.flex-1.mt-2", {
+          onclick: onCancel
         }, "Cancel"),
-        m("input.btn.btn-primary,flex-1.m-2", {
+        m("input.btn.btn-primary.flex-1.mt-2.ml-2", {
           type: "submit",
           class: vnode.attrs.submitting ? "loading" : "",
           value: "Save"

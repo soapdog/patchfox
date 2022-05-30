@@ -14,7 +14,6 @@ const AvatarChip = {
         vnode.state.image = patchfox.httpUrl("/blobs/get/" + data.image)
       } else {
         vnode.state.image = false
-        console.log("strange data", data)
       }
 
       vnode.state.name = data?.name || vnode.attrs.feed

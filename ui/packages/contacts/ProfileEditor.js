@@ -6,11 +6,12 @@ const TextInput = require("../../core/components/daisyui/TextInput.js")
 const TextArea = require("../../core/components/daisyui/TextArea.js")
 
 const ProfileEditor = {
-  oninit: (vnode) => {
+  oninit: vnode => {
     vnode.state.submitting = false
   },
-  view: (vnode) => {
-    const onsaveprofile = vnode.attrs?.onsaveprofile
+  view: vnode => {
+    const onSaveProfile = vnode.attrs?.onSaveProfile
+    const onCancelEdit = vnode.attrs?.onCancelEdit
 
     let description = vnode.attrs?.description || ""
     let name = vnode.attrs?.name || ""
@@ -19,7 +20,10 @@ const ProfileEditor = {
 
     let sbot = ssb.sbot
 
-    const cancel = () => {}
+    const cancel = (ev) => {
+      ev.preventDefault()
+      onCancelEdit()
+    }
 
     const save = () => {
       let name = document.getElementById("name").value
@@ -31,16 +35,16 @@ const ProfileEditor = {
 
       ssb
         .setProfileMetadata(data)
-        .then((res) => {
+        .then(res => {
           console.log("res", res)
-          location.reload()
+          onSaveProfile()
         })
-        .catch((err) => {
+        .catch(err => {
           console.error("err", err)
         })
     }
 
-    const readFileAndAttach = (files) => {
+    const readFileAndAttach = files => {
       try {
         if (files.length == 0) {
           return false
@@ -55,21 +59,16 @@ const ProfileEditor = {
         }
 
         if (first.size >= 5000000) {
-          alert(
-            `File too large: ${Math.floor(
-              first.size / 1048576,
-              2
-            )}mb when max size is 5mb`
-          )
+          alert(`File too large: ${Math.floor(first.size / 1048576, 2)}mb when max size is 5mb`)
           return false
         }
 
         ssb
           .addBlob(first)
-          .then((hash) => {
+          .then(hash => {
             image = hash
           })
-          .catch((err) => {
+          .catch(err => {
             alert("Couldn't attach file: " + err)
           })
       } catch (n) {
@@ -77,17 +76,14 @@ const ProfileEditor = {
       }
     }
 
-    const attachFile = (ev) => {
+    const attachFile = ev => {
       const files = ev.target.files
       readFileAndAttach(files)
     }
 
     return m(".flex", [
       m(".flex-1", [
-        m(
-          ".container",
-          m("img", { src: patchfox.httpUrl("/blobs/get/" + image), alt: feed })
-        ),
+        m(".container", m("img", { src: patchfox.httpUrl("/blobs/get/" + image), alt: feed })),
         m("input.btn.btn-link.text-center", {
           type: "file",
           oninput: attachFile,
@@ -95,23 +91,19 @@ const ProfileEditor = {
         }),
       ]),
       m(".flex-1", [
-        m(
-          "span",
-          { class: "bg-accent text-accent-content p-2 rounded" },
-          "📝 Editing Your Profile 📝"
-        ),
+        m("div", { class: "bg-accent text-accent-content p-2 rounded mb-4" }, m("span", "📝 Editing Your Profile 📝")),
         m(
           Form,
           {
-            onsave: save,
-            oncancel: cancel,
+            onSave: save,
+            onCancel: cancel,
             submitting: vnode.state.submitting,
           },
           [
             m(TextInput, {
               label: "Name",
               id: "name",
-              value: name
+              value: name,
             }),
             m(TextArea, { id: "description", value: description }),
           ]

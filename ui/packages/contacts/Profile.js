@@ -11,7 +11,7 @@ const pull = require("pull-stream")
 const { when } = require("../../core/kernel/utils.js")
 
 const ProfileView = {
-  oninit: (vnode) => {
+  oninit: vnode => {
     let feed = vnode.attrs.feed || ssb.feed
     vnode.state.name = feed
     vnode.state.blocking = false
@@ -23,22 +23,21 @@ const ProfileView = {
     vnode.state.currentSubView = vnode.attrs.currentSubView || "friends"
     vnode.state.aliases = []
 
-    ssb.avatar(feed).then((data) => {
+    ssb.avatar(feed).then(data => {
       vnode.state.name = data.name
       vnode.state.image = data.image
       vnode.state.loadingAvatar = false
       patchfox.title(name)
     })
 
-    ssb.profile(feed).then((data) => {
-      vnode.state.lastAbout = data.about.reverse().find((m) => {
+    ssb.profile(feed).then(data => {
+      vnode.state.lastAbout = data.about.reverse().find(m => {
         let a = m.value.content
         return a.hasOwnProperty("description")
       })
       console.log(vnode.state.lastAbout)
       try {
-        vnode.state.description =
-          vnode.state.lastAbout.value.content.description
+        vnode.state.description = vnode.state.lastAbout.value.content.description
       } catch (n) {
         vnode.state.description = ""
       }
@@ -49,11 +48,11 @@ const ProfileView = {
     })
 
     if (feed !== ssb.feed) {
-      ssb.following(feed).then((f) => {
+      ssb.following(feed).then(f => {
         vnode.state.following = f
         m.redraw()
       })
-      ssb.blocking(feed).then((f) => {
+      ssb.blocking(feed).then(f => {
         vnode.state.blocking = f
         m.redraw()
       })
@@ -61,15 +60,14 @@ const ProfileView = {
 
     ssb.rooms2
       .getAliases(feed)
-      .then((data) => {
-        console.log("data", data)
+      .then(data => {
         vnode.state.aliases = data
         vnode.state.loadingAliases = false
         m.redraw()
       })
-      .catch((err) => console.error(err))
+      .catch(err => console.error(err))
   },
-  view: (vnode) => {
+  view: vnode => {
     let feed = vnode.attrs.feed || ssb.feed
 
     let profile = vnode.state.profile
@@ -94,7 +92,7 @@ const ProfileView = {
 
     patchfox.title(feed)
 
-    const blockingChanged = (ev) => {
+    const blockingChanged = ev => {
       let v = ev.target.checked
       if (v) {
         ssb.block(feed).catch(() => {
@@ -109,7 +107,7 @@ const ProfileView = {
       }
     }
 
-    const followingChanged = (ev) => {
+    const followingChanged = ev => {
       let v = ev.target.checked
       if (v) {
         ssb.follow(feed).catch(() => {
@@ -124,7 +122,7 @@ const ProfileView = {
       }
     }
 
-    const countCallback = (ev) => {
+    const countCallback = ev => {
       let { followers, following, friends } = ev
 
       if (followers) {
@@ -159,11 +157,12 @@ const ProfileView = {
           description,
           image,
           onCancelEdit: () => (vnode.state.showEditor = false),
+          onSaveProfile: () => {
+            location.reload()
+          },
         })
       )
     }
-
-    // TODO: this is completely broken.
 
     const makeTab = (viewId, label) => {
       return m(
@@ -175,7 +174,7 @@ const ProfileView = {
           "a",
           {
             href: "",
-            onclick: (ev) => {
+            onclick: ev => {
               ev.preventDefault()
               vnode.state.currentSubView = viewId
             },
@@ -249,12 +248,7 @@ const ProfileView = {
               m(".divider"),
             ])
           ),
-          vnode.state.loadingAbout
-            ? m(Spinner)
-            : m(
-                ".prose.mt-4.mb-4",
-                m.trust(ssb.markdown(vnode.state.description))
-              ),
+          vnode.state.loadingAbout ? m(Spinner) : m(".prose.mt-4.mb-4", m.trust(ssb.markdown(vnode.state.description))),
           m(
             ".extra-actions",
             m(
@@ -267,15 +261,12 @@ const ProfileView = {
           ),
           m(".extra-actions", [
             when(vnode.state.loadingAliases, m(Spinner)),
-            when(
-              !vnode.state.loadingAliases && vnode.state.aliases.length == 0,
-              m("p", "No aliases set for this profile.")
-            ),
+            when(!vnode.state.loadingAliases && vnode.state.aliases.length == 0, m("p", "No aliases set for this profile.")),
             when(
               !vnode.state.loadingAliases && vnode.state.aliases.length > 0,
               m(
                 "ul",
-                vnode.state.aliases.map((alias) =>
+                vnode.state.aliases.map(alias =>
                   m(
                     "li",
                     m(
@@ -294,13 +285,7 @@ const ProfileView = {
         ])
       ),
       m("br"),
-      m("ul.tabs.tabs-boxed.mb-4", [
-        makeTab("posts", "Posts"),
-        makeTab("friends", "Friends"),
-        makeTab("following", "Following"),
-        makeTab("followers", "Followers"),
-        makeTab("moreInfo", "More Info"),
-      ]),
+      m("ul.tabs.tabs-boxed.mb-4", [makeTab("posts", "Posts"), makeTab("friends", "Friends"), makeTab("following", "Following"), makeTab("followers", "Followers"), makeTab("moreInfo", "More Info")]),
       m("br"),
       m(subViews[vnode.state.currentSubView], {
         feed,
