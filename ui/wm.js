@@ -28,7 +28,7 @@ const goPackage = ({ pkg, view, data }) => {
       args = data
       currentPackage = packageToOpen
       currentView = viewToOpen
-      patchfox.emit("package:changed", { packageToOpen, view, data })
+      patchfox.emit("package:changed", { packageToOpen, view: view || "view", data })
       patchfox.emit(eventToSend, data)
       return true
     }
@@ -43,14 +43,17 @@ const popState = ev => {
   }
 }
 
-const handleUncaughtException = n => {
+const handleUncaughtException = (message, source, lineno, colno, error) => {
+  console.log("error happened!", message)
   goPackage({
     pkg: "errorHandler",
     data: {
       currentPackage,
-      error: n,
+      error: message,
     },
   })
+  m.redraw()
+  return true
 }
 
 patchfox.listen("package:go", (event, { pkg, view, data }) => {
@@ -78,6 +81,8 @@ patchfox.listen("package:save:state", (event, { pkg, view, data }) => {
   let qs = queryString.stringify(state)
   history.pushState({ pkg, view, data }, "", `index.html?${qs}`)
 })
+
+window.onerror = handleUncaughtException
 
 const Wm = {
   oninit: (vnode) => {

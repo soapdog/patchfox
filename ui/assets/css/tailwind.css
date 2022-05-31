@@ -2369,6 +2369,16 @@ html {
   color: hsla(var(--bc) / var(--tw-placeholder-opacity, 1));
 }
 
+.link-primary {
+  --tw-text-opacity: 1;
+  color: hsla(var(--p) / var(--tw-text-opacity, 1));
+}
+
+.link-primary:hover {
+  --tw-text-opacity: 1;
+  color: hsla(var(--pf) / var(--tw-text-opacity, 1));
+}
+
 .link-accent {
   --tw-text-opacity: 1;
   color: hsla(var(--a) / var(--tw-text-opacity, 1));
@@ -3099,6 +3109,10 @@ html {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.list-disc {
+  list-style-type: disc;
 }
 
 .flex-row {

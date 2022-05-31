@@ -1,7 +1,7 @@
-const view = require("./ErrorView.svelte")
+const ErrorView = require("./ErrorView.js")
 
 patchfox.package({
   name: "errorHandler",
   supportedPlatforms: ["all"],
-  view,
+  view: ErrorView,
 })

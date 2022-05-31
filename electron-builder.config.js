@@ -120,7 +120,7 @@ module.exports = {
 
   // Windows-specific configurations -------------------------------------------
   win: {
-	icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.ico"),
+	icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
     publisherName: AUTHOR,
   },
 

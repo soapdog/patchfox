@@ -5,13 +5,14 @@ const LauncherView = {
   oninit: (vnode) => {
     vnode.state.active = vnode.attrs.active || false
     vnode.state.subView = vnode.attrs.subView || "Apps"
+    vnode.state.selectedPackage = false
 
     let removeHotKey = keymage(
       "ctrl-m",
       () => {
         keymage.pushScope("launcher")
         vnode.state.active = !vnode.state.active
-        vnode.state.descriptionOpen = false 
+        vnode.state.descriptionOpen = false
         vnode.state.subView = "Apps"
         m.redraw()
       },
@@ -27,7 +28,6 @@ const LauncherView = {
     let packageBeingHovered = false
     let description = ""
     let descriptionOpen = false
-    let selectedPackage = false
 
     let packageKeys = []
 
@@ -40,13 +40,21 @@ const LauncherView = {
     }
 
     const titleForPackage = (pkg) => {
-      let name = patchfox.packages[pkg]?.title || patchfox.packages[pkg].name
-      return name
+      if (pkg) {
+        let name = patchfox.packages[pkg]?.title || patchfox.packages[pkg].name
+        return name
+      } else {
+        return ""
+      }
     }
 
     const descriptionForPackage = (pkg) => {
-      let description = patchfox.packages[pkg].description || false
-      return description
+      if (pkg) {
+        let description = patchfox.packages[pkg].description || false
+        return description
+      } else {
+        return ""
+      }
     }
 
     const urlForPackage = (pkg) => {
@@ -74,12 +82,18 @@ const LauncherView = {
 
     filter(vnode.state.subView)
 
+    const makePackageDescription = (pkg) => {}
+
     const makeTab = (view) => {
-      return m("a", {
-        href: "#",
-        class: vnode.state.subView == view ? "tab tab-active" : "tab",
-        onclick: () => filter(view),
-      }, view)
+      return m(
+        "a",
+        {
+          href: "#",
+          class: vnode.state.subView == view ? "tab tab-active" : "tab",
+          onclick: () => filter(view),
+        },
+        view
+      )
     }
 
     const makePackage = (pkg) => {
@@ -153,7 +167,23 @@ const LauncherView = {
             ),
           ]),
           m("div", { class: !vnode.state.descriptionOpen ? "hidden" : "" }, [
-            m("p", "description for package"),
+            m("h1.text-xl.text-centered", titleForPackage(vnode.state.selectedPackage)),
+            m("p.prose.m-2.mb-4", descriptionForPackage(vnode.state.selectedPackage)),
+            m("p.m-2", `References for more information:`),
+            m("ul.list-disc.m-2", [
+              m("li", m("a.link.link-primary", {
+                href: patchfox.docsUrl(`/packages/${vnode.state.selectedPackage}/README.md`),
+                target: "_blank"
+              }, `View documentation for package ${vnode.state.selectedPackage}`)),
+              m("li", m("a.link.link-primary", {
+                href:`https://github.com/soapdog/patchfox/tree/master/src/packages/${vnode.state.selectedPackage}`,
+                target: "_blank",
+              }, `View source-code for package ${vnode.state.selectedPackage} on GitHub`)),
+              m("li", m("a.link.link-primary", {
+                href:`https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${vnode.state.selectedPackage}`,
+                target: "_blank",
+              }, `View source-code for package ${vnode.state.selectedPackage} on SourceHut.`))
+            ])
           ]),
         ]),
       ])
