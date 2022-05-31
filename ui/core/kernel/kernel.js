@@ -5,6 +5,7 @@ const events = require("./events.js")
 const menus = require("./menus.js")
 const _ = require("lodash")
 const queryString = require("query-string")
+const path = require("path")
 
 let packages = {}
 
@@ -64,6 +65,19 @@ function go(pkg, view, data) {
     view = "view"
   }
   PubSub.publishSync("package:go", { pkg, view, data })
+}
+
+function addHistory(pkg, view, data) {
+  if (typeof data === "undefined") {
+    data = {}
+  }
+  let cs = queryString.parse(location.search)
+  let state = { pkg, view, ...data }
+  if (cs.identity) {
+    state.identity = cs.identity
+  }
+  let qs = queryString.stringify(state)
+  history.pushState({ pkg, view, data }, "", path.join(__dirname, `index.html?${qs}`))
 }
 
 function reload(pkg, view, data) {
@@ -144,6 +158,7 @@ module.exports = {
   appPackages,
   packageForType,
   go,
+  addHistory,
   url,
   reload,
   // menu related (aka navigation)

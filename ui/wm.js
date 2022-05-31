@@ -38,8 +38,10 @@ const goPackage = ({ pkg, view, data }) => {
 }
 
 const popState = ev => {
+  console.log("pop!", ev.state)
   if (ev.state !== null) {
     goPackage(ev.state)
+    m.redraw()
   }
 }
 
@@ -70,6 +72,7 @@ patchfox.listen("package:go", (event, { pkg, view, data }) => {
     state.identity = cs.identity
   }
   let qs = queryString.stringify(state)
+  console.log("history", history.state)
   history.pushState({ pkg, view, data }, "", path.join(__dirname, `index.html?${qs}`))
   console.log(`going to ${pkg}.${view} with args`, data)
   goPackage({ pkg, view, data })
@@ -87,6 +90,7 @@ patchfox.listen("package:save:state", (event, { pkg, view, data }) => {
 })
 
 window.onerror = handleUncaughtException
+window.onpopstate = popState
 
 const Wm = {
   oninit: (vnode) => {

@@ -9,6 +9,7 @@ const PublicView = {
     vnode.state.lt = vnode.attrs.lt || false
   },
   view: (vnode) => {
+    console.log("hit")
     let limit = vnode.attrs.limit || false
 
     let opts = {}
@@ -38,7 +39,7 @@ const PublicView = {
       vnode.state.lt = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
-      // patchfox.go("hub", "public", { lt })
+      patchfox.addHistory("hub", "public", { lt: vnode.state.lt })
     }
 
     const goPrevious = () => {

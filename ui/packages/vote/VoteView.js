@@ -11,14 +11,14 @@ const VoteView = {
     let msg = vnode.attrs.msg
 
     let expression =
-      msg.value.content.vote.expression === "Like"
+      typeof msg.value.content.vote.expression == "string" && msg.value.content.vote.expression.toLowerCase() === "like"
         ? ":heart:"
         : msg.value.content.vote.expression
     let msgid = msg.value.content.vote.link
     let encodedid = encodeURIComponent(msgid)
     
     if (typeof expression === "undefined") {
-      expression = "like"
+      expression = ":heart:"
     }
 
     if (vnode.state.loadingBlurb) {

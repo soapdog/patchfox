@@ -29,20 +29,25 @@ const ThreadView = {
         .catch((n) => {
           console.dir(n)
           vnode.state.error = n.message
+          vnode.state.shouldLoadMessages = false
           if (n.message.indexOf("stream is closed") !== -1) {
             location.reload()
           }
+          m.redraw()
         })
     }
 
-    const errorDisplay = m(
+    const errorDisplay = [m(
       ".toast.toast-error",
       m.trust(`
       Couldn't load thread
-      <a href="?thread={thread}#/thread">{thread}</a>
-      : {error}  
-      `)
-    )
+      <a href="?thread=${thread}#/thread">${thread}</a>
+      : ${vnode.state.error}  
+      `)),
+      m("button.btn.btn-primary.mt-2", {
+        onclick: () => history.back()
+      }, "Go back")
+    ]
 
     const messagesOrSpinner =
       vnode.state.msgs.length == 0

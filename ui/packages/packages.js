@@ -1,9 +1,10 @@
-// 
+// Patchfox Packages.
+// docs: docs/development/packages.md
+//
 // require("./intercept/intercept.js")
 require("./vote/vote.js")
 require("./pub/pub.js")
 require("./private/private.js")
-// 
 require("./launcher/launcher.js")
 require("./globalMenu/globalMenu.js")
 require("./search/search.js")
@@ -22,10 +23,4 @@ require("./openCollectiveIntegration/openCollectiveIntegration.js")
 require("./errorHandler/errorHandler.js")
 // require("./zine/zine.js")
 // require("./books/books.js")
-// require("./projectMoonHermit/projectMoonHermit.js")
-// // require("./scheme/scheme.js")
-// require("./journal/journal.js")
-// 
-// 
-// 
 

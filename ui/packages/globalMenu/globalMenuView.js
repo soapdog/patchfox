@@ -63,7 +63,14 @@ const GlobalMenuView = {
       
       window.title = windowTitle
       
-      return m(
+      return m("div.flex", [
+        m("button.btn.btn-ghost",{
+          onclick: () => history.back()
+        }, m.trust("&larr;")),
+        m("button.btn.btn-ghost",{
+          onclick: () => history.forward()
+        }, m.trust("&rarr;")),
+        m(
         ".text-xl.breadcrumbs.capitalize",
         m("ul", [
           m("li", vnode.state.currentPackage.packageToOpen.name),
@@ -80,6 +87,7 @@ const GlobalMenuView = {
           ),
         ])
       )
+    ])
     }
   },
 }
