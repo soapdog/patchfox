@@ -4,7 +4,7 @@ require("./vote/vote.js")
 require("./pub/pub.js")
 require("./private/private.js")
 // 
-// require("./launcher/launcher.js")
+require("./launcher/launcher.js")
 require("./globalMenu/globalMenu.js")
 require("./search/search.js")
 require("./system/system.js")

@@ -1,11 +1,11 @@
-import view  from "./launcher.svelte"
+const LauncherView  = require("./LauncherView.js")
 
 patchfox.package({
   name: "launcher",
   supportedPlatforms: ["all"],
   description: "A handy application/package launcher.",
   system: true,
-  view,
+  view: LauncherView,
   menu: {
     group: "Patchfox",
     items: [

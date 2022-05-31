@@ -98,3 +98,27 @@ div img.is-image-from-blob {
   margin-top: 10px;
   border-top: solid 1px lightgray;
 }
+
+ .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-auto-rows: auto;
+  grid-gap: 1rem;
+}
+.package {
+  border-radius: 4px;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.package-title {
+  text-transform: capitalize;
+}
+
+.package-icon img {
+  width: 42px;
+}
