@@ -5,7 +5,7 @@ const ErrorView = {
   view: (vnode) => {
     patchfox.title(`Oops!`)
 
-    let error = vnode.attrs.error || {}
+    let error = vnode.attrs.message || {}
     let currentPackage = vnode.attrs.currentPackage || {}
     let errorObj = {}
     let toastClass = ""

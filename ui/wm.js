@@ -49,7 +49,11 @@ const handleUncaughtException = (message, source, lineno, colno, error) => {
     pkg: "errorHandler",
     data: {
       currentPackage,
-      error: message,
+      message,
+      source,
+      lineno,
+      colno,
+      error
     },
   })
   m.redraw()
