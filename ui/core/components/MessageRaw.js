@@ -45,7 +45,7 @@ const MessageRaw = {
             "p",
             m.trust(`
             <p>
-              This message is being handled by the <b>{pkg.name} Package</b>.
+              This message is being handled by the <b class="capitalize">${pkg.name} Package</b>.
               <a class="link link-accent" target="_blank" href="/docs/index.html#/packages/${pkg.name}/">
                 Click here to check more about it.
               </a>
