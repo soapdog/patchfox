@@ -1,46 +1,104 @@
-<script>
-  const { onMount } = require("svelte")
-  const drop = require("drag-and-drop-files")
-  const { slide } = require("svelte/transition")
-  const AvatarChip = require("../../core/components/AvatarChip.svelte")
-  const MessageRenderer = require("../../core/components/MessageRenderer.svelte")
-  const Spinner = require("../../core/components/Spinner.svelte")
+const m = require("mithril")
+const { when } = require("../../core/kernel/utils.js")
+const drop = require("drag-and-drop-files")
+const AvatarChip = require("../../core/components/AvatarChip.js")
+const MessageRenderer = require("../../core/components/MessageRenderer.js")
+const Spinner = require("../../core/components/Spinner.js")
 
-  const { getPref } = require("../../core/kernel/prefs.js")
-  const pull = require("pull-stream")
-  const fileReader = require("pull-file-reader")
-  const Tribute = require("tributejs")
+const { getPref } = require("../../core/kernel/prefs.js")
+const pull = require("pull-stream")
+const fileReader = require("pull-file-reader")
+const Tribute = require("tributejs")
 
-  export let root = false
-  export let branch = false
-  export let channel = ""
-  export let content = ""
-  export let replyfeed = false
-  export let fork = false
+const PostCompose = {
+  oninit: vnode => {
+    vnode.state.root = vnode.attrs.root || false
+    vnode.state.branch = vnode.attrs.branch || false
+    vnode.state.channel = vnode.attrs.channel || ""
+    vnode.state.content = vnode.attrs.content || ""
+    vnode.state.replyfeed = vnode.attrs.replyfeed || false
+    vnode.state.fork = vnode.attrs.fork || false
 
-  let fileOnTop = false
-  let sbot = ssb.sbot
-  let showContentWarningField = false
-  let contentWarning = ""
-  let showPreview = false
-  let msg = false
-  let error = false
-  let posting = false
-  let branchedMsg = false
-  let textSize = getPref("composeSize", "text")
+    vnode.state.fileOnTop = false
+    vnode.state.sbot = ssb.sbot
+    vnode.state.showContentWarningField = false
+    vnode.state.contentWarning = ""
+    vnode.state.showPreview = false
+    vnode.state.msg = false
+    vnode.state.error = false
+    vnode.state.posting = false
+    vnode.state.branchedMsg = false
 
-  patchfox.title(`New Post`)
-
-  if (branch) {
-    ssb.get(branch).then(data => (branchedMsg = { key: branch, value: data }))
-  }
-
-  onMount(() => {
-    error = false
-    msg = ""
-
+    if (vnode.state.branch) {
+      ssb.get(vnode.state.branch).then(data => {
+        vnode.state.branchedMsg = { key: vnode.state.branch, value: data }
+        m.redraw()
+      })
+    }
+  },
+  oncreate: vnode => {
     // this code could be in some better/smarter place.
     // e.dataTransfer.getData('url') from images in the browser window
+
+    const readFileAndAttach = files => {
+      try {
+        vnode.state.error = false
+        vnode.state.msg = ""
+
+        if (files.length == 0) {
+          vnode.state.fileOnTop = false
+          m.redraw()
+          return false
+        }
+
+        var first = files[0]
+
+        if (!first.type.startsWith("image") && !first.type.startsWith("video") && !first.type.startsWith("audio")) {
+          vnode.state.error = true
+          vnode.state.msg = `You can only drag & drop images, videos, or audio, this file is a ${first.type}`
+          m.redraw()
+          return false
+        }
+
+        if (first.size >= 5000000) {
+          vnode.state.error = true
+          vnode.state.msg = `File too large: ${Math.floor(first.size / 1048576, 2)}mb when max size is 5mb`
+          m.redraw()
+          return false
+        }
+
+        ssb
+          .addBlob(first)
+          .then(hash => {
+            console.log("hash from drop", hash)
+            switch (first.type) {
+            case "image/png":
+            case "image/jpeg":
+            case "image/gif":
+            case "image/svg":
+              vnode.state.content += ` ![${first.name}](${hash})`
+              break
+            case "video/mp4":
+              vnode.state.content += ` ![video:${first.name}](${hash})`
+              break
+            case "audio/mp3":
+              vnode.state.content += ` ![audio:${first.name}](${hash})`
+              break
+            }
+            vnode.state.fileOnTop = false
+            m.redraw()
+          })
+          .catch(err => {
+            vnode.state.error = true
+            vnode.state.msg = "Couldn't attach file: " + err
+            vnode.state.fileOnTop = false
+            m.redraw()
+          })
+      } catch (n) {
+        console.error("error, attaching", n)
+        m.redraw()
+      }
+    }
 
     drop(document.getElementById("content"), files => readFileAndAttach(files))
 
@@ -49,316 +107,331 @@
     for (let id in usersObjs) {
       users.push({
         key: usersObjs[id].name,
-        value: `[@${usersObjs[id].name}](${usersObjs[id].id})`
+        value: `[@${usersObjs[id].name}](${usersObjs[id].id})`,
       })
     }
     const tribute = new Tribute({
       values: users,
-      selectTemplate: function(item) {
+      selectTemplate: function (item) {
         return item.original.value
-      }
+      },
     })
 
+    if (vnode.state.replyfeed && vnode.state.content.length == 0) {
+      vnode.state.content += `[${usersObjs[vnode.state.replyfeed].name}](${vnode.state.replyfeed}),\n`
+    }
+
     tribute.attach(document.getElementById("content"))
+  },
+  view: vnode => {
+    let textSize = getPref("composeSize", "text")
 
-    if (replyfeed && content.length == 0) {
-      content = `[${usersObjs[replyfeed].name}](${replyfeed}),\n`
-    }
-  })
+    patchfox.title(`Composing New Post`)
 
-  const readFileAndAttach = files => {
-    try {
-      error = false
-      msg = ""
 
-      if (files.length == 0) {
-        fileOnTop = false
-        return false
-      }
+    // TODO: This function is duplicated. 
+    // O problema é passar o vnode nessa função caso ela esteja fora.
 
-      var first = files[0]
-      console.log(first)
-
-      if (!first.type.startsWith("image") &&  !first.type.startsWith("video") && !first.type.startsWith("audio")) {
-        error = true
-        msg = `You can only drag & drop images, videos, or audio, this file is a ${first.type}`
-        return false
-      }
-
-      if (first.size >= 5000000) {
-        error = true
-        msg = `File too large: ${Math.floor(
-          first.size / 1048576,
-          2
-        )}mb when max size is 5mb`
-        return false
-      }
-
-      ssb.addBlob(first)
-        .then(hash => {
-          switch(first.type) { 
-          case "image/png":
-          case "image/jpeg":
-          case "image/gif":
-          case "image/svg":
-            content += ` ![${first.name}](${hash})`
-            break
-          case "video/mp4":
-            content += ` ![video:${first.name}](${hash})`
-            break
-          case "audio/mp3":
-            content += ` ![audio:${first.name}](${hash})`
-            break
-          }
-          fileOnTop = false
-        })
-        .catch(err => {
-          error = true 
-          msg = "Couldn't attach file: " + err
-          fileOnTop = false
-        })
-    } catch (n) {
-      console.error("error, attaching", n)
-    }
-  }
-
-  const post = async ev => {
-    ev.stopPropagation()
-    ev.preventDefault()
-
-    if (!posting) {
-      saveToURL()
-      posting = true
-
-      if (channel && channel.length > 0 && channel.startsWith("#")) {
-        channel = channel.slice(1)
-      }
-
+    const readFileAndAttach = files => {
       try {
-        let data = {}
-        data.text = content
-        if (typeof channel == "string" && channel.length > 0) data.channel = channel
-        if (root) data.root = root
-        if (fork) data.fork = fork
-        if (branch) data.branch = branch
-        if (typeof contentWarning == "string" && contentWarning && contentWarning.length > 0) data.contentWarning = contentWarning
+        vnode.state.error = false
+        vnode.state.msg = ""
 
-        msg = await ssb.newPost(data)
-        posting = false
-        window.scrollTo(0, 0)
+        if (files.length == 0) {
+          vnode.state.fileOnTop = false
+          m.redraw()
+          return false
+        }
+
+        var first = files[0]
+
+        if (!first.type.startsWith("image") && !first.type.startsWith("video") && !first.type.startsWith("audio")) {
+          vnode.state.error = true
+          vnode.state.msg = `You can only drag & drop images, videos, or audio, this file is a ${first.type}`
+          m.redraw()
+          return false
+        }
+
+        if (first.size >= 5000000) {
+          vnode.state.error = true
+          vnode.state.msg = `File too large: ${Math.floor(first.size / 1048576, 2)}mb when max size is 5mb`
+          m.redraw()
+          return false
+        }
+
+        ssb
+          .addBlob(first)
+          .then(hash => {
+            console.log("hash from view", hash)
+            switch (first.type) {
+            case "image/png":
+            case "image/jpeg":
+            case "image/gif":
+            case "image/svg":
+              vnode.state.content += ` ![${first.name}](${hash})`
+              break
+            case "video/mp4":
+              vnode.state.content += ` ![video:${first.name}](${hash})`
+              break
+            case "audio/mp3":
+              vnode.state.content += ` ![audio:${first.name}](${hash})`
+              break
+            }
+            vnode.state.fileOnTop = false
+            m.redraw()
+          })
+          .catch(err => {
+            vnode.state.error = true
+            vnode.state.msg = "Couldn't attach file: " + err
+            vnode.state.fileOnTop = false
+            m.redraw()
+          })
       } catch (n) {
-        error = true
-        msg = `Couldn't post your message: ${n}`
-        console.error("Couldn't post", n)
-        window.scrollTo(0, 0)
+        console.error("error, attaching", n)
+        m.redraw()
+      }
+    }
 
-        if (msg.message === "stream is closed") {
-          msg += ". We lost connection to SSB Server. We'll try to restablish it..."
-          window.reload()
+    const post = async ev => {
+      ev.stopPropagation()
+      ev.preventDefault()
+
+      if (!vnode.state.posting) {
+        vnode.state.posting = true
+
+        if (vnode.state.channel && vnode.state.channel.length > 0 && vnode.state.channel.startsWith("#")) {
+          vnode.state.channel = vnode.state.channel.slice(1)
+        }
+
+        try {
+          let data = {}
+          data.text = vnode.state.content
+          if (typeof vnode.state.channel == "string" && vnode.state.channel.length > 0) data.channel = vnode.state.channel
+          if (vnode.state.root) data.root = vnode.state.root
+          if (vnode.state.fork) data.fork = vnode.state.fork
+          if (vnode.state.branch) data.branch = vnode.state.branch
+          if (typeof vnode.state.contentWarning == "string" && vnode.state.contentWarning && vnode.state.contentWarning.length > 0) data.contentWarning = vnode.state.contentWarning
+
+          vnode.state.msg = await ssb.newPost(data)
+          vnode.state.posting = false
+          window.scrollTo(0, 0)
+          m.redraw()
+        } catch (n) {
+          vnode.state.error = true
+          vnode.state.msg = `Couldn't post your message: ${n}`
+          console.error("Couldn't post", n)
+          window.scrollTo(0, 0)
+          m.redraw()
+
+          if (vnode.state.msg.message === "stream is closed") {
+            vnode.state.msg += ". We lost connection to SSB Server. We'll try to restablish it..."
+            window.reload()
+          }
         }
       }
     }
-  }
 
-  const preview = ev => {
-    showPreview = true
-  }
-
-  const saveToURL = ev => {
-    let data = {}
-    if (content) data.content = content
-    if (channel) data.channel = channel
-    if (root) data.root = root
-    if (branch) data.branch = branch
-    if (fork) data.fork = fork
-    if (contentWarning.length > 0) data.contentWarning = contentWarning
-
-    patchfox.emit("package:save:state", { pkg: "post", view: "compose", data })
-  }
-
-  const avatarClick = ev => {
-    let feed = ev.detail.feed
-    let name = ev.detail.name
-
-    if (content.length > 0) {
-      content += ` [${name}](${feed})`
-    } else {
-      content = `[${name}](${feed})`
+    const preview = ev => {
+      vnode.state.showPreview = true
+      m.redraw()
     }
-  }
 
-  const dragOver = ev => {
-    fileOnTop = true
-  }
+    const avatarClick = ev => {
+      let feed = ev.detail.feed
+      let name = ev.detail.name
 
-  const dragLeave = ev => {
-    fileOnTop = false
-  }
+      if (vnode.state.content.length > 0) {
+        vnode.state.content += ` [${name}](${feed})`
+      } else {
+        vnode.state.content = `[${name}](${feed})`
+      }
 
-  const attachFileTrigger = () => {
-    document.getElementById("fileInput").click()
-  }
+      m.redraw()
+    }
 
-  const attachFile = ev => {
-    const files = ev.target.files
-    readFileAndAttach(files)
-  }
+    const dragOver = ev => {
+      vnode.state.fileOnTop = true
+      m.redraw()
+    }
 
-  const toggleContentWarning = () =>
-    (showContentWarningField = !showContentWarningField)
-</script>
+    const dragLeave = ev => {
+      vnode.state.fileOnTop = false
+      m.redraw()
+    }
 
-<style>
-  .file-on-top {
-    border: solid 2px rgb(26, 192, 11);
-  }
+    const attachFileTrigger = () => {
+      document.getElementById("fileInput").click()
+    }
 
-  input[type="file"] {
-    display: none;
-  }
-</style>
+    const attachFile = ev => {
+      const files = ev.target.files
+      readFileAndAttach(files)
+    }
 
-<div class="container mx-auto">
-  {#if fork}
-    <div class="alert alert-warning">You are forking: {fork}</div>
-  {/if}
-  {#if msg}
-    {#if error}
-      <div class="alert alert-error">{msg}</div>
-    {:else}
-      <div class="alert alert-success">
-        <div class="flex-1">
-        <label>
-        Your message has been posted. Do you want to
-        <a
-          class="link"
-          target="_blank"
-          href="?pkg=hub&view=thread&thread={encodeURIComponent(msg.key)}">
-          Check it out?
-        </a>
-      </label>
-      </div>
-      </div>
-    {/if}
-  {/if}
-  {#if !showPreview}
-    <div in:slide out:slide>
-      <div class="form-control">
-      <label class="label" for="channel"><span class="label-text">Channel</span></label>
-      <input
-        class="input input-bordered"
-        type="text"
-        id="channel"
-        placeholder="channel"
-        bind:value={channel} />
-      </div>
+    const toggleContentWarning = () => {
+      vnode.state.showContentWarningField = !vnode.state.showContentWarningField
+      m.redraw()
+    }
 
-      {#if branch}
-      <div class="form-control">
-        <label class="label" for="reply-to"><span class="label-text">In reply to</span></label>
-        <input
-          class="input input-bordered"
-          type="text"
-          id="reply-to"
-          placeholder="in reply to"
-          bind:value={branch} />
-        </div>
-        {#if branchedMsg}
-          <MessageRenderer msg={branchedMsg} />
-        {:else}
-          <Spinner />
-        {/if}
-      {/if}
+    const ErrorOrMessage = () => {
+      if (vnode.state.msg && vnode.state.error) {
+        return m(".alert.alert-error", vnode.state.msg)
+      }
 
-      <div class="form-control">
-      <label class="label" for="content"><span class="label-text">Message</span></label>
-      <textarea
-        class="{textSize} textarea textarea-bordered h-96"
-        id="content"
-        placeholder="Type in your post"
-        on:dragover|preventDefault|stopPropagation={dragOver}
-        on:dragleave|preventDefault|stopPropagation={dragLeave}
-        class:file-on-top={fileOnTop}
-        bind:value={content} />
-      </div>
+      if (vnode.state.msg) {
+        return m(
+          ".alert.alert-success",
+          m(
+            ".flex-1",
+            m("label", [
+              "Your message has been posted. Do you want to",
+              m(
+                "a.ml-2",
+                {
+                  href: patchfox.url("hub", "thread", { thread: vnode.state.msg.key }),
+                  class: "link",
+                },
+                "check it out?"
+              ),
+            ])
+          )
+        )
+      }
+    }
 
-      <div class="d-block m-1">
-        <button class="btn btn-link" on:click={toggleContentWarning}>
-          Add Content Warning
-        </button>
-        {#if showContentWarningField}
-          <input
-            class="input input-bordered"
-            type="text"
-            size="50"
-            bind:value={contentWarning}
-            placeholder="Describe your content warning (leave empty to not
-            use it)" />
-        {/if}
-      </div>
+    const PreviewView = () => {
+      if (vnode.state.showPreview) {
+        return m("div", [
+          m("h2.uppercase.font-medium.text-md", "Post Preview"),
+          m(".prose", [when(vnode.state.channel, m("p.text-md", `Channel: ${vnode.state.channel.startsWith("#") ? vnode.state.channel.slice(1) : vnode.state.channel}`)), when(vnode.state.root, m("p.text-md", `Root: ${vnode.state.root}`)), when(vnode.state.branch, m("p.text-md", `In Reply To: ${vnode.state.branch}`)), when(vnode.state.contentWarning.length > 0, m("p.text-md", `Content Warning: ${vnode.state.contentWarning}`))]),
+          m.trust(ssb.markdown(vnode.state.content)),
+          m(".divider"),
+          m(".alert.alert-warning", [
+            m(".flex-1", m("label", "This message will be public and can't be edited or deleted")),
+            m(".flex-none", [
+              m(
+                "button.btn.btn-sm.btn-ghost",
+                {
+                  onclick: () => {
+                    vnode.state.showPreview = false
+                  },
+                },
+                "Go back"
+              ),
+              m(
+                "button.btn.btn-sm.btn-primary.ml-2",
+                {
+                  class: vnode.state.posting ? "loading" : "",
+                  disabled: !vnode.state.error && typeof vnode.state.msg.key == "string",
+                  onclick: post,
+                },
+                "Post"
+              ),
+            ]),
+          ]),
+        ])
+      }
+    }
 
-      <input type="file" on:input={attachFile} id="fileInput" />
-      <button class="btn" on:click={attachFileTrigger}>Attach File</button>
-      <button class="btn btn-primary float-right" on:click={preview}>
-        Preview
-      </button>
-    </div>
-  {:else}
-    <div>
-      <h2 class="uppercase font-medium text-md">Post preview</h2>
-      <div class="prose">
-      {#if channel || root || branch || contentWarning.length > 0}
-          {#if channel}
-            <p>
-              <b>Channel:</b>
-              {channel.startsWith("#") ? channel.slice(1) : channel}
-            </p>
-          {/if}
-          {#if root}
-            <p>
-              <b>Root:</b>
-              {root}
-            </p>
-          {/if}
-          {#if branch}
-            <p>
-              <b>In Reply To:</b>
-              {branch}
-            </p>
-          {/if}
-          {#if contentWarning.length > 0}
-            <p>
-              <b>Content Warning:</b>
-              {contentWarning}
-            </p>
-          {/if}
-      {/if}
+    const FormView = () => {
+      const channelInput = m(".form-control", [
+        m("label.label", { for: "channel" }, m("span.label-text", "Channel")),
+        m("input.input.input-bordered", {
+          type: "text",
+          id: "channel",
+          placeholder: "channel",
+          value: vnode.state.channel,
+          onchange: ev => {
+            vnode.state.channel = ev.target.value
+            m.redraw()
+          },
+        }),
+      ])
 
-      {@html ssb.markdown(content)}
-      </div>
+      const replyInput = m(".form-control", [
+        m("label.label", { for: "reply-to" }, m("span.label-text", "In reply to")),
+        m("input.input.input-bordered.mb-2", {
+          type: "text",
+          id: "reply-to",
+          placeholder: "in reply to...",
+          value: vnode.state.branch,
+          onchange: ev => {
+            vnode.state.branch = ev.target.value
+          },
+        }),
+        when(vnode.state.branch && vnode.state.branchedMsg, m(MessageRenderer, { msg: vnode.state.branchedMsg })),
+        when(vnode.state.branch && !vnode.state.branchedMsg, m(Spinner)),
+      ])
 
-      <div class="divider" />
-      <div class="alert alert-warning">
-        <div class="flex-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current"> 
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>                         
-            </svg> 
-          <label>This message will be public and can't be edited or deleted</label>
-        </div>
+      const fileOnTop = vnode.state.fileOnTop ? "file-on-top" : ""
 
-        <div class="flex-none">
-        <button class="btn btn-sm btn-ghost" on:click={() => (showPreview = false)}>
-          Go Back
-        </button>
-        <button
-          class="btn btn-sm btn-primary ml-2"
-          class:loading={posting}
-          disabled={!error && typeof msg.key == "string"}
-          on:click={post}>
-          Post
-        </button>
-      </div>
-    </div>
-      </div>
-  {/if}
-</div>
+      const messageArea = m(".form-control", [
+        m("label.label", m("span.label-text", "Message")),
+        m(
+          "textarea",
+          {
+            class: `${textSize} ${fileOnTop} textarea textarea-bordered h-96`,
+            id: "content",
+            placeholder: "Type in your post",
+            ondragover: dragOver,
+            ondragleave: dragLeave,
+            value: vnode.state.content,
+            onchange: ev => {
+              vnode.state.content = ev.target.value
+            },
+          },
+        ),
+      ])
+
+      const contentWarning = m(".d-block.m-1", [
+        m(
+          "button.btn.btn-link",
+          {
+            onclick: toggleContentWarning,
+          },
+          "Add Content Warning"
+        ),
+        when(
+          vnode.state.showContentWarningField,
+          m("input.input.input-bordered", {
+            type: "text",
+            size: 50,
+            value: vnode.state.contentWarning,
+            placeholder: "Describe your content warning (leave empty to not use it)",
+            onchange: (ev) => {
+              vnode.state.contentWarning = ev.target.value
+            },
+          })
+        ),
+      ])
+
+      const fileInput = [
+        m("input.file-attachment-input", {
+          type: "file",
+          onchange: attachFile,
+          id: "fileInput",
+        }),
+        m("button.btn", {
+          onclick: attachFileTrigger,
+        }, "Attach File"),
+      ]
+
+      if (!vnode.state.showPreview) {
+        return m("div", [
+          channelInput,
+          when(vnode.state.branch, replyInput),
+          messageArea,
+          contentWarning,
+          fileInput,
+          m("button.btn.btn-primary.float-right", {
+            onclick: preview,
+          }, "Preview"),
+        ])
+      }
+    }
+
+    return m(".container.mx-auto", [when(vnode.state.fork, m(".alert.alert-warning", `You are forking: ${vnode.state.fork}`)), ErrorOrMessage(), PreviewView(), FormView()])
+  },
+}
+
+module.exports = PostCompose

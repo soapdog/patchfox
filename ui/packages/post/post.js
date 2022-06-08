@@ -1,11 +1,11 @@
-const PostCompose = {view: m("p","Not")} // require("./PostCompose.js")
+const PostCompose = require("./PostCompose.js")
 const PostCard = require("./PostCard.js")
 
 patchfox.package({
   name: "post",
   supportedPlatforms: ["nodejs-ssb"],
   view: PostCompose,
-  //compose: PostCompose,
+  compose: PostCompose,
   messageTypes: [
     {
       type: "post",
@@ -32,7 +32,7 @@ patchfox.package({
       items: [
         {
           label: "New Post in New Window",
-          event: "package:go",
+          event: "package:open",
           data: {
             pkg: "post",
             view: "compose"

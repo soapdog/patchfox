@@ -14,6 +14,10 @@ PubSub.subscribe("documentation:open", (msg, data) => {
   window.open(patchfox.docsUrl(data))
 })
 
+PubSub.subscribe("package:open", (event, { pkg, view, data }) => {
+  window.open(patchfox.url(pkg, view, data))
+})
+
 ipcRenderer.on("patchfox:event", (ev, {event, data}) => {
   patchfox.emit(event, data)
 })

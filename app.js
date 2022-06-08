@@ -84,6 +84,7 @@ ipcMain.on("new-patchfox-window", (event, data) => {
 
 ipcMain.on("window:set-title", (event, data) => {
   let win = BrowserWindow.fromWebContents(event.sender)
+  data = data.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))
   win.setTitle(data)
 })
 

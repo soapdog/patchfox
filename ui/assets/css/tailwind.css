@@ -2898,11 +2898,6 @@ html {
   margin: 0.5rem;
 }
 
-.mx-2 {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -2976,10 +2971,6 @@ html {
   height: 1rem;
 }
 
-.h-6 {
-  height: 1.5rem;
-}
-
 .h-14 {
   height: 3.5rem;
 }
@@ -2998,10 +2989,6 @@ html {
 
 .w-4 {
   width: 1rem;
-}
-
-.w-6 {
-  width: 1.5rem;
 }
 
 .w-14 {
@@ -3181,10 +3168,6 @@ html {
 .bg-base-200 {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--b2) / var(--tw-bg-opacity));
-}
-
-.stroke-current {
-  stroke: currentColor;
 }
 
 .object-contain {
@@ -3414,6 +3397,14 @@ div img.is-image-from-blob {
 
 .package-icon img {
   width: 42px;
+}
+
+.file-on-top {
+  border: solid 2px rgb(26, 192, 11);
+}
+
+.file-attachment-input {
+  display: none;
 }
 
 @media (min-width: 640px) {

@@ -122,3 +122,11 @@ div img.is-image-from-blob {
 .package-icon img {
   width: 42px;
 }
+
+.file-on-top {
+  border: solid 2px rgb(26, 192, 11);
+}
+
+.file-attachment-input {
+  display: none;
+}

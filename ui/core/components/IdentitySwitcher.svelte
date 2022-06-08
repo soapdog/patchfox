@@ -1,5 +1,6 @@
 <script>
   //TODO: fix me.
+  //FIXME: to do.
   const { createEventDispatcher } = require("svelte")
   const AvatarChip = require("../../core/components/AvatarChip.svelte")
 
