@@ -39,7 +39,7 @@ const ThemeSwitcher = {
         {
           tabindex: 0,
         },
-        m("i.fas.fa-swatchbox")
+        m("i.fas.fa-swatchbook")
       ),
       m(
         "ul.p-2.shadow.menu.dropdown-content.bg-accent.rounded-box.w-52.text-accent-content",

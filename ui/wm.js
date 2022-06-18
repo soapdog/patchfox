@@ -107,7 +107,7 @@ const Wm = {
   view: (vnode) => {
     let systemPackages = patchfox.systemPackages()
     return m("div.bg-base-200.min-h-screen", 
-      m("div.root.container.mx-auto.p-2.lg:p-10.text-base-content",[
+      m("div.root.container.mx-auto.p-2.text-base-content",[
         // system packages
         ...systemPackages.map(pkg => m(pkg.view)),
         // app package or current package
