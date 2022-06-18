@@ -94,6 +94,9 @@ window.onpopstate = popState
 
 const Wm = {
   oninit: (vnode) => {
+    const currentTheme = patchfox.getPref("theme", "light")
+    document.documentElement.setAttribute("data-theme", currentTheme)
+    
     let qs = queryString.parse(location.search)
     let pkg = qs.pkg || getPref("default-package", "hub")
     let view = qs.view ? qs.view : "view"

@@ -2,6 +2,7 @@ const m = require("mithril")
 const queryString = require("query-string")
 const ipcRenderer = require("electron").ipcRenderer
 const { when } = require("../../core/kernel/utils.js")
+const ThemeSwitcher = require("../../core/components/ThemeSwitcher.js")
 
 //const IdentitySwitcher = require("../../core/components/IdentitySwitcher.js")
 //const ThemeSwitcher = require("../../core/components/ThemeSwitcher.js")
@@ -12,7 +13,9 @@ const GlobalMenuView = {
 
     patchfox.listen("package:changed", (event, pkg) => {
       vnode.state.currentPackage = pkg || false
+      m.redraw()
     })
+
     let groups = patchfox.menuGroups()
     let groupKeys = Object.keys(groups)
     console.log("sending menu")
@@ -63,45 +66,52 @@ const GlobalMenuView = {
 
       window.title = windowTitle
 
-      return m("div.flex", [
-        m(
-          "button.btn.btn-ghost",
-          {
-            onclick: () => history.back(),
-          },
-          m.trust("&larr;")
-        ),
-        m(
-          "button.btn.btn-ghost",
-          {
-            onclick: () => location.reload(),
-          },
-          m.trust("&#8635;")
-        ),
-        m(
-          "button.btn.btn-ghost",
-          {
-            onclick: () => history.forward(),
-          },
-          m.trust("&rarr;")
-        ),
-        m(
-          ".text-xl.breadcrumbs.capitalize",
-          m("ul", [
-            m("li", vnode.state.currentPackage.packageToOpen.name),
-            when(
-              vnode.state.currentPackage.view &&
-                vnode.state.currentPackage.view.toLowerCase() !== "view",
-              m("li", vnode.state.currentPackage.view)
-            ),
-            when(
-              title.length > 0 &&
-                title.toLowerCase() !==
-                  vnode.state.currentPackage.view.toLowerCase(),
-              m("li", title)
-            ),
-          ])
-        ),
+      return m(".navbar.mb-2.bg-accent.rounded-box.text-accent-content", [
+        m(".navbar-start", [
+          m(
+            "button.btn.btn-ghost",
+            {
+              onclick: () => history.back(),
+            },
+            m.trust("&larr;")
+          ),
+          m(
+            "button.btn.btn-ghost",
+            {
+              onclick: () => location.reload(),
+            },
+            m.trust("&#8635;")
+          ),
+          m(
+            "button.btn.btn-ghost",
+            {
+              onclick: () => history.forward(),
+            },
+            m.trust("&rarr;")
+          ),
+        ]),
+        m(".navbar-center", [
+          m(
+            ".text-xl.breadcrumbs.capitalize",
+            m("ul", [
+              m("li", vnode.state.currentPackage.packageToOpen.name),
+              when(
+                vnode.state.currentPackage.view &&
+                  vnode.state.currentPackage.view.toLowerCase() !== "view",
+                m("li", vnode.state.currentPackage.view)
+              ),
+              when(
+                title.length > 0 &&
+                  title.toLowerCase() !==
+                    vnode.state.currentPackage.view.toLowerCase(),
+                m("li", title)
+              ),
+            ])
+          ),
+        ]),
+        m(".navbar-end", [
+          m(ThemeSwitcher)
+        ])
       ])
     }
   },
