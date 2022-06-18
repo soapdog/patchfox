@@ -56,9 +56,9 @@ const AvatarChip = {
           {onclick: avatarClick},
           [
             m(
-              "figure.avatar",
+              "figure.avatar.align-middle.pr-2",
               m(
-                ".mb-1.w-4.h-4.mask.mask-squircle",
+                ".w-4.h-4.mask.mask-squircle",
                 m("img", { src: vnode.state.image, alt: vnode.state.name })
               )
             ),
@@ -73,10 +73,10 @@ const AvatarChip = {
           {onclick: avatarClick},
           [
             m(
-              "figure.avatar",
+              "figure.avatar.align-middle.pr-2",
               { "data-initial": vnode.state.name.slice(1, 3) },
               m(
-                ".mb-1.bg-neutral-focus.text-neutral-content.w-4.h-4.mask.mask-squircle",
+                ".bg-neutral-focus.text-neutral-content.w-4.h-4.mask.mask-squircle",
                 m("span.text-xl", vnode.state.name.slice(1, 3))
               )
             ),
