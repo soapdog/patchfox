@@ -126,7 +126,7 @@ const PostCompose = {
   view: vnode => {
     let textSize = getPref("composeSize", "text")
 
-    patchfox.title(`Composing New Post`)
+    patchfox.title(`New Post`)
 
 
     // TODO: This function is duplicated. 
