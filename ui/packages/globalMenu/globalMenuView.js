@@ -60,34 +60,49 @@ const GlobalMenuView = {
       }
 
       ipcRenderer.send("window:set-title", windowTitle)
-      
+
       window.title = windowTitle
-      
+
       return m("div.flex", [
-        m("button.btn.btn-ghost",{
-          onclick: () => history.back()
-        }, m.trust("&larr;")),
-        m("button.btn.btn-ghost",{
-          onclick: () => history.forward()
-        }, m.trust("&rarr;")),
         m(
-        ".text-xl.breadcrumbs.capitalize",
-        m("ul", [
-          m("li", vnode.state.currentPackage.packageToOpen.name),
-          when(
-            vnode.state.currentPackage.view &&
-              vnode.state.currentPackage.view.toLowerCase() !== "view",
-            m("li", vnode.state.currentPackage.view)
-          ),
-          when(
-            title.length > 0 &&
-              title.toLowerCase() !==
-                vnode.state.currentPackage.view.toLowerCase(),
-            m("li", title)
-          ),
-        ])
-      )
-    ])
+          "button.btn.btn-ghost",
+          {
+            onclick: () => history.back(),
+          },
+          m.trust("&larr;")
+        ),
+        m(
+          "button.btn.btn-ghost",
+          {
+            onclick: () => location.reload(),
+          },
+          m.trust("&#8635;")
+        ),
+        m(
+          "button.btn.btn-ghost",
+          {
+            onclick: () => history.forward(),
+          },
+          m.trust("&rarr;")
+        ),
+        m(
+          ".text-xl.breadcrumbs.capitalize",
+          m("ul", [
+            m("li", vnode.state.currentPackage.packageToOpen.name),
+            when(
+              vnode.state.currentPackage.view &&
+                vnode.state.currentPackage.view.toLowerCase() !== "view",
+              m("li", vnode.state.currentPackage.view)
+            ),
+            when(
+              title.length > 0 &&
+                title.toLowerCase() !==
+                  vnode.state.currentPackage.view.toLowerCase(),
+              m("li", title)
+            ),
+          ])
+        ),
+      ])
     }
   },
 }
