@@ -7,7 +7,7 @@ patchfox.package({
   icon: "icon.svg",
   view,
   menu: {
-    group: "Patchfox",
+    group: "Application",
     label: "Settings",
     items: [
       {

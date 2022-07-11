@@ -7,7 +7,7 @@ patchfox.package({
   system: true,
   view: LauncherView,
   menu: {
-    group: "Patchfox",
+    group: "Application",
     items: [
       {
         label: "Launcher",

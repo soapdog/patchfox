@@ -16,3 +16,5 @@ desktop-old/
 *.sublime-workspace
 .vscode
 reference-*
+
+*.tgz

@@ -124,12 +124,12 @@ module.exports = {
     publisherName: AUTHOR,
   },
 
-  nsis: {
-    artifactName: "${name}-${version}-windows-${arch}-nsis-installer.${ext}",
-    oneClick: false,
-    perMachine: false,
-    include: path.join(__dirname, "scripts", "installer.nsh"),
-  },
+  // nsis: {
+  //   artifactName: "${name}-${version}-windows-${arch}-nsis-installer.${ext}",
+  //   oneClick: false,
+  //   perMachine: false,
+  //   include: path.join(__dirname, "scripts", "installer.nsh"),
+  // },
 
   // Publish options -----------------------------------------------------------
   publish: {

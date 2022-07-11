@@ -69,9 +69,9 @@ const createWindow = (data = false, windowState = false) => {
     }
   })
 
-//   const menu = defaultMenu(app, shell)
-// 
-//   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
+  //   const menu = defaultMenu(app, shell)
+  // 
+  //   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
   if (data?.pkg) {
     win.webContents.send("patchfox:event", { event: "package:go", data })
@@ -93,6 +93,8 @@ ipcMain.on("menu:set", (event, group) => {
   const menu = defaultMenu(app, shell)
   let newMenus = []
   let keys = Object.keys(group)
+
+    console.log(JSON.stringify(menu,null,2))
 
   const makeSubmenu = (subgroup) => {
     let toPush = []
@@ -140,6 +142,7 @@ ipcMain.on("menu:set", (event, group) => {
       },
     ],
   }
+
   let helpMenu = newMenus.pop()
 
   menu.splice(1, 0, fileMenu)
@@ -149,7 +152,21 @@ ipcMain.on("menu:set", (event, group) => {
 
   menu.push(helpMenu) // insert our own help menu.
 
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
+  let patchfoxMenuIndex = menu.findIndex(e => e.label == "Application")
+
+  let patchfoxMenu = menu[patchfoxMenuIndex].submenu
+  let appMenu = menu[0].submenu
+
+  appMenu.splice(1,0,{type: "separator"}, ...patchfoxMenu)
+
+  menu[0].submenu = appMenu
+  menu.splice(patchfoxMenuIndex, 1)
+
+  console.log(JSON.stringify(menu,null,2))
+  let finalMenu = Menu.buildFromTemplate(menu)
+
+  Menu.setApplicationMenu(finalMenu)
+
 })
 
 // This method will be called when Electron has finished

@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2022.6.1-alpha",
+  "version": "2022.7.1-alpha",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
@@ -104,10 +104,11 @@
     "css": "npx tailwindcss -i ./ui/assets/css/patchfox.css -o ./ui/assets/css/tailwind.css",
     "pack": "electron-builder --config electron-builder.config.js --dir",
     "dist": "electron-builder --config electron-builder.config.js",
-    "build:windows": "electron-builder build --config electron-builder.config.js --win",
-    "build:linux": "electron-builder build --config electron-builder.config.js --linux",
-    "build:mac": "electron-builder build --config electron-builder.config.js --mac",
-    "build": "run-s css docs build:*",
-    "docs": "node scripts/copy-package-docs.js"
+    "builder:windows": "electron-builder build --config electron-builder.config.js --win",
+    "builder:linux": "electron-builder build --config electron-builder.config.js --linux",
+    "builder:mac": "electron-builder build --config electron-builder.config.js --mac",
+    "build": "run-s css docs",
+    "docs": "node scripts/copy-package-docs.js",
+    "localbuild": "run-s build builder:*"
   }
 }

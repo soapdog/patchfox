@@ -14,7 +14,7 @@ patchfox.package({
   httpAuth: HttpAuth,
   menu: [
     {
-      group: "Patchfox",
+      group: "Application",
       label: "System",
       items: [
         {

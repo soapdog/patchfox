@@ -4163,9 +4163,6 @@ div img.is-image-from-blob {
 }
 
 @media (min-width: 1024px) {
-  .lg\:p-10 {
-    padding: 2.5rem;
-  }
 }
 
 @media (min-width: 1280px) {
