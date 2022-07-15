@@ -1,4 +1,7 @@
 # Patchfox
+
+[![Build/release](https://github.com/soapdog/patchfox/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/soapdog/patchfox/actions/workflows/build.yml)
+
 This is a client for [Secure Scuttlebutt](http://scuttlebutt.nz). It is available on:
 
 * [Patchfox website](https://patchfox.org)

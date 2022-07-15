@@ -20,6 +20,7 @@ patchfox.package({
         {
           label: "New Post",
           event: "package:go",
+          shortcut: "CmdOrCtrl+N",
           data: {
             pkg: "post",
             view: "compose"
@@ -33,6 +34,7 @@ patchfox.package({
         {
           label: "New Post in New Window",
           event: "package:open",
+          shortcut: "CmdOrCtrl+Alt+N",
           data: {
             pkg: "post",
             view: "compose"

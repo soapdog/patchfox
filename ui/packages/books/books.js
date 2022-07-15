@@ -1,14 +1,14 @@
-const Books = require("./Books.svelte")
-const BookDetails = require("./BookDetails.svelte")
-const BookEdit = require("./BookEdit.svelte")
-const BookCard = require("./BookCard.svelte")
+const BooksView = require("./BooksView.js")
+const BookDetails = require("./BookDetails.js")
+const BookEdit = require("./BookEdit.js")
+const BookCard = require("./BookCard.js")
 
 patchfox.package({
   name: "books",
   app: true,
   icon: "books.svg",
   supportedPlatforms: ["nodejs-ssb"],
-  view: Books,
+  view: BooksView,
   details: BookDetails,
   edit: BookEdit,
   messageTypes: [

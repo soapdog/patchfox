@@ -28,6 +28,7 @@ patchfox.package({
       {
         label: "Popular",
         event: "package:go",
+        shortcut: "Alt+O",
         data: {
           pkg: "hub",
           view: "popular",
@@ -36,6 +37,7 @@ patchfox.package({
       {
         label: "Public",
         event: "package:go",
+        shortcut: "Alt+P",
         data: {
           pkg: "hub",
           view: "public",
@@ -44,6 +46,7 @@ patchfox.package({
       {
         label: "Mentions",
         event: "package:go",
+        shortcut: "Alt+M",
         data: {
           pkg: "hub",
           view: "mentions",

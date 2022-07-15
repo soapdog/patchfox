@@ -94,13 +94,13 @@ ipcMain.on("menu:set", (event, group) => {
   let newMenus = []
   let keys = Object.keys(group)
 
-    console.log(JSON.stringify(menu,null,2))
+  console.log(JSON.stringify(menu,null,2))
 
   const makeSubmenu = (subgroup) => {
     let toPush = []
     subgroup.forEach((m) => {
       m.items.forEach((i) => {
-        toPush.push({
+        let m = {
           label: i.label,
           click: (item, win) => {
             win.webContents.send("menu:trigger", {
@@ -108,7 +108,13 @@ ipcMain.on("menu:set", (event, group) => {
               data: i.data,
             })
           },
-        })
+        }
+        
+        if (i?.shortcut) {
+          m.accelerator = i.shortcut
+        }
+
+        toPush.push(m)
       })
       toPush.push({ type: "separator" })
     })
@@ -136,6 +142,7 @@ ipcMain.on("menu:set", (event, group) => {
     submenu: [
       {
         label: "New Window",
+        accelerator: "CmdOrCtrl+Shift+N",
         click: () => {
           createWindow()
         },

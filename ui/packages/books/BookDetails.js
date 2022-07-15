@@ -1,33 +1,52 @@
-<script>
+const m = require("mithril")
   const pull = require("pull-stream")
-  const { timestamp } = require("../../core/components/timestamp.js")
   const Book = require("scuttle-book")
   const b = Book(ssb.sbot)
-  const AvatarRound = require("../../core/components/AvatarRound.svelte")
-  const AvatarContainer = require("../../core/components/AvatarContainer.svelte")
+  const { timestamp } = require("../../core/components/timestamp.js")
+const { when } = require("../../core/components/utils.js")
+  const AvatarRound = require("../../core/components/AvatarRound.js")
+  const AvatarContainer = require("../../core/components/AvatarContainer.js")
 
 
-
-  export let bookKey = false
-
-  let book = false
-  let currentSubView = "readers-and-reviews"
-
-  const fetchBook = () => {
-    b.async.get(bookKey, true, (err, data) => {
+const fetchBook = () => {
+    b.async.get(vnode.state.bookKey, true, (err, data) => {
       console.log(data)
-      book = data
+      vnode.state.book = data
 
       if (book.reviews[ssb.feed].rating !== "" || book.reviews[ssb.feed].review) {
-        newRating = book.reviews[ssb.feed].rating || ""
-        newRatingType = book.reviews[ssb.feed].ratingType || ":star:"
-        newRatingMax = book.reviews[ssb.feed].ratingMax || "5"
-        newReviewText = book.reviews[ssb.feed].review || ""
-        newShelves = book.reviews[ssb.feed].shelves.join(", ") || ""
+        vnode.state.newRating = book.reviews[ssb.feed].rating || ""
+        vnode.state.newRatingType = book.reviews[ssb.feed].ratingType || ":star:"
+        vnode.state.newRatingMax = book.reviews[ssb.feed].ratingMax || "5"
+        vnode.state.newReviewText = book.reviews[ssb.feed].review || ""
+        vnode.state.newShelves = book.reviews[ssb.feed].shelves.join(", ") || ""
       }
       patchfox.title(book.common.title)
+      m.redraw()
     })
   }
+
+const BookDetails = {
+  oninit: vnode => {
+
+   vnode.state.bookKey = false
+
+  vnode.state.book = false
+  vnode.state.currentSubView = "readers-and-reviews"
+
+  vnode.state.newRating = ""
+  vnode.state.newRatingType = ":star:"
+  vnode.state.newRatingMax = "5"
+  vnode.state.newReviewText = ""
+  vnode.state.newShelves = ""
+  vnode.state.saving = false
+
+  fetchBook(vnode)
+
+  },
+  view: vnode => {
+
+  let book = vnode.state.book
+  let currentSubView = vnode.state.currentSubView
 
   const avatarClick = ev => {
     let feed = ev.detail.feed
@@ -35,15 +54,14 @@
     patchfox.go("contacts", "profile", { feed })
   }
 
-  let newRating = ""
-  let newRatingType = ":star:"
-  let newRatingMax = "5"
-  let newReviewText = ""
-  let newShelves = ""
-  let saving = false
+  let newRating = vnode.state.newRating
+  let newRatingType = vnode.state.newRatingType
+  let newRatingMax = vnode.state.newRatingMax
+  let newReviewText = vnode.state.newReviewText
+  let newShelves = vnode.state.newShelves
 
   const newReview = () => {
-    saving = true
+    vnode.state.saving = true
 
     let bookRating = { 
       type: "bookclubUpdate", 
@@ -54,55 +72,15 @@
       shelves: newShelves.split(",").map((i) => i.trim())  
     }
 
-    b.async.update(bookKey, bookRating, (err, updateMsg) => {
+    b.async.update(vnode.state.bookKey, bookRating, (err, updateMsg) => {
       if (!err) {
-        saving = false
-        fetchBook()
-        currentSubView = "readers-and-reviews"
+        vnode.state.saving = false
+        fetchBook(vnode)
+        vnode.state.currentSubView = "readers-and-reviews"
       }
     })
   }
 
-  fetchBook()
-</script>
-
-<style>  
-.cyberpunk-container {
-  max-width: 840px;
-  margin: auto;
-}
-
-.review {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-/* from: https://projects.verou.me/bubbly/ */
-.speech-bubble {
-	position: relative;
-	background: #feffff;
-	border-radius: .4em;
-  margin-left: 10px;
-  width: 100%;
-  min-height: 70px;
-}
-
-.speech-bubble:after {
-	content: "";
-	position: absolute;
-	left: 0;
-	top: 50%;
-	width: 0;
-	height: 0;
-	border: 15px solid transparent;
-	border-right-color: #feffff;
-	border-left: 0;
-	margin-top: -15px;
-	margin-left: -15px;
-}
-</style>
 
   <div class="container mx-auto lg:px-4">
     <a class="btn btn-sm btn-ghost mb-2" href="{patchfox.url("books")}">Go Back To Book List</a>
@@ -274,3 +252,84 @@
     {/if}
     {/if}
   </div>
+
+    const loading = m(".loading.loading-lg")
+
+    const bookCover = m(".flex-initial", m(".container.m-4", [
+      when(book.common.image, m("img.img-responsive", {
+        src: patchfox.httpUrl("/blobs/get/" + book.common.image.link),
+        alt: book.common.image.name
+      })),
+      when(Array.isArray(book.common.images), m("img.img-responsive", {
+        src: patchfox.httpUrl("/blobs/get/" + book.common.images[0].link),
+        alt: book.common.images[0].name
+      })),
+      when(book.common.images.hasOwnProperty("link"), m("img.img-responsive", {
+        src: patchfox.httpUrl("/blobs/get/" + book.common.images.link),
+        alt: book.common.images.name
+      })),
+    ]))
+
+    const bookTitleAndDescription = m(".flex-1", m(".prose", [
+      m("h1", book.common.title),
+      m("h3.card-subtitle.text-gray", book.common.authors),
+      when(book.common.series && book.common.seriesNo, m("h3.card-subtitle.text-gray", `Book #${book.common.seriesNo.replace("#","")} in the ${book.common.series} series.`)),
+      when(book.common.series && !book.common.seriesNo, m(h2.card-subtitle.text-gray", `Part of the ${book.common.series} series.`)),
+      m.trust(ssb.markdown(book.common.description))
+    ]))
+
+    const editButton = m("a.btn.btn-sm", {
+      href: patchfox.url("books", "edit", {bookKey: book.key})
+    }, "Edit Book")
+
+    const bookMetadata = m(".flex", [
+      bookCover,
+      bookTitleAndDescription,
+      editButton
+    ])
+
+    const tabs = [
+      tabControls,
+      ...tabContents
+    ]
+
+    const makeTabButton = (view, label) => {
+      return m("li.tab", {
+        class: when(currentSubView == view, "tab-active")
+      },m("a", {
+        onclick: () => {
+          vnode.state.currentSubView = view
+        }
+      }, label))
+    }
+
+    const tabControls = m("tabs.tabs-boxed.mb-4", [
+      makeTabButton("readers-and-reviews", "Readers & Reviews"),
+      makeTabButton("new-review", "Submit Review")
+    ])
+
+    const tabContents = [
+      when(currentSubView == "readers-and-reviews", readersAndReviews),
+      when(currentSubView == "new-review", newReview)
+    ]
+
+    const readersAndReviews = m("div", [
+      m("h3.uppercase.font-medium", "Readers"),
+      m(AvatarContainer, book.readers.map(readers => m(AvatarRound, {feed: reader}))),
+      m("br"),
+      m("h3.uppercase.font-medium", "Reviews"),
+      
+    ])
+
+    return m(".container.mx-auto.lg:px-4", [
+      m("a.btn.btn-sm.btn-ghost.mb-2", {
+        href: patchfox.url("books")
+      }, "Go Back To Book List"),
+      !vnode.state.book ? loading : [bookMetadata, ...tabs]
+    ])
+
+
+}
+}
+
+module.exports = BookDetails

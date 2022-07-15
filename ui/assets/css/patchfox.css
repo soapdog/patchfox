@@ -130,3 +130,39 @@ div img.is-image-from-blob {
 .file-attachment-input {
   display: none;
 }
+
+.cyberpunk-container {
+  max-width: 840px;
+  margin: auto;
+}
+
+.review {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* from: https://projects.verou.me/bubbly/ */
+.speech-bubble {
+  position: relative;
+  background: #feffff;
+  border-radius: .4em;
+  margin-left: 10px;
+  width: 100%;
+  min-height: 70px;
+}
+
+.speech-bubble:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 15px solid transparent;
+  border-right-color: #feffff;
+  border-left: 0;
+  margin-top: -15px;
+  margin-left: -15px;
+}
