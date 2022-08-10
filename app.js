@@ -2,8 +2,10 @@ const { Menu, app, dialog, shell, BrowserWindow, ipcMain } = require("electron")
 const path = require("path")
 const defaultMenu = require("electron-default-menu")
 const windowStateKeeper = require("electron-window-state")
+const { startDefaultPatchfoxServer } = require("./server/server.js")
 
 let windows = new Set()
+let sbot = null
 
 const createWindow = (data = false, windowState = false) => {
   let win
@@ -43,7 +45,7 @@ const createWindow = (data = false, windowState = false) => {
   win.on("focus", () => {
     win.webContents.send("window:focus")
   })
-  
+
   win.webContents.on("will-navigate", (event, url) => {
     console.log("event", event)
     console.log("url", url)
@@ -57,9 +59,9 @@ const createWindow = (data = false, windowState = false) => {
   }
 
   // Open the DevTools.
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
-  win.webContents.setWindowOpenHandler((details) => {
+  win.webContents.setWindowOpenHandler(details => {
     if (details.url.startsWith("file:")) {
       createWindow({ url: details.url })
       return { action: "deny" }
@@ -70,7 +72,7 @@ const createWindow = (data = false, windowState = false) => {
   })
 
   //   const menu = defaultMenu(app, shell)
-  // 
+  //
   //   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
   if (data?.pkg) {
@@ -84,7 +86,7 @@ ipcMain.on("new-patchfox-window", (event, data) => {
 
 ipcMain.on("window:set-title", (event, data) => {
   let win = BrowserWindow.fromWebContents(event.sender)
-  data = data.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))
+  data = data.replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()))
   win.setTitle(data)
 })
 
@@ -94,12 +96,12 @@ ipcMain.on("menu:set", (event, group) => {
   let newMenus = []
   let keys = Object.keys(group)
 
-  console.log(JSON.stringify(menu,null,2))
+  // console.log(JSON.stringify(menu,null,2))
 
-  const makeSubmenu = (subgroup) => {
+  const makeSubmenu = subgroup => {
     let toPush = []
-    subgroup.forEach((m) => {
-      m.items.forEach((i) => {
+    subgroup.forEach(m => {
+      m.items.forEach(i => {
         let m = {
           label: i.label,
           click: (item, win) => {
@@ -109,7 +111,7 @@ ipcMain.on("menu:set", (event, group) => {
             })
           },
         }
-        
+
         if (i?.shortcut) {
           m.accelerator = i.shortcut
         }
@@ -122,7 +124,7 @@ ipcMain.on("menu:set", (event, group) => {
     return toPush
   }
 
-  keys.forEach((k) => {
+  keys.forEach(k => {
     let m = {
       label: k,
       submenu: makeSubmenu(group[k]),
@@ -164,28 +166,32 @@ ipcMain.on("menu:set", (event, group) => {
   let patchfoxMenu = menu[patchfoxMenuIndex].submenu
   let appMenu = menu[0].submenu
 
-  appMenu.splice(1,0,{type: "separator"}, ...patchfoxMenu)
+  appMenu.splice(1, 0, { type: "separator" }, ...patchfoxMenu)
 
   menu[0].submenu = appMenu
   menu.splice(patchfoxMenuIndex, 1)
 
-  console.log(JSON.stringify(menu,null,2))
+  console.log(JSON.stringify(menu, null, 2))
   let finalMenu = Menu.buildFromTemplate(menu)
 
   Menu.setApplicationMenu(finalMenu)
-
 })
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  let mainWindowState = windowStateKeeper({
-    defaultWidth: 800,
-    defaultHeight: 600,
-  })
+  console.log("Attempting to start server...")
+  startDefaultPatchfoxServer((err, ssb) => {
+    console.log("Server started!", ssb.id)
+    sbot = ssb
+    let mainWindowState = windowStateKeeper({
+      defaultWidth: 800,
+      defaultHeight: 600,
+    })
 
-  createWindow(null, mainWindowState)
+    createWindow(null, mainWindowState)
+  })
 })
 
 // Quit when all windows are closed.
@@ -197,11 +203,21 @@ app.on("window-all-closed", () => {
   }
 })
 
+app.on("will-quit", () => {
+  console.log("Quitting SSB server.")
+  sbot.close()
+})
+
 app.on("activate", () => {
   // On OS X it"s common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
+    let mainWindowState = windowStateKeeper({
+      defaultWidth: 800,
+      defaultHeight: 600,
+    })
+
+    createWindow(null, mainWindowState)
   }
 })
 

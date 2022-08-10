@@ -8,7 +8,7 @@ const ThemeSwitcher = require("../../core/components/ThemeSwitcher.js")
 //const ThemeSwitcher = require("../../core/components/ThemeSwitcher.js")
 
 const GlobalMenuView = {
-  oninit: (vnode) => {
+  oninit: vnode => {
     vnode.state.currentPackage = false
 
     patchfox.listen("package:changed", (event, pkg) => {
@@ -27,7 +27,7 @@ const GlobalMenuView = {
       ipcRenderer.send("set-menu", groups)
     })
   },
-  view: (vnode) => {
+  view: vnode => {
     let currentQuery = queryString.parse(location.search)
     let title = patchfox.title()
 
@@ -41,24 +41,18 @@ const GlobalMenuView = {
     }
 
     let query = ""
-    const search = (ev) => {
+    const search = ev => {
       patchfox.go("search", "query", { query })
     }
 
     if (vnode.state.currentPackage) {
       let windowTitle = `${vnode.state.currentPackage.packageToOpen.name}`
 
-      if (
-        vnode.state.currentPackage.view &&
-        vnode.state.currentPackage.view.toLowerCase() !== "view"
-      ) {
+      if (vnode.state.currentPackage.view && vnode.state.currentPackage.view.toLowerCase() !== "view") {
         windowTitle += ` > ${vnode.state.currentPackage.view}`
       }
 
-      if (
-        title.length > 0 &&
-        title.toLowerCase() !== vnode.state.currentPackage.view.toLowerCase()
-      ) {
+      if (title.length > 0 && title.toLowerCase() !== vnode.state.currentPackage.view.toLowerCase()) {
         windowTitle += ` > ${title}`
       }
 
@@ -66,53 +60,35 @@ const GlobalMenuView = {
 
       window.title = windowTitle
 
-      return m(".navbar.mb-2.bg-accent.rounded-box.text-accent-content", [
-        m(".navbar-start", [
-          m(
-            "button.btn.btn-ghost",
-            {
-              onclick: () => history.back(),
-            },
-            m.trust("&larr;")
-          ),
-          m(
-            "button.btn.btn-ghost",
-            {
-              onclick: () => location.reload(),
-            },
-            m.trust("&#8635;")
-          ),
-          m(
-            "button.btn.btn-ghost",
-            {
-              onclick: () => history.forward(),
-            },
-            m.trust("&rarr;")
-          ),
+      return [
+        m(".navbar.mb-2.bg-accent.sticky.top-0.left-0.right-0.w-full.z-50.text-accent-content", [
+          m(".navbar-start", [
+            m(
+              "button.btn.btn-ghost",
+              {
+                onclick: () => history.back(),
+              },
+              m.trust("&larr;")
+            ),
+            m(
+              "button.btn.btn-ghost",
+              {
+                onclick: () => location.reload(),
+              },
+              m.trust("&#8635;")
+            ),
+            m(
+              "button.btn.btn-ghost",
+              {
+                onclick: () => history.forward(),
+              },
+              m.trust("&rarr;")
+            ),
+          ]),
+          m(".navbar-center", [m(".text-xl.breadcrumbs.capitalize", m("ul", [m("li", vnode.state.currentPackage.packageToOpen.name), when(vnode.state.currentPackage.view && vnode.state.currentPackage.view.toLowerCase() !== "view", m("li", vnode.state.currentPackage.view)), when(title.length > 0 && title.toLowerCase() !== vnode.state.currentPackage.view.toLowerCase(), m("li", title))]))]),
+          m(".navbar-end", [m(ThemeSwitcher)]),
         ]),
-        m(".navbar-center", [
-          m(
-            ".text-xl.breadcrumbs.capitalize",
-            m("ul", [
-              m("li", vnode.state.currentPackage.packageToOpen.name),
-              when(
-                vnode.state.currentPackage.view &&
-                  vnode.state.currentPackage.view.toLowerCase() !== "view",
-                m("li", vnode.state.currentPackage.view)
-              ),
-              when(
-                title.length > 0 &&
-                  title.toLowerCase() !==
-                    vnode.state.currentPackage.view.toLowerCase(),
-                m("li", title)
-              ),
-            ])
-          ),
-        ]),
-        m(".navbar-end", [
-          m(ThemeSwitcher)
-        ])
-      ])
+      ]
     }
   },
 }

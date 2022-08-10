@@ -5,7 +5,7 @@ const { when } = require("../kernel/utils.js")
 const AvatarTile = {
   oninit: vnode => {
     vnode.state.name = vnode.attrs.feed
-    vnode.state.image = "assets/images/icon.png"
+    vnode.state.image = `${__dirname}/../../ui/assets/images/icon.png`
 
     const defaultAvatarLoadingFunction = () => {
       ssb.avatar(vnode.attrs.feed).then(data => {

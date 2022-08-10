@@ -110,5 +110,31 @@
     "build": "run-s css docs",
     "docs": "node scripts/copy-package-docs.js",
     "localbuild": "run-s build builder:*"
+  },
+  "dependencies": {
+    "ssb-about": "^2.0.1",
+    "ssb-blobs": "^2.0.1",
+    "ssb-conn": "^6.0.3",
+    "ssb-ebt": "^9.0.0",
+    "ssb-friends": "^5.1.6",
+    "ssb-invite": "^3.0.1",
+    "ssb-invite-client": "^1.3.3",
+    "ssb-lan": "^1.2.3",
+    "ssb-logging": "^1.0.0",
+    "ssb-master": "^1.0.3",
+    "ssb-meme": "^1.1.0",
+    "ssb-no-auth": "^1.0.0",
+    "ssb-onion": "^1.0.0",
+    "ssb-ooo": "^1.3.3",
+    "ssb-plugins": "^1.0.4",
+    "ssb-private1": "^1.0.1",
+    "ssb-query": "^2.4.5",
+    "ssb-replicate": "^1.3.3",
+    "ssb-replication-scheduler": "^2.0.4",
+    "ssb-room": "^1.3.0",
+    "ssb-search": "^1.3.0",
+    "ssb-tangle": "^3.0.4",
+    "ssb-unix-socket": "^1.0.0",
+    "ssb-ws": "^6.2.3"
   }
 }

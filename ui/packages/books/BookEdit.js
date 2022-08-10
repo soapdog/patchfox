@@ -1,12 +1,19 @@
-<script>
+ const m = require("mithril")
   const Book = require("scuttle-book")
   const b = Book(ssb.sbot)
   const fileReader = require("pull-file-reader")
   const pull = require("pull-stream")
+  const { timestamp } = require("../../core/components/timestamp.js")
+ 
+ const BookEdit = {
+  oninit: vnode => {
+    
+  },
+  view: vnode => {
 
 
 
-  export let bookKey = false
+  let bookKey = vnode.attrs.bookKey
   let saving = false
   let newTitle = ""
   let newAuthors = ""
@@ -129,7 +136,7 @@
   }
 
 </script>
-
+ /**
   <div class="container">
     <a class="btn btn-sm btn-ghost mb-2"href="{patchfox.url('books')}">Go Back To Book List</a>
 
@@ -214,3 +221,10 @@
       {/if}
     </form>
   </div>
+*/
+
+}
+
+}
+
+module.exports = BookEdit

@@ -107,12 +107,13 @@ const Wm = {
   view: (vnode) => {
     let systemPackages = patchfox.systemPackages()
     return m("div.bg-base-200.min-h-screen", 
-      m("div.root.container.mx-auto.p-2.text-base-content",[
+      m("div.root.mx-auto.text-base-content.pb-4",[
         // system packages
         ...systemPackages.map(pkg => m(pkg.view)),
         // app package or current package
         currentPackage?.app ? m(".container.wm-current-app-container.container.mx-auto", m(currentView, {...args})) :
-          m(".wm-current-package-container", m(".wm-current-package", m(currentView, {...args})))
+          m(".wm-current-package-container.p-2", m(".wm-current-package", m(currentView, {...args}))),
+        m("div", {style: {height: "40px"}})
       ])
     )
   }

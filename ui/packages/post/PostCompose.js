@@ -370,7 +370,7 @@ const PostCompose = {
         m(
           "textarea",
           {
-            class: `${textSize} ${fileOnTop} textarea textarea-bordered h-96`,
+            class: `${textSize} ${fileOnTop} textarea textarea-bordered h-80`,
             id: "content",
             placeholder: "Type in your post",
             ondragover: dragOver,

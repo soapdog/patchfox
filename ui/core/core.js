@@ -17,13 +17,13 @@ const start = async () => {
     let savedData = await kernel.loadSavedData()
     
     let identity = qs?.identity ? kernel.configurationForIdentity(qs.identity) : kernel.getDefaultIdentity() 
-    console.info(`server: ${identity.type}, key: ${identity.keys.public}`)
+    console.info(`key: ${identity.keys.public}, remote: ${identity.remote}`)
     setServerType(identity.type) // sets global.ssb to be the correct platform.
     
     let server = await ssb.connect(identity.keys, identity.remote)
-    window.ssb.remote = identity.remote
-    window.ssb.feed = server.id
-    window.ssb.sbot = server
+    global.ssb.remote = identity.remote
+    global.ssb.feed = server.id
+    global.ssb.sbot = server
     
     ssb.setGetPrefFunction(kernel.getPref)
     ssb.setIsMessageHiddenFunction(isMessageHidden)

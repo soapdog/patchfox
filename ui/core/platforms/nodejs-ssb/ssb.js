@@ -1481,16 +1481,24 @@ class NodeJsSSB {
     }
 
     const { id } = sbot
-    const relationshipObject = await sbot.friends.get({
-      source: id,
+    const relationshipObject = await new Promise((resolve, reject) => {
+      sbot.friends.graph((err, graph) => {
+        if (err) {
+          console.error(err)
+          reject(err)
+        }
+        console.log("graph", graph)
+        resolve(graph[id] || {})
+      })
     })
+    console.log("r", relationshipObject)
 
     const followingList = Object.entries(relationshipObject)
-      .filter(([, val]) => val === true)
+      .filter(([, val]) => val >= 0)
       .map(([key]) => key)
 
     const blockingList = Object.entries(relationshipObject)
-      .filter(([, val]) => val === false)
+      .filter(([, val]) => val === -1)
       .map(([key]) => key)
 
     return pull.filter((message) => {

@@ -7,6 +7,8 @@ require("./pub/pub.js")
 require("./private/private.js")
 require("./launcher/launcher.js")
 require("./globalMenu/globalMenu.js")
+require("./statusBar/statusBar.js")
+
 require("./search/search.js")
 require("./system/system.js")
 // require("./settings/settings.js")

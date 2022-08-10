@@ -15,7 +15,7 @@ const AvatarMenuItem = {
     if (vnode.state.shouldLoadAvatar) {
       ssb.avatar(feed).then(data => {
         // console.log(`avatar for ${feed}`, data)
-        if (data.image !== null && data.image !== undefined) {
+        if (data?.image) {
           vnode.state.image = `${patchfox.blobUrl(data.image)}`
         }
         vnode.state.name = data.name

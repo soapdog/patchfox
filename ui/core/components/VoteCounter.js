@@ -43,7 +43,7 @@ const VoteCounter = {
           },
           `💜 ${voters.length}`
         ),
-        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.justify-start.w-52", voters.map(f => m(AvatarMenuItem, {feed: f}))),
+        m(".dropdown-content.menu.p-2.shadow.bg-base-100.rounded-box.justify-start.w-52", {style: {"max-height": "200px", overflow: "scroll"}}, voters.map(f => m(AvatarMenuItem, {feed: f}))),
       ]))
     )
 
