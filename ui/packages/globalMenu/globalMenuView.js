@@ -61,7 +61,7 @@ const GlobalMenuView = {
       window.title = windowTitle
 
       return [
-        m(".navbar.mb-2.bg-accent.sticky.top-0.left-0.right-0.w-full.z-50.text-accent-content", [
+        m(".navbar.mb-2.bg-accent.sticky.top-0.left-0.right-0.w-full.z-50.h-8.min-h-8.text-accent-content", [
           m(".navbar-start", [
             m(
               "button.btn.btn-ghost",

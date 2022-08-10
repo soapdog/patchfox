@@ -3223,6 +3223,11 @@ html {
   background-color: hsla(var(--n) / var(--tw-bg-opacity, 1));
 }
 
+.progress-primary::-moz-progress-bar {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--p) / var(--tw-bg-opacity, 1));
+}
+
 .progress::-webkit-progress-bar {
   --tw-bg-opacity: 1;
   --tw-bg-opacity: 0.2;
@@ -3234,6 +3239,11 @@ html {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--nf) / var(--tw-bg-opacity, 1));
   border-radius: var(--rounded-box, 1rem);
+}
+
+.progress-primary::-webkit-progress-value {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--p) / var(--tw-bg-opacity, 1));
 }
 
 .radio {
@@ -3614,6 +3624,10 @@ html {
   border-radius: var(--rounded-box, 1rem);
 }
 
+.min-h-8 {
+  min-height: 2rem;
+}
+
 .btn-xs {
   height: 1.5rem;
   padding-left: .5rem;
@@ -3784,6 +3798,10 @@ html {
   height: 1rem;
 }
 
+.h-8 {
+  height: 2rem;
+}
+
 .h-14 {
   height: 3.5rem;
 }
@@ -3806,6 +3824,10 @@ html {
 
 .w-52 {
   width: 13rem;
+}
+
+.w-56 {
+  width: 14rem;
 }
 
 .w-80 {

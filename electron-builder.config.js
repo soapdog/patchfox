@@ -63,6 +63,7 @@ module.exports = {
     "node_modules/electron-window-state", // needed in loader.js
     "package.json",
 	"ui/**/*",
+  "server/**/*",
 	"docs/**/*",
 	"app.js",
 	"!build",
@@ -84,7 +85,7 @@ module.exports = {
 
   // Linux-specific configurations ---------------------------------------------
   linux: {
-    icon: path.join(__dirname, "build-resources", "linux-app-icon"),
+    icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
     target: [
       { target: "deb", arch: ["x64", "arm64"] },
       { target: "tar.gz", arch: ["x64", "arm64"] },
