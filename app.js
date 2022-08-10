@@ -171,7 +171,7 @@ ipcMain.on("menu:set", (event, group) => {
   menu[0].submenu = appMenu
   menu.splice(patchfoxMenuIndex, 1)
 
-  console.log(JSON.stringify(menu, null, 2))
+  // console.log(JSON.stringify(menu, null, 2))
   let finalMenu = Menu.buildFromTemplate(menu)
 
   Menu.setApplicationMenu(finalMenu)

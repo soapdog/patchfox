@@ -12,11 +12,11 @@ const firstCopyrightYear = 2018
 const lastCopyrightYear = new Date().getFullYear()
 const AUTHOR = "Andre Alves Garzia"
 const NAME_HUMAN = "Patchfox"
-const NAME_COMPUTER = "Patchfox"
+const NAME_COMPUTER = "patchfox"
 
 module.exports = {
   // Metadata ------------------------------------------------------------------
-  appId: "org.patchfox.macos",
+  appId: "org.patchfox.desktop",
   productName: NAME_HUMAN,
   copyright: `${firstCopyrightYear}-${lastCopyrightYear} ${AUTHOR}`,
   buildVersion: PackageJSON.version,
@@ -110,7 +110,8 @@ module.exports = {
     icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.icns"),
     category: "public.app-category.social-networking",
     darkModeSupport: false,
-    target: [{ target: "dmg", arch: ["arm64", "x64"] }],
+    mergeASARs: false,
+    target: [{ target: "dmg", arch: ["universal"] }],
     identity: null,
   },
 

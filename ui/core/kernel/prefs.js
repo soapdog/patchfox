@@ -32,7 +32,7 @@ const loadSavedData = async () => {
       if (fs.existsSync(path.join(os.homedir(), ".ssb", "socket"))) {
         let socketPath = path.join(os.homedir(), ".ssb", "socket")
         let key = keys.id.slice(1, keys.id.indexOf("=") + 1)
-        remote = `unix:${socketPath}:~noauth:${key}`
+        // remote = `unix:${socketPath}:~noauth:${key}`
       }
       savedData.identities[keys.public] = {
           keys,

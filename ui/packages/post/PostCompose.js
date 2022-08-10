@@ -128,6 +128,10 @@ const PostCompose = {
 
     patchfox.title(`New Post`)
 
+    if (vnode.state.showPreview) {
+      window.scrollTo(0,0)
+    }
+
 
     // TODO: This function is duplicated. 
     // O problema é passar o vnode nessa função caso ela esteja fora.

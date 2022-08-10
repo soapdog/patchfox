@@ -10,6 +10,7 @@ let config = require("ssb-config")
 function buildConfig(plugins, userConfig = {}) {
   config = addSockets(config, plugins)
   config = fixLocalhost(config)
+  config = forceLocalhost(config)
 
   return config
 }
@@ -47,6 +48,17 @@ function fixLocalhost(config) {
   if (config.host === unsafe) {
     config.host = safe
   }
+
+  return config
+}
+
+function forceLocalhost(config) {
+  const safe = "127.0.0.1"
+  config.connections.incoming.net[0].host = safe
+
+  config.connections.incoming.ws[0].host = safe
+
+  config.host = safe
 
   return config
 }
@@ -102,7 +114,6 @@ function startDefaultPatchfoxServer(cb) {
     require("ssb-unix-socket"),
     require("ssb-ws"),
   ]
-
 
   const config = buildConfig(plugins)
 
