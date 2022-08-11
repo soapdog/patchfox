@@ -1,21 +1,25 @@
 const m = require("mithril")
+const pull = require("pull-stream")
 const Spinner = require("../../core/components/Spinner.js")
+
+const sbot = ssb.sbot
+
 const PeersView = {
-  oninit: (vnode) => {
+  oninit: vnode => {
     vnode.state.shouldLoad = true
     vnode.state.peerList = []
   },
-  view: (vnode) => {
+  view: vnode => {
     if (vnode.state.shouldLoad) {
       ssb.system
         .getPeers()
-        .then((data) => {
+        .then(data => {
           console.log("data", data)
           vnode.state.shouldLoad = false
-          vnode.state.peerList = data
+          vnode.state.peerList = data.map(arr => arr[1])
           m.redraw()
         })
-        .catch((err) => {
+        .catch(err => {
           throw err
         })
     }
@@ -30,9 +34,9 @@ const PeersView = {
         m("thead", m("tr"), [m("th", "Host"), m("th", "Port"), m("th", "Key")]),
         m(
           "tbody",
-          vnode.state.peerList.map((peer) =>
+          vnode.state.peerList.map(peer =>
             m("tr", [
-              m("td", peer.host),
+              m("td", peer.host || peer.name || peer.key),
               m("td", peer.port),
               m(
                 "td",
@@ -42,7 +46,7 @@ const PeersView = {
                     href: patchfox.url("contacts", "profile", {
                       feed: peer.key,
                     }),
-                    onclick: (ev) => {
+                    onclick: ev => {
                       ev.preventDefault()
                       patchfox.go("contacts", "profile", { feed: peer.key })
                     },
