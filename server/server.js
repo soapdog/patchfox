@@ -74,12 +74,23 @@ function startSSB(plugins, config, cb) {
 
   const ssb = stack(config)
 
-  const isReady = ssb.whoami
+  console.log("Checking if server is ready...")
 
-  isReady((err, data) => {
-    if (err) throw new Error(err)
-    cb(null, ssb)
-  })
+  const checkServer = () => {
+    let res = ssb.progress()
+    console.log("res", res)
+
+
+    if (res.hasOwnProperty("indexes")) {
+      cb(null, ssb)
+    } else {
+      console.log("looping")
+      setTimeout(checkServer, 1000)
+    }
+
+  }
+
+  setTimeout(checkServer, 1000)
 }
 
 function startDefaultPatchfoxServer(cb) {

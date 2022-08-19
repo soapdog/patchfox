@@ -185,6 +185,57 @@ app.on("ready", () => {
   startDefaultPatchfoxServer((err, ssb) => {
     console.log("Server started!", ssb.id)
     sbot = ssb
+
+    // first-time user experience (TODO)
+
+    // progress checker
+    let progress = ssb.progress()
+    let win
+
+    if (progress.indexes.current < progress.indexes.target) {
+      win = new BrowserWindow({
+        width: 400,
+        height: 400,
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+        },
+      })
+
+      windows.add(win)
+
+      win.on("closed", () => {
+        windows.delete(win)
+        win = null
+      })
+
+      win.loadURL(`file://${__dirname}/ui/progress.html`)
+
+      const checkProgress = () => {
+        let progress = ssb.progress()
+
+        if (progress.indexes.current < progress.indexes.target) {
+          console.log("sending progress", progress)
+          win.webContents.send("progress", progress)
+          setTimeout(checkProgress, 1000)
+        } else {
+          let mainWindowState = windowStateKeeper({
+            defaultWidth: 800,
+            defaultHeight: 600,
+          })
+
+          sbot = ssb
+
+          createWindow(null, mainWindowState)
+        }
+      }
+
+      setTimeout(checkProgress, 1000)
+
+      return
+    }
+
+    // main window
     let mainWindowState = windowStateKeeper({
       defaultWidth: 800,
       defaultHeight: 600,
@@ -211,13 +262,15 @@ app.on("will-quit", () => {
 app.on("activate", () => {
   // On OS X it"s common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
+  if (sbot && BrowserWindow.getAllWindows().length === 0) {
     let mainWindowState = windowStateKeeper({
       defaultWidth: 800,
       defaultHeight: 600,
     })
 
     createWindow(null, mainWindowState)
+  } else {
+    console.log("no sbot.")
   }
 })
 

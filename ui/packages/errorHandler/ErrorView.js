@@ -31,6 +31,18 @@ const ErrorView = {
       cta = errorMapping[error]
     }
 
+    let title = `[[${currentPackage.name}]] error`
+
+    let body = `
+    An error happened in package [[${currentPackage.name}]].
+
+    ${error}
+
+    ~~~~
+    ${JSON.stringify(errorObj)}
+    ~~~~
+    `
+
     return m(".prose", [
       m(
         "h2.uppercase.text-sl.font-medium",
@@ -73,7 +85,7 @@ const ErrorView = {
             "a",
             {
               target: "_blank",
-              href: "https://github.com/soapdog/patchfox/issues",
+              href: `https://github.com/soapdog/patchfox/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`,
             },
             "Create an issue report"
           ),
