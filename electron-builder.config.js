@@ -43,37 +43,37 @@ module.exports = {
     output: path.join(__dirname, "build"),
   },
   files: [
-	"node_modules/**/*",
-	"!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-	"!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-	"!**/node_modules/*.d.ts",
-	"!**/node_modules/.bin",
-	"!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-	"!.editorconfig",
-	"!**/._*",
-	"!**/.*",
-	"!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-	"!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-	"!**/{appveyor.yml,.travis.yml,circle.yml}",
-	"!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+    "node_modules/**/*",
+    "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+    "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+    "!**/node_modules/*.d.ts",
+    "!**/node_modules/.bin",
+    "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+    "!.editorconfig",
+    "!**/._*",
+    "!**/.*",
+    "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+    "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+    "!**/{appveyor.yml,.travis.yml,circle.yml}",
+    "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
     "node_modules/**/build/Release/*.node", // Node native modules
     "node_modules/**/build/Release/*.so*", // Node native modules (Linux)
     "node_modules/**/build/Release/*.dylib", // Node native modules (macOS)
     "node_modules/**/build/Release/*.dll", // Node native modules (Windows)
     "node_modules/electron-window-state", // needed in loader.js
     "package.json",
-	"ui/**/*",
-  "server/**/*",
-	"docs/**/*",
-	"app.js",
-	"!build",
-	"!**/.github",
-	"!**/.idea",
-	"!.git",
+    "ui/**/*",
+    "server/**/*",
+    "docs/**/*",
+    "app.js",
+    "!build",
+    "!**/.github",
+    "!**/.idea",
+    "!.git",
     "!node_modules/electron",
     "!node_modules/*-nodejs-mobile",
   ],
-  beforeBuild: (conf) => {
+  beforeBuild: conf => {
     // Remove prebuilds so to force recompilation for Electron
     console.log("  • beforeBuild, remove native modules prebuilds")
     const node_modules = path.join(__dirname, "node_modules")
@@ -87,7 +87,6 @@ module.exports = {
   linux: {
     icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
     target: [
-      { target: "deb", arch: ["x64", "arm64"] },
       { target: "tar.gz", arch: ["x64", "arm64"] },
       // TODO: Fix support for SSB URIs in Manyverse AppImage, see:
       // https://github.com/electron-userland/electron-builder/issues/5024
@@ -122,7 +121,7 @@ module.exports = {
 
   // Windows-specific configurations -------------------------------------------
   win: {
-	icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
+    icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
     publisherName: AUTHOR,
   },
 
