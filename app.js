@@ -3,12 +3,15 @@ const path = require("path")
 const defaultMenu = require("electron-default-menu")
 const windowStateKeeper = require("electron-window-state")
 const { startDefaultPatchfoxServer } = require("./server/server.js")
+const queryString = require("query-string")
 
 let windows = new Set()
 let sbot = null
 
 const createWindow = (data = false, windowState = false) => {
   let win
+
+  console.log("data", data)
 
   if (!windowState) {
     // Create the browser window.
@@ -54,8 +57,12 @@ const createWindow = (data = false, windowState = false) => {
   // and load the index.html of the app.
   if (data?.url) {
     win.loadURL(data.url)
+  } else if (data?.pkg) {
+    let state = { pkg: data.pkg, view: data.view, ...data }
+    let qs = queryString.stringify(state)
+    win.loadURL(`file://${process.cwd()}/ui/index.html?${qs}`)
   } else {
-    win.loadURL(`file://${__dirname}/ui/index.html`)
+    win.loadURL(`file://${process.cwd()}/ui/index.html`)
   }
 
   // Open the DevTools.
@@ -71,13 +78,6 @@ const createWindow = (data = false, windowState = false) => {
     }
   })
 
-  //   const menu = defaultMenu(app, shell)
-  //
-  //   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
-
-  if (data?.pkg) {
-    win.webContents.send("patchfox:event", { event: "package:go", data })
-  }
 }
 
 ipcMain.on("new-patchfox-window", (event, data) => {
@@ -224,8 +224,6 @@ app.on("ready", () => {
             defaultHeight: 600,
           })
 
-          sbot = ssb
-
           createWindow(null, mainWindowState)
         }
       }
@@ -269,8 +267,6 @@ app.on("activate", () => {
     })
 
     createWindow(null, mainWindowState)
-  } else {
-    console.log("no sbot.")
   }
 })
 

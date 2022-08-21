@@ -40,8 +40,24 @@ const GlobalMenuView = {
       return qs
     }
 
-    let query = ""
+    const makeButton = (label, pkg, view, data) => {
+      return m(
+        "a.btn.btn-sm.btn-ghost",
+        {
+          onclick: ev => {
+            ev.preventDefault()
+            patchfox.go(pkg, view, data)
+          },
+          href: patchfox.url(pkg, view, data),
+        },
+        label
+      )
+    }
+
     const search = ev => {
+      let query = document.getElementById("search-box").value
+
+      ev.preventDefault()
       patchfox.go("search", "query", { query })
     }
 
@@ -61,32 +77,45 @@ const GlobalMenuView = {
       window.title = windowTitle
 
       return [
-        m(".navbar.mb-2.bg-accent.sticky.top-0.left-0.right-0.w-full.z-50.h-8.min-h-8.text-accent-content", [
+        m(".navbar.mb-2.bg-accent.sticky.top-0.left-0.right-0.w-full.z-50.h-9.min-h-8.text-accent-content", [
           m(".navbar-start", [
             m(
-              "button.btn.btn-ghost",
+              "button.btn.btn-sm.btn-ghost",
               {
                 onclick: () => history.back(),
               },
               m.trust("&larr;")
             ),
             m(
-              "button.btn.btn-ghost",
+              "button.btn.btn-sm.btn-ghost",
               {
                 onclick: () => location.reload(),
               },
               m.trust("&#8635;")
             ),
             m(
-              "button.btn.btn-ghost",
+              "button.btn.btn-sm.btn-ghost",
               {
                 onclick: () => history.forward(),
               },
               m.trust("&rarr;")
             ),
           ]),
-          m(".navbar-center", [m(".text-xl.breadcrumbs.capitalize", m("ul", [m("li", vnode.state.currentPackage.packageToOpen.name), when(vnode.state.currentPackage.view && vnode.state.currentPackage.view.toLowerCase() !== "view", m("li", vnode.state.currentPackage.view)), when(title.length > 0 && title.toLowerCase() !== vnode.state.currentPackage.view.toLowerCase(), m("li", title))]))]),
-          m(".navbar-end", [m(ThemeSwitcher)]),
+          m(".navbar-center", [makeButton("Public", "hub", "public"), makeButton("Mentions", "hub", "mentions")]),
+          m(".navbar-end", [
+            m("form",{
+              role: "search",
+              onsubmit: search
+            }, [
+              m("input.input.input-bordered.input-sm.text-neutral", {
+                type: "search",
+                placeholder: "search...",
+                name: "q",
+                id: "search-box"
+              })
+            ]),
+            m(ThemeSwitcher)
+          ]),
         ]),
       ]
     }

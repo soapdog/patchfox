@@ -18,6 +18,7 @@ const ssbClient = require("ssb-client")
 const ssbAvatar = require("ssb-avatar")
 const pullParallelMap = require("pull-paramap")
 const pullSort = require("pull-sort")
+const Abortable = require("pull-abortable")
 const _ = require("lodash")
 const ssbHttpInviteClient = require("ssb-http-invite-client")
 const fileReader = require("pull-file-reader")
@@ -271,6 +272,7 @@ class NodeJsSSB {
   }
 
   searchWithCallback(query, cb) {
+    const abortable = Abortable()
     const matchesQuery = searchFilter(query.split(" "))
     const opts = { reverse: true, live: true, private: true }
 
@@ -304,19 +306,22 @@ class NodeJsSSB {
     }
 
     return new Promise((resolve, reject) => {
+      cb({msg: null}, abortable) // just so that the caller has a copy from abortable from the start
       if (sbot) {
+
+        const pipeline = pipelines.thread.get()
+
         try {
           let q = query.toLowerCase()
           pull(
             sbot.createLogStream(opts),
+            abortable,
             pull.filter(matchesQuery),
-            //this.filterTypes(),
-            //this.filterWithUserFilters(),
-            //this.filterLimit(),
+            pull.apply(pull, pipeline),
             pull.drain(
               (msg) => {
                 if (!msg.sync) {
-                  cb(msg)
+                  cb({msg, abortable})
                 }
               },
               () => resolve()

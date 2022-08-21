@@ -34,7 +34,7 @@ const countPeers = (vnode) => {
     .then(data => {
       vnode.state.peers = data
       if (currentPeers.length !== data.length) {
-        document.getElementById("peer-count").innerText = `• ${vnode.state.peers.length} peers`
+        document.getElementById("peer-count").innerText = `${vnode.state.peers.length} peers`
       }
     })
 }
@@ -62,7 +62,7 @@ const StatusBarView = {
         m("span", "Reindexing..."),
         m("progress.progress.progress-primary.w-8#reindexing-progress-bar", {value: currValue, max: endValue})
       ]),
-      m("span#peer-count", `• ${vnode.state.peers.length} peers`)
+      m(".btn.btn-sm.btn-ghost#peer-count",{onclick: () => patchfox.go("system", "peers")}, `${vnode.state.peers.length} peers`)
     ])
   },
 }

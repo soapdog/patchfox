@@ -77,7 +77,7 @@ function addHistory(pkg, view, data) {
     state.identity = cs.identity
   }
   let qs = queryString.stringify(state)
-  history.pushState({ pkg, view, data }, "", path.join(__dirname, `index.html?${qs}`))
+  history.pushState({ pkg, view, data }, "", path.join(process.cwd(), `/ui/index.html?${qs}`))
 }
 
 function reload(pkg, view, data) {
@@ -97,7 +97,7 @@ function url(pkg, view, data) {
   }
   let state = { pkg, view, ...data }
   let qs = queryString.stringify(state)
-  return `index.html?${qs}`
+  return `file://${process.cwd()}/ui/index.html?${qs}`
 }
 
 function packageForType(msg) {

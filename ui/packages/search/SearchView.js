@@ -8,6 +8,12 @@ const SearchView = {
     vnode.state.shouldSearch = true
     vnode.state.msgs = []
     vnode.state.error = false
+    vnode.state.abortable = false
+  },
+  onremove: (vnode) => {
+    if (vnode.state.abortable) {
+      vnode.state.abortable.abort()
+    }
   },
   view: (vnode) => {
     let query = vnode.attrs.query
@@ -16,11 +22,14 @@ const SearchView = {
 
     console.log("searching for", query)
 
-    const gotResult = (msg) => {
-      console.log("got a match", msg)
-      msgs.push(msg)
-      msgs = msgs
-      return true
+    const gotResult = ({msg, abortable}) => {
+      vnode.state.abortable = abortable
+      if (msg) {
+        console.log("got a match", msg)
+        vnode.state.msgs.push(msg)
+        m.redraw()
+        return true
+      }
     }
 
     if (query[0] === "%") {
@@ -36,20 +45,22 @@ const SearchView = {
     }
 
     if (query[0] === "&") {
-      window.location = patchfox.blobUrl(query)
+      window.open = patchfox.blobUrl(query)
     }
 
     if (vnode.state.shouldSearch) {
       ssb
         .searchWithCallback(query, gotResult)
         .then(() => {
-          console.log("finished searching", msgs)
+          console.log("finished searching", vnode.state.msgs)
           vnode.state.shouldSearch = false
+          m.redraw()
         })
         .catch((n) => {
           console.dir("error searching", n)
           vnode.state.error = n.message
           vnode.state.shouldSearch = false
+          m.redraw()
         })
     }
 
@@ -61,7 +72,7 @@ const SearchView = {
           ".alert.alert-error",
           m(
             "span.flex-1",
-            `Couldn't find results for query '${query}' : ${error}`
+            `Couldn't find results for query '${query}' : ${vnode.state.error}`
           )
         )
       ),
