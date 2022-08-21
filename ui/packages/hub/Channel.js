@@ -14,11 +14,16 @@ const ChannelView = {
     vnode.state.shouldLoadMessages = true
     vnode.state.shouldLoadStatus = true
     vnode.state.subscribed = false
+    vnode.state.rootsOnly = false
+    vnode.state.lt = []
+
+    if (vnode.attrs.lt) {
+      vnode.state.lt.push(vnode.attrs.lt)
+    }
   },
   view: (vnode) => {
-    let rootsOnly = false
     let channel = vnode.attrs.channel || false
-    let lt = vnode.attrs.lt || false
+    let lt = vnode.state.lt
     let hidden = isChannelFiltered(channel) || false
 
     if (!channel) {
@@ -36,10 +41,10 @@ const ChannelView = {
 
     let opts = {}
 
-    if (lt) {
-      opts.lt = lt
+    if (lt.length > 0) {
+      opts.lt = lt[lt.length-1]
     }
-    if (rootsOnly) {
+    if (vnode.state.rootsOnly) {
       opts.rootsOnly = true
     } else {
       opts.rootsOnly = false
@@ -52,7 +57,6 @@ const ChannelView = {
           vnode.state.msgs = ms
           window.scrollTo(0, 0)
           vnode.state.shouldLoadMessages = false
-          console.dir(vnode.state)
           m.redraw()
         })
         .catch((n) => {
@@ -99,22 +103,27 @@ const ChannelView = {
       let v = ev.target.checked
       if (v) {
         // something
+        vnode.state.rootsOnly = true
       } else {
         // other thing
+        vnode.state.rootsOnly = false
       }
+
+      vnode.state.shouldLoadMessages = true
+      vnode.state.msgs = []
     }
 
     const goNext = () => {
-      let lt = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
+      let tstamp = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
       vnode.state.msgs = []
-      patchfox.go("hub", "channel", {
-        channel,
-        lt,
-      })
+      vnode.state.shouldLoadMessages = true
+      vnode.state.lt.push(tstamp)
     }
 
     const goPrevious = () => {
-      history.back()
+      vnode.state.msgs = []
+      vnode.state.shouldLoadMessages = true
+      vnode.state.lt.pop()
     }
 
     const header = m(".navbar.mb-2.text-base-content", [
@@ -148,6 +157,7 @@ const ChannelView = {
           m("label.cursor-pointer.label", [
             m("span.label-text.px-2", "Subscribe"),
             m("input.toggle", {
+              type: "checkbox",
               onchange: subscriptionChanged,
             }),
           ])
@@ -157,6 +167,7 @@ const ChannelView = {
           m("label.cursor-pointer.label", [
             m("span.label-text.px-2", "Roots Only"),
             m("input.toggle", {
+              type: "checkbox",
               onchange: rootsOnlyChanged,
             }),
           ])
@@ -184,6 +195,8 @@ const ChannelView = {
         m("button.btn.btn-outline.btn-wide", { onclick: goNext }, "Next"),
       ]),
     ]
+
+    console.log("lt", lt)
 
     return [
       header,

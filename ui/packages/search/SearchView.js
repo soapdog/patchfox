@@ -12,7 +12,7 @@ const SearchView = {
   },
   onremove: (vnode) => {
     if (vnode.state.abortable) {
-      vnode.state.abortable.abort()
+      return vnode.state.abortable.abort()
     }
   },
   view: (vnode) => {
