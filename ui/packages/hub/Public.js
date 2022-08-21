@@ -6,16 +6,22 @@ const PublicView = {
   oninit: (vnode) => {
     vnode.state.shouldLoadMessages = true
     vnode.state.msgs = []
-    vnode.state.lt = vnode.attrs.lt || false
+    vnode.state.rootsOnly = false
+    vnode.state.lt = []
+
+    if (vnode.attrs.lt) {
+      vnode.state.lt.push(vnode.attrs.lt)
+    }
   },
   view: (vnode) => {
     console.log("hit")
     let limit = vnode.attrs.limit || false
 
     let opts = {}
-    if (vnode.state.lt) {
-      opts.lt = Number(vnode.state.lt)
-      patchfox.title(timestamp(vnode.state.lt))
+    if (vnode.state.lt.length > 0) {
+      let lt = vnode.state.lt[vnode.state.lt.length - 1]
+      opts.lt = Number(lt)
+      patchfox.title(timestamp(lt))
     }
 
 
@@ -36,16 +42,16 @@ const PublicView = {
     }
 
     const goNext = () => {
-      vnode.state.lt = vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp
+      vnode.state.lt.push(vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp)
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
-      patchfox.addHistory("hub", "public", { lt: vnode.state.lt })
+      patchfox.addHistory("hub", "public", { lt: vnode.state.lt[vnode.state.lt.length-1] })
     }
 
     const goPrevious = () => {
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
-      history.back()
+      vnode.state.lt.pop()
     }
 
     if (vnode.state.shouldLoadMessages) {
