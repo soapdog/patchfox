@@ -18,14 +18,15 @@ const PublicView = {
     let limit = vnode.attrs.limit || false
 
     let opts = {
-      filter: vnode.state.filter
+      filter: vnode.state.filter,
     }
+
     if (vnode.state.lt.length > 0) {
       let lt = Number(vnode.state.lt[vnode.state.lt.length - 1])
       opts.lt = lt
       patchfox.title(timestamp(lt))
     } else {
-      patchfox.title()
+      patchfox.title("")
     }
 
     if (vnode.state.shouldLoadMessages == true) {
@@ -48,13 +49,21 @@ const PublicView = {
     const makeFilterButton = label => {
       let selected = vnode.state.filter == label
       let selector = selected ? "li.bordered" : "li"
-      return m(selector, m("a", {
-        onclick: () => {
-          vnode.state.filter = label
-          vnode.state.msgs = []
-          vnode.state.shouldLoadMessages = true
-        }
-      },label))
+      return m(
+        selector,
+        m(
+          "a",
+          {
+            onclick: () => {
+              vnode.state.filter = label
+              vnode.state.msgs = []
+              vnode.state.lt = []
+              vnode.state.shouldLoadMessages = true
+            },
+          },
+          label
+        )
+      )
     }
 
     const header = m(".navbar.mb-2.text-base-content", [m(".navbar-start", m("ul.menu.menu-horizontal.bg-secondary.bg-secondary-content", [makeFilterButton("All"), makeFilterButton("Friends"), makeFilterButton("Following")]))])
@@ -64,14 +73,14 @@ const PublicView = {
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
       patchfox.addHistory("hub", "public", { lt: vnode.state.lt[vnode.state.lt.length - 1] })
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
     }
 
     const goPrevious = () => {
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
       vnode.state.lt.pop()
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
     }
 
     if (vnode.state.shouldLoadMessages) {
@@ -79,7 +88,14 @@ const PublicView = {
     }
 
     if (!vnode.state.shouldLoadMessages && vnode.state.msgs.length > 0) {
-      return [header, ...vnode.state.msgs.map(msg => m(MessageRenderer, { msg })), m("br"), m(".btn-group", [m("button.btn.btn-outline.btn-wide", { onclick: goPrevious }, "Previous"), m("button.btn.btn-outline.btn-wide", { onclick: goNext }, "Next")])]
+      return [
+        header, 
+        ...vnode.state.msgs.map(msg => m(MessageRenderer, { msg })), 
+        m("br"), 
+        m(".btn-group", [
+          m("button.btn.btn-outline.btn-wide", { onclick: goPrevious }, "Previous"), 
+          m("button.btn.btn-outline.btn-wide", { onclick: goNext }, "Next")]
+        )]
     }
   },
 }
