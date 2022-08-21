@@ -22,7 +22,7 @@ const ProfileView = {
     vnode.state.loadingAvatar = true
     vnode.state.loadingAbout = true
     vnode.state.loadingAliases = true
-    vnode.state.currentSubView = vnode.attrs.currentSubView || "friends"
+    vnode.state.currentSubView = vnode.attrs.currentSubView || "posts"
     vnode.state.aliases = []
 
     ssb.avatar(feed).then(data => {
@@ -147,12 +147,12 @@ const ProfileView = {
     }
 
     if (vnode.state.loadingAvatar || vnode.state.loadingAbout) {
-      return m(".container", [m(Spinner)])
+      return m(".p-4", [m(Spinner)])
     }
 
     if (vnode.state.showEditor) {
       return m(
-        ".container",
+        ".p-4",
         m(Editor, {
           feed,
           name,
@@ -186,13 +186,13 @@ const ProfileView = {
       )
     }
 
-    return m(".container", [
+    return m(".p-4", [
       m(
         ".flex",
         m(
           ".flex-1",
           m(
-            ".container.p-4",
+            ".container.pr-4",
             m("img.rounded-xl.object-contain.md:object-scale-down", {
               src: patchfox.httpUrl("/blobs/get/" + image),
               alt: feed,
