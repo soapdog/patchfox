@@ -76,6 +76,7 @@ patchfox.listen("package:go", (event, { pkg, view, data }) => {
   console.log(`going to ${pkg}.${view} with args`, data)
   goPackage({ pkg, view, data })
   m.redraw()
+  window.scrollTo(0,0)
 })
 
 patchfox.listen("package:save:state", (event, { pkg, view, data }) => {
