@@ -14,13 +14,12 @@ const PublicView = {
     }
   },
   view: (vnode) => {
-    console.log("hit")
     let limit = vnode.attrs.limit || false
 
     let opts = {}
     if (vnode.state.lt.length > 0) {
-      let lt = vnode.state.lt[vnode.state.lt.length - 1]
-      opts.lt = Number(lt)
+      let lt = Number(vnode.state.lt[vnode.state.lt.length - 1])
+      opts.lt = lt
       patchfox.title(timestamp(lt))
     }
 
