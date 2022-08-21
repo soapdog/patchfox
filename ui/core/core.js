@@ -31,9 +31,7 @@ const start = async () => {
     await ssb.loadCaches()
     
     require("../packages/packages.js")
-    
-    console.log("até aqui nos ajudou o Senhor...")
-    
+        
     return server.id
     
   } catch (n) {

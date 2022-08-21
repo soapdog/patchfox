@@ -196,8 +196,6 @@ const ChannelView = {
       ]),
     ]
 
-    console.log("lt", lt)
-
     return [
       header,
       isChannelFiltered(channel)
