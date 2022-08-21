@@ -3613,6 +3613,15 @@ html {
   padding-right: .75rem;
 }
 
+.menu-horizontal {
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.menu-horizontal :where(li) {
+  flex-direction: row;
+}
+
 .alert-success {
   --tw-bg-opacity: 1;
   --tw-bg-opacity: 0.1;
@@ -3635,6 +3644,11 @@ html {
   background-color: hsla(var(--er) / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
   color: hsla(var(--er) / var(--tw-text-opacity, 1));
+}
+
+.menu-horizontal :where(li.bordered>a),.menu-horizontal :where(li.bordered>button),.menu-horizontal :where(li.bordered>span) {
+  border-left-width: 0;
+  border-bottom-width: 4px;
 }
 
 .fixed {
@@ -3952,6 +3966,16 @@ html {
 
 .border-t-2 {
   border-top-width: 2px;
+}
+
+.bg-secondary {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--s) / var(--tw-bg-opacity));
+}
+
+.bg-secondary-content {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--sc) / var(--tw-bg-opacity));
 }
 
 .bg-accent {

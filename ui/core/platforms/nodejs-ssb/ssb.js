@@ -28,23 +28,8 @@ const system = require("./system.js")
 const friendship = require("./friendship.js")
 const pipelines = require("../common/pipelines.js")
 const { enqueue } = require("../common/queues.js")
-const {
-  resultFromCache,
-  getMsgCache,
-  setMsgCache,
-  setAvatarCache,
-  getCachedAvatar,
-  getAllCachedUsers,
-  loadCaches} = require("../common/cache.js")
-const {
-  setSharedFunctionsForFilters,
-  filterTypes,
-  filterLimit,
-  filterRemovePrivateMsgs,
-  filterFollowing,
-  filterWithUserFilters,
-  filterHasContent
-} = require("../common/filters.js")
+const { resultFromCache, getMsgCache, setMsgCache, setAvatarCache, getCachedAvatar, getAllCachedUsers, loadCaches } = require("../common/cache.js")
+const { setSharedFunctionsForFilters, filterTypes, filterLimit, filterRemovePrivateMsgs, filterFollowing, filterWithUserFilters, filterHasContent } = require("../common/filters.js")
 
 let sbot = false
 let getPref = () => false
@@ -103,12 +88,12 @@ class NodeJsSSB {
 
     setSharedFunctionsForFilters({
       getPref,
-      isMessageHidden
+      isMessageHidden,
     })
   }
 
   connect(keys, remote) {
-    let port = remote.match(/:([0-9]*)~/)[2] 
+    let port = remote.match(/:([0-9]*)~/)[2]
 
     if (!keys) {
       throw "no keys passed to ssb.connect()"
@@ -146,10 +131,8 @@ class NodeJsSSB {
               sbot.httpInviteClient = ssbHttpInviteClient.init(sbot)
 
               // hack: apparently `ssb-client` has no `hook()` in `sbot.close()`, so we no-op'd a polyfill.
-              sbot.close.hook = (data) => {
-                console.warn(
-                  "sbot.close is a no-op polyfill, doesn't actually work."
-                )
+              sbot.close.hook = data => {
+                console.warn("sbot.close is a no-op polyfill, doesn't actually work.")
               }
 
               console.log("you are", server.id)
@@ -161,15 +144,35 @@ class NodeJsSSB {
     })
   }
 
-  public(opts) {
-    return new Promise((resolve, reject) => {
-      opts = opts || {}
-      opts.reverse = opts.reverse || true
+  async public(opts) {
+    opts = opts || {}
+    opts.reverse = opts.reverse || true
 
-      const pipeline = pipelines.thread.get()
+    const pipeline = pipelines.thread.get()
+    const filter = opts.filter
+    let selectedFilter
+    let friends = await friendship.friendsAsArray(sbot.id)
+    friends.push(ssb.id) // so you don't filter yourself out.
 
+    switch (filter) {
+    case "Following":
+      selectedFilter = await this.socialFilter({following: true})
+      break
+    case "Friends":
+      selectedFilter = pull.filter(m => friends.includes(m.value.author))
+      break
+    default:
+      selectedFilter = await this.socialFilter()
+      break
+    }
+
+
+    delete opts.filter
+
+    const messages = new Promise((resolve, reject) => {
       pull(
         sbot.createFeedStream(opts),
+        selectedFilter,
         pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
@@ -180,6 +183,8 @@ class NodeJsSSB {
         })
       )
     })
+
+    return messages
   }
 
   thread(id) {
@@ -192,19 +197,16 @@ class NodeJsSSB {
         pull(
           sbot.backlinks && sbot.backlinks.read
             ? sbot.backlinks.read({
-              query: [
-                {
-                  $filter: {
-                    dest: id,
+                query: [
+                  {
+                    $filter: {
+                      dest: id,
+                    },
                   },
-                },
-              ],
-              reverse: true,
-            })
-            : pull(
-              sbot.links({ dest: id, values: true, rel: "root" }),
-              pull.unique("key")
-            ),
+                ],
+                reverse: true,
+              })
+            : pull(sbot.links({ dest: id, values: true, rel: "root" }), pull.unique("key")),
           pull.apply(pull, pipeline),
           pull.collect((err, msgs) => {
             if (err) reject(err)
@@ -219,7 +221,7 @@ class NodeJsSSB {
     return new Promise((resolve, reject) => {
       const pipeline = pipelines.thread.get()
 
-      const createBacklinkStream = (id) => {
+      const createBacklinkStream = id => {
         let filterQuery = {
           $filter: {
             dest: id,
@@ -258,7 +260,7 @@ class NodeJsSSB {
       let q = query.toLowerCase()
       let limit = parseInt(getPref("limit", 10))
       pull(
-        pull((sbot) => sbot.search.query({ q, limit })),
+        pull(sbot => sbot.search.query({ q, limit })),
         pull.apply(pull, pipeline),
         pull.collect((err, msgs) => {
           if (err) {
@@ -306,9 +308,8 @@ class NodeJsSSB {
     }
 
     return new Promise((resolve, reject) => {
-      cb({msg: null}, abortable) // just so that the caller has a copy from abortable from the start
+      cb({ msg: null }, abortable) // just so that the caller has a copy from abortable from the start
       if (sbot) {
-
         const pipeline = pipelines.thread.get()
 
         try {
@@ -319,9 +320,9 @@ class NodeJsSSB {
             pull.filter(matchesQuery),
             pull.apply(pull, pipeline),
             pull.drain(
-              (msg) => {
+              msg => {
                 if (!msg.sync) {
-                  cb({msg, abortable})
+                  cb({ msg, abortable })
                 }
               },
               () => resolve()
@@ -397,14 +398,11 @@ class NodeJsSSB {
         resolve(getMsgCache(id))
       }
       if (sbot.ooo) {
-        sbot.get(
-          { id: id, raw: true, ooo: false, private: true },
-          (err, data) => {
-            if (err) reject(err)
-            setMsgCache(id, data)
-            resolve(data)
-          }
-        )
+        sbot.get({ id: id, raw: true, ooo: false, private: true }, (err, data) => {
+          if (err) reject(err)
+          setMsgCache(id, data)
+          resolve(data)
+        })
       } else {
         if (!sbot.private) {
           // if no sbot.private, assume we have newer sbot that supports private:true
@@ -427,7 +425,7 @@ class NodeJsSSB {
     return new Promise((resolve, reject) => {
       pull(
         fileReader(file),
-        sbot.blobs.add(function(err, hash) {
+        sbot.blobs.add(function (err, hash) {
           // 'hash' is the hash-id of the blob
           if (err) {
             reject(err)
@@ -440,7 +438,7 @@ class NodeJsSSB {
   }
 
   async avatar(feed) {
-    const avatarPromise = (key) => {
+    const avatarPromise = key => {
       return new Promise((resolve, reject) => {
         ssbAvatar(sbot, sbot.id, key, function (err, data) {
           if (err) {
@@ -454,7 +452,7 @@ class NodeJsSSB {
       })
     }
 
-    const getAvatarAux = async (feed) => {
+    const getAvatarAux = async feed => {
       let avatar = await avatarPromise(feed)
       // await this.setAvatarCache(feed, avatar)
       setAvatarCache(feed, avatar)
@@ -488,9 +486,7 @@ class NodeJsSSB {
       }
 
       // if (data.content.type == "post") {
-      retVal =
-        this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) +
-        "..."
+      retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
       // }
       return retVal
     } catch (n) {
@@ -511,7 +507,7 @@ class NodeJsSSB {
   markdown(text, removePara = false) {
     let cs = queryString.parse(location.search)
     let identity = ""
-    
+
     if (cs.identity) {
       identity = `&identity=${encodeURIComponent(cs.identity)}`
     }
@@ -541,39 +537,23 @@ class NodeJsSSB {
     }
 
     function replaceImageLinks(match, id, offset, string) {
-      return (
-        `<a class="link  link-accent image-link" target="_blank" href="${patchfox.httpUrl(
-          "/blobs/get/&"
-        )}` + encodeURIComponent(id)
-      )
+      return `<a class="link  link-accent image-link" target="_blank" href="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
     }
 
     function replaceImages(match, id, offset, string) {
-      return (
-        `<img class="is-image-from-blob" src="${patchfox.httpUrl(
-          "/blobs/get/&"
-        )}` + encodeURIComponent(id)
-      )
+      return `<img class="is-image-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
     }
 
     function replaceVideos(match, id, offset, string) {
-      return (
-        `<video controls class="is-video-from-blob" src="${patchfox.httpUrl(
-          "/blobs/get/&"
-        )}` + encodeURIComponent(id)
-      )
+      return `<video controls class="is-video-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
     }
 
     function replaceAudios(match, id, offset, string) {
-      return (
-        `<audio controls class="is-audio-from-blob" src="${patchfox.httpUrl(
-          "/blobs/get/&"
-        )}` + encodeURIComponent(id)
-      )
+      return `<audio controls class="is-audio-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
     }
 
     let opts = {
-      toUrl: (ref) => {
+      toUrl: ref => {
         return ref
       },
     }
@@ -591,9 +571,7 @@ class NodeJsSSB {
       .replace(/<a href="([^"]*)/gi, replaceLinks)
 
     if (removePara) {
-      html = html
-        .replace(/<p>/gi,"")
-        .replace(/<\/p>/gi,"")
+      html = html.replace(/<p>/gi, "").replace(/<\/p>/gi, "")
     }
 
     return html
@@ -638,21 +616,10 @@ class NodeJsSSB {
     return new Promise((resolve, reject) => {
       let msgToPost = { type: "post", text: data.text }
 
-      const commonFields = [
-        "root",
-        "branch",
-        "channel",
-        "fork",
-        "contentWarning",
-      ]
+      const commonFields = ["root", "branch", "channel", "fork", "contentWarning"]
 
-      commonFields.forEach((f) => {
-        if (
-          typeof data[f] !== "undefined" &&
-          data[f] !== false &&
-          data[f] !== null &&
-          data[f].length > 0
-        ) {
+      commonFields.forEach(f => {
+        if (typeof data[f] !== "undefined" && data[f] !== false && data[f] !== null && data[f].length > 0) {
           msgToPost[f] = data[f]
         }
       })
@@ -664,7 +631,7 @@ class NodeJsSSB {
         msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
       }
 
-      msgToPost.mentions = msgToPost.mentions.filter((n) => n) // prevent null elements...
+      msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
 
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
@@ -685,21 +652,10 @@ class NodeJsSSB {
       let msgToPost = { type: "blog" }
       let blogContent = data.content
 
-      const commonFields = [
-        "channel",
-        "contentWarning",
-        "thumbnail",
-        "title",
-        "summary",
-      ]
+      const commonFields = ["channel", "contentWarning", "thumbnail", "title", "summary"]
 
-      commonFields.forEach((f) => {
-        if (
-          typeof data[f] !== "undefined" &&
-          data[f] !== null &&
-          data[f] !== false &&
-          data[f].length > 0
-        ) {
+      commonFields.forEach(f => {
+        if (typeof data[f] !== "undefined" && data[f] !== null && data[f] !== false && data[f].length > 0) {
           msgToPost[f] = data[f]
         }
       })
@@ -711,7 +667,7 @@ class NodeJsSSB {
         msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
       }
 
-      msgToPost.mentions = msgToPost.mentions.filter((n) => n) // prevent null elements...
+      msgToPost.mentions = msgToPost.mentions.filter(n => n) // prevent null elements...
 
       if (sbot) {
         pull(
@@ -903,7 +859,7 @@ class NodeJsSSB {
             reverse: true,
           }),
           // TODO: generalize this into a new pluggable filter.
-          pull.filter((msg) => {
+          pull.filter(msg => {
             let res = true
             if (opts.rootsOnly) {
               if (msg && msg.value && msg.value.content) {
@@ -1351,8 +1307,7 @@ class NodeJsSSB {
       meta: true,
     }
 
-    const configure = (...customOptions) =>
-      Object.assign({}, defaultOptions, ...customOptions)
+    const configure = (...customOptions) => Object.assign({}, defaultOptions, ...customOptions)
 
     const source = sbot.query.read(
       configure({
@@ -1378,13 +1333,8 @@ class NodeJsSSB {
       pull(
         source,
         // this.filterPublicOnly, // <-- filter declared on top with other filters
-        pull.filter((msg) => {
-          return (
-            typeof msg.value.content === "object" &&
-            typeof msg.value.content.vote === "object" &&
-            typeof msg.value.content.vote.link === "string" &&
-            typeof msg.value.content.vote.value === "number"
-          )
+        pull.filter(msg => {
+          return typeof msg.value.content === "object" && typeof msg.value.content.vote === "object" && typeof msg.value.content.vote.link === "string" && typeof msg.value.content.vote.value === "number"
         }),
         pull.reduce(
           (acc, cur) => {
@@ -1411,25 +1361,22 @@ class NodeJsSSB {
             // stream much slower than it needs to be. Also, we should probably
             // be indexing these rather than building the stream on refresh.
 
-            const adjustedObj = Object.entries(obj).reduce(
-              (acc, [author, values]) => {
-                if (author === myFeedId) {
-                  return acc
-                }
-
-                const entries = Object.entries(values)
-                const total = 1 + Math.log(entries.length)
-
-                entries.forEach(([link, value]) => {
-                  if (acc[link] == null) {
-                    acc[link] = 0
-                  }
-                  acc[link] += value / total
-                })
+            const adjustedObj = Object.entries(obj).reduce((acc, [author, values]) => {
+              if (author === myFeedId) {
                 return acc
-              },
-              []
-            )
+              }
+
+              const entries = Object.entries(values)
+              const total = 1 + Math.log(entries.length)
+
+              entries.forEach(([link, value]) => {
+                if (acc[link] == null) {
+                  acc[link] = 0
+                }
+                acc[link] += value / total
+              })
+              return acc
+            }, [])
 
             const arr = Object.entries(adjustedObj)
             const length = arr.length
@@ -1445,7 +1392,7 @@ class NodeJsSSB {
                   const msg = await this.get(key)
                   const data = { key: key, value: msg }
                   cb(null, data)
-                }catch(n){
+                } catch (n) {
                   // something bad happened.
                   console.log(key)
                   console.error(`error getting msg`, n)
@@ -1458,9 +1405,7 @@ class NodeJsSSB {
                 if (err) {
                   reject(err)
                 } else {
-                  resolve(
-                    collectedMessages.slice(Number(getPref("limit", 10) * -1))
-                  )
+                  resolve(collectedMessages.slice(Number(getPref("limit", 10) * -1)))
                 }
               })
             )
@@ -1473,6 +1418,17 @@ class NodeJsSSB {
   }
 
   /**
+   * Copied from Oasis.
+   * URL: https://github.com/planetary-social/oasis/blob/master/src/models.js
+   *
+   * (The things I steal from oasis...)
+   * 
+   * NOTE: 
+   * - This kinda impacts the speed of the public feed view a lot.
+   * 
+   * Original comment below:
+   * ----------------------------------------------------------------------------
+   * 
    * Returns a function that filters messages based on who published the message.
    *
    * `null` means we don't care, `true` means it must be true, and `false` means
@@ -1492,11 +1448,11 @@ class NodeJsSSB {
           console.error(err)
           reject(err)
         }
-        console.log("graph", graph)
+        // console.log("graph", graph)
         resolve(graph[id] || {})
       })
     })
-    console.log("r", relationshipObject)
+    // console.log("r", relationshipObject)
 
     const followingList = Object.entries(relationshipObject)
       .filter(([, val]) => val >= 0)
@@ -1506,19 +1462,14 @@ class NodeJsSSB {
       .filter(([, val]) => val === -1)
       .map(([key]) => key)
 
-    return pull.filter((message) => {
+    return pull.filter(message => {
       if (!message?.value) {
         return false
       }
       if (message.value.author === id) {
         return me !== false
       } else {
-        return (
-          (following === null ||
-            followingList.includes(message.value.author) === following) &&
-          (blocking === null ||
-            blockingList.includes(message.value.author) === blocking)
-        )
+        return (following === null || followingList.includes(message.value.author) === following) && (blocking === null || blockingList.includes(message.value.author) === blocking)
       }
     })
   }
@@ -1535,7 +1486,7 @@ class NodeJsSSB {
         return cachedResult
       }
 
-      const voteQuery = async (msg) => {
+      const voteQuery = async msg => {
         const filterQuery = {
           $filter: {
             dest: msg.key,
@@ -1560,12 +1511,7 @@ class NodeJsSSB {
           rawVotes = await new Promise((resolve, reject) => {
             pull(
               referenceStream,
-              pull.filter(
-                (ref) =>
-                  typeof ref.value.content.vote.value === "number" &&
-                  ref.value.content.vote.value >= 0 &&
-                  ref.value.content.vote.link === msg.key
-              ),
+              pull.filter(ref => typeof ref.value.content.vote.value === "number" && ref.value.content.vote.value >= 0 && ref.value.content.vote.link === msg.key),
               pull.collect((err, collectedMessages) => {
                 if (err) {
                   console.error("err", err)
@@ -1600,24 +1546,24 @@ class NodeJsSSB {
 
       voteQuery(msg).then(votes => resolve(votes))
 
-    //   enqueue(
-    //     "votes",
-    //     msg.key,
-    //     10,
-    //     async function work() {
-    //       let res = await voteQuery(msg)
-    //       return res
-    //     },
-    //     function callback(votes) {
-    //       resolve(votes)
-    //     }
-    //   )
+      //   enqueue(
+      //     "votes",
+      //     msg.key,
+      //     10,
+      //     async function work() {
+      //       let res = await voteQuery(msg)
+      //       return res
+      //     },
+      //     function callback(votes) {
+      //       resolve(votes)
+      //     }
+      //   )
     })
   }
 
   transform() {
     console.log("transform...")
-    const aux = async (msg) => {
+    const aux = async msg => {
       if (msg == null) {
         return msg
       }
@@ -1641,15 +1587,7 @@ class NodeJsSSB {
         rawVotes = await new Promise((resolve, reject) => {
           pull(
             referenceStream,
-            pull.filter(
-              (ref) =>
-                typeof ref.value.content !== "string" &&
-                ref.value.content.type === "vote" &&
-                ref.value.content.vote &&
-                typeof ref.value.content.vote.value === "number" &&
-                ref.value.content.vote.value >= 0 &&
-                ref.value.content.vote.link === msg.key
-            ),
+            pull.filter(ref => typeof ref.value.content !== "string" && ref.value.content.type === "vote" && ref.value.content.vote && typeof ref.value.content.vote.value === "number" && ref.value.content.vote.value >= 0 && ref.value.content.vote.link === msg.key),
             pull.collect((err, collectedMessages) => {
               if (err) {
                 console.error("err", err)
@@ -1679,9 +1617,7 @@ class NodeJsSSB {
         .filter(([, value]) => value === 1)
         .map(([key]) => key)
 
-      const isPost =
-        _.get(msg, "value.content.type") === "post" &&
-        _.get(msg, "value.content.text") != null
+      const isPost = _.get(msg, "value.content.type") === "post" && _.get(msg, "value.content.text") != null
       const hasRoot = _.get(msg, "value.content.root") != null
       const hasFork = _.get(msg, "value.content.fork") != null
 
@@ -1703,8 +1639,8 @@ class NodeJsSSB {
 
     return pullParallelMap((msg, cb) => {
       aux(msg)
-        .then((data) => cb(null, data))
-        .catch((err) => cb(err, null))
+        .then(data => cb(null, data))
+        .catch(err => cb(err, null))
     })
   }
 }
