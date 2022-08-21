@@ -24,6 +24,8 @@ const PublicView = {
       let lt = Number(vnode.state.lt[vnode.state.lt.length - 1])
       opts.lt = lt
       patchfox.title(timestamp(lt))
+    } else {
+      patchfox.title()
     }
 
     if (vnode.state.shouldLoadMessages == true) {
@@ -62,12 +64,14 @@ const PublicView = {
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
       patchfox.addHistory("hub", "public", { lt: vnode.state.lt[vnode.state.lt.length - 1] })
+      window.scrollTo(0,0)
     }
 
     const goPrevious = () => {
       vnode.state.msgs = []
       vnode.state.shouldLoadMessages = true
       vnode.state.lt.pop()
+      window.scrollTo(0,0)
     }
 
     if (vnode.state.shouldLoadMessages) {
