@@ -152,7 +152,7 @@ class NodeJsSSB {
     const filter = opts.filter
     let selectedFilter
     let friends = await friendship.friendsAsArray(sbot.id)
-    friends.push(ssb.id) // so you don't filter yourself out.
+    friends.push(sbot.id) // so you don't filter yourself out.
 
     switch (filter) {
     case "Following":
