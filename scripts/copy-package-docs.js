@@ -32,13 +32,13 @@ These are the packages that Patchfox is loading.
 `,)
 
   paths = paths.sort((p1, p2) => {
-    let n1 = p1.split("/")[4]
-    let n2 = p2.split("/")[4]
+    let n1 = p1.split("/")[3]
+    let n2 = p2.split("/")[3]
     return n1.localeCompare(n2)
   })
 
   paths.forEach(source => {
-    let elems = source.split("/");
+    let elems = source.split("/")
     let destination = `${packageDocumentationRootPath}/${elems[2]}/${elems[4]}`
     let destinationfolder = path.dirname(destination)
     let packageName = elems[2]
