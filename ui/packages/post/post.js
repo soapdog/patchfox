@@ -25,14 +25,9 @@ patchfox.package({
             pkg: "post",
             view: "compose"
           }
-        }
-      ]
-    },
-    {
-      group: "Compose",
-      items: [
+        },
         {
-          label: "New Post in New Window",
+          label: "New Post in a New Window",
           event: "package:open",
           shortcut: "CmdOrCtrl+Alt+N",
           data: {

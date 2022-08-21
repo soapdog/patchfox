@@ -347,7 +347,6 @@ const PostCompose = {
           value: vnode.state.channel,
           onchange: ev => {
             vnode.state.channel = ev.target.value
-            m.redraw()
           },
         }),
       ])

@@ -4060,6 +4060,10 @@ html {
   line-height: 2.25rem;
 }
 
+.font-thin {
+  font-weight: 100;
+}
+
 .font-extralight {
   font-weight: 200;
 }
