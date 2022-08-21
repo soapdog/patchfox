@@ -20,9 +20,12 @@ const PostCard = {
       "prefs:changed:textSize",
       (newSize) => (vnode.state.textSize = newSize)
     )
+
+    vnode.state.key = Date.now()
   },
   view: (vnode) => {
     let msg = vnode.attrs.msg
+    let key = vnode.state.key
     let content = ssb.markdown(msg.value.content.text)
     let showRaw = false
     let hasContentWarning = msg.value.content.contentWarning || false
@@ -43,6 +46,7 @@ const PostCard = {
           .then(() => {
             console.log("liked", msg.key)
             vnode.state.liked = true
+            vnode.state.key = Date.now()
             m.redraw()
           })
           .catch(() => (vnode.state.liked = false))
@@ -52,11 +56,11 @@ const PostCard = {
           .then(() => {
             console.log("unliked", msg.key)
             vnode.state.liked = false
+            vnode.state.key = Date.now()
             m.redraw()
           })
           .catch(() => (vnode.state.liked = true))
       }
-      msg = msg
     }
 
     const reply = (ev) => {
@@ -104,6 +108,7 @@ const PostCard = {
       m("div.flex.align-middle", [
         m(
           ".form-control.flex-1",
+          {key: 1},
           m("label.cursor-pointer.label", [
             m("span.label-text.mr-2", "Like"),
             m("input.toggle", {
@@ -113,7 +118,7 @@ const PostCard = {
             }),
           ])
         ),
-        m(VoteCounter, { msg }),
+        m(VoteCounter, {key, msg }),
       ]),
       m("div.flex-1"),
       when(
