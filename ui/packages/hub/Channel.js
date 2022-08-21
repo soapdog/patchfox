@@ -158,6 +158,7 @@ const ChannelView = {
             m("span.label-text.px-2", "Subscribe"),
             m("input.toggle", {
               type: "checkbox",
+              checked: vnode.state.subscribed,
               onchange: subscriptionChanged,
             }),
           ])
