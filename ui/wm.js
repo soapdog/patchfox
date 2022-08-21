@@ -8,6 +8,7 @@ let useShortColumn = true
 let currentView = false
 let currentPackage = false
 let args = {}
+let key = Date.now()
 
 patchfox.listen("package:changed", (event, data) => {
   console.log(`package changed to "${data.packageToOpen.name}.${data.view}"`)
@@ -72,9 +73,10 @@ patchfox.listen("package:go", (event, { pkg, view, data }) => {
     state.identity = cs.identity
   }
   let qs = queryString.stringify(state)
-  history.pushState({ pkg, view, data }, "", path.join(__dirname, `index.html?${qs}`))
+  history.pushState({ pkg, view, data }, "", path.join(process.cwd(), `/ui/index.html?${qs}`))
   console.log(`going to ${pkg}.${view} with args`, data)
   goPackage({ pkg, view, data })
+  key = Date.now()
   m.redraw()
   window.scrollTo(0,0)
 })
@@ -111,8 +113,8 @@ const Wm = {
         // system packages
         ...systemPackages.map(pkg => m(pkg.view)),
         // app package or current package
-        currentPackage?.app ? m(".container.wm-current-app-container.container.mx-auto", m(currentView, {...args})) :
-          m(".wm-current-package-container.p-2", m(".wm-current-package", m(currentView, {...args}))),
+        currentPackage?.app ? m(".container.wm-current-app-container.container.mx-auto", m(currentView, {key, ...args})) :
+          m(".wm-current-package-container.p-2", m(".wm-current-package", m(currentView, {key, ...args}))),
         m("div", {style: {height: "40px"}})
       ])
     )
