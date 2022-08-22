@@ -8,6 +8,8 @@ const queryString = require("query-string")
 let windows = new Set()
 let sbot = null
 
+console.log("app path", app.getAppPath())
+
 const createWindow = (data = false, windowState = false) => {
   let win
 
@@ -60,13 +62,13 @@ const createWindow = (data = false, windowState = false) => {
   } else if (data?.pkg) {
     let state = { pkg: data.pkg, view: data.view, ...data }
     let qs = queryString.stringify(state)
-    win.loadURL(`file://${process.cwd()}/ui/index.html?${qs}`)
+    win.loadURL(`file://${__dirname}/ui/index.html?${qs}`)
   } else {
-    win.loadURL(`file://${process.cwd()}/ui/index.html`)
+    win.loadURL(`file://${__dirname}/ui/index.html`)
   }
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 
   win.webContents.setWindowOpenHandler(details => {
     if (details.url.startsWith("file:")) {
