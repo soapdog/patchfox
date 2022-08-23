@@ -25,10 +25,10 @@ const MessageRaw = {
       m("column.col-3", [
         m(
           "p",
-          `
+          m.trust(`
           This is a message of type
           <em>${type}</em>.
-          `
+          `)
         ),
         m(
           "p",
