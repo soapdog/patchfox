@@ -1,40 +1,32 @@
 # Patchfox :id=readme
-This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension. This is a new client for [Secure Scuttlebutt](http://scuttlebutt.nz) packaged as a Web Extension for Firefox. It is available on:
+This is a client for [Secure Scuttlebutt](http://scuttlebutt.nz). It is available on:
 
-* [Firefox Add-ons Portal](https://addons.mozilla.org/en-US/firefox/addon/patchfox/)
-* [Chrome Web Store](https://chrome.google.com/webstore/detail/patchfox/ocanekmedfooidiahhelofknmpobdmdp?hl=en-GB&authuser=0)
+* [Patchfox website](https://patchfox.org)
+* [Github release pages](https://github.com/soapdog/patchfox/releases)
 
-So if you just want to run it, that's the easiest way. Read on if you want to develop with it. Read on if you want to develop with it.
+## Requirements for development
 
-## Requirements
-
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (needed so that you can sideload unsigned add-ons)
-* [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or even have another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) running and providing a running _sbot_. 
-
+* [NodeJS](https://nodejs.org)
 
 ## Setup & Building
 
-Patchfox uses [Svelte](https://svelte.technology) and requires [NodeJS](https://nodejs.org) for development. After you have NodeJS installed, you can install the dependencies with:
+Patchfox uses [Mithril](https://mithril.js.org), [Electron](https://electronjs.org) and requires [NodeJS](https://nodejs.org) for development. After you have NodeJS installed, you can install the dependencies with:
 
 ```
 $ npm install
 ```
 
-And build the add-on with:
+And run a development version of the app using:
 
 ```
-$ npm run clean-build
+$ npm run start
 ```
 
-If you want to develop with a watcher that rebuilds the add-on when file changes use:
+To build use:
 
 ```
-$ npm run clean-dev
+$ npm run build
 ```
-
-## Running
-
-Go to [about:debugging](about:debugging) on Firefox, select `this firefox` and click to add a temporary add-on. Select the `manifest.json` file from the `dist/` folder from this repository.
 
 ## Setup inside Patchfox
 
@@ -52,9 +44,6 @@ After installing and configuring patchfox, try browsing to:
 
 If you're interested in learning more about the technologies behind this add-on, check out:
 
-* [MDN Web Docs - WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/).
-* [Native Messaging API](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging)
-* [Native Messaging setup](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging#Setup)
 * [Secure Scuttlebutt Protocol Guide](https://ssbc.github.io/scuttlebutt-protocol-guide/)
 
 Don't hesitate to reach out to me at:
@@ -62,10 +51,6 @@ Don't hesitate to reach out to me at:
 * Scuttlebutt: `@gaQw6z30GpfsW9k8V5ED4pHrg8zmrqku24zTSAINhRg=.ed25519`
 * Mastodon: [@soapdog@toot.cafe](https://toot.cafe/@soapdog)
 * Twitter: [@soapdog](http://twitter.com/soapdog/)
-
-# Privacy Policy
-
-This add-on is a client for a decentralization platform called Secure Scuttlebutt. As a social platform it is up to the user to post data that will be made available to the larger network. This add-on doesn't initiate any content sharing on its own. All data shared is initiated by the user and requires confirmation before posting.
 
 # Sponsorship
 
@@ -81,6 +66,12 @@ Patchfox is using artwork by many artists including:
 * Art made by Angelica. 
 
 * Some icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.
+
+* Artwork for the 2020.2.1 release poster was done by: Photo by Krista Stucchio on Unsplash
+
+# Dependencies Licenses
+
+Check [licenses.html](licenses.html)
 
 # Original SSBC-GRANTS proposal
 
