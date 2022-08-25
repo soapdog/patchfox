@@ -9,10 +9,8 @@ That is very true for Patchfox, which [has been through multiple rewrites](ssb:m
 The driving ideas behind Patchfox are:
 
 * Everything is a package
-  * Make most of them removable
-  * Make it easy to add new ones
-* Leverage the browser
-  * Make a new SSB experience that complements and is enriched by being inside a browser
+  * Most of them are removable or replaceable
+  * It easy to add new ones
 
 > I've [posted about packages](ssb:message/sha256/cprDZ3UErP1A-3ttNCtKdiLmMyyF3l767TTru-DtaQ8=) in SSB. That thread is a good glimpse of how my mind works and how this little garden called Patchfox has been built.
 

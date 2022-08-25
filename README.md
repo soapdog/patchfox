@@ -38,9 +38,7 @@ $ npm run build
 
 ## Setup inside Patchfox
 
-Once patchfox is running, it needs to learn your _remote_ and _secret_, you can just click the "browse" button on the setup screen and select your `.ssb/secret` file. Patchfox will use the data inside your secret file to derive your remote address. Remember to click save. 
-
-After saving Patchfox will then try loading your public feed. You need to have a running _sbot_ for it to work.
+Patchfox will use your default SSB data folder if available (the `.ssb` folder inside your home folder). If this is your first time using SSB, Patchfox will create that folder for you and place new keys inside.
 
 # Testing the protocol schemas
 

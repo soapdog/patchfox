@@ -126,6 +126,7 @@
     "ssb-onion": "^1.0.0",
     "ssb-ooo": "^1.3.3",
     "ssb-plugins": "^1.0.4",
+    "ssb-private": "^1.1.0",
     "ssb-private1": "^1.0.1",
     "ssb-query": "^2.4.5",
     "ssb-replicate": "^1.3.3",

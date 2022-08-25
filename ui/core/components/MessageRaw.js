@@ -25,16 +25,17 @@ const MessageRaw = {
       m("column.col-3", [
         m(
           "p",
-          `
+          m.trust(`
           This is a message of type
           <em>${type}</em>.
-          `
+          `)
         ),
         m(
           "p",
           m.trust(`
           To learn more about it, go to
-          <a class="link link-accent" target="_blank" href="/docs/index.html#/message_types/${type}">
+          <a class="link link-accent" target="_blank" href="
+          ${patchfox.docsUrl("/message_types/" + type)}">
             the documentation about messages with type ${type}
           </a>.
           `)
@@ -46,7 +47,7 @@ const MessageRaw = {
             m.trust(`
             <p>
               This message is being handled by the <b class="capitalize">${pkg.name} Package</b>.
-              <a class="link link-accent" target="_blank" href="/docs/index.html#/packages/${pkg.name}/">
+              <a class="link link-accent" target="_blank" href="${patchfox.docsUrl("/packages/" + pkg.name)}/">
                 Click here to check more about it.
               </a>
             </p>
@@ -54,12 +55,12 @@ const MessageRaw = {
             
             <ul>
               <li>
-                <a class="link" target="_blank" href="https://github.com/soapdog/patchfox/blob/master/src/packages/${pkg.name}/">
+                <a class="link" target="_blank" href="https://github.com/soapdog/patchfox/blob/master/src/ui/packages/${pkg.name}/">
                   See source for <b>${pkg.name} package</b> at GitHub.
                 </a>
               </li>
               <li>
-                <a class="link" target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${pkg.name}/">
+                <a class="link" target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/ui/src/packages/${pkg.name}/">
                   See source for <b>${pkg.name} package</b> at SourceHut.
                 </a>
               </li>

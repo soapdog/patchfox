@@ -4,7 +4,7 @@
 
 # Patchfox
 
-> A client for [Secure Scuttlebutt](https://scuttlebutt.nz) as a Firefox WebExtension.
+> A quirky client for [Secure Scuttlebutt](https://scuttlebutt.nz).
 
 - Simple and lightweight 
 

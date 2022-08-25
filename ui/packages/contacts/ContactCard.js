@@ -9,14 +9,14 @@ const ContactCard = {
     vnode.state.otherPersonName = vnode.state.otherPersonFeed
 
     ssb.avatar(msg.value.author).then((data) => {
-      vnode.state.person = data.name
+      vnode.state.person = data.name ?? data.key
       m.redraw()
     })
 
     ssb
       .avatar(msg.value.content.contact)
       .then((data) => {
-        vnode.state.otherPersonName = data.name
+        vnode.state.otherPersonName = data.name ?? data.key
         m.redraw()
       })
       .catch((n) => console.log(n))

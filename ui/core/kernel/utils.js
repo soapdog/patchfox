@@ -16,7 +16,7 @@ const blobUrl = (file) => {
 }
 
 const docsUrl = (page = "") => {
-  return path.join(__dirname, `../../../docs/index.html#${page}`)
+  return `file://${__dirname}/../../../docs/index.html#${page}`
 }
 
 const title = Stream()

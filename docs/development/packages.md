@@ -8,7 +8,7 @@ Below is an excerpt from [this message](ssb:message/sha256/hYLSp_zPkvUj2f3DMk9vz
 
 Many SSB apps are developed as monoliths with tight interdependence between their various parts and features. There is nothing wrong with that, and it's a reasonable way of developing a cohesive application. Patchfox has been through many rewrites (and it probably needs a couple more) but the current version has coalesced into something that resembles an application platform.
 
-There is a [_core_](https://github.com/soapdog/patchfox/tree/master/src/core) which provides the necessary WebExtension features, the shared components, and the platforms. Patchfox is designed in a way that makes it possible to plug in additional platforms such as Hyper or IPFS in the future.
+There is a [_core_](https://github.com/soapdog/patchfox/tree/master/src/core) which provides the necessary core features upon which the rest of Patchfox is built. Inside them you'll find the shared components and the platforms. Patchfox is designed in a way that makes it possible to plug in additional platforms such as Hyper or IPFS in the future.
 
 These resources from `core` do not provide features for the user. All they do is create a blank slate on which miniature applications can coexist and avoid interfering with each other.
 
@@ -20,7 +20,7 @@ Everything in Patchfox is provided by a package.
 
 ![Patchfox main sourcetree](d-patchfox-sourcetree.png)
 
-As can be seen on the above screenshot, Patchfox's main source tree is divided between the _core_ and _packages_. A file called [`package.js`](https://github.com/soapdog/patchfox/blob/master/src/packages/packages.js) dictates which packages are loaded. By changing this file, you can customize the features you need, and how the user's experience should be.
+As can be seen on the above screenshot, Patchfox's main source tree is divided between the _core_ and _packages_. A file called [`package.js`](https://github.com/soapdog/patchfox/blob/master/src/ui/packages/packages.js) dictates which packages are loaded. By changing this file, you can customize the features you need, and how the user's experience should be.
 
 ## Looking closer into some packages
 
@@ -32,7 +32,7 @@ In the screenshot below, the _hub feature_ (highlighted in red) provides the _fe
 
 ![screenshot showing the menus from hub package](d-hub-package.png)
 
-Zooming into the [hub](https://github.com/soapdog/patchfox/tree/master/src/packages/hub) package folder, we can quickly see that it is providing some feed views: mentions, popular, public, thread, and channel. It also provides a `channelCard` which is a specialised view that can appear inside any feed browser. So when you're browsing SSB and see a line saying _This person subscribed to channel whatever._, that is from the `channelCard`.
+Zooming into the [hub](https://github.com/soapdog/patchfox/tree/master/src/ui/packages/hub) package folder, we can quickly see that it is providing some feed views: mentions, popular, public, thread, and channel. It also provides a `channelCard` which is a specialised view that can appear inside any feed browser. So when you're browsing SSB and see a line saying _This person subscribed to channel whatever._, that is from the `channelCard`.
 
 ![hub package folder screenshot](d-hub-source.png)
 

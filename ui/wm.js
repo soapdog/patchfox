@@ -73,7 +73,7 @@ patchfox.listen("package:go", (event, { pkg, view, data }) => {
     state.identity = cs.identity
   }
   let qs = queryString.stringify(state)
-  history.pushState({ pkg, view, data }, "", path.join(process.cwd(), `/ui/index.html?${qs}`))
+  history.pushState({ pkg, view, data }, "", path.join(__dirname, `/index.html?${qs}`))
   console.log(`going to ${pkg}.${view} with args`, data)
   goPackage({ pkg, view, data })
   key = Date.now()

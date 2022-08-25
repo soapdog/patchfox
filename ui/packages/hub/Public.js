@@ -4,7 +4,7 @@ const timestamp = require("../../core/components/timestamp.js")
 
 const PublicView = {
   oninit: vnode => {
-    vnode.state.shouldLoadMessages = true
+    vnode.state.loadingPhase = "load"
     vnode.state.msgs = []
     vnode.state.rootsOnly = false
     vnode.state.lt = []
@@ -29,20 +29,21 @@ const PublicView = {
       patchfox.title("")
     }
 
-    if (vnode.state.shouldLoadMessages == true) {
-      console.time("public")
+    if (vnode.state.loadingPhase == "load") {
+      vnode.state.loadingPhase = "loading"
+      console.time("public timeline")
       ssb
         .public(opts)
         .then(ms => {
-          console.log("msgs", ms)
-          console.timeEnd("public")
+          console.timeEnd("public timeline")
           vnode.state.msgs = ms
           window.scrollTo(0, 0)
-          vnode.state.shouldLoadMessages = false
+          vnode.state.loadingPhase = "loaded"
           m.redraw()
         })
         .catch(n => {
-          throw n
+          vnode.state.loadingPhase = "error"
+          m.redraw()
         })
     }
 
@@ -58,7 +59,7 @@ const PublicView = {
               vnode.state.filter = label
               vnode.state.msgs = []
               vnode.state.lt = []
-              vnode.state.shouldLoadMessages = true
+              vnode.state.loadingPhase = "load"
             },
           },
           label
@@ -66,28 +67,35 @@ const PublicView = {
       )
     }
 
-    const header = m(".navbar.mb-2.text-base-content", [m(".navbar-start", m("ul.menu.menu-horizontal.bg-secondary.bg-secondary-content", [makeFilterButton("All"), makeFilterButton("Friends"), makeFilterButton("Following")]))])
+    const header = m(".navbar.mb-2.text-base-content", [
+      m(".navbar-start", 
+      m("ul.menu.menu-horizontal.bg-secondary.bg-secondary-content", [
+        makeFilterButton("All"), 
+        makeFilterButton("Friends"), 
+        makeFilterButton("Following")
+      ]))
+    ])
 
     const goNext = () => {
       vnode.state.lt.push(vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp)
       vnode.state.msgs = []
-      vnode.state.shouldLoadMessages = true
+      vnode.state.loadingPhase = "load"
       patchfox.addHistory("hub", "public", { lt: vnode.state.lt[vnode.state.lt.length - 1] })
       window.scrollTo(0, 0)
     }
 
     const goPrevious = () => {
       vnode.state.msgs = []
-      vnode.state.shouldLoadMessages = true
+      vnode.state.loadingPhase = "load"
       vnode.state.lt.pop()
       window.scrollTo(0, 0)
     }
-
-    if (vnode.state.shouldLoadMessages) {
+    
+    if (vnode.state.loadingPhase == "loading") {
       return m(".flex.justify-center", m("i.fas.fa-spinner.fa-3x.fa-spin"))
     }
 
-    if (!vnode.state.shouldLoadMessages && vnode.state.msgs.length > 0) {
+    if (vnode.state.loadingPhase == "loaded" && vnode.state.msgs.length > 0) {
       return [
         header, 
         ...vnode.state.msgs.map(msg => m(MessageRenderer, { msg })), 

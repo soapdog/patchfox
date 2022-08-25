@@ -32,9 +32,9 @@ const LauncherView = {
     let packageKeys = []
 
     const iconForPackage = (pkg) => {
-      let icon = "assets/images/package.svg"
+      let icon = `${__dirname}/../../assets/images/package.svg`
       if (patchfox.packages[pkg].icon) {
-        icon = `packages/${pkg}/assets/${patchfox.packages[pkg].icon}`
+        icon = `${__dirname}/../${pkg}/assets/${patchfox.packages[pkg].icon}`
       }
       return icon
     }
@@ -176,11 +176,11 @@ const LauncherView = {
                 target: "_blank"
               }, `View documentation for package ${vnode.state.selectedPackage}`)),
               m("li", m("a.link.link-primary", {
-                href:`https://github.com/soapdog/patchfox/tree/master/src/packages/${vnode.state.selectedPackage}`,
+                href:`https://github.com/soapdog/patchfox/tree/master/src/ui/packages/${vnode.state.selectedPackage}`,
                 target: "_blank",
               }, `View source-code for package ${vnode.state.selectedPackage} on GitHub`)),
               m("li", m("a.link.link-primary", {
-                href:`https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${vnode.state.selectedPackage}`,
+                href:`https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/ui/packages/${vnode.state.selectedPackage}`,
                 target: "_blank",
               }, `View source-code for package ${vnode.state.selectedPackage} on SourceHut.`))
             ])

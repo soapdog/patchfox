@@ -33,8 +33,23 @@ const countPeers = (vnode) => {
     .getPeers()
     .then(data => {
       vnode.state.peers = data
+      
+      let peerObj = {}
+      
+      data.forEach((arr) => {
+        let key = arr[1]?.type || arr[1]?.inferredType || "unknown"
+        if (!peerObj.hasOwnProperty(key)) {
+          peerObj[key] = 1
+        } else {
+          peerObj[key] += 1
+        }
+      })
+      
+      let str = Object.keys(peerObj).map(k => `${k}: ${peerObj[k]}`).join(", ")
+      
+      
       if (currentPeers.length !== data.length) {
-        document.getElementById("peer-count").innerText = `${vnode.state.peers.length} peers`
+        document.getElementById("peer-count").innerText = `${vnode.state.peers.length} peers (${str})`
       }
     })
 }

@@ -112,13 +112,19 @@ const ProfileView = {
     const followingChanged = ev => {
       let v = ev.target.checked
       if (v) {
-        ssb.follow(feed).catch(() => {
+        ssb.follow(feed).then(() => {
+          vnode.state.following = true
+          m.redraw()
+        }).catch(() => {
           vnode.state.following = false
           m.redraw()
         })
       } else {
-        ssb.unfollow(feed).catch(() => {
-          following = true
+        ssb.unfollow(feed).then(() => {
+          vnode.state.following = false
+          m.redraw()
+        }).catch(() => {
+          vnode.state.following = true
           m.redraw()
         })
       }

@@ -118,6 +118,7 @@ function startDefaultPatchfoxServer(cb) {
     require("ssb-onion"),
     require("ssb-ooo"),
     require("ssb-plugins"),
+    require("ssb-private"),
     require("ssb-private1"),
     require("ssb-query"),
     require("ssb-room/tunnel/client"),
