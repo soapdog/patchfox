@@ -9,8 +9,8 @@ The `post` package handles messages of type [`post`](https://scuttlebot.io/docs/
 * Menu entry on _Compose_ menu
 
 ## Source code
-* [View package `post` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/post) 
-* [View package `post` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/post)
+* [View package `post` at GitHub](https://github.com/soapdog/patchfox/blob/master/ui/packages/post) 
+* [View package `post` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/ui/packages/post)
 
 
 ## Message types handled by this package

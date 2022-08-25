@@ -10,8 +10,8 @@ The `contacts` package is responsible for dealing with all contact/feed-related 
 * View a profile's list of followers, who they are following, and their blocks
 
 ## Source code
-* [View package `contacts` at GitHub](https://github.com/soapdog/patchfox/blob/master/src/packages/contacts) 
-* [View package `contacts` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/contacts)
+* [View package `contacts` at GitHub](https://github.com/soapdog/patchfox/blob/master/ui/packages/contacts) 
+* [View package `contacts` at SourceHut](https://git.sr.ht/~soapdog/patchfox/tree/master/item/ui/packages/contacts)
 
 
 ## Message types handled by this package
