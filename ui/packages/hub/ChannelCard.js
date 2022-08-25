@@ -27,21 +27,15 @@ const ChannelCard = {
       patchfox.go("hub", "channel", { channel: msg.value.content.channel })
     }
 
-    const avatarClick = (ev) => {
-      let feed = ev.detail.feed
-      patchfox.go("contacts", "profile", { feed })
-    }
-
     return m("p.m-2", [
       m(AvatarChip, {
         inline: true,
         arrow: true,
-        feed: msg.value.author,
-        onclick: avatarClick,
+        feed: msg.value.author
       }),
       verb,
       m(
-        "a",
+        "a.ml-2",
         {
           href: `?pkg=hub&view=channel&channel=${channel}`,
           onclick: goChannel,

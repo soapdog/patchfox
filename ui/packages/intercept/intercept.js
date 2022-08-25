@@ -1,4 +1,4 @@
-const InterceptView = require("./InterceptView.svelte")
+const InterceptView = require("./InterceptView.js")
 
 patchfox.package({
   name: "intercept",

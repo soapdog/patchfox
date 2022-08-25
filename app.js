@@ -1,4 +1,4 @@
-const { Menu, app, dialog, shell, BrowserWindow, ipcMain } = require("electron")
+const { Menu, app, dialog, shell, protocol, BrowserWindow, ipcMain } = require("electron")
 const path = require("path")
 const defaultMenu = require("electron-default-menu")
 const windowStateKeeper = require("electron-window-state")
@@ -7,8 +7,6 @@ const queryString = require("query-string")
 
 let windows = new Set()
 let sbot = null
-
-console.log("app path", app.getAppPath())
 
 const createWindow = (data = false, windowState = false) => {
   let win
@@ -62,13 +60,17 @@ const createWindow = (data = false, windowState = false) => {
   } else if (data?.pkg) {
     let state = { pkg: data.pkg, view: data.view, ...data }
     let qs = queryString.stringify(state)
-    win.loadURL(`file://${__dirname}/ui/index.html?${qs}`)
+    let url = `file://${__dirname}/ui/index.html?${qs}`
+    console.log(url)
+    win.loadURL(url)
   } else {
-    win.loadURL(`file://${__dirname}/ui/index.html`)
+    let url = `file://${__dirname}/ui/index.html`
+    console.log(url)
+    win.loadURL(url)
   }
 
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 
   win.webContents.setWindowOpenHandler(details => {
     if (details.url.startsWith("file:")) {
@@ -79,7 +81,6 @@ const createWindow = (data = false, windowState = false) => {
       return { action: "deny" }
     }
   })
-
 }
 
 ipcMain.on("new-patchfox-window", (event, data) => {
@@ -190,6 +191,9 @@ app.on("ready", () => {
 
     // first-time user experience (TODO)
 
+    // register protocol
+    app.setAsDefaultProtocolClient("ssb")
+
     // progress checker
     let progress = ssb.progress()
     let win
@@ -269,6 +273,18 @@ app.on("activate", () => {
     })
 
     createWindow(null, mainWindowState)
+  }
+})
+
+app.on("open-url", (event, url) => {
+  event.preventDefault()
+  console.log("urll", url)
+  if (sbot) {
+    createWindow({ pkg: "intercep", view: "view", query: url })
+  } else {
+    setTimeout(() => {
+      createWindow({ pkg: "intercep", view: "view", query: url })
+    },2000)
   }
 })
 

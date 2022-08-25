@@ -1,7 +1,7 @@
 // Patchfox Packages.
 // docs: docs/development/packages.md
 //
-// require("./intercept/intercept.js")
+require("./intercept/intercept.js")
 require("./vote/vote.js")
 require("./pub/pub.js")
 require("./private/private.js")
@@ -15,7 +15,7 @@ require("./hub/hub.js")
 require("./post/post.js")
 require("./blog/blog.js")
 require("./contacts/contacts.js")
-// require("./calendar/calendar.js")
+require("./calendar/calendar.js")
 require("./helpMenu/helpMenu.js")
 require("./KoFiIntegration/KoFiIntegration.js")
 require("./githubIntegration/githubIntegration.js")

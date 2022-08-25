@@ -1,12 +1,9 @@
-const GatheringCard = require("./GatheringCard.svelte")
-const GatheringView = require("./GatheringView.svelte")
-const TimelineView = require("./TimelineView.svelte");
-const ExportView = require("./ExportView.svelte");
-const GatheringActionCard = require("./GatheringActionCard.svelte");
+const GatheringCard = require("./GatheringCard.js")
+const GatheringView = require("./GatheringView.js")
+const TimelineView = require("./TimelineView.js");
+const ExportView = require("./ExportView.js");
+const GatheringActionCard = require("./GatheringActionCard.js");
 const { isGathering, isUpdate, isAttendee } = require("ssb-gathering-schema") 
-
-// fixing: moz-extension://b672cc11-25cf-4b47-827d-dda34ed36f13/index.html?lt=1621837007396&pkg=hub&view=public
-
 
 patchfox.package({
   name: "calendar",

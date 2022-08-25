@@ -97,7 +97,7 @@ function url(pkg, view, data) {
   }
   let state = { pkg, view, ...data }
   let qs = queryString.stringify(state)
-  return `file://${__dirname}/ui/index.html?${qs}`
+  return `file://${__dirname}/../../index.html?${qs}`
 }
 
 function packageForType(msg) {

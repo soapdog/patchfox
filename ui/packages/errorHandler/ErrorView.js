@@ -34,13 +34,12 @@ const ErrorView = {
     let title = `[[${currentPackage.name}]] error`
 
     let body = `
-    An error happened in package [[${currentPackage.name}]].
+    An error happened in package **${currentPackage.name}**.
 
     ${error}
 
-    ~~~~
-    ${JSON.stringify(errorObj)}
-    ~~~~
+    Please describe what happened below. If possible, include screenshots.
+    ----
     `
 
     return m(".prose", [
