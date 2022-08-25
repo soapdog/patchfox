@@ -1,13 +1,30 @@
-const path = require("path")
-
 console.log("dirname", __dirname)
 console.log("global", global)
 
-global.$docsify = {
+function isElectron() {
+  // Renderer process
+  if (typeof window !== "undefined" && typeof window.process === "object" && window.process.type === "renderer") {
+    return true
+  }
+
+  // Main process
+  if (typeof process !== "undefined" && typeof process.versions === "object" && !!process.versions.electron) {
+    return true
+  }
+
+  // Detect the user agent when the `nodeIntegration` option is set to true
+  if (typeof navigator === "object" && typeof navigator.userAgent === "string" && navigator.userAgent.indexOf("Electron") >= 0) {
+    return true
+  }
+
+  return false
+}
+
+window.$docsify = {
   name: "Patchfox Help",
   repo: "soapdog/patchfox",
-  basePath: typeof global == "undefined" ? "/docs/" : path.join(__dirname),
+  // basePath: typeof global == "undefined" ? "/docs/" : path.join(__dirname),
   loadSidebar: true,
-  coverpage: typeof global !== "undefined" ? false : true,
-  subMaxLevel: 2
+  coverpage: isElectron() ? false : true,
+  subMaxLevel: 2,
 }
