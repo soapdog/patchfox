@@ -2,12 +2,11 @@
 
 ## Requirements
 
-* [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) or [Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/) (needed to sideload unsigned add-ons)
-* [Scuttle Shell](https://github.com/ssbc/scuttle-shell). This is a soft requirement. You can use your own _sbot_ or use another client such as [Patchwork](http://github.com/ssbc/patchwork) or [Patchbay](http://github.com/ssbc/patchbay) to provide a running _sbot_.
+* [NodeJS](https://nodejs.org)
 
 ## Setup & building
 
-Patchfox uses [Svelte](https://svelte.dev/) and requires [Node.js](https://nodejs.org) for development.
+Patchfox uses [Mithril](https://mithril.js.org/) and requires [Node.js](https://nodejs.org) for development.
 
 After you have Node installed, you can navigate to the Patchfox directory and install dependencies with:
 
@@ -18,20 +17,18 @@ $ npm install
 Now you can build Patchfox with:
 
 ```
-$ npm run clean-build
+$ npm run build
 ```
-
-Or you can create a development build:
-
-```
-$ npm run clean-dev
-```
-
-This command builds Patchfox using sourcemaps. This makes debugging easier, but increases Patchfox's disk space usage. Submissions to AMO and other browser add-on repositories should be built with the `clean-build` command in order to reduce the download size for end users.
 
 ## Running
 
-Go to [about:debugging](about:debugging) in Firefox, select "This Firefox" and click to add a temporary add-on. Select the `manifest.json` file from the `dist/` folder in this repository.
+Use:
+
+```
+$ npm start
+```
+
+To run Patchfox. 
 
 ## Setup inside Patchfox
 

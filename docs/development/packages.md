@@ -43,12 +43,12 @@ A developer can completely replace that package, or turn off features, without d
 Below is a snippet from `hub.js` just to show how it looks:
 
 ```js
-const publicView = require("./Public.svelte");
-const threadView = require("./Thread.svelte");
-const mentionsView = require("./Mentions.svelte");
-const channelView = require("./Channel.svelte");
-const channelCard = require("./ChannelCard.svelte");
-const popularView = require("./Popular.svelte");
+const publicView = require("./Public.js");
+const threadView = require("./Thread.js");
+const mentionsView = require("./Mentions.js");
+const channelView = require("./Channel.js");
+const channelCard = require("./ChannelCard.js");
+const popularView = require("./Popular.js");
 
 patchfox.package({
   name: "hub",
@@ -95,17 +95,17 @@ On a different note, the Zine package is less commonly used. You can only encoun
 This is a very simple app, as can be seen from `zine.js`:
 
 ```js
-const Zine = require("./Zine.svelte")
+const ZineView = require("./ZineView.js")
 
 patchfox.package({
     name: "zine",
     app: true,
     icon: "newspaper.svg",
-    view: Zine
+    view: ZineView
 })
 ```
 
-Including the `app: true` property causes `Zine` to be placed in the _application launcher_. `view: Zine` sets the default view that opens when the user launches the app.
+Including the `app: true` property causes `Zine` to be placed in the _application launcher_. `view: ZineView` sets the default view that opens when the user launches the app.
 
 You can create as many apps for Patchfox as you want and place them in the launcher, or integrate them further into the menus and feed viewers by providing new cards.
 
