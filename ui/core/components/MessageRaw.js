@@ -55,12 +55,12 @@ const MessageRaw = {
             
             <ul>
               <li>
-                <a class="link" target="_blank" href="https://github.com/soapdog/patchfox/blob/master/src/ui/packages/${pkg.name}/">
+                <a class="link" target="_blank" href="https://github.com/soapdog/patchfox/blob/master/ui/packages/${pkg.name}/">
                   See source for <b>${pkg.name} package</b> at GitHub.
                 </a>
               </li>
               <li>
-                <a class="link" target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/ui/src/packages/${pkg.name}/">
+                <a class="link" target="_blank" href="https://git.sr.ht/~soapdog/patchfox/tree/master/item/ui/packages/${pkg.name}/">
                   See source for <b>${pkg.name} package</b> at SourceHut.
                 </a>
               </li>
