@@ -1,30 +1,20 @@
-import view from "./Settings.svelte"
+const SettingsView = require("./SettingsView.js")
 
 patchfox.package({
   name: "settings",
   supportedPlatforms: ["all"],
   title: "Settings",
   icon: "icon.svg",
-  view,
+  view: SettingsView,
   menu: {
     group: "Application",
     label: "Settings",
     items: [
       {
-        label: "Identities & Connections",
+        label: "Settings",
         event: "package:go",
-        data: { pkg: "settings", data: { subView: "identitiesAndConnections" } },
-      },
-      {
-        label: "Display Preferences",
-        event: "package:go",
-        data: { pkg: "settings", data: { subView: "displayPreferences" } },
-      },
-      {
-        label: "Filters",
-        event: "package:go",
-        data: { pkg: "settings", data: { subView: "filters" } },
-      },
+        data: { pkg: "settings"},
+      }
     ],
   },
 })

@@ -3,10 +3,15 @@ const fs = require("fs-extra")
 const path = require("path")
 const globby = require("globby")
 const rimraf = require("rimraf")
+const localVersion = require("../package.json").version
+
 
 const main = async () => {
   const packageDocumentationRootPath = "docs/packages"
   const messageTypesDocumentationRootPath = "docs/message_types"
+
+  let release_notes = `docs/release_notes/${localVersion}.md`
+  fs.copyFileSync(release_notes, `build/release-notes.md`)
   
   let paths = await globby([
     "ui/packages/*/docs/**",

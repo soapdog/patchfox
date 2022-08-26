@@ -138,6 +138,6 @@ module.exports = {
     protocol: "https",
     owner: "soapdog",
     repo: "patchfox",
-    releaseType: "release",
+    releaseType: "prerelease",
   },
 }

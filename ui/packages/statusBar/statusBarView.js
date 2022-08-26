@@ -1,6 +1,7 @@
 const m = require("mithril")
 const { when } = require("../../core/kernel/utils.js")
 const AvatarChip = require("../../core/components/AvatarChip.js")
+const localVersion = require("../../../package.json").version
 
 /**
 WARNING: Be aware that many functions here make direct DOM access. That has
@@ -10,7 +11,7 @@ a VDOM redraw.
 
 const checkIndexing = vnode => {
   vnode.state.loading = true
-  ssb.sbot.progress().then((data, err) =>{
+  ssb.sbot.progress().then((data, err) => {
     vnode.state.data = data
     vnode.state.loading = false
     let reindexingDiv = document.getElementById("reindexing-div")
@@ -18,40 +19,53 @@ const checkIndexing = vnode => {
       let progressBar = document.getElementById("reindexing-progress-bar")
       progressBar.setAttribute("value", data.indexes.current)
       progressBar.setAttribute("max", data.indexes.target)
-      
+
       reindexingDiv.classList.remove("hidden")
     } else {
       reindexingDiv.classList.add("hidden")
     }
   })
-  
 }
 
-const countPeers = (vnode) => {
+const checkVersion = async () => {
+  try {
+    let releases = await (await fetch("https://api.github.com/repos/soapdog/patchfox/releases")).json()
+    let latestRelease = releases[0]
+
+    console.log(releases[0])
+
+    if (latestRelease.name !== `v${localVersion}`) {
+      document.getElementById("version").innerHTML = `v${localVersion} (update available: <a class="underline" target="_blank" href="${latestRelease.html_url}">${latestRelease.name}</a>)`
+    }
+  } catch (n) {
+    console.log("can't fetch remote version")
+  }
+}
+
+const countPeers = vnode => {
   let currentPeers = vnode.state.peers
-  ssb.system
-    .getPeers()
-    .then(data => {
-      vnode.state.peers = data
-      
-      let peerObj = {}
-      
-      data.forEach((arr) => {
-        let key = arr[1]?.type || arr[1]?.inferredType || "unknown"
-        if (!peerObj.hasOwnProperty(key)) {
-          peerObj[key] = 1
-        } else {
-          peerObj[key] += 1
-        }
-      })
-      
-      let str = Object.keys(peerObj).map(k => `${k}: ${peerObj[k]}`).join(", ")
-      
-      
-      if (currentPeers.length !== data.length) {
-        document.getElementById("peer-count").innerText = `${vnode.state.peers.length} peers (${str})`
+  ssb.system.getPeers().then(data => {
+    vnode.state.peers = data
+
+    let peerObj = {}
+
+    data.forEach(arr => {
+      let key = arr[1]?.type || arr[1]?.inferredType || "unknown"
+      if (!peerObj.hasOwnProperty(key)) {
+        peerObj[key] = 1
+      } else {
+        peerObj[key] += 1
       }
     })
+
+    let str = Object.keys(peerObj)
+      .map(k => `${k}: ${peerObj[k]}`)
+      .join(", ")
+
+    if (currentPeers.length !== data.length) {
+      document.getElementById("peer-count").innerText = `${vnode.state.peers.length} peers (${str})`
+    }
+  })
 }
 
 const StatusBarView = {
@@ -60,25 +74,19 @@ const StatusBarView = {
     vnode.state.peers = []
     setInterval(() => checkIndexing(vnode), 300)
     setInterval(() => countPeers(vnode), 300)
-
+    checkVersion()
   },
+
   view: vnode => {
     let currValue = 0
-    let endValue = 0 
+    let endValue = 0
 
     if (!vnode.state.loading) {
       currValue = vnode.state.data.indexes.current
       endValue = vnode.state.data.indexes.target
     }
 
-    return m(".flex.w-full.items-center.fixed.z-50.bottom-0.bg-accent.text-accent-content", [
-      m(AvatarChip, {feed: ssb.feed, inline: true}),
-      m(".flex.hidden#reindexing-div", [
-        m("span", "Reindexing..."),
-        m("progress.progress.progress-primary.w-8#reindexing-progress-bar", {value: currValue, max: endValue})
-      ]),
-      m(".btn.btn-sm.btn-ghost#peer-count",{onclick: () => patchfox.go("system", "peers")}, `${vnode.state.peers.length} peers`)
-    ])
+    return m(".flex.w-full.items-center.fixed.z-50.bottom-0.bg-accent.text-accent-content", [m(AvatarChip, { feed: ssb.feed, inline: true }), m(".flex.hidden#reindexing-div", [m("span", "Reindexing..."), m("progress.progress.progress-primary.w-8#reindexing-progress-bar", { value: currValue, max: endValue })]), m(".btn.btn-sm.btn-ghost#peer-count", { onclick: () => patchfox.go("system", "peers") }, `${vnode.state.peers.length} peers`), m("span.float-right#version", `v${localVersion}`)])
   },
 }
 

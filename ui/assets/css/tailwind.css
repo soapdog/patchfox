@@ -3491,7 +3491,7 @@ html {
   color: hsla(var(--bc) / var(--tw-placeholder-opacity, 1));
 }
 
-.select[size].select:not([size="1"]) {
+.select[multiple],.select[size].select:not([size="1"]) {
   background-image: none;
   padding-right: 1rem;
 }
@@ -4359,6 +4359,10 @@ html {
 .text-base-content {
   --tw-text-opacity: 1;
   color: hsla(var(--bc) / var(--tw-text-opacity));
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 *, ::before, ::after {
