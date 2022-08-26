@@ -11,6 +11,7 @@ const main = async () => {
   const messageTypesDocumentationRootPath = "docs/message_types"
 
   let release_notes = `docs/release_notes/${localVersion}.md`
+  await fs.ensureDir("build")
   fs.copyFileSync(release_notes, `build/release-notes.md`)
   
   let paths = await globby([
