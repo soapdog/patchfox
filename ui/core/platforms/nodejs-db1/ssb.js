@@ -1,7 +1,7 @@
 // noinspection DuplicatedCode
 
 /**
- * NodeJS SSB
+ * NodeJS DB1 SSB
  *
  * Things I don't currently like here:
  * - usage of getPref and abuse prevention. This should be pluggable!
@@ -38,7 +38,7 @@ let isMessageHidden = () => false
 /**
  * NodeJS SSB Server compatible implementation of high-level SSB API for Patchfox.
  */
-class NodeJsSSB {
+class NodeJsDB1 {
   constructor() {
     this.platform = "nodejs-db1"
 
@@ -437,38 +437,19 @@ class NodeJsSSB {
     })
   }
 
-  async avatar(feed) {
-    const avatarPromise = key => {
-      return new Promise((resolve, reject) => {
-        ssbAvatar(sbot, sbot.id, key, function (err, data) {
-          if (err) {
-            reject(err)
-          } else if (data) {
-            resolve(data)
-          } else {
-            reject("unknown error")
-          }
-        })
+  avatar(feed) {
+    return new Promise((resolve, reject) => {
+      ssbAvatar(sbot, sbot.id, feed, function (err, data) {
+        if (err) {
+          reject(err)
+        } else if (data) {
+          setAvatarCache(feed, data)
+          resolve(data)
+        } else {
+          reject("unknown error")
+        }
       })
-    }
-
-    const getAvatarAux = async feed => {
-      let avatar = await avatarPromise(feed)
-      // await this.setAvatarCache(feed, avatar)
-      setAvatarCache(feed, avatar)
-      localStorage.setItem(`profile-${feed}`, JSON.stringify(avatar))
-      return avatar
-    }
-
-    if (getCachedAvatar(feed)) {
-      setTimeout(() => {
-        getAvatarAux(feed)
-        m.redraw()
-      }, 300) // update cache...
-      return getCachedAvatar(feed)
-    }
-
-    return getAvatarAux(feed)
+    })
   }
 
   async blurbFromMsg(msgid, howManyChars) {
@@ -1645,4 +1626,4 @@ class NodeJsSSB {
   }
 }
 
-module.exports.NodeJsSSB = NodeJsSSB
+module.exports.NodeJsDB1 = NodeJsDB1
