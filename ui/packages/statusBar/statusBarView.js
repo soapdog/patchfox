@@ -32,9 +32,7 @@ const checkVersion = async () => {
     let releases = await (await fetch("https://api.github.com/repos/soapdog/patchfox/releases")).json()
     let latestRelease = releases[0]
 
-    console.log(releases[0])
-
-    if (latestRelease.name !== `v${localVersion}`) {
+    if (latestRelease.name !== localVersion) {
       document.getElementById("version").innerHTML = `v${localVersion} (update available: <a class="underline" target="_blank" href="${latestRelease.html_url}">${latestRelease.name}</a>)`
     }
   } catch (n) {

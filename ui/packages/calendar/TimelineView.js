@@ -38,7 +38,7 @@ const TimelineView = {
         }),
         pull.map("event"),
         pull.filter(event => {
-          if (!event.startDateTime) {
+          if (!event?.startDateTime) {
             return false
           }
           let twoYearsFromNow = new Date()
