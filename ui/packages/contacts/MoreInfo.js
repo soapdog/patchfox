@@ -27,7 +27,7 @@ const MoreInfoView = {
       },
     }
 
-    if (ssb.platform === "nodejs-ssb") {
+    if (ssb.platform === "nodejs-db1") {
       pull(
         ssb.sbot.query.read({
           query: [

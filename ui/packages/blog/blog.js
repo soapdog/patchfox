@@ -7,7 +7,7 @@ patchfox.package({
   name: "blog",
   app: true,
   icon: "web-page.svg",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["nodejs-db1"],
   view: BlogApp,
   import: BlogImport,
   compose: BlogCompose,

@@ -3,7 +3,7 @@ const PostCard = require("./PostCard.js")
 
 patchfox.package({
   name: "post",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["nodejs-db1"],
   view: PostCompose,
   compose: PostCompose,
   messageTypes: [

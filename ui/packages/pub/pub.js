@@ -2,7 +2,7 @@ const PubView = require("./PubView.js")
 
 patchfox.package({
   name: "pub",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["nodejs-db1"],
   messageTypes: [
     {
       type: "pub",

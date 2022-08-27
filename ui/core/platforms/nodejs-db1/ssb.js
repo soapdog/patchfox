@@ -40,7 +40,7 @@ let isMessageHidden = () => false
  */
 class NodeJsSSB {
   constructor() {
-    this.platform = "nodejs-ssb"
+    this.platform = "nodejs-db1"
 
     // add basic built-in pipelines
     pipelines.thread.use(filterHasContent)

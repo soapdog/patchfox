@@ -4,7 +4,7 @@
 
   let keys = ""
   let remote = ""
-  let type = "nodejs-ssb"
+  let type = "nodejs-db1"
   let identities = []
   let savedData
 
@@ -140,7 +140,7 @@
   <br />
   <div class="form-control">
     <select class="select" bind:value="{type}">
-      <option value="nodejs-ssb">NodeJS-based SSB Server (Patchwork, Scuttle Shell...)</option>
+      <option value="nodejs-db1">NodeJS-based SSB Server (Patchwork, Scuttle Shell...)</option>
       <option value="browser-ssb">Browser-SSB Server</option>
       <option value="go-ssb">Go-SSB</option>
     </select>

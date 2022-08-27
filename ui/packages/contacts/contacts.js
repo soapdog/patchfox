@@ -4,7 +4,7 @@ const AboutCard = require("./AboutCard.js")
 
 patchfox.package({
   name: "contacts",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["nodejs-db1"],
   profile: ProfileView,
   messageTypes: [
     {

@@ -22,7 +22,7 @@
   let currentDate = new Date().getTime()
   console.log(currentDate)
 
-  if (ssb.platform === "nodejs-ssb") {
+  if (ssb.platform === "nodejs-db1") {
     pull(
       sbot.messagesByType({
         type: "gathering",

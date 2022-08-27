@@ -2,7 +2,7 @@ const SearchView = require("./SearchView.js")
 
 patchfox.package({
   name: "search",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["nodejs-db1"],
   view: SearchView,
   query: SearchView,
 })

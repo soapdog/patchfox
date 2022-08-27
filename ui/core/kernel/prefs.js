@@ -37,7 +37,7 @@ const loadSavedData = async () => {
       savedData.identities[keys.public] = {
           keys,
           remote,
-          type: "nodejs-ssb"
+          type: "nodejs-db1"
       }
     }
         

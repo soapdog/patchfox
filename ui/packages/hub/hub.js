@@ -7,7 +7,7 @@ const popularView = require("./Popular.js")
 
 patchfox.package({
   name: "hub",
-  supportedPlatforms: ["nodejs-ssb"],
+  supportedPlatforms: ["nodejs-db1"],
   public: publicView,
   thread: threadView,
   mentions: mentionsView,

@@ -18,7 +18,7 @@ const TimelineView = {
 
     let currentDate = new Date().getTime()
 
-    if (ssb.platform === "nodejs-ssb") {
+    if (ssb.platform === "nodejs-db1") {
       console.time("loading gatherings")
       pull(
         sbot.messagesByType({
