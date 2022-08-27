@@ -46,13 +46,13 @@ const setMsgCache = (id, data) => {
   sessionStorage.setItem(id, JSON.stringify(data))
 }
 
-async function setAvatarCache(feed, data) {
+function setAvatarCache(feed, data) {
   avatarCache[feed] = data
   localStorage.setItem(`profile-${feed}`,JSON.stringify(data))
   return data
 }
 
-async function getCachedAvatar(feed) {
+function getCachedAvatar(feed) {
   if (avatarCache[feed]) {
     return avatarCache[feed]
   } else {
