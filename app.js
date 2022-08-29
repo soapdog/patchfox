@@ -1,4 +1,12 @@
-const { Menu, app, dialog, shell, protocol, BrowserWindow, ipcMain } = require("electron")
+const { 
+  Menu, 
+  app, 
+  dialog, 
+  shell, 
+  protocol, 
+  BrowserWindow,
+  Tray,
+  ipcMain } = require("electron")
 const path = require("path")
 const defaultMenu = require("electron-default-menu")
 const windowStateKeeper = require("electron-window-state")
@@ -7,6 +15,7 @@ const queryString = require("query-string")
 
 let windows = new Set()
 let sbot = null
+let tray = null
 
 const createWindow = (data = false, windowState = false) => {
   let win
@@ -18,6 +27,7 @@ const createWindow = (data = false, windowState = false) => {
     win = new BrowserWindow({
       width: 800,
       height: 800,
+      show: false,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
@@ -27,6 +37,7 @@ const createWindow = (data = false, windowState = false) => {
     win = new BrowserWindow({
       x: windowState.x,
       y: windowState.y,
+      show: false,
       width: windowState.width,
       height: windowState.height,
       webPreferences: {
@@ -47,6 +58,10 @@ const createWindow = (data = false, windowState = false) => {
 
   win.on("focus", () => {
     win.webContents.send("window:focus")
+  })
+
+  win.once("ready-to-show", () => {
+    win.show()
   })
 
   win.webContents.on("will-navigate", (event, url) => {
@@ -152,6 +167,9 @@ ipcMain.on("menu:set", (event, group) => {
           createWindow()
         },
       },
+      {
+        role: "shareMenu"
+      }
     ],
   }
 
@@ -180,11 +198,95 @@ ipcMain.on("menu:set", (event, group) => {
   Menu.setApplicationMenu(finalMenu)
 })
 
+ipcMain.on("tray:set", (event, group) => {
+  // console.log("received menu", JSON.stringify(group, null, 2))
+  let menu = []
+  let keys = Object.keys(group)
+
+  // console.log(JSON.stringify(menu,null,2))
+
+  const makeSubmenu = subgroup => {
+    let toPush = []
+    subgroup.forEach(m => {
+      m.items.forEach(i => {
+        let m = {
+          label: i.label,
+          click: (item, win) => {
+            win.webContents.send("menu:trigger", {
+              event: i.event,
+              data: i.data,
+            })
+          },
+        }
+
+        if (i?.shortcut) {
+          m.accelerator = i.shortcut
+        }
+
+        toPush.push(m)
+      })
+      toPush.push({ type: "separator" })
+    })
+    toPush.pop()
+    return toPush
+  }
+
+  keys.forEach(k => {
+    let m = {
+      label: k,
+      submenu: makeSubmenu(group[k]),
+    }
+
+    if (k.toLowerCase() == "help") {
+      m.role = "help"
+    }
+
+    menu.push(m)
+  })
+
+  // FIXME: menu has wrong order for toplevel items.
+  let topItems = [
+    {
+      label: "New Window",
+      accelerator: "CmdOrCtrl+Shift+N",
+      click: () => {
+        createWindow()
+      },
+    }
+  ]
+
+  let bottomItems = [
+    {
+      type: "separator"
+    },
+    {
+      label: "Quit",
+      click() { app.quit() }
+    }
+  ]
+
+  let finalMenu = Menu.buildFromTemplate([...topItems, ...menu, ...bottomItems])
+
+  tray.setContextMenu(finalMenu)
+})
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   console.log("Attempting to start server...")
+
+  tray = new Tray(`${__dirname}/ui/assets/images/patchfox_pixel_16.png`)
+  tray.setToolTip("Patchfox")
+
+  const initialMenu = Menu.buildFromTemplate([
+    {
+      label: "Quit",
+      click() { app.quit() }
+    }
+  ])
+  tray.setContextMenu(initialMenu)
+
   startDefaultPatchfoxServer((err, ssb) => {
     console.log("Server started!", ssb.id)
     sbot = ssb

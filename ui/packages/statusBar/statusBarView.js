@@ -84,7 +84,15 @@ const StatusBarView = {
       endValue = vnode.state.data.indexes.target
     }
 
-    return m(".flex.w-full.items-center.fixed.z-50.bottom-0.bg-accent.text-accent-content", [m(AvatarChip, { feed: ssb.feed, inline: true }), m(".flex.hidden#reindexing-div", [m("span", "Reindexing..."), m("progress.progress.progress-primary.w-8#reindexing-progress-bar", { value: currValue, max: endValue })]), m(".btn.btn-sm.btn-ghost#peer-count", { onclick: () => patchfox.go("system", "peers") }, `${vnode.state.peers.length} peers`), m("span.float-right#version", `v${localVersion}`)])
+    return m(".flex.w-full.items-center.fixed.z-50.bottom-0.bg-accent.text-accent-content", [
+      m(".flex-none", m(AvatarChip, {class: "flex-none", feed: ssb.feed, inline: true })), 
+      m(".flex-none.flex.hidden#reindexing-div", [
+        m("span", "Reindexing..."), 
+        m("progress.progress.progress-primary.w-8#reindexing-progress-bar", { value: currValue, max: endValue })
+      ]), 
+      m(".flex-none.btn.btn-sm.btn-ghost#peer-count", { onclick: () => patchfox.go("system", "peers") }, `${vnode.state.peers.length} peers`), 
+      m(".flex-auto"), // spacer
+      m("span.flex-none.mr-2#version", `v${localVersion}`)])
   },
 }
 

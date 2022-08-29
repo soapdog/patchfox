@@ -42,7 +42,7 @@ const MessageRenderer = {
     if (typeof msg.value.content === "string") {
       type = "private"
     } else {
-      type = msg.value.content.type
+      type = msg.value.content.type ?? "unknown"
     }
   
     for (let p of messageTypes) {

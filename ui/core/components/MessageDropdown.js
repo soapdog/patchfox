@@ -43,7 +43,12 @@ const MessageDropdown = {
         view: "thread",
         thread: msg.key
       })
-     
+    }
+
+    const shareItem = () => {
+      vnode.state.dropdownActive = false
+      console.log(msg)
+      ipcRenderer.send("share", ssbUri.fromMessageSigil(msg.key))
     }
 
     const menuRight = {
@@ -81,6 +86,11 @@ const MessageDropdown = {
             label: "Copy message id to clipboard",
             icon: "copy",
             onclick: copyHash,
+          }),
+          m(MenuItem, {
+            label: "Share SSB URI",
+            icon: "share",
+            onclick: shareItem,
           }),
           m(".divider", "FOR THE CURIOUS"),
           m(MenuItem, {

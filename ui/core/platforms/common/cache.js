@@ -1,3 +1,5 @@
+const HLRU = require("hashlru")
+const rootCache = HLRU(200) 
 
 const caches = {}
 let avatarCache = {}
@@ -29,21 +31,15 @@ const resultFromCache = (kind, msgId, falseIfOlderThan) => {
 
 
 const getMsgCache = (id) => {
-  let data = sessionStorage.getItem(id)
-  if (data) {
-    try {
-      return JSON.parse(data)
-    } catch (n) {
-      sessionStorage.removeItem(id)
-      return false
-    }
+  if (rootCache.has(id)) {
+    return rootCache.get(id)
   } else {
     return false
   }
 }
 
 const setMsgCache = (id, data) => {
-  sessionStorage.setItem(id, JSON.stringify(data))
+  rootCache.set(id, data)
 }
 
 function setAvatarCache(feed, data) {

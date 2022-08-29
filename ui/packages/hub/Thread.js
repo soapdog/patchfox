@@ -7,6 +7,20 @@ const ThreadView = {
     vnode.state.shouldLoadMessages = true
     vnode.state.msgs = []
     vnode.state.error = false
+    vnode.state.scrolledIntoView = false
+  },
+  onupdate: vnode => {
+    let thread = vnode.attrs.thread
+    let el = document.querySelector(`[data-key='${thread}']`)
+
+    if (el && !vnode.state.scrolledIntoView) {
+      console.log("scrolling")
+      el.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})
+      vnode.state.scrolledIntoView = true
+    } else {
+      console.log("not", el)
+    }
+
   },
   view: (vnode) => {
     let thread = vnode.attrs.thread
@@ -16,13 +30,13 @@ const ThreadView = {
       if (thread.startsWith("ssb:")) {
         thread = thread.replace("ssb:", "")
       }
+      
       patchfox.title(thread)
 
       ssb
         .thread(thread)
         .then((ms) => {
           vnode.state.msgs = ms
-          window.scrollTo(0, 0)
           vnode.state.shouldLoadMessages = false
           m.redraw()
         })

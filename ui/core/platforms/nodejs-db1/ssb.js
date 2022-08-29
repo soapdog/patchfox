@@ -166,7 +166,6 @@ class NodeJsDB1 {
       break
     }
 
-
     delete opts.filter
 
     const messages = new Promise((resolve, reject) => {
@@ -174,6 +173,12 @@ class NodeJsDB1 {
         sbot.createFeedStream(opts),
         selectedFilter,
         pull.apply(pull, pipeline),
+        pullParallelMap((m, cb) => {
+          this.extendMessageWithRootMessageFor(m)
+            .then(messageWithRoot => {
+              cb(null, messageWithRoot)
+            })
+        }, 5),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)
@@ -191,9 +196,21 @@ class NodeJsDB1 {
     return new Promise((resolve, reject) => {
       const pipeline = pipelines.message.get()
 
-      sbot.get(id, (err, value) => {
-        if (err) return reject(err)
-        var rootMsg = { key: id, value: value }
+      sbot.get({id, meta: true}, (err, msg) => {
+        if (err) {
+          return reject(err)
+        }
+
+        const rootKey = this.getRoot(msg)
+
+        if (rootKey !== id) {
+          this.thread(rootKey)
+            .then(ms => resolve(ms))
+            .catch(e => reject(e))
+
+          return
+        }
+
         pull(
           sbot.backlinks && sbot.backlinks.read
             ? sbot.backlinks.read({
@@ -210,7 +227,7 @@ class NodeJsDB1 {
           pull.apply(pull, pipeline),
           pull.collect((err, msgs) => {
             if (err) reject(err)
-            resolve(sort([rootMsg].concat(msgs)))
+            resolve(sort([msg].concat(msgs)))
           })
         )
       })
@@ -392,6 +409,60 @@ class NodeJsDB1 {
     })
   }
 
+  getRoot (msg) {
+    // from: Patchwork.
+    // URL: https://github.com/ssbc/patchwork/blob/master/lib/get-root.js
+    //
+    // This doesn't fetch the "root message" of a given message, it just
+    // returns the "root key" associated with a given message.
+    if (msg && msg.value && msg.value.content) {
+      const type = msg.value.content.type
+      let root = msg.value.content.root
+
+      if (type === "vote") {
+        root = msg.value.content.vote && msg.value.content.vote.link
+      } else if (type === "about") {
+        root = msg.value.content.about
+      }
+
+      if (ssbRef.isMsg(root)) {
+        return root
+      } else {
+        return msg.key
+      }
+    }
+  }
+
+  extendMessageWithRootMessageFor(msg) {
+    return new Promise((resolve, reject) => {
+      let id = msg.key
+      let root = this.getRoot(msg)
+
+      if (msg.hasOwnProperty("extra")) {
+        console.log("circular root found in msg:", id)
+        resolve(msg)
+      }
+
+      msg.extra = {}
+
+      if (root == id) {
+        setMsgCache(id, msg)
+        msg.extra.isRoot = true
+        resolve(msg)
+      } else {
+        msg.extra.isRoot = false
+        sbot.get({id: root, meta: true}, (err, m) => {
+          if (err) {
+            reject(err)
+          } else {
+            msg.extra.rootMsg = m
+            resolve(msg)
+          }
+        })
+      }
+    })
+  }
+
   get(id) {
     return new Promise((resolve, reject) => {
       if (getMsgCache(id)) {
@@ -399,23 +470,31 @@ class NodeJsDB1 {
       }
       if (sbot.ooo) {
         sbot.get({ id: id, raw: true, ooo: false, private: true }, (err, data) => {
-          if (err) reject(err)
-          setMsgCache(id, data)
+          if (err) {
+            reject(err)
+          }
+          
           resolve(data)
+          
+        })
+      } else if (!sbot.private) {
+        // if no sbot.private, assume we have newer sbot that supports private:true
+        return sbot.get({ id: id, private: true }, (err, data) => {
+          if (err) {
+            reject(err)
+          }
+          
+          resolve(data)
+          
         })
       } else {
-        if (!sbot.private) {
-          // if no sbot.private, assume we have newer sbot that supports private:true
-          return sbot.get({ id: id, private: true }, (err, data) => {
-            if (err) reject(err)
-            setMsgCache(id, data)
-            resolve(data)
-          })
-        }
         sbot.get(id, (err, data) => {
-          if (err) reject(err)
-          setMsgCache(id, data)
+          if (err) {
+            reject(err)
+          }
+          
           resolve(data)
+          
         })
       }
     })

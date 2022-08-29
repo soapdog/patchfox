@@ -54,4 +54,37 @@ patchfox.package({
       },
     ],
   },
+  tray: {
+    group: "Hub",
+    label: "Feeds",
+    items: [
+      {
+        label: "Popular",
+        event: "package:go",
+        shortcut: "Alt+O",
+        data: {
+          pkg: "hub",
+          view: "popular",
+        },
+      },
+      {
+        label: "Public",
+        event: "package:go",
+        shortcut: "Alt+P",
+        data: {
+          pkg: "hub",
+          view: "public",
+        },
+      },
+      {
+        label: "Mentions",
+        event: "package:go",
+        shortcut: "Alt+M",
+        data: {
+          pkg: "hub",
+          view: "mentions",
+        },
+      },
+    ],
+  },
 })

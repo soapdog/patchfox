@@ -42,7 +42,10 @@ const Card = {
     }
 
 
-    return m("div", {"class": cardCss()}, [
+    return m("div", {
+      "class": cardCss(),
+      "data-key": msg.key
+    }, [
       m(".card-title",
         [
           m(".navbar",

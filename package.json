@@ -111,6 +111,7 @@
     "localbuild": "run-s build builder:*"
   },
   "dependencies": {
+    "hashlru": "^2.3.0",
     "ssb-about": "^2.0.1",
     "ssb-blobs": "^2.0.1",
     "ssb-conn": "^6.0.3",

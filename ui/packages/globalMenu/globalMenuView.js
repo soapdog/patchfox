@@ -18,7 +18,11 @@ const GlobalMenuView = {
 
     let groups = patchfox.menuGroups()
     let groupKeys = Object.keys(groups)
+
+
     ipcRenderer.send("menu:set", groups)
+    ipcRenderer.send("tray:set", patchfox.trayGroups())
+
     ipcRenderer.on("menu:trigger", (event, data) => {
       patchfox.triggerMenu({ event: data.event, data: data.data })
     })
