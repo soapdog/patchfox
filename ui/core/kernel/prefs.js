@@ -100,6 +100,14 @@ const setPref = (key, value) => {
   fs.writeFileSync(prefsFile, TOML.stringify(savedData))
 }
 
+const setMessageTypeVisibility = (type, value) => {
+  savedData.MessageTypes = savedData.MessageTypes || {}
+  savedData.MessageTypes[type] = value
+
+  // localStorage.setItem("data", JSON.stringify(savedData))
+  fs.writeFileSync(prefsFile, TOML.stringify(savedData))
+}
+
 const savedIdentitites = () => {
   return savedData.identities
 }
@@ -141,4 +149,5 @@ module.exports = {
   setDefaultIdentity,
   removeIdentity,
   preferencesFileExists,
+  setMessageTypeVisibility,
 }
