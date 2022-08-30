@@ -90,18 +90,6 @@ const PostCard = {
       })
     }
 
-    const goRoot = (ev) => {
-      ev.preventDefault()
-      let rootId = msg.value.content.root || msg.key
-      patchfox.go("hub", "thread", { thread: rootId })
-    }
-
-    const goBranch = (ev) => {
-      ev.preventDefault()
-      let branchId = msg.value.content.branch || msg.key
-      patchfox.go("hub", "thread", { thread: branchId })
-    }
-
     vnode.state.textSize = getPref("textSize", "prose")
 
     const actions = [
@@ -128,10 +116,7 @@ const PostCard = {
           m(
             "a.btn.btn-ghost",
             {
-              href: `?pkg=hub&view=thread&thread=${encodeURIComponent(
-                msg.value.content.root
-              )}`,
-              onclick: goRoot,
+              href: patchfox.url("hub", "thread", {thread: msg.value.content.root}),
             },
             "Root Message"
           )
@@ -144,10 +129,7 @@ const PostCard = {
           m(
             "a.btn.btn-ghost",
             {
-              href: `?pkg=hub&view=thread&thread=${encodeURIComponent(
-                msg.value.content.branch
-              )}`,
-              onclick: goBranch,
+              href: patchfox.url("hub", "thread", {thread: msg.value.content.branch}),
             },
             "In Reply To"
           )

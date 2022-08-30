@@ -111,6 +111,7 @@
     "localbuild": "run-s build builder:*"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "hashlru": "^2.3.0",
     "ssb-about": "^2.0.1",
     "ssb-blobs": "^2.0.1",

@@ -8,18 +8,26 @@ const fs = require("fs")
 const path = require("path")
 const os = require("os")
 const ssbKeys = require("ssb-keys")
+const TOML = require('@iarna/toml')
+const prefsFile = path.join(os.homedir(), ".ssb", "patchfox.toml")
 
 let savedData = {}
+
+const preferencesFileExists = () => fs.existsSync(prefsFile)
 
 const loadSavedData = async () => {
   try {
     const keys = ssbKeys.loadOrCreateSync(path.join(os.homedir(), ".ssb", "secret"))
     
-    let data = JSON.parse(localStorage.getItem("data"))
+    if (fs.existsSync(prefsFile)) {
+      let data = TOML.parse(fs.readFileSync(prefsFile))
 
-    if (data && data.hasOwnProperty("identities")) {
-      savedData = data
-    } else if (!keys) {
+      if (data && data.hasOwnProperty("identities")) {
+        savedData = data
+      }
+    }
+    
+    if (!keys) {
       throw "Configuration is missing"
     }
     
@@ -39,6 +47,9 @@ const loadSavedData = async () => {
           remote,
           type: "nodejs-db1"
       }
+
+      fs.writeFileSync(prefsFile, TOML.stringify(savedData))
+
     }
         
     return savedData
@@ -67,7 +78,7 @@ const saveIdentityConfiguration = ({ keys, remote, type }) => {
     type,
   }
 
-  localStorage.setItem("data", JSON.stringify(savedData))
+  fs.writeFileSync(prefsFile, TOML.stringify(savedData))
 }
 
 const removeIdentity = (key) => {
@@ -77,7 +88,7 @@ const removeIdentity = (key) => {
     delete savedData.identities[key]
   }
 
-  localStorage.setItem("data", JSON.stringify(savedData))
+  fs.writeFileSync(prefsFile, TOML.stringify(savedData))
 }
 
 
@@ -85,7 +96,8 @@ const setPref = (key, value) => {
   savedData.preferences = savedData.preferences || {}
   savedData.preferences[key] = value
 
-  localStorage.setItem("data", JSON.stringify(savedData))
+  // localStorage.setItem("data", JSON.stringify(savedData))
+  fs.writeFileSync(prefsFile, TOML.stringify(savedData))
 }
 
 const savedIdentitites = () => {
@@ -103,7 +115,7 @@ const configurationForIdentity = (feedId) => {
 const setDefaultIdentity = (feedId) => {
   savedData.defaultIdentity = feedId
 
-  localStorage.setItem("data", JSON.stringify(savedData))
+  fs.writeFileSync(prefsFile, TOML.stringify(savedData))
 }
 
 const getDefaultIdentity = () => {
@@ -128,4 +140,5 @@ module.exports = {
   getDefaultIdentity,
   setDefaultIdentity,
   removeIdentity,
+  preferencesFileExists,
 }

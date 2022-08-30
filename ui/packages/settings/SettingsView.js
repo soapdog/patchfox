@@ -1,22 +1,38 @@
 const m = require("mithril")
 const Spinner = require("../../core/components/Spinner.js")
+const DisplayPreferences = require("./DisplayPreferences.js")
+const AboutView = require("./AboutView.js")
 
-const settingsBlurb = `
-This is an alpha version of Patchfox. At the moment it can only load the default
-identity in your \`.ssb\` folder. Support for multiple identities and multiple
-backends will be reinstated soon.
-`
+const menu = {
+  "about": {
+    label: "About Patchfox",
+    panel: AboutView
+  },
+  "display": {
+    label: "Display Preferences",
+    panel: DisplayPreferences
+  }
+}
 
 
 const StatusView = {
   oninit: (vnode) => {
+    vnode.state.subView = vnode.attrs.subView ?? "display"
   },
   view: (vnode) => {
-   
-    return m(".prose", [
-      m("h1", "Settings"),
-      m.trust(ssb.markdown(settingsBlurb))
-    ])
+
+    let subView = vnode.state.subView
+
+    return [
+      m(".flex", [
+        m("ul.menu.rounded-box.w-56.bg-base-100.", Object.keys(menu).map(k => m("li",{class: subView == k ? "bordered": ""}, m("a",{
+          onclick: () => {
+            vnode.state.subView = k
+            m.redraw()
+          }}, menu[k].label)))),
+        m(".flex-auto.p-2", m(menu[subView].panel))
+      ]),
+    ]
   },
 }
 

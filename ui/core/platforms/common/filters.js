@@ -23,7 +23,7 @@ async function  filterFollowing() {
 }
 
 function filterLimit() {
-  let limit = getPref("limit", 10)
+  let limit = getPref("limit", 20)
   return pull.take(Number(limit))
 }
 
