@@ -198,51 +198,34 @@ ipcMain.on("menu:set", (event, group) => {
   Menu.setApplicationMenu(finalMenu)
 })
 
-ipcMain.on("tray:set", (event, group) => {
+ipcMain.on("tray:set", (event, items) => {
   // console.log("received menu", JSON.stringify(group, null, 2))
   let menu = []
-  let keys = Object.keys(group)
 
   // console.log(JSON.stringify(menu,null,2))
 
-  const makeSubmenu = subgroup => {
-    let toPush = []
-    subgroup.forEach(m => {
-      m.items.forEach(i => {
-        let m = {
-          label: i.label,
-          click: (item, win) => {
-            win.webContents.send("menu:trigger", {
-              event: i.event,
-              data: i.data,
-            })
-          },
-        }
+  const makeMenu = i => {
+    if (i?.type) {
+      return i
+    }
 
-        if (i?.shortcut) {
-          m.accelerator = i.shortcut
-        }
+    let m = {
+      label: i.label,
+      click: (item, win) => {
+        createWindow(i.data)
+      },
+    }
 
-        toPush.push(m)
-      })
-      toPush.push({ type: "separator" })
-    })
-    toPush.pop()
-    return toPush
+    if (i?.shortcut) {
+      m.accelerator = i.shortcut
+    }
+
+    return m
   }
 
-  keys.forEach(k => {
-    let m = {
-      label: k,
-      submenu: makeSubmenu(group[k]),
-    }
+  console.log("items", items)
 
-    if (k.toLowerCase() == "help") {
-      m.role = "help"
-    }
-
-    menu.push(m)
-  })
+  menu = items.map(i => makeMenu(i))
 
   // FIXME: menu has wrong order for toplevel items.
   let topItems = [
@@ -251,8 +234,11 @@ ipcMain.on("tray:set", (event, group) => {
       accelerator: "CmdOrCtrl+Shift+N",
       click: () => {
         createWindow()
-      },
-    }
+      }
+    },
+    {
+      type: "separator"
+    },
   ]
 
   let bottomItems = [

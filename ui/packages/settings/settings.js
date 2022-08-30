@@ -17,4 +17,11 @@ patchfox.package({
       }
     ],
   },
+  tray: [
+    {
+      label: "Settings",
+      event: "package:open",
+      data: { pkg: "settings"},
+    }
+  ]
 })

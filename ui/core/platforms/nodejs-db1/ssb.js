@@ -545,11 +545,17 @@ class NodeJsDB1 {
         retVal = `Patchfox error: message ${msgid} is null`
       }
 
-      // if (data.content.type == "post") {
-      retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
-      // }
+      if (data?.value && data.value.content.type == "post") {
+        retVal = this.plainTextFromMarkdown(data.value.content.text).slice(0, howManyChars) + "..."
+      }
+
+      if (data?.content && data.content.type == "post") {
+        retVal = this.plainTextFromMarkdown(data.content.text).slice(0, howManyChars) + "..."
+      }
+
       return retVal
     } catch (n) {
+      console.log("data", data)
       console.log("booom", n)
       return retVal
     }
