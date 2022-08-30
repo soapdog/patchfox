@@ -40,5 +40,16 @@ patchfox.package({
         }
       ]
     }
+  ],
+  tray: [
+    {
+      label: "New Blog Post",
+      event: "package:go",
+      shortcut: "CmdOrCtrl+N",
+      data: {
+        pkg: "blog",
+        view: "compose"
+      }
+    }
   ]
 })

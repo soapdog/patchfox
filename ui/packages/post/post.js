@@ -37,5 +37,16 @@ patchfox.package({
         }
       ]
     }     
+  ],
+  tray: [
+    {
+      label: "New Post",
+      event: "package:go",
+      shortcut: "CmdOrCtrl+N",
+      data: {
+        pkg: "post",
+        view: "compose"
+      }
+    }
   ]
 })
