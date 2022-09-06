@@ -1,11 +1,22 @@
 const pull = require("pull-stream")
+const { getVisibilityForMessageType } = require("../../kernel/prefs.js")
 
 let getPref = () => {}
 let isMessageHidden = () => {}
+let relationshipGraph = {
+  friends: [],
+  following: []
+}
+
 
 function setSharedFunctionsForFilters({getPref: gp, isMessageHidden: ish}) {
   getPref = gp
   isMessageHidden = ish
+}
+
+function updateFriendsAndFollowing(friends, following) {
+  relationshipGraph.friends = friends
+  relationshipGraph.following = following
 }
 
 function filterHasContent() {
@@ -18,8 +29,8 @@ function filterRemovePrivateMsgs() {
   )
 }
 
-async function  filterFollowing() {
-  return await this.socialFilter({ following: true })
+async function  filterBlocking() {
+  return await this.socialFilter({ blocking: false })
 }
 
 function filterLimit() {
@@ -57,11 +68,26 @@ function filterTypes() {
 
   return pull.filter((msg) => {
     let type = msg.value.content.type
+    let author = msg.value.author
 
-    if (typeof type == "string" && knownMessageTypes[type]) {
-      return getPref(knownMessageTypes[type], true)
+    let vis = getVisibilityForMessageType(type, "hide")
+
+    // console.log(`${msg.key} ... ${type}: ${vis} ...`)
+    if (vis === "hide") {
+      return false
     }
-    return getPref("showTypeUnknown", false)
+
+    if (vis === "friends") {
+      return relationshipGraph.friends.includes(author)
+    }
+
+    if (vis === "following") {
+      return relationshipGraph.following.includes(author)
+    }
+
+    if (vis === "all") {
+      return true
+    }
   })
 }
 
@@ -70,7 +96,8 @@ module.exports = {
   filterLimit,
   filterRemovePrivateMsgs,
   filterWithUserFilters,
-  filterFollowing,
+  filterBlocking,
   filterHasContent,
-  setSharedFunctionsForFilters
+  setSharedFunctionsForFilters,
+  updateFriendsAndFollowing
 }

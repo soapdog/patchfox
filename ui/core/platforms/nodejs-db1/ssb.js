@@ -29,7 +29,16 @@ const friendship = require("./friendship.js")
 const pipelines = require("../common/pipelines.js")
 const { enqueue } = require("../common/queues.js")
 const { resultFromCache, getMsgCache, setMsgCache, setAvatarCache, getCachedAvatar, getAllCachedUsers, loadCaches } = require("../common/cache.js")
-const { setSharedFunctionsForFilters, filterTypes, filterLimit, filterRemovePrivateMsgs, filterFollowing, filterWithUserFilters, filterHasContent } = require("../common/filters.js")
+const {
+  setSharedFunctionsForFilters,
+  filterTypes,
+  filterLimit,
+  filterRemovePrivateMsgs,
+  filterBlocking,
+  filterWithUserFilters,
+  filterHasContent,
+  updateFriendsAndFollowing
+} = require("../common/filters.js")
 
 let sbot = false
 let getPref = () => false
@@ -152,33 +161,39 @@ class NodeJsDB1 {
     const filter = opts.filter
     let selectedFilter
     let friends = await friendship.friendsAsArray(sbot.id)
-    friends.push(sbot.id) // so you don't filter yourself out.
+    let following = await friendship.followingAsArray(sbot.id)
 
-    switch (filter) {
-    case "Following":
-      selectedFilter = await this.socialFilter({following: true})
-      break
-    case "Friends":
-      selectedFilter = pull.filter(m => friends.includes(m.value.author))
-      break
-    default:
-      selectedFilter = await this.socialFilter()
-      break
-    }
+    // so you don't filter yourself out.
+    friends.push(sbot.id)
+    following.push(sbot.id)
+
+    updateFriendsAndFollowing(friends, following)
+
+    // switch (filter) {
+    // case "Following":
+    //   selectedFilter = pull.filter(m => following.includes(m.value.author))
+    //   break
+    // case "Friends":
+    //   selectedFilter = pull.filter(m => friends.includes(m.value.author))
+    //   break
+    // default:
+    //   selectedFilter = null
+    //   break
+    // }
 
     delete opts.filter
 
     const messages = new Promise((resolve, reject) => {
       pull(
         sbot.createFeedStream(opts),
-        selectedFilter,
+        // selectedFilter,
         pull.apply(pull, pipeline),
-        pullParallelMap((m, cb) => {
-          this.extendMessageWithRootMessageFor(m)
-            .then(messageWithRoot => {
-              cb(null, messageWithRoot)
-            })
-        }, 5),
+        // pullParallelMap((m, cb) => {
+        //   this.extendMessageWithRootMessageFor(m)
+        //     .then(messageWithRoot => {
+        //       cb(null, messageWithRoot)
+        //     })
+        // }, 5),
         pull.collect((err, msgs) => {
           if (err) {
             reject(err)

@@ -27,4 +27,21 @@ patchfox.package({
       ],
     },
   ],
+  tray: [
+    {
+      label: "Documentation",
+      event: "documentation:open",
+      data: "",
+    },
+    {
+      label: "Troubleshooting",
+      event: "documentation:open",
+      data: "/troubleshooting/",
+    },
+    {
+      label: "Release Notes",
+      event: "documentation:open",
+      data: releaseNotesUrl,
+    },
+  ]
 })

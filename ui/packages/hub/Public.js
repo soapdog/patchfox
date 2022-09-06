@@ -44,6 +44,7 @@ const PublicView = {
         })
         .catch(n => {
           vnode.state.loadingPhase = "error"
+          vnode.state.error = n
           m.redraw()
         })
     }
@@ -68,14 +69,20 @@ const PublicView = {
       )
     }
 
-    const header = m(".navbar.mb-2.text-base-content", [
-      m(".navbar-start", 
-      m("ul.menu.menu-horizontal.bg-secondary.bg-secondary-content", [
-        makeFilterButton("All"), 
-        makeFilterButton("Friends"), 
-        makeFilterButton("Following")
-      ]))
-    ])
+    // Removing this header temporarily as the new preferences
+    // system allows more fine-grained control over filtering.
+    //
+    // Leaving it commented out here because I'm not sure about it
+    // and life it too short to fiddle with git.
+    //
+    // const header = m(".navbar.mb-2.text-base-content", [
+    //   m(".navbar-start",
+    //     m("ul.menu.menu-horizontal.bg-secondary.bg-secondary-content", [
+    //       makeFilterButton("All"),
+    //       makeFilterButton("Friends"),
+    //       makeFilterButton("Following")
+    //     ]))
+    // ])
 
     const goNext = () => {
       vnode.state.lt.push(vnode.state.msgs[vnode.state.msgs.length - 1].value.timestamp)
@@ -91,14 +98,18 @@ const PublicView = {
       vnode.state.lt.pop()
       window.scrollTo(0, 0)
     }
-    
+
     if (vnode.state.loadingPhase == "loading") {
       return m(".flex.justify-center", m("i.fas.fa-spinner.fa-3x.fa-spin"))
     }
 
+    if (vnode.state.loadingPhase == "error") {
+      patchfox.go("errorHandler", "view", {message: vnode.state.error})
+    }
+
     if (vnode.state.loadingPhase == "loaded" && vnode.state.msgs.length > 0) {
       return [
-        header, 
+        // header,
         ...vnode.state.msgs.map(msg => m(MessageRenderer, { msg })), 
         m("br"), 
         m(".btn-group", [
@@ -106,6 +117,7 @@ const PublicView = {
           m("button.btn.btn-outline.btn-wide", { onclick: goNext }, "Next")]
         )]
     }
+
   },
 }
 

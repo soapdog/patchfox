@@ -5,9 +5,18 @@ const secretStack = require("secret-stack")
 const caps = require("ssb-caps")
 const merge = require("deep-extend")
 const { join } = require("path")
+const {
+  preferencesFileExists,
+  getDefaultIdentity
+} = require("../ui/core/kernel/prefs.js")
 let config = require("ssb-config")
 
-function buildConfig(plugins, userConfig = {}) {
+function buildConfig(identity, plugins, userConfig = {}) {
+
+  config.keys = identity.keys
+  config.remote = identity.remote
+
+  console.log("config", config)
   config = addSockets(config, plugins)
   config = fixLocalhost(config)
   config = forceLocalhost(config)
@@ -93,7 +102,7 @@ function startSSB(plugins, config, cb) {
   setTimeout(checkServer, 1000)
 }
 
-function startDefaultPatchfoxServer(cb) {
+function startDefaultPatchfoxServer(identity, cb) {
   const plugins = [
     // Authentication often hooked for authentication.
     require("ssb-master"),
@@ -127,9 +136,7 @@ function startDefaultPatchfoxServer(cb) {
     require("ssb-ws"),
   ]
 
-  const config = buildConfig(plugins)
-
-  console.log("config", config)
+  const config = buildConfig(identity, plugins)
 
   startSSB(plugins, config, cb)
 }

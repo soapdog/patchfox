@@ -4230,6 +4230,14 @@ html {
   min-height: 2rem;
 }
 
+.badge-sm {
+  height: 1rem;
+  font-size: .75rem;
+  line-height: 1rem;
+  padding-left: .438rem;
+  padding-right: .438rem;
+}
+
 .btn-xs {
   height: 1.5rem;
   padding-left: .5rem;
@@ -4422,6 +4430,10 @@ html {
   margin-left: 0.5rem;
 }
 
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .block {
   display: block;
 }
@@ -4448,6 +4460,10 @@ html {
 
 .grid {
   display: grid;
+}
+
+.contents {
+  display: contents;
 }
 
 .hidden {
@@ -4496,6 +4512,10 @@ html {
 
 .w-80 {
   width: 20rem;
+}
+
+.w-auto {
+  width: auto;
 }
 
 .w-11\/12 {

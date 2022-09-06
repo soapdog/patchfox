@@ -10,17 +10,24 @@ const {
 const path = require("path")
 const defaultMenu = require("electron-default-menu")
 const windowStateKeeper = require("electron-window-state")
-const { startDefaultPatchfoxServer } = require("./server/server.js")
 const queryString = require("query-string")
+const { startDefaultPatchfoxServer } = require("./server/server.js")
+const {
+  preferencesFileExists,
+  getDefaultIdentity
+} = require("./ui/core/kernel/prefs.js")
 
 let windows = new Set()
 let sbot = null
 let tray = null
 
-const createWindow = (data = false, windowState = false) => {
-  let win
+// register protocol
+app.setAsDefaultProtocolClient("ssb")
 
-  console.log("data", data)
+const createApplicationWindow = (patchfoxEvent = {}, windowState = false) => {
+  let win
+  let event = patchfoxEvent.event ?? false
+  let data = patchfoxEvent.data ?? false
 
   if (!windowState) {
     // Create the browser window.
@@ -70,12 +77,18 @@ const createWindow = (data = false, windowState = false) => {
   })
 
   // and load the index.html of the app.
+  console.log("data", data)
+
   if (data?.url) {
     win.loadURL(data.url)
   } else if (data?.pkg) {
     let state = { pkg: data.pkg, view: data.view, ...data }
     let qs = queryString.stringify(state)
     let url = `file://${__dirname}/ui/index.html?${qs}`
+    console.log(url)
+    win.loadURL(url)
+  } else if (event === "documentation:open") {
+    let url = `file://${__dirname}/docs/index.html#${data}`
     console.log(url)
     win.loadURL(url)
   } else {
@@ -89,7 +102,7 @@ const createWindow = (data = false, windowState = false) => {
 
   win.webContents.setWindowOpenHandler(details => {
     if (details.url.startsWith("file:")) {
-      createWindow({ url: details.url })
+      createApplicationWindow({event: "url:open", data: { url: details.url }})
       return { action: "deny" }
     } else {
       shell.openExternal(details.url)
@@ -98,8 +111,196 @@ const createWindow = (data = false, windowState = false) => {
   })
 }
 
+
+const firstTimeSetup = () => {
+  let win
+  win = new BrowserWindow({
+    width: 600,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  })
+
+  windows.add(win)
+
+  win.on("closed", () => {
+    windows.delete(win)
+    win = null
+  })
+
+  win.loadURL(`file://${__dirname}/ui/dialog.html?pkg=firstTimeSetup`)
+
+  // This event handler is here to benefit from the closure of `win`
+  ipcMain.on("setup:done", (event, data) => {
+    win.close()
+    try {
+      let defaultIdentity = getDefaultIdentity()
+      if (defaultIdentity.startServer) {
+        startServer(defaultIdentity)
+      } else {
+        createApplicationWindow({event, data})
+      }
+    }catch (e) {
+      console.log(e)
+    }
+  })
+}
+
+function startServer(identity) {
+  startDefaultPatchfoxServer(identity, (err, ssb) => {
+    console.log("Server started!", ssb.id)
+    sbot = ssb
+
+    // progress checker
+    let progress = ssb.progress()
+    let win
+
+    if (progress.indexes.current < progress.indexes.target) {
+      win = new BrowserWindow({
+        width: 400,
+        height: 400,
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false
+        }
+      })
+
+      windows.add(win)
+
+      win.on("closed", () => {
+        windows.delete(win)
+        win = null
+      })
+
+      win.loadURL(`file://${__dirname}/ui/dialog.html?pkg=reindexingDialog`)
+      // win.webContents.openDevTools()
+
+
+      const checkProgress = () => {
+        let progress = ssb.progress()
+
+        if (progress.indexes.current < progress.indexes.target) {
+          console.log("sending progress", progress)
+          win.webContents.send("progress", progress)
+          setTimeout(checkProgress, 1000)
+        } else {
+          let mainWindowState = windowStateKeeper({
+            defaultWidth: 800,
+            defaultHeight: 600
+          })
+
+          win.close()
+
+          createApplicationWindow(null, mainWindowState)
+        }
+      }
+
+      setTimeout(checkProgress, 1000)
+
+      return
+    }
+
+    // main window
+    let mainWindowState = windowStateKeeper({
+      defaultWidth: 800,
+      defaultHeight: 600
+    })
+
+    createApplicationWindow(null, mainWindowState)
+  })
+}
+
+// Some APIs can only be used after this event occurs.
+app.on("ready", () => {
+  tray = new Tray(`${__dirname}/ui/assets/images/patchfox_pixel_16.png`)
+  tray.setToolTip("Patchfox")
+
+  const initialMenu = Menu.buildFromTemplate([
+    {
+      label: "Quit",
+      click() { app.quit() }
+    }
+  ])
+  tray.setContextMenu(initialMenu)
+
+  // first-time user experience
+  if (!preferencesFileExists()) {
+    console.log("Launching first time setup...")
+    firstTimeSetup()
+    return
+  } else {
+    console.log("preferences exist")
+  }
+
+  // load default identity and start
+  try {
+    let defaultIdentity = getDefaultIdentity()
+    console.log("default identity", defaultIdentity)
+    if (defaultIdentity.startServer) {
+      startServer(defaultIdentity)
+    } else if (defaultIdentity) {
+      createApplicationWindow()
+    } else {
+      firstTimeSetup()
+    }
+  }catch (e) {
+    console.log("error, probably no default identity", e)
+    firstTimeSetup()
+  }
+})
+
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== "darwin") {
+    app.quit()
+  }
+})
+
+app.on("will-quit", () => {
+  if (sbot) {
+    console.log("Quitting SSB server.")
+    sbot.close()
+  }
+})
+
+app.on("activate", () => {
+  // On OS X it"s common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (sbot && BrowserWindow.getAllWindows().length === 0) {
+    let mainWindowState = windowStateKeeper({
+      defaultWidth: 800,
+      defaultHeight: 600,
+    })
+
+    createApplicationWindow(null, mainWindowState)
+  }
+})
+
+app.on("open-url", (event, url) => {
+  event.preventDefault()
+  console.log("urll", url)
+  if (sbot) {
+    createApplicationWindow({event: "package:open", data: { pkg: "intercept", view: "view", query: url }})
+  } else {
+    setTimeout(() => {
+      createApplicationWindow({event: "package:open", data: { pkg: "intercept", view: "view", query: url }})
+    },2000)
+  }
+})
+
+
 ipcMain.on("new-patchfox-window", (event, data) => {
-  createWindow(data)
+  createApplicationWindow({event, data})
+})
+
+ipcMain.on("preferences:reload", (event, data) => {
+  windows.forEach(w => {
+    w.webContents.send("preferences:reload")
+  })
 })
 
 ipcMain.on("window:set-title", (event, data) => {
@@ -164,7 +365,7 @@ ipcMain.on("menu:set", (event, group) => {
         label: "New Window",
         accelerator: "CmdOrCtrl+Shift+N",
         click: () => {
-          createWindow()
+          createApplicationWindow()
         },
       },
       {
@@ -212,7 +413,7 @@ ipcMain.on("tray:set", (event, items) => {
     let m = {
       label: i.label,
       click: (item, win) => {
-        createWindow(i.data)
+        createApplicationWindow({event: i.event, data: i.data})
       },
     }
 
@@ -233,7 +434,7 @@ ipcMain.on("tray:set", (event, items) => {
       label: "New Window",
       accelerator: "CmdOrCtrl+Shift+N",
       click: () => {
-        createWindow()
+        createApplicationWindow()
       }
     },
     {
@@ -255,126 +456,3 @@ ipcMain.on("tray:set", (event, items) => {
 
   tray.setContextMenu(finalMenu)
 })
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on("ready", () => {
-  console.log("Attempting to start server...")
-
-  tray = new Tray(`${__dirname}/ui/assets/images/patchfox_pixel_16.png`)
-  tray.setToolTip("Patchfox")
-
-  const initialMenu = Menu.buildFromTemplate([
-    {
-      label: "Quit",
-      click() { app.quit() }
-    }
-  ])
-  tray.setContextMenu(initialMenu)
-
-  startDefaultPatchfoxServer((err, ssb) => {
-    console.log("Server started!", ssb.id)
-    sbot = ssb
-
-    // first-time user experience (TODO)
-
-    // register protocol
-    app.setAsDefaultProtocolClient("ssb")
-
-    // progress checker
-    let progress = ssb.progress()
-    let win
-
-    if (progress.indexes.current < progress.indexes.target) {
-      win = new BrowserWindow({
-        width: 400,
-        height: 400,
-        webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false,
-        },
-      })
-
-      windows.add(win)
-
-      win.on("closed", () => {
-        windows.delete(win)
-        win = null
-      })
-
-      win.loadURL(`file://${__dirname}/ui/progress.html`)
-
-      const checkProgress = () => {
-        let progress = ssb.progress()
-
-        if (progress.indexes.current < progress.indexes.target) {
-          console.log("sending progress", progress)
-          win.webContents.send("progress", progress)
-          setTimeout(checkProgress, 1000)
-        } else {
-          let mainWindowState = windowStateKeeper({
-            defaultWidth: 800,
-            defaultHeight: 600,
-          })
-
-          createWindow(null, mainWindowState)
-        }
-      }
-
-      setTimeout(checkProgress, 1000)
-
-      return
-    }
-
-    // main window
-    let mainWindowState = windowStateKeeper({
-      defaultWidth: 800,
-      defaultHeight: 600,
-    })
-
-    createWindow(null, mainWindowState)
-  })
-})
-
-// Quit when all windows are closed.
-app.on("window-all-closed", () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
-    app.quit()
-  }
-})
-
-app.on("will-quit", () => {
-  console.log("Quitting SSB server.")
-  sbot.close()
-})
-
-app.on("activate", () => {
-  // On OS X it"s common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (sbot && BrowserWindow.getAllWindows().length === 0) {
-    let mainWindowState = windowStateKeeper({
-      defaultWidth: 800,
-      defaultHeight: 600,
-    })
-
-    createWindow(null, mainWindowState)
-  }
-})
-
-app.on("open-url", (event, url) => {
-  event.preventDefault()
-  console.log("urll", url)
-  if (sbot) {
-    createWindow({ pkg: "intercep", view: "view", query: url })
-  } else {
-    setTimeout(() => {
-      createWindow({ pkg: "intercep", view: "view", query: url })
-    },2000)
-  }
-})
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and import them here.

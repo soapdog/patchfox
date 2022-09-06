@@ -1,5 +1,5 @@
 const m = require("mithril")
-const { getPref, setPref, setMessageTypeVisibility } = patchfox
+const { getPref, setPref, setMessageTypeVisibility, getVisibilityForMessageType } = patchfox
 const _ = require("lodash")
 
 const messageBlurb = `
@@ -77,15 +77,17 @@ const DisplayPreferences = {
       })
     }
 
-    const makeRadio = (onchange, name, label) => {
+    const makeRadio = (onchange, name, checked = false) => {
       return m("input.radio", {
         onchange,
         name,
+        checked,
         type: "radio",
       })
     }
 
-    let messageTypeRows = new Set()
+    let messageTypeRows = []
+    let seenTypes = new Set()
 
     let packagesWithMessageTypes = _.filter(patchfox.packages, p => p.messageTypes)
 
@@ -93,6 +95,12 @@ const DisplayPreferences = {
       let mts = pkg.messageTypes
 
       mts.forEach(mt => {
+        if (seenTypes.has(mt.type)) {
+          return
+        }
+
+        seenTypes.add(mt.type)
+
         const setPrefForType = relationship => {
           return function (ev) {
             let v = ev.target.value
@@ -101,12 +109,17 @@ const DisplayPreferences = {
             }
           }
         }
-        messageTypeRows.add(m("tr", [
+
+        const getVisibilityBasedOnRelationshipAndType = (relationship, type) => {
+          return getVisibilityForMessageType(type) === relationship
+        }
+
+        messageTypeRows.push(m("tr", [
           m("th", mt.type), 
-          m("td", makeRadio(setPrefForType("friends"),mt.type, mt.type)),
-          m("td", makeRadio(setPrefForType("following"),mt.type, mt.type)),
-          m("td", makeRadio(setPrefForType("all"), mt.type, mt.type)),
-          m("td", makeRadio(setPrefForType("hide"), mt.type, mt.type))
+          m("td", makeRadio(setPrefForType("friends"),mt.type, getVisibilityBasedOnRelationshipAndType("friends", mt.type))),
+          m("td", makeRadio(setPrefForType("following"),mt.type, getVisibilityBasedOnRelationshipAndType("following", mt.type))),
+          m("td", makeRadio(setPrefForType("all"), mt.type, getVisibilityBasedOnRelationshipAndType("all", mt.type))),
+          m("td", makeRadio(setPrefForType("hide"), mt.type, getVisibilityBasedOnRelationshipAndType("hide", mt.type)))
         ]))
       })
     })
@@ -133,7 +146,7 @@ const DisplayPreferences = {
           m("th", "Following"), 
           m("th", "Everyone"),
           m("th", "Hide"),
-        ]), m("tbody", Array.from(messageTypeRows))]),
+        ]), m("tbody", messageTypeRows)]),
     ]
   },
 }
