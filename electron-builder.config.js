@@ -12,7 +12,7 @@ const firstCopyrightYear = 2018
 const lastCopyrightYear = new Date().getFullYear()
 const AUTHOR = "Andre Alves Garzia"
 const NAME_HUMAN = "Patchfox"
-const NAME_COMPUTER = "patchfox"
+const NAME_COMPUTER = "Patchfox"
 
 module.exports = {
   // Metadata ------------------------------------------------------------------
@@ -88,9 +88,6 @@ module.exports = {
     icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
     target: [
       { target: "tar.gz", arch: ["x64", "arm64"] },
-      // TODO: Fix support for SSB URIs in Manyverse AppImage, see:
-      // https://github.com/electron-userland/electron-builder/issues/5024
-      // {target: 'AppImage', arch: ['x64']},
     ],
     desktop: {
       StartupWMClass: NAME_COMPUTER,
@@ -116,7 +113,7 @@ module.exports = {
 
   dmg: {
     icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.icns"),
-    //background: path.join(__dirname, "build-resources", "dmg-background.png"),
+    background: path.join(__dirname, "ui", "assets", "images", "dmg-background.png"),
   },
 
   // Windows-specific configurations -------------------------------------------
