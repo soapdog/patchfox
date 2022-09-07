@@ -26,8 +26,8 @@ app.setAsDefaultProtocolClient("ssb")
 
 const createApplicationWindow = (patchfoxEvent = {}, windowState = false) => {
   let win
-  let event = patchfoxEvent.event ?? false
-  let data = patchfoxEvent.data ?? false
+  let event = patchfoxEvent?.event || false
+  let data = patchfoxEvent?.data || false
 
   if (!windowState) {
     // Create the browser window.
