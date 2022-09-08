@@ -59,7 +59,7 @@ class NodeJsDB1 {
     pipelines.thread.use(filterLimit)
 
     pipelines.message.use(filterHasContent)
-    pipelines.message.use(filterTypes)
+    // pipelines.message.use(filterTypes)
     pipelines.message.use(filterRemovePrivateMsgs)
     pipelines.message.use(filterWithUserFilters)
 
@@ -154,14 +154,23 @@ class NodeJsDB1 {
   }
 
   async public(opts) {
+    console.time("ssb.public")
     opts = opts || {}
     opts.reverse = opts.reverse || true
 
     const pipeline = pipelines.thread.get()
     const filter = opts.filter
     let selectedFilter
+    console.time("Getting friends graph")
     let friends = await friendship.friendsAsArray(sbot.id)
+    console.timeEnd("Getting friends graph")
+    console.time("Getting following graph")
     let following = await friendship.followingAsArray(sbot.id)
+    console.timeEnd("Getting following graph")
+    
+//     console.log("friends", friends)
+//     console.log("following", following)
+
 
     // so you don't filter yourself out.
     friends.push(sbot.id)
@@ -195,6 +204,8 @@ class NodeJsDB1 {
         //     })
         // }, 5),
         pull.collect((err, msgs) => {
+          console.timeEnd("ssb.public")
+
           if (err) {
             reject(err)
           }

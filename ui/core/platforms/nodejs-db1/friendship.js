@@ -1,103 +1,56 @@
 const pull = require("pull-stream")
 const paramap = require("pull-paramap")
+const run = require("promisify-tuple")
+
+let graph = {}
 
 const friendship = {
-  followingAsArray: (feed) =>
-    new Promise((resolve, reject) => {
-      let filter = (content) => {
-        return content.following === true
-      }
-      let callback = (err, ids) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(ids)
-        }
-      }
+  refreshRelationshipGraph: async () => {
+    let [err, newGraph] = await run(ssb.sbot.friends.graph)()
 
-      pull(
-        ssb.sbot.links({
-          source: feed,
-          rel: "contact",
-          values: true,
-          reverse: true,
-        }),
-        pull.map(function (msg) {
-          return msg && msg.value && msg.value.content
-        }),
-        pull.filter(function (content) {
-          return content && content.type === "contact"
-        }),
-        pull.unique("contact"),
-        pull.filter(filter),
-        pull.map("contact"),
-        pull.collect(callback)
-      )
-    }),
-  followersAsArray: (feed) =>
-    new Promise((resolve, reject) => {
-      pull(
-        ssb.sbot.links({
-          dest: feed,
-          rel: "contact",
-          values: true,
-          reverse: true,
-        }),
-        pull.map((msg) => msg && msg.value),
-        pull.unique("author"),
+    if (err) {
+      throw err
+    }
 
-        pull.filter(function (value) {
-          return value.content && value.content.type === "contact"
-        }),
-        pull.filter(function (value) {
-          return value.content.following === true
-        }),
-        pull.map("author"),
-        pull.collect((err, ids) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(ids)
-          }
-        })
-      )
-    }),
-  friendsAsArray: (feed) =>
-    new Promise((resolve, reject) => {
-      pull(
-        ssb.sbot.links({
-          source: feed,
-          rel: "contact",
-          values: true,
-          reverse: true,
-        }),
-        pull.map(function (msg) {
-          return msg && msg.value && msg.value.content
-        }),
-        pull.filter(function (content) {
-          return content && content.type === "contact"
-        }),
-        pull.unique("contact"),
-        pull.filter(function (content) {
-          return content.following === true
-        }),
-        paramap((content, cb) => {
-          ssb.following(feed, content.contact).then((data) => {
-            content.friend = data
-            cb(null, content)
-          })
-        }),
-        pull.filter((content) => content.friend),
-        pull.map("contact"),
-        pull.collect((err, ids) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(ids)
-          }
-        })
-      )
-    }),
+    graph = newGraph
+  }, followingAsArray: async (feed) => {
+    if (!graph.hasOwnProperty(feed)) {
+      await friendship.refreshRelationshipGraph()
+    }
+
+    let feedGraph = graph[feed]
+    let arr = []
+
+    Object.keys(feedGraph).forEach(k => {
+      if (feedGraph[k] === 1) {
+        arr.push(k)
+      }
+    })
+
+    return arr
+  }, followersAsArray: async (feed) => {
+    if (!graph.hasOwnProperty(feed)) {
+      await friendship.refreshRelationshipGraph()
+    }
+
+    let arr = []
+
+    Object.keys(graph).forEach(k => {
+      let thisFeedGraph = graph[k]
+
+      if (thisFeedGraph[feed] === 1) {
+        // they follow feed.
+        arr.push(k)
+      }
+    })
+
+    return arr
+  }, friendsAsArray: async (feed) => {
+    let following = await friendship.followingAsArray(feed)
+    let followers = await friendship.followersAsArray(feed)
+
+    return following.filter(x => followers.includes(x))
+  }
 }
 
 module.exports = friendship

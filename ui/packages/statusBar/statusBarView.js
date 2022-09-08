@@ -19,7 +19,6 @@ const checkIndexing = vnode => {
       let progressBar = document.getElementById("reindexing-progress-bar")
       progressBar.setAttribute("value", data.indexes.current)
       progressBar.setAttribute("max", data.indexes.target)
-
       reindexingDiv.classList.remove("hidden")
     } else {
       reindexingDiv.classList.add("hidden")
@@ -31,6 +30,9 @@ const checkVersion = async () => {
   try {
     let releases = await (await fetch("https://api.github.com/repos/soapdog/patchfox/releases")).json()
     let latestRelease = releases[0]
+
+    console.log("latestRelease", latestRelease)
+    console.log("localVersion", localVersion)
 
     if (latestRelease.name !== localVersion) {
       document.getElementById("version").innerHTML = `v${localVersion} (update available: <a class="underline" target="_blank" href="${latestRelease.html_url}">${latestRelease.name}</a>)`
@@ -88,7 +90,7 @@ const StatusBarView = {
       m(".flex-none", m(AvatarChip, {class: "flex-none", feed: ssb.feed, inline: true })), 
       m(".flex-none.flex.hidden#reindexing-div", [
         m("span", "Reindexing..."), 
-        m("progress.progress.progress-primary.w-8#reindexing-progress-bar", { value: currValue, max: endValue })
+        m("progress.progress.progress-primary.w-12#reindexing-progress-bar", { value: currValue, max: endValue })
       ]), 
       m(".flex-none.btn.btn-sm.btn-ghost#peer-count", { onclick: () => patchfox.go("system", "peers") }, `${vnode.state.peers.length} peers`), 
       m(".flex-auto"), // spacer

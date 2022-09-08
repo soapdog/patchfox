@@ -3764,6 +3764,11 @@ html {
   background-color: hsla(var(--in) / var(--tw-bg-opacity, 1));
 }
 
+.progress-success::-moz-progress-bar {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--su) / var(--tw-bg-opacity, 1));
+}
+
 .progress::-webkit-progress-bar {
   --tw-bg-opacity: 1;
   --tw-bg-opacity: 0.2;
@@ -3785,6 +3790,11 @@ html {
 .progress-info::-webkit-progress-value {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--in) / var(--tw-bg-opacity, 1));
+}
+
+.progress-success::-webkit-progress-value {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--su) / var(--tw-bg-opacity, 1));
 }
 
 .radio {
@@ -4494,8 +4504,8 @@ html {
   width: 1rem;
 }
 
-.w-8 {
-  width: 2rem;
+.w-12 {
+  width: 3rem;
 }
 
 .w-14 {
@@ -4637,6 +4647,10 @@ html {
   flex-direction: row;
 }
 
+.place-content-center {
+  place-content: center;
+}
+
 .content-center {
   align-content: center;
 }
@@ -4698,6 +4712,11 @@ html {
 .bg-accent {
   --tw-bg-opacity: 1;
   background-color: hsla(var(--a) / var(--tw-bg-opacity));
+}
+
+.bg-neutral {
+  --tw-bg-opacity: 1;
+  background-color: hsla(var(--n) / var(--tw-bg-opacity));
 }
 
 .bg-neutral-focus {

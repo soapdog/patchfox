@@ -15,8 +15,6 @@ function buildConfig(identity, plugins, userConfig = {}) {
 
   config.keys = identity.keys
   config.remote = identity.remote
-
-  console.log("config", config)
   config = addSockets(config, plugins)
   config = fixLocalhost(config)
   config = forceLocalhost(config)
@@ -73,7 +71,7 @@ function forceLocalhost(config) {
 }
 
 function startSSB(plugins, config, cb) {
-  console.log("starting Server")
+  console.log("Starting Server")
 
   const stack = secretStack({ caps: config.caps || caps })
   plugins.forEach(plugin => {
@@ -83,12 +81,10 @@ function startSSB(plugins, config, cb) {
 
   const ssb = stack(config)
 
-  console.log("Checking if server is ready...")
+  console.log("Knock! Knock! Is there a server there?")
 
   const checkServer = () => {
     let res = ssb.progress()
-    console.log("res", res)
-
 
     if (res.hasOwnProperty("indexes")) {
       cb(null, ssb)

@@ -8,6 +8,7 @@ const {
   Tray,
   ipcMain } = require("electron")
 const path = require("path")
+const arg = require("arg")
 const defaultMenu = require("electron-default-menu")
 const windowStateKeeper = require("electron-window-state")
 const queryString = require("query-string")
@@ -23,6 +24,17 @@ let tray = null
 
 // register protocol
 app.setAsDefaultProtocolClient("ssb")
+
+// Command-line args
+const args = arg({
+  // Types
+  "--help": Boolean,
+  "--version": Boolean,
+  "--rebuild-indexes": Boolean,
+  "--package": String,
+  "--view": String,
+})
+
 
 const createApplicationWindow = (patchfoxEvent = {}, windowState = false) => {
   let win
@@ -77,7 +89,7 @@ const createApplicationWindow = (patchfoxEvent = {}, windowState = false) => {
   })
 
   // and load the index.html of the app.
-  console.log("data", data)
+  // console.log("data", data)
 
   if (data?.url) {
     win.loadURL(data.url)
@@ -193,7 +205,13 @@ function startServer(identity) {
 
           win.close()
 
-          createApplicationWindow(null, mainWindowState)
+          if (args["--package"]) {
+            let pkg = args["--package"]
+            let view = args["--view"] ??  "view"
+            createApplicationWindow({event: "package:go", data: {pkg, view}}, mainWindowState)
+          } else {
+            createApplicationWindow(null, mainWindowState)
+          }
         }
       }
 
@@ -208,7 +226,15 @@ function startServer(identity) {
       defaultHeight: 600
     })
 
-    createApplicationWindow(null, mainWindowState)
+    console.log(process.argv)
+    if (args["--package"]) {
+      let pkg = args["--package"]
+      let view = args["--view"] ??  "view"
+      createApplicationWindow({event: "package:go", data: {pkg, view}}, mainWindowState)
+    } else {
+      createApplicationWindow(null, mainWindowState)
+    }
+
   })
 }
 
@@ -241,7 +267,13 @@ app.on("ready", () => {
     if (defaultIdentity.startServer) {
       startServer(defaultIdentity)
     } else if (defaultIdentity) {
-      createApplicationWindow()
+      if (args["--package"]) {
+        let pkg = args["--package"]
+        let view = args["--view"] ??  "view"
+        createApplicationWindow({event: "package:go", data: {pkg, view}})
+      } else {
+        createApplicationWindow()
+      }
     } else {
       firstTimeSetup()
     }
@@ -282,7 +314,7 @@ app.on("activate", () => {
 
 app.on("open-url", (event, url) => {
   event.preventDefault()
-  console.log("urll", url)
+  console.log("url", url)
   if (sbot) {
     createApplicationWindow({event: "package:open", data: { pkg: "intercept", view: "view", query: url }})
   } else {
@@ -424,8 +456,6 @@ ipcMain.on("tray:set", (event, items) => {
     return m
   }
 
-  console.log("items", items)
-
   menu = items.map(i => makeMenu(i))
 
   // FIXME: menu has wrong order for toplevel items.
@@ -456,3 +486,4 @@ ipcMain.on("tray:set", (event, items) => {
 
   tray.setContextMenu(finalMenu)
 })
+
