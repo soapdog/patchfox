@@ -132,9 +132,9 @@ const DisplayPreferences = {
         { class: "prose-xl", value: "prose-xl", label: "Extra Large" },
       ]),
       makeSelect(setComposeSize, "Text size for composing posts", [
-        { class: "prose", value: "prose", label: "Normal" },
-        { class: "prose-lg", value: "prose-lg", label: "Large" },
-        { class: "prose-xl", value: "prose-xl", label: "Extra Large" },
+        { class: "prose", value: "text", label: "Normal" },
+        { class: "prose-lg", value: "text-lg", label: "Large" },
+        { class: "prose-xl", value: "text-xl", label: "Extra Large" },
       ]),
       makeInput(setLimit, "Messages per page", "number", limit),
       m("h2.uppercase.font-medium.text-lg.mt-4", "Message Types"),

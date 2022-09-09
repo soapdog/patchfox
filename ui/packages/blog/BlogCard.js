@@ -2,6 +2,8 @@ const m = require("mithril")
 const Card = require("../../core/components/Card.js")
 const VoteCounter = require("../../core/components/VoteCounter.js")
 const { when } = require("../../core/kernel/utils.js")
+const { getPref } = require("../../core/kernel/prefs.js")
+
 
 const BlogCard = {
   oninit: vnode => {
@@ -24,6 +26,12 @@ const BlogCard = {
       vnode.state.liked = ms.includes(ssb.feed)
       m.redraw()
     })
+
+    patchfox.listen(
+      "preferences:changed",
+      () => {
+        m.redraw()
+      })
   },
   view: vnode => {
     console.log("hit")
@@ -193,7 +201,9 @@ const BlogCard = {
       when(title, m("h5.card-title.h5", title)),
       when(vnode.state.toast, m(".toast.toast-error", `Can't load blogpost: ${vnode.state.toastMsg}`)),
       when(vnode.state.hasContentWarning, m(".toast.toast-primary"),m("p", [m("b", "Content warning:"), msg.value.contentWarning])),
-      m("article.prose", vnode.state.showBlogpost ? m.trust(post) : m.trust(summary)),
+      m("article.prose",{
+        class: getPref("textSize", "prose")
+      }, vnode.state.showBlogpost ? m.trust(post) : m.trust(summary)),
     ])
   },
 }

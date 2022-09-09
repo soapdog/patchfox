@@ -65,6 +65,12 @@ const BlogCompose = {
     vnode.state.summary = vnode.attrs.summary || ""
     vnode.state.title = vnode.attrs.title || ""
     vnode.state.thumbnail = vnode.attrs.thumbnail || false
+
+    patchfox.listen(
+      "preferences:changed",
+      () => {
+        m.redraw()
+      })
   },
   oncreatee: vnode => {
     drop(document.getElementById("content"), files => readFileAndAttach(vnode, files))
