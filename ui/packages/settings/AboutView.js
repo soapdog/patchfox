@@ -1,8 +1,6 @@
 const m = require("mithril")
 
 const blurb = `
-# About Patchfox
-
 This is an alpha version of Patchfox. 
 
 At the moment it can only load the default
@@ -13,7 +11,10 @@ backends will be reinstated soon.
 const AboutView = {
   oninit: vnode => {},
   view: vnode => {
-    return m(".prose", m.trust(ssb.markdown(blurb)))
+    return [
+      m("h1.uppercase.font-medium.text-xl.mb-4", "About Patchfox"),
+      m(".prose", m.trust(ssb.markdown(blurb)))
+    ]
   },
 }
 

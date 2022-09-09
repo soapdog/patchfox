@@ -232,6 +232,7 @@ if (ipcRenderer) {
   ipcRenderer.on("preferences:reload", () => {
     console.log("Preferences changed on disk, reloading...")
     loadSavedData()
+    patchfox.emit("preferences:changed")
   })
 }
 

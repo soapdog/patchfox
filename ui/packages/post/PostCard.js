@@ -17,9 +17,11 @@ const PostCard = {
       contentWarningsExpandByDefault === "collapsed"
 
     patchfox.listen(
-      "prefs:changed:textSize",
-      (newSize) => (vnode.state.textSize = newSize)
-    )
+      "preferences:changed",
+      () => {
+        m.redraw()
+      })
+
 
     vnode.state.key = Date.now()
   },
@@ -193,11 +195,11 @@ const PostCard = {
               ])
             )
           ),
-          m("div.prose", { class: vnode.state.textSide }, m.trust(content)),
+          m("div.prose", { class: vnode.state.textSize }, m.trust(content)),
         ]),
         when(
           !hasContentWarning,
-          m("div.prose", { class: vnode.state.textSide }, m.trust(content))
+          m("div.prose", { class: vnode.state.textSize }, m.trust(content))
         ),
       ]
     )
