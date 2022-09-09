@@ -109,7 +109,7 @@
     "ssb-keys": "^8.2.0",
     "ssb-lan": "^1.2.3",
     "ssb-logging": "^1.0.0",
-    "ssb-markdown": "^4.0.1",
+    "ssb-markdown": "^6.0.7",
     "ssb-marked": "^0.7.4",
     "ssb-master": "^1.0.3",
     "ssb-meme": "^1.1.0",

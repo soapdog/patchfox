@@ -36,7 +36,7 @@ const PublicView = {
         .public(opts)
         .then(ms => {
           console.timeEnd("public timeline")
-          console.log(ms)
+          // console.log(ms)
           vnode.state.msgs = ms
           window.scrollTo(0, 0)
           vnode.state.loadingPhase = "loaded"

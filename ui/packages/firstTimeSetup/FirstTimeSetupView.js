@@ -57,7 +57,6 @@ const CustomKeys = {
   view: vnode => {
     let enabled = vnode.state.remote.length > 0 && vnode.state.keys
 
-    console.log("disabled", enabled)
     const selectedFile = ev => {
       const secretFile = ev.target.files[0]
       const reader = new FileReader()

@@ -14,11 +14,8 @@ const ThreadView = {
     let el = document.querySelector(`[data-key='${thread}']`)
 
     if (el && !vnode.state.scrolledIntoView) {
-      console.log("scrolling")
       el.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})
       vnode.state.scrolledIntoView = true
-    } else {
-      console.log("not", el)
     }
 
   },
@@ -33,17 +30,16 @@ const ThreadView = {
       
       patchfox.title(thread)
 
+      vnode.state.shouldLoadMessages = false
       ssb
         .thread(thread)
         .then((ms) => {
           vnode.state.msgs = ms
-          vnode.state.shouldLoadMessages = false
           m.redraw()
         })
         .catch((n) => {
           console.dir(n)
           vnode.state.error = n.message
-          vnode.state.shouldLoadMessages = false
           if (n.message.indexOf("stream is closed") !== -1) {
             location.reload()
           }

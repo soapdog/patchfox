@@ -309,8 +309,17 @@ const PostCompose = {
       if (vnode.state.showPreview) {
         return m("div", [
           m("h2.uppercase.font-medium.text-md", "Post Preview"),
-          m(".prose", [when(vnode.state.channel, m("p.text-md", `Channel: ${vnode.state.channel.startsWith("#") ? vnode.state.channel.slice(1) : vnode.state.channel}`)), when(vnode.state.root, m("p.text-md", `Root: ${vnode.state.root}`)), when(vnode.state.branch, m("p.text-md", `In Reply To: ${vnode.state.branch}`)), when(vnode.state.contentWarning.length > 0, m("p.text-md", `Content Warning: ${vnode.state.contentWarning}`))]),
-          m.trust(ssb.markdown(vnode.state.content)),
+          m(".prose", [
+            when(vnode.state.channel,
+              m("p.text-md", `Channel: ${vnode.state.channel.startsWith("#") ? vnode.state.channel.slice(1) : vnode.state.channel}`)),
+            when(vnode.state.root,
+              m("p.text-md", `Root: ${vnode.state.root}`)),
+            when(vnode.state.branch,
+              m("p.text-md", `In Reply To: ${vnode.state.branch}`)),
+            when(vnode.state.contentWarning.length > 0,
+              m("p.text-md", `Content Warning: ${vnode.state.contentWarning}`))
+          ]),
+          m(".prose", m.trust(ssb.markdown(vnode.state.content))),
           m(".divider"),
           m(".alert.alert-warning", [
             m(".flex-1", m("label", "This message will be public and can't be edited or deleted")),

@@ -266,7 +266,6 @@ app.on("ready", () => {
   // load default identity and start
   try {
     let defaultIdentity = getDefaultIdentity()
-    console.log("default identity", defaultIdentity)
     if (defaultIdentity.startServer) {
       startServer(defaultIdentity)
     } else if (defaultIdentity) {

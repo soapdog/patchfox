@@ -154,23 +154,21 @@ class NodeJsDB1 {
   }
 
   async public(opts) {
-    console.time("ssb.public")
     opts = opts || {}
     opts.reverse = opts.reverse || true
 
     const pipeline = pipelines.thread.get()
     const filter = opts.filter
     let selectedFilter
-    console.time("Getting friends graph")
+    // console.time("Getting friends graph")
     let friends = await friendship.friendsAsArray(sbot.id)
-    console.timeEnd("Getting friends graph")
-    console.time("Getting following graph")
+    // console.timeEnd("Getting friends graph")
+    // console.time("Getting following graph")
     let following = await friendship.followingAsArray(sbot.id)
-    console.timeEnd("Getting following graph")
+    // console.timeEnd("Getting following graph")
     
-//     console.log("friends", friends)
-//     console.log("following", following)
-
+    // console.log("friends", friends)
+    // console.log("following", following)
 
     // so you don't filter yourself out.
     friends.push(sbot.id)
@@ -204,8 +202,6 @@ class NodeJsDB1 {
         //     })
         // }, 5),
         pull.collect((err, msgs) => {
-          console.timeEnd("ssb.public")
-
           if (err) {
             reject(err)
           }
@@ -623,25 +619,24 @@ class NodeJsDB1 {
     function replaceFeedID(match, id, offset, string) {
       let eid = encodeURIComponent(`@${id}`)
       return (
-        // eslint-disable-next-line quotes
-        '<a class="link link-accent profile-link" href="?pkg=contacts&view=profile&feed=' + eid + identity
+        `<a class="link link-accent profile-link" href="?pkg=contacts&view=profile&feed=` + eid + identity
       )
     }
 
     function replaceImageLinks(match, id, offset, string) {
-      return `<a class="link  link-accent image-link" target="_blank" href="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
+      return `<a class="link  link-accent image-link" target="_blank" href="${patchfox.httpUrl("/blobs/get/&")}` + id
     }
 
     function replaceImages(match, id, offset, string) {
-      return `<img class="is-image-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
+      return `<img class="is-image-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + id
     }
 
     function replaceVideos(match, id, offset, string) {
-      return `<video controls class="is-video-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
+      return `<video controls class="is-video-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + id
     }
 
     function replaceAudios(match, id, offset, string) {
-      return `<audio controls class="is-audio-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + encodeURIComponent(id)
+      return `<audio controls class="is-audio-from-blob" src="${patchfox.httpUrl("/blobs/get/&")}` + id
     }
 
     let opts = {
@@ -657,8 +652,8 @@ class NodeJsDB1 {
       .replace(/target="_blank"/gi, "")
       .replace(/<a href="%([^"]*)/gi, replaceMsgID)
       .replace(/<img src="&([^"]*)/gi, replaceImages)
-      .replace(/<video controls src="&([^"]*)/gi, replaceVideos)
-      .replace(/<audio controls src="&([^"]*)/gi, replaceAudios)
+      .replace(/<video src="&([^"]*)/gi, replaceVideos)
+      .replace(/<audio src="&([^"]*)/gi, replaceAudios)
       .replace(/<a href="&([^"]*)/gi, replaceImageLinks)
       .replace(/<a href="([^"]*)/gi, replaceLinks)
 

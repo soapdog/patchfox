@@ -20,7 +20,7 @@ const defaultPreferencesContent = `
 #
 [Preferences]
 theme = "light"
-textSize = "prose-lg"
+textSize = "prose"
 limit = "40"
 
 [MessageTypes]
@@ -52,9 +52,11 @@ const preferencesFileExists = () => {
 
   if (fileExists) {
     const data = TOML.parse(fs.readFileSync(prefsFile))
-    console.log(data)
     if (data?.Preferences?.defaultIdentity &&
       data[data?.Preferences?.defaultIdentity]?.id) {
+      return true
+    } else if (data?.preferences?.defaultIdentity &&
+      data[data?.preferences?.defaultIdentity]?.id) {
       return true
     }
   }
@@ -75,6 +77,11 @@ const loadSavedData = async () => {
       const data = TOML.parse(fs.readFileSync(prefsFile))
 
       if (data) {
+        if (data.hasOwnProperty("preferences")) {
+          // old prefs file, migrate
+          data.Preferences = data.preferences
+          delete data.preferences
+        }
         savedData = data
       } else {
         throw "Bad patchfox.toml"
@@ -95,6 +102,8 @@ const getPref = (key, defaultValue, namespace = "Preferences") => {
     // by the first-time setup.
     if (preferencesFileExists()) {
       savedData = TOML.parse(fs.readFileSync(prefsFile))
+    } else {
+      initialisePreferencesFileIfNeeded()
     }
   }
 

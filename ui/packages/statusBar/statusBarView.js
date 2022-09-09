@@ -31,8 +31,8 @@ const checkVersion = async () => {
     let releases = await (await fetch("https://api.github.com/repos/soapdog/patchfox/releases")).json()
     let latestRelease = releases[0]
 
-    console.log("latestRelease", latestRelease)
-    console.log("localVersion", localVersion)
+    // console.log("latestRelease", latestRelease)
+    // console.log("localVersion", localVersion)
 
     if (latestRelease.name !== localVersion) {
       document.getElementById("version").innerHTML = `v${localVersion} (update available: <a class="underline" target="_blank" href="${latestRelease.html_url}">${latestRelease.name}</a>)`
@@ -74,7 +74,7 @@ const StatusBarView = {
     vnode.state.peers = []
     setInterval(() => checkIndexing(vnode), 300)
     setInterval(() => countPeers(vnode), 300)
-    checkVersion()
+    // checkVersion()
   },
 
   view: vnode => {
