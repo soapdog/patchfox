@@ -20,8 +20,10 @@ const LauncherView = {
     )
 
     const token = patchfox.listen("launcher:open", () => {
-      active = true
-      console.log("open launcher")
+      vnode.state.active = !vnode.state.active
+      vnode.state.descriptionOpen = false
+      vnode.state.subView = "Apps"
+      m.redraw()
     })
   },
   view: (vnode) => {
