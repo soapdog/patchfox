@@ -18,6 +18,7 @@ const TimelineView = {
 
     let currentDate = new Date().getTime()
 
+    // todo: move this to ssb.js
     if (ssb.platform === "nodejs-db1") {
       console.time("loading gatherings")
       pull(
@@ -122,7 +123,10 @@ const TimelineView = {
       ),
     ]
 
-    const timeline = m("ul.steps.steps-vertical", [todayLabel, gatherings.map(makeGathering)])
+    const timeline = m("ul.steps.steps-vertical", [
+      todayLabel,
+      gatherings.length > 0 ? gatherings.map(makeGathering) : m("p.prose", "No gatherings found.")
+    ])
 
     return m(".events-display", [vnode.state.loading ? loadingMessage : timeline])
   },
