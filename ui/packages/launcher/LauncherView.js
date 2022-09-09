@@ -109,7 +109,7 @@ const LauncherView = {
           "onclick": () => {
             if (patchfox.packages[pkg]?.app) {
               vnode.state.active = false
-              patchfox.go(pkg, "view")
+              window.open(patchfox.url(pkg, "view"))
             } else {
               vnode.state.selectedPackage = pkg
               vnode.state.descriptionOpen = true
@@ -178,11 +178,11 @@ const LauncherView = {
                 target: "_blank"
               }, `View documentation for package ${vnode.state.selectedPackage}`)),
               m("li", m("a.link.link-primary", {
-                href:`https://github.com/soapdog/patchfox/tree/master/src/ui/packages/${vnode.state.selectedPackage}`,
+                href:`https://github.com/soapdog/patchfox/tree/master/ui/packages/${vnode.state.selectedPackage}`,
                 target: "_blank",
               }, `View source-code for package ${vnode.state.selectedPackage} on GitHub`)),
               m("li", m("a.link.link-primary", {
-                href:`https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/ui/packages/${vnode.state.selectedPackage}`,
+                href:`https://git.sr.ht/~soapdog/patchfox/tree/master/item/ui/packages/${vnode.state.selectedPackage}`,
                 target: "_blank",
               }, `View source-code for package ${vnode.state.selectedPackage} on SourceHut.`))
             ])
