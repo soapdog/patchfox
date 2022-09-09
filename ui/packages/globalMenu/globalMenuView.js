@@ -2,6 +2,7 @@ const m = require("mithril")
 const queryString = require("query-string")
 const ipcRenderer = require("electron").ipcRenderer
 const { when } = require("../../core/kernel/utils.js")
+const { getNamespace } = require("../../core/kernel/prefs.js")
 const ThemeSwitcher = require("../../core/components/ThemeSwitcher.js")
 
 //const IdentitySwitcher = require("../../core/components/IdentitySwitcher.js")
@@ -57,6 +58,10 @@ const GlobalMenuView = {
       )
     }
 
+    const defaultActions = [{label: "Public", pkg: "hub", view: "public"}, {label: "Mentions", pkg: "hub", view: "mentions"}]
+    const actions = getNamespace("QuickActions", defaultActions)
+    const quickActions = actions.map(a => makeButton(a.label, a.pkg, a.view, a.data))
+
     const search = ev => {
       let query = document.getElementById("search-box").value
 
@@ -104,7 +109,7 @@ const GlobalMenuView = {
               m.trust("&rarr;")
             ),
           ]),
-          m(".navbar-center", [makeButton("Public", "hub", "public"), makeButton("Mentions", "hub", "mentions")]),
+          m(".navbar-center", quickActions),
           m(".navbar-end", [
             m("form",{
               role: "search",

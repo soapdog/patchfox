@@ -18,7 +18,7 @@ const defaultPreferencesContent = `
 # DO NOT SHARE YOUR PREFERENCES FILE WITH ANYONE.
 # IT CONTAINS YOUR PRIVATE KEYS.
 #
-[preferences]
+[Preferences]
 theme = "light"
 textSize = "prose-lg"
 limit = "40"
@@ -33,6 +33,16 @@ blog = "all"
 contact = "following"
 about = "all"
 gathering = "all"
+
+[[QuickActions]]
+label = "Public"
+pkg = "hub"
+view = "public"
+
+[[QuickActions]]
+label = "Mentions"
+pkg = "hub"
+view = "mentions"
 `
 
 let savedData = {}
@@ -43,8 +53,8 @@ const preferencesFileExists = () => {
   if (fileExists) {
     const data = TOML.parse(fs.readFileSync(prefsFile))
     console.log(data)
-    if (data?.preferences?.defaultIdentity &&
-      data[data?.preferences?.defaultIdentity]?.id) {
+    if (data?.Preferences?.defaultIdentity &&
+      data[data?.Preferences?.defaultIdentity]?.id) {
       return true
     }
   }
@@ -79,8 +89,8 @@ const loadSavedData = async () => {
   }
 }
 
-const getPref = (key, defaultValue, namespace = "preferences") => {
-  if (!savedData.hasOwnProperty("preferences")) {
+const getPref = (key, defaultValue, namespace = "Preferences") => {
+  if (!savedData.hasOwnProperty("Preferences")) {
     // maybe not loaded. Preferences should always be present. It is added
     // by the first-time setup.
     if (preferencesFileExists()) {
@@ -92,6 +102,21 @@ const getPref = (key, defaultValue, namespace = "preferences") => {
     if (savedData[namespace].hasOwnProperty(key)) {
       return savedData[namespace][key]
     }
+  }
+  return defaultValue
+}
+
+const getNamespace = (namespace, defaultValue) => {
+  if (!savedData.hasOwnProperty("Preferences")) {
+    // maybe not loaded. Preferences should always be present. It is added
+    // by the first-time setup.
+    if (preferencesFileExists()) {
+      savedData = TOML.parse(fs.readFileSync(prefsFile))
+    }
+  }
+
+  if (savedData[namespace]) {
+    return savedData[namespace]
   }
   return defaultValue
 }
@@ -134,7 +159,7 @@ const removeIdentity = (key) => {
 }
 
 
-const setPref = (key, value, namespace = "preferences") => {
+const setPref = (key, value, namespace = "Preferences") => {
   savedData[namespace] = savedData[namespace] || {}
   savedData[namespace][key] = value
 
@@ -250,4 +275,5 @@ module.exports = {
   initialisePreferencesFileIfNeeded,
   setMessageTypeVisibility,
   getVisibilityForMessageType,
+  getNamespace,
 }
