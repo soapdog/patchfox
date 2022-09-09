@@ -50,7 +50,7 @@ const DisplayPreferences = {
       return makeFormControl(
         label,
         m(
-          "select.select.selectr-bordered.w-full.max-w-ws",
+          "select.select.select-bordered.w-full.max-w-ws",
           {
             onchange,
           },

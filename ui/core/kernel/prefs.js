@@ -79,18 +79,18 @@ const loadSavedData = async () => {
   }
 }
 
-const getPref = (key, defaultValue) => {
+const getPref = (key, defaultValue, namespace = "preferences") => {
   if (!savedData.hasOwnProperty("preferences")) {
-    // maybe not loaded...
-    // this happens when using the first time setup
+    // maybe not loaded. Preferences should always be present. It is added
+    // by the first-time setup.
     if (preferencesFileExists()) {
       savedData = TOML.parse(fs.readFileSync(prefsFile))
     }
   }
 
-  if (savedData.preferences) {
-    if (savedData.preferences.hasOwnProperty(key)) {
-      return savedData.preferences[key]
+  if (savedData[namespace]) {
+    if (savedData[namespace].hasOwnProperty(key)) {
+      return savedData[namespace][key]
     }
   }
   return defaultValue
@@ -134,9 +134,9 @@ const removeIdentity = (key) => {
 }
 
 
-const setPref = (key, value) => {
-  savedData.preferences = savedData.preferences || {}
-  savedData.preferences[key] = value
+const setPref = (key, value, namespace = "preferences") => {
+  savedData[namespace] = savedData[namespace] || {}
+  savedData[namespace][key] = value
 
   writePreferencesFile()
 }

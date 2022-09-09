@@ -15,7 +15,8 @@ const queryString = require("query-string")
 const { startDefaultPatchfoxServer } = require("./server/server.js")
 const {
   preferencesFileExists,
-  getDefaultIdentity
+  getDefaultIdentity,
+  getPref
 } = require("./ui/core/kernel/prefs.js")
 
 let windows = new Set()
@@ -47,6 +48,7 @@ const createApplicationWindow = (patchfoxEvent = {}, windowState = false) => {
       width: 800,
       height: 800,
       show: false,
+      skipTaskbar: getPref("skipTaskbar", false),
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
@@ -57,6 +59,7 @@ const createApplicationWindow = (patchfoxEvent = {}, windowState = false) => {
       x: windowState.x,
       y: windowState.y,
       show: false,
+      skipTaskbar: getPref("skipTaskbar", false),
       width: windowState.width,
       height: windowState.height,
       webPreferences: {

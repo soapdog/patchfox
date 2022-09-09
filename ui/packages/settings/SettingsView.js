@@ -1,6 +1,7 @@
 const m = require("mithril")
 const Spinner = require("../../core/components/Spinner.js")
 const DisplayPreferences = require("./DisplayPreferences.js")
+const ApplicationPreferences = require("./ApplicationPreferences.js")
 const AboutView = require("./AboutView.js")
 
 const menu = {
@@ -8,10 +9,14 @@ const menu = {
     label: "About Patchfox",
     panel: AboutView
   },
+  // "application": {
+  //   label: "Application Preferences",
+  //   panel: ApplicationPreferences
+  // },
   "display": {
     label: "Display Preferences",
     panel: DisplayPreferences
-  }
+  },
 }
 
 
