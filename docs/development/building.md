@@ -42,6 +42,7 @@ After saving Patchfox will then try loading your public feed. You need to have a
 * `npm run builder:*` many different scripts to build binaries for each platform.
 * `npm run docs`: builds the documentation.
 * `npm run localbuild`: builds the CSS, the docs, and binaries for various platforms on your local machine. 
+* `npm run release`: Makes a new release and upload it to Github.
 
 # Testing the protocol schemas
 

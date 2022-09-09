@@ -1,6 +1,10 @@
 # No Configuration
 
-To use Patchfox, you need to configure it with your Secure Scuttlebutt secret and remote. The easiest way to do it is by <a href="#" id="options-trigger">going to the Add-on options page for Patchfox</a>, there you can use the button labeled <i>Select Secret</i> to browse for your `.ssb/secret` file. Your remote and keys will be acquired from that file.
+To use Patchfox, you need to configure it with your Secure Scuttlebutt secret and remote. If this is your first time using a SSB client, don't worry Patchfox will set it all up for you. If you're already a SSB user, you'll need to tell Patchfox what identity to use.
+
+Patchfox will attempt to load the default identity that is usually stored on `~/.ssb/secret`. It will show a _setup screen_ on the first-run that lets you confirm that you want to use that identity and also enable or disable the built-in server. If you don't enable the built-in server, you'll need to run your own SSB server.
+
+If you went through setup already but want to change something. Quit Patchfox, delete the file `~/.ssb/patchfox.toml` — which is where Patchfox saves its data — and start the application again. The _setup dialog_ will appear.
 
 The <i>.ssb</i> folder is a hidden folder and your system might not display it to you by default. 
 
@@ -22,7 +26,7 @@ Oh my, it kinda depends on some factors but I believe that it should be viewable
 
 ## How to fix this
 
-* <a href="#" id="options-trigger">Go to the Add-on options page for Patchfox</a> and add your remote and keys.
+* Quit the application, delete the file called `patchfox.toml` inside the `.ssb` folder inside your home folder. Start Patchfox again and go through the first-run setup process.
 * Want a more hands-on guide on configuring and using Patchfox? Try the [Getting Started](guide.md) guide.
 
 <script src="/docs/help.js">

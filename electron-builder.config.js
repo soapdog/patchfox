@@ -120,6 +120,7 @@ module.exports = {
   win: {
     icon: path.join(__dirname, "ui", "assets", "images", "patchfox_pixel_512.png"),
     publisherName: AUTHOR,
+    target: [{target: "zip", arch: ["arm64", "x64", "ia32"]}]
   },
 
   // nsis: {

@@ -16,8 +16,8 @@ The driving ideas behind Patchfox are:
 
 The way Patchfox works is:
 
-1. A core set of low-level code, which should be changed as infrequently as possible, provides features to the packages. It can be found in the `src/core` folder.
-2. Everything a user interacts with is provided by a package from `src/packages`.
+1. A core set of low-level code, which should be changed as infrequently as possible, provides features to the packages. It can be found in the `ui/core` folder.
+2. Everything a user interacts with is provided by a package from `ui/packages`.
 
 The main avenues for contribution are:
 

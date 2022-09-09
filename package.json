@@ -1,6 +1,6 @@
 {
   "name": "patchfox",
-  "version": "2022.9.1-alpha",
+  "version": "2022.9.3-alpha",
   "repository": {
     "url": "https://github.com/soapdog/patchfox"
   },
@@ -19,7 +19,9 @@
     "builder:mac": "electron-builder build --config electron-builder.config.js --mac",
     "build": "run-s css docs",
     "docs": "node scripts/copy-package-docs.js",
-    "localbuild": "run-s build builder:*"
+    "release-script": "node scripts/make-release.js",
+    "localbuild": "run-s build builder:*",
+    "release": "run-s localbuild release-script"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.0.0",
