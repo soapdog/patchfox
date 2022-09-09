@@ -35,6 +35,12 @@ const PostCompose = {
         m.redraw()
       })
     }
+
+    patchfox.listen(
+      "preferences:changed",
+      () => {
+        m.redraw()
+      })
   },
   oncreate: vnode => {
     // this code could be in some better/smarter place.
@@ -131,10 +137,6 @@ const PostCompose = {
     if (vnode.state.showPreview) {
       window.scrollTo(0,0)
     }
-
-
-    // TODO: This function is duplicated. 
-    // O problema é passar o vnode nessa função caso ela esteja fora.
 
     const readFileAndAttach = files => {
       try {
