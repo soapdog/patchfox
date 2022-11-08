@@ -96,9 +96,6 @@ window.onpopstate = popState
 
 const Wm = {
   oninit: (vnode) => {
-    const currentTheme = patchfox.getPref("theme", "light")
-    document.documentElement.setAttribute("data-theme", currentTheme)
-    
     let qs = queryString.parse(location.search)
     let pkg = qs.pkg || getPref("default-package", "hub")
     let view = qs.view ? qs.view : "view"
@@ -108,16 +105,12 @@ const Wm = {
   },
   view: (vnode) => {
     let systemPackages = patchfox.systemPackages()
-    return m("div.bg-base-200.min-h-screen", 
-      m("div.root.mx-auto.text-base-content.pb-4",[
-        // system packages
-        ...systemPackages.map(pkg => m(pkg.view)),
-        // app package or current package
-        currentPackage?.app ? m(".container.wm-current-app-container.container.mx-auto", m(currentView, {key, ...args})) :
-          m(".wm-current-package-container.p-2", m(".wm-current-package", m(currentView, {key, ...args}))),
-        m("div", {style: {height: "40px"}})
-      ])
-    )
+    return m("main", [
+      // system packages
+      ...systemPackages.map(pkg => m(pkg.view)),
+      // app package or current package
+      currentPackage?.app ? m(currentView, {key, ...args}) : m(currentView, {key, ...args})
+    ])
   }
 }
 

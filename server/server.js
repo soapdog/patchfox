@@ -7,7 +7,8 @@ const merge = require("deep-extend")
 const { join } = require("path")
 const {
   preferencesFileExists,
-  getDefaultIdentity
+  getDefaultIdentity,
+  getSSBDir,
 } = require("../ui/core/kernel/prefs.js")
 let config = require("ssb-config")
 
@@ -15,11 +16,30 @@ function buildConfig(identity, plugins, userConfig = {}) {
 
   config.keys = identity.keys
   config.remote = identity.remote
+  config.path = getSSBDir()
+  config = changePorts(config)
   config = addSockets(config, plugins)
   config = fixLocalhost(config)
   config = forceLocalhost(config)
 
   return config
+}
+
+function changePorts(config) {
+  return merge(config, {
+    connections: {
+      incoming: {
+        net: [{scope: "private", transform: "shs", port: 30001}],
+        ws: [{scope: "private", transform: "shs", port:30002}],
+      },
+      outgoing: {
+        net: [{transform: "shs"}],
+        ws: [{transform: "shs"}],
+        tunnel: [{transform: "shs"}],
+      },
+
+    }
+  })
 }
 
 function addSockets(config, plugins) {

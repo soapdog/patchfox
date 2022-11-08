@@ -45,8 +45,7 @@ const GlobalMenuView = {
     }
 
     const makeButton = (label, pkg, view, data) => {
-      return m(
-        "a.btn.btn-sm.btn-ghost",
+      return m("li",m("a",
         {
           onclick: ev => {
             ev.preventDefault()
@@ -55,12 +54,12 @@ const GlobalMenuView = {
           href: patchfox.url(pkg, view, data),
         },
         label
-      )
+      ))
     }
 
     const defaultActions = [{label: "Public", pkg: "hub", view: "public"}, {label: "Mentions", pkg: "hub", view: "mentions"}]
     const actions = getNamespace("QuickActions", defaultActions)
-    const quickActions = actions.map(a => makeButton(a.label, a.pkg, a.view, a.data))
+    const quickActions = m("ul[role=list]", actions.map(a => makeButton(a.label, a.pkg, a.view, a.data)))
 
     const search = ev => {
       let query = document.getElementById("search-box").value
@@ -85,8 +84,8 @@ const GlobalMenuView = {
       window.title = windowTitle
 
       return [
-        m(".navbar.mb-2.bg-accent.sticky.top-0.left-0.right-0.w-full.z-50.h-9.min-h-8.text-accent-content", [
-          m(".navbar-start", [
+        m("header.navbar", [
+          m("nav", [
             m(
               "button.btn.btn-sm.btn-ghost",
               {
@@ -109,8 +108,8 @@ const GlobalMenuView = {
               m.trust("&rarr;")
             ),
           ]),
-          m(".navbar-center", quickActions),
-          m(".navbar-end", [
+          m("nav", quickActions),
+          m("nav", [
             m("form",{
               role: "search",
               onsubmit: search

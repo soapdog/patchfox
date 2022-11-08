@@ -1,6 +1,5 @@
 const m = require("mithril")
 const core = require("./core/core.js")
-const themes = require("./themes/themes.js")
 const queryString = require("query-string")
 const { getPref } = require("./core/kernel/prefs")
 
@@ -11,9 +10,6 @@ console.info(`Electron ${process.versions.electron} Chrome ${process.versions.ch
 const Wrapper = {
   oninit: (vnode) => {
     try {
-      const currentTheme = getPref("theme", "light")
-      document.documentElement.setAttribute("data-theme", currentTheme)
-
       let qs = queryString.parse(location.search)
       let pkg = qs.pkg
       let view = qs.view ? qs.view : "view"
@@ -39,13 +35,9 @@ const Wrapper = {
       let args = vnode.state.args
 
       console.log("view called!")
-      return m("div.bg-base-200.min-h-screen",
-        m("div.root.mx-auto.text-base-content.pb-4", [
-          m(".container.wm-current-app-container.container.mx-auto", m(view, { key, ...args }))
-        ])
-      )
+      return m("main", m(view, { key, ...args }))
     }catch (e) {
-      console.error("prblem in view", e)
+      console.error("problem in view", e)
     }
   }
 }

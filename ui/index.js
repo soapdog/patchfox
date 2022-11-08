@@ -1,6 +1,5 @@
 const m = require("mithril")
 const core = require("./core/core.js")
-const themes = require("./themes/themes.js")
 const Wm = require("./wm.js")
 
 let version = require("../package.json").version

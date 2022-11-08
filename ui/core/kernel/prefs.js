@@ -10,8 +10,10 @@ const os = require("os")
 const ssbKeys = require("ssb-keys")
 const ssbRef = require("ssb-ref")
 const TOML = require("@iarna/toml")
-const prefsFile = path.join(os.homedir(), ".ssb", "patchfox.toml")
+const { app } = require("electron")
 const ipcRenderer = require("electron").ipcRenderer
+
+let prefsFile = null
 
 const defaultPreferencesContent = `
 #
@@ -47,7 +49,40 @@ view = "mentions"
 
 let savedData = {}
 
+function isRenderer () {
+  // running in a web browser
+  if (typeof process === "undefined") return true
+
+  // node-integration is disabled
+  if (!process) return true
+
+  // We"re in node.js somehow
+  if (!process.type) return false
+
+  return process.type === "renderer"
+}
+
+const getSSBDir = () => {
+  if (isRenderer()) {
+    let env = ipcRenderer.sendSync("preferences:env","")
+    console.log("env", env)
+    return env.SSB_DIR
+  } else {
+    return process.env.SSB_DIR
+  }
+}
+
 const preferencesFileExists = () => {
+  if (!prefsFile) {
+    if (isRenderer()) {
+      prefsFile = ipcRenderer.sendSync("preferences:path",prefsFile)
+    } else {
+      prefsFile = path.resolve(app.getPath("userData"), "patchfox.toml")
+    }
+    console.log("preferences:", prefsFile)
+  }
+
+
   let fileExists = fs.existsSync(prefsFile)
 
   if (fileExists) {
@@ -285,4 +320,5 @@ module.exports = {
   setMessageTypeVisibility,
   getVisibilityForMessageType,
   getNamespace,
+  getSSBDir,
 }

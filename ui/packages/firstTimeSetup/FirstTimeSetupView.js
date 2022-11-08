@@ -11,7 +11,8 @@ const {
   initialisePreferencesFileIfNeeded,
   setPref,
   saveIdentityConfiguration,
-  setDefaultIdentity
+  setDefaultIdentity,
+  getSSBDir
 } = require("../../core/kernel/prefs.js")
 const {
   when
@@ -75,7 +76,7 @@ const CustomKeys = {
     }
 
     return [
-      m("p.prose", md(`
+      m(".container", md(`
 You need to provide a **secret** and a **remote**. Use this option
 if you want to run your own SSB server, such as when using Patchfox
 at the same time as another SSB application (i.e. Patchwork) or invoking
@@ -84,28 +85,29 @@ at the same time as another SSB application (i.e. Patchwork) or invoking
 You can also use this option to run a server on a remote machine and 
 connect Patchfox to it.
       `)),
-      m(".form-control",
-        m("label.label", m("span.label-text", "Secret")),
+      m("p", [
+        m("label", "Secret"),
         m("input", {
           type: "file",
           onchange: selectedFile
         })
-      ),
-      when(vnode.state.keys, m("span.badge.badge-outline", vnode.state.keys.id)),
-      m(".form-control",
-        m("label.label", m("span.label-text", "Remote")),
-        m("input.input.input-bordered", {
+      ]),
+      when(vnode.state.keys, m(".chip.info", vnode.state.keys.id)),
+      m("p", [
+        m("label","Remote"),
+        m("input", {
           type: "text",
           name: "remote",
           value: vnode.state.remote
         })
-      ),
-      m("button.btn.mt-4", {
+      ]),
+      m("hr"),
+      m("button.float:left", {
         onclick: () => {
           currentStep = vnode.state.preferencesFileExists ? steps["ExistingInstallation"] : steps["NewInstallation"]
         }
       }, "Go back"),
-      m("button.btn.btn-primary.mt-4.ml-4", {
+      m("button.float:right", {
         disabled: !enabled,
         onclick: startMainWindow
       }, "Start Patchfox"),
@@ -121,7 +123,7 @@ const NewInstallation = {
     vnode.state.useIdentity = true
     vnode.state.startServer = true
 
-    let localKeysPath = path.join(os.homedir(), ".ssb", "secret")
+    let localKeysPath = path.join(getSSBDir(), "secret")
 
     if (fs.existsSync(localKeysPath)) {
       // SSB already installed and in use.
@@ -129,27 +131,20 @@ const NewInstallation = {
       vnode.state.keys = ssbKeys.loadOrCreateSync(localKeysPath)
     } else {
       // Brand new SSB user.
+      vnode.state.keys = ssbKeys.loadOrCreateSync(localKeysPath)
       vnode.state.ssbInstalled = false
     }
   },
   view: vnode => {
-    // New user
-    if (vnode.state.ssbInstalled === false) {
-      return m(".prose", [
-        m("p", `Welcome to Patchfox. The app will start shortly.`)
-      ])
-    }
-    // SSB user
     const makeToggle = (label, checked, onclick) => {
-      return m(".form-control", [
-        m("label.label.cursor-pointer", [
-          m("span.label-text", label),
-          m("input.toggle", {
-            type: "checkbox",
-            checked,
-            onclick
-          })
-        ])
+      return m("p", [
+        m("label",{for: label}, label),
+        m("input", {
+          id: label,
+          type: "checkbox",
+          checked,
+          onclick
+        })
       ])
     }
 
@@ -167,13 +162,8 @@ const NewInstallation = {
 
     const nextStep = () => {
       if (vnode.state.useIdentity) {
-        // Happy path: The user has SSB installed and want to use
-        // the same identity with Patchfox.
-        //
-        // This will be the most common case since most Patchfox
-        // users are coming from other clients.
         let keys = vnode.state.keys
-        let remote = `net:127.0.0.1:8008~shs:${keys.id.slice(1, keys.id.indexOf("=") + 1)}`
+        let remote = `net:127.0.0.1:30001~shs:${keys.id.slice(1, keys.id.indexOf("=") + 1)}`
         initialisePreferencesFileIfNeeded()
         saveIdentityConfiguration({
           keys,
@@ -199,20 +189,40 @@ const NewInstallation = {
       }
     }
 
-    return [
-      m("p.prose", [
+    // New user
+    if (vnode.state.ssbInstalled === false) {
+      return [
+        `Patchfox created a new SSB identity for you:`,
+        m("br"),
+        m(".box.info", [
+          m("strong.block.titlebar", "SSB Identity"),
+          m("pre", vnode.state.keys.id)
+        ]),
+        m("hr"),
+        m("button.float:right", {
+          onclick: nextStep
+        }, "Next")
+      ]
+    } else {
+      return [
         `Patchfox found an existing SSB identity:`,
         m("br"),
-        m(".badge.badge-outline.badge-sm", vnode.state.keys.id),
+        m(".box.warn", [
+          m("strong.block.titlebar", "SSB Identity"),
+          m("pre", vnode.state.keys.id)
+        ]),          
         m("br"),
-        `Do you want to use this SSB identity with Patchfox?`
-      ]),
-      makeToggle("Use identity", vnode.state.useIdentity, setUserIdentity),
-      makeToggle("Start server when launching Patchfox", vnode.state.startServer, setServerStart),
-      m("button.btn.btn-primary.mt-4", {
-        onclick: nextStep
-      }, "Next")
-    ]
+        m("p.bold",`Do you want to use this SSB identity with Patchfox?`),
+        m("form.table.rows",[
+          makeToggle("Use this identity", vnode.state.useIdentity, setUserIdentity),
+          makeToggle("Start server when launching Patchfox", vnode.state.startServer, setServerStart),
+        ]),
+        m("hr"),
+        m("button.float:right", {
+          onclick: nextStep
+        }, "Next")
+      ]
+    }
   }
 }
 

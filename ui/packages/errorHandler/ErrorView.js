@@ -42,17 +42,17 @@ const ErrorView = {
     ----
     `
 
-    return m(".prose", [
+    return [
       m(
-        "h2.uppercase.text-sl.font-medium",
+        "h2",
         "😿 An Error Has Occurred, sorry 😭"
       ),
-      m("h4.font-medium", "This is what we know about it"),
+      m("h4", "This is what we know about it"),
       when(
         currentPackage.hasOwnProperty("name"),
         m("p", `It has happened in package: ${currentPackage.name}.`)
       ),
-      m("pre.code", error),
+      m("pre", error),
       m("p", "You might want to:"),
       m("ul", [
         when(
@@ -96,7 +96,7 @@ const ErrorView = {
         m(
           "li",
           m(
-            "a.link.link-primary",
+            "a",
             {
               href: patchfox.docsUrl(
                 `/packages/${currentPackage.name}/README.md`
@@ -109,7 +109,7 @@ const ErrorView = {
         m(
           "li",
           m(
-            "a.link.link-primary",
+            "a",
             {
               href: `https://github.com/soapdog/patchfox/tree/master/src/packages/${currentPackage.name}`,
               target: "_blank",
@@ -120,7 +120,7 @@ const ErrorView = {
         m(
           "li",
           m(
-            "a.link.link-primary",
+            "a",
             {
               href: `https://git.sr.ht/~soapdog/patchfox/tree/master/item/src/packages/${currentPackage.name}`,
               target: "_blank",
@@ -129,7 +129,7 @@ const ErrorView = {
           )
         ),
       ]),
-    ])
+    ]
   },
 }
 

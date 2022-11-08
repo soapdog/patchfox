@@ -23,8 +23,13 @@ let windows = new Set()
 let sbot = null
 let tray = null
 
-// register protocol
+// register app defaults
+app.setName("patchfox")
 app.setAsDefaultProtocolClient("ssb")
+app.setPath("userData", path.join(app.getPath("appData"), "Patchfox"))
+process.env = process.env ?? {}
+process.env.APP_DIR = app.getPath("userData")
+process.env.SSB_DIR = process.env.SSB_DIR ?? path.resolve(app.getPath("userData"), "ssb")
 
 // Command-line args
 const args = arg({
@@ -178,7 +183,7 @@ function startServer(identity) {
         height: 400,
         webPreferences: {
           nodeIntegration: true,
-          contextIsolation: false
+          contextIsolation: false,
         }
       })
 
@@ -335,6 +340,14 @@ ipcMain.on("preferences:reload", (event, data) => {
   windows.forEach(w => {
     w.webContents.send("preferences:reload")
   })
+})
+
+ipcMain.on("preferences:path", (event, data) => {
+  event.returnValue = path.resolve(app.getPath("userData"), "patchfox.toml")
+})
+
+ipcMain.on("preferences:env", (event, data) => {
+  event.returnValue = Object.assign({}, process.env)
 })
 
 ipcMain.on("window:set-title", (event, data) => {
