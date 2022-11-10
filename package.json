@@ -35,7 +35,7 @@
     "cross-env": "^7.0.3",
     "daisyui": "^1.10.0",
     "drag-and-drop-files": "0.0.1",
-    "electron": "18.2.3",
+    "electron": "18.3.7",
     "electron-builder": "^23.3.3",
     "electron-default-menu": "^1.0.2",
     "electron-store": "^8.0.1",
