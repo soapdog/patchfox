@@ -1,5 +1,40 @@
 const jaysonBrowserClient = require("jayson/lib/client/browser")
 const fetchUrl = require("fetch").fetchUrl
+const requireGlob = require('require-glob')
+const lori = require("lori")
+
+
+function collectMethods() {
+  const methods = collapseNamespaces(requireGlob.sync(['api/**/*.js']))
+  console.log("methods", methods)
+}
+
+function collectMethodsForXMLRPC(xmlrpc) {
+  const rawMethods = collapseNamespaces(requireGlob.sync(['api/**/*.js']))
+
+  const methods = {} 
+  Object.keys(rawMethods).forEach(k => {
+    let old = rawMethods[k]
+    methods[k] = function xmlrpcHandler(req, res) {
+      old(req.body.params, (err, result)=>{
+        if (err) {
+          lori.error(`${k} --> ${err.message}`)
+          res.send(xmlrpc.serializeFault(err.code, err.message))
+        } else {
+          lori.debug(`${k} --> ${result}`)
+          res.send(xmlrpc.serializeResponse(result))
+        }
+      })
+    }
+  })
+  return methods
+}
+
+function collectMethodsForJSONRPC(xmlrpc) {
+  const methods = collapseNamespaces(requireGlob.sync(['api/**/*.js']))
+
+  return methods
+}
 
 // from: https://www.npmjs.com/package/jayson
 function collapse(stem, sep, obj) {
@@ -12,7 +47,7 @@ function collapse(stem, sep, obj) {
   }
 }
 
-function methodsToJaysonServerConfiguration(methods) {
+function collapseNamespaces(methods) {
   const map = Object.keys(methods).reduce(collapse("", ".", methods), {})
   return map
 }
@@ -46,6 +81,8 @@ function JsonRPCClientWithToken(url, token) {
 }
 
 module.exports = {
-  methodsToJaysonServerConfiguration,
+  collapseNamespaces,
   JsonRPCClientWithToken,
+  collectMethodsForXMLRPC,
+  collectMethodsForJSONRPC
 }

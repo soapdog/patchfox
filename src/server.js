@@ -5,6 +5,7 @@ const lori = require("lori")
 
 const preferences = require("./common/preferences.js")
 const startJsonRPCServer = require("./jsonrpc.js")
+const startXMLRPCServer = require("./xmlrpc.js")
 
 const app = express()
 const port = preferences.get("server.port", 3000)
@@ -20,6 +21,12 @@ function startServer() {
     startJsonRPCServer(app)
   } else {
     lori.warn("JSON-RPC 2.0 Server disabled.")
+  }
+
+  if (preferences.get("protocols.xmlrpc", true)) {
+    startXMLRPCServer(app)
+  } else {
+    lori.warn("XML-RPC Server disabled.")
   }
 
   app.get("/", (req, res) => {
