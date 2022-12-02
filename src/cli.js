@@ -12,7 +12,8 @@ preferences.initialize()
 const commands = [
   require("./commands/show.js"),
   require("./commands/token.js"),
-  require("./commands/server.js")
+  require("./commands/server.js"),
+  require("./commands/dev.js"),
 ]
 
 const program = new Command()
