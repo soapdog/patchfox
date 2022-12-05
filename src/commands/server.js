@@ -8,7 +8,9 @@ const preferences = require("../common/preferences.js")
 const { JsonRPCClientWithToken } = require("../utils.js")
 
 function setup(program) {
-  const cmd = program.command("server")
+  const cmd = program
+  .command("server")
+  .description("Commands to start and stop Patchfox server.")
 
   cmd
     .command("start")

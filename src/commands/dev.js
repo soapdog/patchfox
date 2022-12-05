@@ -6,7 +6,9 @@ const mkdirp = require("mkdirp")
 const preferences = require("../common/preferences.js")
 
 function setup(program) {
-  const cmd = program.command("dev")
+  const cmd = program
+  .command("dev")
+  .description("Commands that help development of Patchfox.")
 
   cmd
     .command("create-method <name>")

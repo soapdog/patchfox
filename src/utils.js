@@ -1,3 +1,18 @@
+/**
+ * UTILS.JS - Common utilities for XML-RPC and JSON-RPC servers.
+ * 
+ * Objective:
+ * Collect some functions that are used by both the XML-RPC and JSON-RPC servers
+ * so that they don't clutter the server implementations.
+ * 
+ * This should only contain functions that deal with those servers. Code that is 
+ * reused elsewhere in Patchfox should go into `common/` folder.
+ * 
+ * `xmlrpc.js` and `jsonrpc.js` are to be kept minimal so that they can be understood
+ * easily. Part of making them minimal is designing them to share code and extracting that
+ * shared code to this file.
+ */
+
 const jaysonBrowserClient = require("jayson/lib/client/browser")
 const fetchUrl = require("fetch").fetchUrl
 const requireGlob = require('require-glob')
@@ -11,8 +26,8 @@ function collectMethods() {
 
 function collectMethodsForXMLRPC(xmlrpc) {
   const rawMethods = collapseNamespaces(requireGlob.sync(['api/**/*.js']))
-
   const methods = {} 
+
   Object.keys(rawMethods).forEach(k => {
     let old = rawMethods[k]
     methods[k] = function xmlrpcHandler(req, res) {
@@ -41,14 +56,19 @@ function collapse(stem, sep, obj) {
   return function (map, key) {
     const prop = stem ? stem + sep + key : key
     const value = obj[key]
-    if (typeof value === "function") map[prop] = value
-    else if (typeof value === "object" && value !== null) map = Object.keys(value).reduce(collapse(prop, sep, value), map)
+
+    if (typeof value === "function") {
+      map[prop] = value
+    } else if (typeof value === "object" && value !== null) {
+      map = Object.keys(value).reduce(collapse(prop, sep, value), map)
+    }
     return map
   }
 }
 
 function collapseNamespaces(methods) {
   const map = Object.keys(methods).reduce(collapse("", ".", methods), {})
+
   return map
 }
 
@@ -73,9 +93,7 @@ function JsonRPCClientWithToken(url, token) {
     })
   }
 
-  const client = new jaysonBrowserClient(callServer, {
-    // other options go here
-  })
+  const client = new jaysonBrowserClient(callServer, {})
 
   return client
 }

@@ -6,7 +6,9 @@ const preferences = require("../common/preferences.js")
 const paths = require("../common/paths.js")
 
 function setup(program) {
-  const cmd = program.command("show")
+  const cmd = program
+  .command("show")
+  .description("Commands that display information about Patchfox configuration.")
 
   cmd
   .command("folders")

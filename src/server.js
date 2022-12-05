@@ -29,10 +29,6 @@ function startServer() {
     lori.warn("XML-RPC Server disabled.")
   }
 
-  app.get("/", (req, res) => {
-    res.send("Hello World!")
-  })
-
   server = app.listen(port, () => {
     lori.info(`Patchfox server listening on port ${port}`)
   })
