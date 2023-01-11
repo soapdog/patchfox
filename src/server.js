@@ -6,6 +6,8 @@ const lori = require("lori")
 const preferences = require("./common/preferences.js")
 const startJsonRPCServer = require("./jsonrpc.js")
 const startXMLRPCServer = require("./xmlrpc.js")
+const serverForIdentity = require("./sbot.js")
+const identities = require("./common/identities.js")
 
 const app = express()
 const port = preferences.get("server.port", 3000)
@@ -38,6 +40,20 @@ function startServer() {
     server.close(() => {
       lori.debug("Patchfox server closed")
     })
+  })
+
+  /* Launch all SSB identities */
+
+  const feeds = identities.list()
+
+  feeds.forEach(keys => {
+    const c = identities.configurationForIdentity(keys.public)
+
+    if (c.autostart) {
+      serverForIdentity(keys.public)
+    } else {
+      lori.warn(`@${keys.public} autostart is off.`)
+    }
   })
 }
 

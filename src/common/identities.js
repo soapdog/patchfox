@@ -22,6 +22,20 @@ function pathForIdentity(id) {
     return newPath
 }
 
+function configurationForIdentity(id) {
+    if (id[0] === "@") {
+      id = id.slice(1)
+    }
+    const configPath = path.join(identitiesFolder, _.kebabCase(id.slice(0,10)), "config.toml")
+    
+    if (!fs.existsSync(configPath)) {
+      fs.writeFileSync(configFile, toml.stringify(minimalConfig))
+    }
+
+    return toml.parse(fs.readFileSync(configPath))
+
+}
+
 function create() {
   const tempPath = path.join(identitiesFolder, "temp")
   const secretPath = path.join(tempPath, "secret")
@@ -71,5 +85,6 @@ module.exports = {
   create,
   remove, 
   list,
-  pathForIdentity
+  pathForIdentity,
+  configurationForIdentity
 }
