@@ -12,6 +12,7 @@ preferences.initialize()
 const commands = [
   require("./commands/show.js"),
   require("./commands/token.js"),
+  require("./commands/identity.js"),
   require("./commands/server.js"),
   require("./commands/dev.js"),
 ]
@@ -20,7 +21,7 @@ const program = new Command()
 
 program
   .name('patchfox')
-  .description('A minimalist server and client for Secure Scuttlebutt')
+  .description('A minimalist server and client for Secure Scuttlebutt.')
   .version(pkg.version)
 
 commands.forEach(c => c.setup(program))

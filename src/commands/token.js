@@ -3,11 +3,7 @@ const tokens = require("../common/tokens.js")
 function setup(program) {
   const cmd = program
   .command("token")
-  .description(`
-Commands to manage access tokens.
-
-Patchfox uses tokens to manage access to the server. At the moment
-having a valid token gives full access to the server.`)
+  .description(`commands to manage access tokens`)
 
   cmd
     .command("list")

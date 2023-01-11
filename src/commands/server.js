@@ -10,18 +10,18 @@ const { JsonRPCClientWithToken } = require("../utils.js")
 function setup(program) {
   const cmd = program
   .command("server")
-  .description("Commands to start and stop Patchfox server.")
+  .description("commands to manage Patchfox server")
 
   cmd
     .command("start")
-    .description("Starts Patchfox server.")
+    .description("starts Patchfox server.")
     .action(() => {
       startServer()
     })
 
   cmd
     .command("stop")
-    .description("Stops Patchfox server.")
+    .description("stops Patchfox server.")
     .action(() => {
       const token = tokens.list()[0] // get a valid token
       const port = preferences.get("server.port", 3000)

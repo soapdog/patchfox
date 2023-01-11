@@ -14,7 +14,13 @@ function startJsonRPCServer(app) {
 
   app.post("/jsonrpc", (req, res) => {
     const request = req.body
-    const token = req.token 
+    let token = req.token 
+
+    if (token === undefined) {
+      if (request?.params[0] !== undefined) {
+        token = request.params.shift()
+      }
+    }
 
     // lori.debug(req.headers)
     lori.debug(request)
