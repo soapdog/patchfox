@@ -27,11 +27,16 @@ function setup(program) {
     })
 
   cmd
-    .command("remove <token>")
+    .command("remove <id>")
     .description("removes an identity.")
-    .action(token => {
-      identities.remove(token)
-      console.log(`Identity ${token} removed.`)
+    .action(id => {
+      const b = identities.remove(id)
+
+      if (b) {
+        console.log(`Identity ${id} removed.`)
+      }else{
+        console.log(`Problem removing ${id}.`)
+      }
     })
 }
 
