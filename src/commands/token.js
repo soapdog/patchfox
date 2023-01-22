@@ -13,7 +13,7 @@ function setup(program) {
       if (t.length == 0) {
         console.log("No tokens available")
       } else {
-        console.log(`tokens: ${t}`)
+        console.log(`tokens: \n${t.join(`\n`)}`)
       }
     })
 

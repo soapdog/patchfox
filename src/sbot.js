@@ -19,7 +19,12 @@ function serverForIdentity(feedid) {
     global._ssbServers = []
   }
 
+  if (feedid[0] == "@") {
+    feedid = feedid.substr(1)
+  }
+  
   if (global._ssbServers[feedid]) {
+    lori.debug(`Server for ${feedid} already running.`)
     return global._ssbServers[feedid]
   }
 
@@ -31,11 +36,7 @@ function serverForIdentity(feedid) {
     return false
   }
   
-  
-  process.on("uncaughtException", function (err) {
-    console.log(err)
-    lori.error(err)
-  })
+  lori.debug(`No server running for ${feedid}`)
 
   const port = 26831 + servers 
   servers = servers + 1

@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>Minimal Debugging UI</title>
+    <link rel="stylesheet" href="https://the.missing.style/v1.0.6/missing.min.css">
+
+    <script src="https://unpkg.com/mithril/mithril.js"></script>
+</head>
+<body>
+    <script>
+var root = document.body
+
+const server = "http://localhost:3000/jsonrpc"
+const token = "85b2ae37-0be4-4faa-b1f0-d02189a31cfa"
+
+async function callMethod(method, params) {
+    const obj = {
+        jsonrpc: "2.0",
+        method: method,
+        id: "1",
+        params: [token, params],
+    }
+
+    const response = await fetch(server, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(obj), // body data type must match "Content-Type" header
+    })
+    return response.json() // parses JSON response into native JavaScript objects
+}
+
+callMethod("examples.getStateName", [12]).then(data => {
+    console.log(data) // JSON data parsed by `data.json()` call
+})
+
+callMethod("ssb.post", {
+    identity: "@fu9wRz7+UwjDcvW6TZrvbNDT0cEPgWBh/ZZq5dKGEyY=.ed25519",
+    content: {
+        text: `Now it will work`,
+        root: "%sUJg+n7aIiDXPWQPrEMi4Tg82KhyF4gpI0TaQt0Z8Vc=.sha256"
+    }
+})
+.then(data => {
+    console.log(data) 
+})
+.catch(err => {
+    console.log("error", err)
+})
+
+// callMethod("ssb.timeline.public", {identity: "@fu9wRz7+UwjDcvW6TZrvbNDT0cEPgWBh/ZZq5dKGEyY=.ed25519"})
+// .then(data => {
+//     console.log(data) 
+// })
+// .catch(err => {
+//     console.log("error", err)
+// })
+
+
+/* Live reload */
+document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+  ':35729/livereload.js?snipver=1"></' + 'script>')
+    </script>
+
+</body>
+</html>

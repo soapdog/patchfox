@@ -13,7 +13,7 @@ function create() {
 
 function isValid(token) {
   let tokens = preferences.get("server.tokens", [])
-
+  
   return tokens.includes(token)
 }
 

@@ -55,6 +55,11 @@ function startServer() {
       lori.warn(`@${keys.public} autostart is off.`)
     }
   })
+
+  process.on("uncaughtException", function (err) {
+    lori.error(`Uncaught Exception: ${JSON.stringify(err)}`)
+    console.log(err)
+  })
 }
 
 module.exports = startServer

@@ -23,6 +23,7 @@ function startJsonRPCServer(app) {
     }
 
     // lori.debug(req.headers)
+    lori.debug(`token: ${token}`)
     lori.debug(request)
 
     if (!tokens.isValid(token)) {
@@ -34,12 +35,14 @@ function startJsonRPCServer(app) {
 
     server.call(request, (err, result) => {
       if (err) {
+        lori.error(`Error (from callback): ${JSON.stringify(err)}`)
         res.status(400)
         res.send(err)
         return
       }
 
       if (result) {
+        lori.debug(`Ok: ${JSON.stringify(result)}`)
         res.send(result)
       } else {
         // empty result (could be a notification)

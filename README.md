@@ -17,22 +17,22 @@ Head over to the [Patchfox website](https://patchfox.org) for the documentation.
 
 ## Setup & Building
 
-Patchfox uses [Mithril](https://mithril.js.org), [Electron](https://electronjs.org) and requires [NodeJS](https://nodejs.org) for development. After you have NodeJS installed, you can install the dependencies with:
+Patchfox requires [NodeJS](https://nodejs.org) for development. After you have NodeJS installed, you can install the dependencies with:
 
 ```
 $ npm install
 ```
 
-And run a development version of the app using:
+And run the backend use:
 
 ```
 $ npm run start
 ```
 
-To build use:
+To run the minimal UI use:
 
 ```
-$ npm run build
+$ npm run ui
 ```
 
 

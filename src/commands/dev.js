@@ -13,7 +13,7 @@ function setup(program) {
     .command("create-method <name>")
     .description("creates a new RPC method.")
     .action(methodName => {
-      let methodPath = `./api/` + methodName.replace(".", "/") + ".js"
+      let methodPath = `./src/api/` + methodName.replaceAll(".", "/") + ".js"
       if (fs.existsSync(methodPath)) {
         console.log("Sorry, method already exists.")
         return
