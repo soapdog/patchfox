@@ -413,6 +413,45 @@ class NodeJsSSB {
       )
     })
   }
+  
+  private(lt, query = {}) {
+    return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get()
+  
+      const createPrivateStream = (id) => {
+        var filterQuery = {
+          $filter: {
+            dest: id,
+          },
+        }
+  
+        if (lt) {
+          filterQuery.$filter.value = { timestamp: { $lt: lt } }
+        }
+        
+        filterQuery = _.merge(filterQuery, query)
+        console.log(filterQuery)
+  
+        return sbot.private.read({
+          query: [query],
+          index: "DTA", // use asserted timestamps
+          reverse: true,
+        })
+      }
+  
+      pull(
+        createPrivateStream(sbot.id),
+        pull.apply(pull, pipeline),
+        pull.collect((err, msgs) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msgs)
+          }
+        })
+      )
+    })
+  }
 
   search(query, lt) {
     return new Promise((resolve, reject) => {
@@ -853,6 +892,63 @@ class NodeJsSSB {
 
       msgToPost.mentions = msgToPost.mentions.filter((n) => n) // prevent null elements...
 
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      } else {
+        reject("There is no sbot connection")
+      }
+    })
+  }
+  
+  newPrivatePost(data) {
+    return new Promise((resolve, reject) => {
+      let msgToPost = { type: "post", text: data.text }
+  
+      const commonFields = [
+        "root",
+        "branch",
+        "channel",
+        "fork",
+        "contentWarning"
+      ]
+      
+      if (!data.hasOwnProperty("recps")) {
+        reject("err: missing recipients for private message.")
+        return false
+      }
+      
+      if (!Array.isArray(data.recps) || data.recps.length < 1) {
+        reject("err: malformed recipients for private message.")
+        return false
+      }
+  
+      commonFields.forEach((f) => {
+        if (
+          typeof data[f] !== "undefined" &&
+          data[f] !== false &&
+          data[f] !== null &&
+          data[f].length > 0
+        ) {
+          msgToPost[f] = data[f]
+        }
+      })
+  
+      msgToPost.recps = data.recps || [sbot.id]
+      msgToPost.mentions = ssbMentions(msgToPost.text) || []
+  
+      if (msgToPost.contentWarning && msgToPost.contentWarning.length > 0) {
+        let moreMentions = ssbMentions(msgToPost.contentWarning)
+        msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
+      }
+  
+      msgToPost.mentions = msgToPost.mentions.filter((n) => n) // prevent null elements...
+  
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
           if (err) {

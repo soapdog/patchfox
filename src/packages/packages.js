@@ -22,7 +22,7 @@ require("./errorHandler/errorHandler.js")
 require("./zine/zine.js")
 require("./books/books.js")
 // require("./scheme/scheme.js")
-// require("./journal/journal.js")
+require("./journal/journal.js")
 
 
 
