@@ -6,8 +6,6 @@
   const AvatarRound = require("../../core/components/AvatarRound.svelte")
   const AvatarContainer = require("../../core/components/AvatarContainer.svelte")
 
-
-
   export let bookKey = false
 
   let book = false
@@ -117,7 +115,7 @@
             <img class="img-responsive" src="{patchfox.httpUrl("/blobs/get/" + book.common.image.link)}" alt="{book.common.image.name}">
           {:else if Array.isArray(book.common.images)}
             <img class="img-responsive" src="{patchfox.httpUrl("/blobs/get/" + book.common.images[0].link)}" alt="{book.common.images[0].name}">
-          {:else if book.common.images.hasOwnProperty("link")}
+          {:else if book.common.images && book.common.images.hasOwnProperty("link")}
             <img class="img-responsive" src="{patchfox.httpUrl("/blobs/get/" + book.common.images.link)}" alt="{book.common.images.name}">
           {/if}
         </div>
