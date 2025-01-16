@@ -23,14 +23,15 @@ const tokens = require("./common/tokens.js")
 
 function collectMethods() {
   const methods = collapseNamespaces(requireGlob.sync(["api/**/*.js"]))
-  console.log("methods", methods)
 }
 
 function collectMethodsForXMLRPC(xmlrpc) {
   const rawMethods = collapseNamespaces(requireGlob.sync(["api/**/*.js"]))
   const methods = {}
 
-  Object.keys(rawMethods).forEach(k => {
+  const keys = Object.keys(rawMethods)
+
+  for (const k of keys) {
     let old = rawMethods[k]
     methods[k] = function xmlrpcHandler(req, res) {
       old(req.body.params, (err, result) => {
@@ -43,7 +44,7 @@ function collectMethodsForXMLRPC(xmlrpc) {
         }
       })
     }
-  })
+  }
   return methods
 }
 

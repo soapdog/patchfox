@@ -5,6 +5,7 @@
  */ 
 
 const SecretStack = require("secret-stack")
+const ssbRef = require("ssb-ref")
 const Config = require("ssb-config/inject")
 const caps = require("ssb-caps")
 const lori = require("lori")
@@ -15,6 +16,18 @@ const {pathForIdentity, configurationForIdentity} = require("./common/identities
 let servers = 0
 
 function serverForIdentity(feedid) {
+  if (!feedid) {
+    throw "ssb.serverForIdentity: Invalid identity."
+  }
+
+  if (feedid[0] == "@" && !ssbRef.isFeed(feedid)) {
+    throw `ssb.serverForIdentity: Identity: ${feedid} is not a valid identity`
+  }
+
+  if (feedid[0] != "@" && !ssbRef.isFeed(`@${feedid}`)) {
+    throw `ssb.serverForIdentity: Identity: @${feedid} is not a valid identity`
+  }
+
   if (!Array.isArray(global._ssbServers)) {
     global._ssbServers = []
   }
@@ -33,7 +46,7 @@ function serverForIdentity(feedid) {
 
   if (!fs.existsSync(secret)) {
     lori.error(`Secret not found for ${feedid}.`)
-    return false
+    throw `ssb.serverForIdentity: Secret not found for ${feedid}.`
   }
   
   lori.debug(`No server running for ${feedid}`)

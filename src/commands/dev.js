@@ -29,12 +29,18 @@ function setup(program) {
 /**
  * Remember to place your error in "err" and your result value in "result"
  */
-function ${methodNameSansNamespace}(params, callback) {
+const api = require("../../common/ssb/api.js")
+const lori = require("lori")
 
+async function ${methodNameSansNamespace}(params, callback) {
+  let err = false
+  let result = false
+  const identity = params[0]?.identity
+  
   if (err) {
     callback(err, null)
   } else {
-    callback(result, null)
+    callback(null, result)
   }
 }
 

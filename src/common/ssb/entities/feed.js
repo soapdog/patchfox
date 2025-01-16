@@ -44,6 +44,10 @@ const socialFilter = async (ssb, hops) => {
   const graph = await socialGraph.getSocialGraph(ssb);
   const relationshipObject = graph[id];
 
+  if (!relationshipObject) {
+    return true
+  }
+
   const followingList = Object.entries(relationshipObject)
     .filter(([, val]) => val >= socialGraph.weightings.following)
     .map(([key]) => key);

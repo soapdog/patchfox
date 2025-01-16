@@ -39,6 +39,7 @@ const thread = require("./entities/thread")
 const invites = require("./entities/invites")
 const privateThreads = require("./entities/private")
 const votes = require("./entities/votes")
+const lori = require("lori")
 
 module.exports = {
   getProfile: async (identity, id) => {
@@ -46,7 +47,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return profile.getProfile(ssb, id === "self" ? ssb.id : id)
     } catch (err) {
-      console.error("getProfile", err)
+      lori.error("getProfile", err)
       throw err
     }
   },
@@ -56,7 +57,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return profile.filterProfiles(ssb, name)
     } catch (err) {
-      console.error("filterProfiles", err)
+      lori.error("filterProfiles", err)
       throw err
     }
   },
@@ -66,7 +67,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return profile.updateProfile(ssb, updates)
     } catch (err) {
-      console.error("getProfile", err)
+      lori.error("updateProfile", err)
       throw err
     }
   },
@@ -76,7 +77,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return feed.getPublicFeed(ssb, hops, page)
     } catch (err) {
-      console.error("getThreads", err)
+      lori.error("getThreads", err)
       throw err
     }
   },
@@ -86,7 +87,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return feed.getProfileFeed(ssb, feedId === "self" ? ssb.id : feedId, page)
     } catch (err) {
-      console.error("getProfileThreads", err)
+      lori.error("getProfileThreads", err)
       throw err
     }
   },
@@ -96,7 +97,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return await post(ssb, message)
     } catch (err) {
-      console.error("postMessage", err)
+      lori.error("postMessage", err)
       throw err
     }
   },
@@ -106,7 +107,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return peers.getConnectedPeers(ssb)
     } catch (err) {
-      console.error("getConnectedPeers", err)
+      lori.error("getConnectedPeers", err)
       throw err
     }
   },
@@ -116,7 +117,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return blob.getBlob(ssb, blobId)
     } catch (err) {
-      console.error("getBlob", err)
+      lori.error("getBlob", err)
       throw err
     }
   },
@@ -126,7 +127,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return blob.uploadBlob(ssb, file)
     } catch (err) {
-      console.error("uploadBlob", err)
+      lori.error("uploadBlob", err)
       throw err
     }
   },
@@ -136,7 +137,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return thread(ssb, msgId, isPrivate)
     } catch (err) {
-      console.error("getThread", err)
+      lori.error("getThread", err)
       throw err
     }
   },
@@ -146,7 +147,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return peers.updateFollow(ssb, feedId, currentState)
     } catch (err) {
-      console.error("updateFollow", err)
+      lori.error("updateFollow", err)
       throw err
     }
   },
@@ -156,7 +157,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return peers.updateBlock(ssb, feedId, currentState)
     } catch (err) {
-      console.error("updateBlock", err)
+      lori.error("updateBlock", err)
       throw err
     }
   },
@@ -166,7 +167,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return invites(ssb, invite)
     } catch (err) {
-      console.error("claimInvite", err)
+      lori.error("claimInvite", err)
       throw err
     }
   },
@@ -176,7 +177,7 @@ module.exports = {
       const ssb = serverForIdentity(identity)
       return privateThreads.getPrivateFeed(ssb)
     } catch (err) {
-      console.error("getPrivateFeed", err)
+      lori.error("getPrivateFeed", err)
       throw err
     }
   },

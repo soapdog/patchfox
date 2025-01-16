@@ -35,6 +35,10 @@ To run the minimal UI use:
 $ npm run ui
 ```
 
+> The minimal UI is not meant for general use. It is there just to aid development.
+>
+> Remember to replace the _token_ in `./minimal-ui/index.html` with a valid token for your instalation.
+
 
 ## Setup inside Patchfox
 
