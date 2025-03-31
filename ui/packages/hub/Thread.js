@@ -54,9 +54,9 @@ const ThreadView = {
       <a href="?thread=${thread}#/thread">${thread}</a>
       : ${vnode.state.error}  
       `)),
-      m("button.btn.btn-primary.mt-2", {
-        onclick: () => history.back()
-      }, "Go back")
+    m("button.btn.btn-primary.mt-2", {
+      onclick: () => history.back()
+    }, "Go back")
     ]
 
     const messagesOrSpinner =

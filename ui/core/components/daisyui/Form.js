@@ -3,7 +3,6 @@ const m = require("mithril")
 const Form = {
   view: vnode => {
     let onSave = vnode.attrs.onSave
-    let onCancel = vnode.attrs?.onCancel ? vnode.attrs.onCancel : onCancelDefault
 
     const onSubmit = ev => {
       ev.preventDefault()
@@ -13,7 +12,9 @@ const Form = {
     const onCancelDefault = ev => {
       ev.preventDefault
     }
-    
+
+    let onCancel = vnode.attrs?.onCancel ? vnode.attrs.onCancel : onCancelDefault
+
     return m("form.form", {onsubmit: onSubmit},[
       ...vnode.children,
       m("div.flex", [

@@ -3,6 +3,7 @@ const JoinPub = require("./JoinPub.js")
 const JoinRoom = require("./JoinRoom.js")
 const Status = require("./Status.js")
 const HttpAuth = require("./httpAuth.js")
+const TestArea = require("./TestArea.js")
 
 patchfox.package({
   name: "system",
@@ -12,6 +13,7 @@ patchfox.package({
   joinRoom: JoinRoom,
   status: Status,
   httpAuth: HttpAuth,
+  testArea: TestArea,
   menu: [
     {
       group: "Application",
@@ -39,6 +41,14 @@ patchfox.package({
           data: {
             pkg: "system",
             view: "peers"
+          }
+        },
+        {
+          label: "test",
+          event: "package:go",
+          data: {
+            pkg: "system",
+            view: "testArea"
           }
         }
       ]

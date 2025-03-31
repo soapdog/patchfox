@@ -1,8 +1,9 @@
 const GatheringCard = require("./GatheringCard.js")
 const GatheringView = require("./GatheringView.js")
-const TimelineView = require("./TimelineView.js");
-const ExportView = require("./ExportView.js");
-const GatheringActionCard = require("./GatheringActionCard.js");
+const TimelineView = require("./TimelineView.js")
+const ExportView = require("./ExportView.js")
+const GatheringActionCard = require("./GatheringActionCard.js")
+const GatheringEdit = require("./GatheringEdit.js")
 const { isGathering, isUpdate, isAttendee } = require("ssb-gathering-schema") 
 
 patchfox.package({
@@ -24,10 +25,19 @@ patchfox.package({
   gathering: GatheringView,
   timeline: TimelineView,
   export: ExportView,
+  edit: GatheringEdit,
   menu: {
     group: "Calendar",
     label: "Gatherings",
     items: [
+      {
+        label: "Create Gathering",
+        event: "package:go",
+        data: {
+          pkg: "calendar",
+          view: "edit"
+        }
+      },
       {
         label: "Future Events",
         event: "package:go",

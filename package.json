@@ -140,5 +140,8 @@
     "to-markdown-cli": "^0.4.4",
     "tributejs": "^5.0.1",
     "turndown": "^7.0.0"
+  },
+  "dependencies": {
+    "ssb-crut": "^4.6.0"
   }
 }
