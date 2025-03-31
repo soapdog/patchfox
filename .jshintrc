@@ -3,7 +3,7 @@
   "quotmark": "double",
   "camelcase": true,
   "browser": true,
-  "semi": false,
+  "asi": true,
   "globals": {
   	"Dexie": true,
   	"_": true

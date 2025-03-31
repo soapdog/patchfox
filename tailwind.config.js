@@ -1,10 +1,10 @@
-const production = !process.env.NODE_ENV
+const production = !process.env.ROLLUP_WATCH
 
 module.exports = {
   purge: {
     content: [
-      "./ui/**/*.js",
-      "./ui/**/*.html",
+      "./src/**/*.svelte",
+      "./src/**/*.html",
     ],
     enabled: production // disable purge in dev
   },

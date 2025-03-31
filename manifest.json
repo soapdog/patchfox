@@ -1,0 +1,72 @@
+{
+  "description": "Patchfox is a Secure Scuttlebutt client",
+  "manifest_version": 2,
+  "name": "Patchfox",
+  "version": "2025.3.1",
+  "icons": {
+    "512": "images/patchfox_pixel_512.png",
+    "96": "images/patchfox_pixel_96.png",
+    "128": "images/patchfox_pixel_128.png"
+  },
+  "applications": {
+    "gecko": {
+      "id": "patchfox@andregarzia.com",
+      "strict_min_version": "65.0"
+    }
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "options_ui": {
+    "page": "index.html?pkg=settings",
+    "open_in_tab": true
+  },
+  "browser_action": {
+    "default_icon": {
+      "32": "images/patchfox_32.png",
+      "512": "images/patchfox_pixel_512.png",
+      "96": "images/patchfox_pixel_96.png",
+      "128": "images/patchfox_pixel_128.png"
+    },
+    "default_popup": "browserAction.html"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Period"
+      }
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "ssb",
+      "name": "Patchfox",
+      "uriTemplate": "/index.html?pkg=intercept&query=%s"
+    },
+    {
+      "protocol": "ext+patchfox",
+      "name": "Patchfox",
+      "uriTemplate": "/index.html?pkg=intercept&query=%s"
+    }
+  ],
+  "omnibox": { "keyword": "ssb?" },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "unlimitedStorage",
+    "clipboardWrite",
+    "contextMenus"
+  ],
+  "sidebar_action": {
+    "default_icon": {
+      "32": "images/patchfox_32.png",
+      "512": "images/patchfox_pixel_512.png",
+      "96": "images/patchfox_pixel_96.png",
+      "128": "images/patchfox_pixel_128.png"
+    },
+    "default_title": "Patchfox",
+    "default_panel": "/index.html",
+    "open_at_install": false
+  }
+}

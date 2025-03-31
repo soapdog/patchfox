@@ -5,18 +5,13 @@ node_modules
 web-ext-artifacts
 *.zip
 old-src
-build
 
 \#*
 .vscode
 test/
 old/
-desktop-old/
 
 *.sublime-workspace
 .vscode
-reference-*
 
-*.tgz
-
-TODO.md
+reference-material*

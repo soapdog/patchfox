@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "es6": true
+        "es6": true,
+        "webextensions": true
     },
     "globals": {
         "hermiebox": true,
@@ -13,15 +14,20 @@
         "process": true,
         "history": true,
         "location": true,
-        "setServerType": true,
-        "__dirname": true
+        "setServerType": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module"
     },
-    "plugins": [],
+    "plugins": ["svelte3"],
+    "overrides": [
+        {
+            "files": ["*.svelte"],
+            "processor": "svelte3/svelte3"
+        }
+    ],
     "rules": {
         "indent": ["error", 2],
         "linebreak-style": ["error", "unix"],
