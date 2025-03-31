@@ -95,7 +95,10 @@
     pull(
       pull.values(event.attendees),
       paramap((attendee, cb) => {
-        ssb.avatar(attendee).then(a => cb(null, { name: a.name, rsvp: true }))
+        ssb.avatar(attendee).then(a => {
+          console.log("a",a)
+          cb(null, { name: a.name, dir: `ssb://feed/classic/${btoa(a.id)}`, rsvp: true })
+        })
       }),
       pull.collect((err, attendees) => {
         if (err) {
@@ -115,16 +118,19 @@
 
         obj.start = moment(event.startDateTime.epoch)
           .format("YYYY-M-D-H-m")
-          .split("-")
+          .split("-").map(f => Number(f))
 
         obj.duration = { hours: 1 }
-        obj.organizer = { name: name }
+        obj.organizer = { name: name, dir: `ssb://feed/classic/${btoa(feed)}` }
         obj.attendees = attendees
+
+       console.dir(obj)
 
         let { error, value } = ics.createEvent(obj)
 
         if (error) {
-          throw `Can't generate iCal ${error}`
+          console.dir(error)
+          throw `Can't generate iCal`
         } else {
           let blob = new Blob([value], { type: "text/calendar" })
 

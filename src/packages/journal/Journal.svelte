@@ -92,6 +92,7 @@
   .journal-column {
     flex: 1 1 auto;
     padding: 5px;
+    width: 50%;
   }
   
   .journal-entry {
@@ -115,7 +116,7 @@
     {/each}
   </div>
   <div class="journal-column">
-    <div class="form-control">
+    <div class="form-control p-2">
       <textarea
         class="textarea textarea-bordered h-96"
         id="content"

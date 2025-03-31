@@ -85,7 +85,7 @@
           on:click={() => {
             patchfox.go("hub", "channel", {
               channel: msg.value.content.channel
-            });
+            })
           }}>
           {#if msg.value.content.channel}#{msg.value.content.channel}{/if}
         </span>

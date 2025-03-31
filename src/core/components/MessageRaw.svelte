@@ -1,17 +1,17 @@
 <script>
-  export let msg;
+  export let msg
 
-  let type;
+  let type
 
   if (typeof msg.value.content === "string") {
-    type = "private";
+    type = "private"
   } else {
-    type = msg.value.content.type;
+    type = msg.value.content.type
   }
 
-  let raw = JSON.stringify(msg, null, 4);
+  let raw = JSON.stringify(msg, null, 4)
 
-  let pkg = patchfox.packageForType(msg);
+  let pkg = patchfox.packageForType(msg)
 </script>
 
 <div class="columns">

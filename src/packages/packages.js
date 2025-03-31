@@ -23,6 +23,8 @@ require("./zine/zine.js")
 require("./books/books.js")
 // require("./scheme/scheme.js")
 require("./journal/journal.js")
+require("./inbox/inbox.js")
+
 
 
 

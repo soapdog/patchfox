@@ -106096,14 +106096,14 @@ class NodeJsSSB {
     // add basic built-in pipelines
     pipelines.thread.use(this.filterHasContent)
     pipelines.thread.use(this.filterTypes)
-    pipelines.thread.use(this.filterRemovePrivateMsgs)
+    // pipelines.thread.use(this.filterRemovePrivateMsgs)
     pipelines.thread.use(this.filterWithUserFilters)
     // pipelines.thread.use(this.transform)
     pipelines.thread.use(this.filterLimit)
 
     pipelines.message.use(this.filterHasContent)
     pipelines.message.use(this.filterTypes)
-    pipelines.message.use(this.filterRemovePrivateMsgs)
+    // pipelines.message.use(this.filterRemovePrivateMsgs)
     pipelines.message.use(this.filterWithUserFilters)
     // pipelines.message.use(this.transform)
 
@@ -106352,6 +106352,45 @@ class NodeJsSSB {
       )
     })
   }
+  
+  private(lt, query = {}) {
+    return new Promise((resolve, reject) => {
+      const pipeline = pipelines.thread.get()
+  
+      const createPrivateStream = (id) => {
+        var filterQuery = {
+          $filter: {
+            dest: id,
+          },
+        }
+  
+        if (lt) {
+          filterQuery.$filter.value = { timestamp: { $lt: lt } }
+        }
+        
+        filterQuery = _.merge(filterQuery, query)
+        console.log(filterQuery)
+  
+        return sbot.private.read({
+          query: [query],
+          index: "DTA", // use asserted timestamps
+          reverse: true,
+        })
+      }
+  
+      pull(
+        createPrivateStream(sbot.id),
+        pull.apply(pull, pipeline),
+        pull.collect((err, msgs) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msgs)
+          }
+        })
+      )
+    })
+  }
 
   search(query, lt) {
     return new Promise((resolve, reject) => {
@@ -106487,9 +106526,9 @@ class NodeJsSSB {
 
   get(id) {
     return new Promise((resolve, reject) => {
-      if (getMsgCache(id)) {
-        resolve(getMsgCache(id))
-      }
+      // if (getMsgCache(id)) {
+      //   resolve(getMsgCache(id))
+      // }
       if (sbot.ooo) {
         sbot.get(
           { id: id, raw: true, ooo: false, private: true },
@@ -106792,6 +106831,70 @@ class NodeJsSSB {
 
       msgToPost.mentions = msgToPost.mentions.filter((n) => n) // prevent null elements...
 
+      if (sbot) {
+        sbot.publish(msgToPost, function (err, msg) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(msg)
+          }
+        })
+      } else {
+        reject("There is no sbot connection")
+      }
+    })
+  }
+  
+  newPrivatePost(data) {
+    return new Promise((resolve, reject) => {
+      let msgToPost = { type: "post", text: data.text }
+  
+      const commonFields = [
+        "root",
+        "branch",
+        "channel",
+        "fork",
+        "contentWarning"
+      ]
+      
+      if (!data.hasOwnProperty("recps")) {
+        reject("err: missing recipients for private message.")
+        return false
+      }
+      
+      if (!Array.isArray(data.recps) || data.recps.length < 1) {
+        reject("err: malformed recipients for private message.")
+        return false
+      }
+  
+      commonFields.forEach((f) => {
+        if (
+          typeof data[f] !== "undefined" &&
+          data[f] !== false &&
+          data[f] !== null &&
+          data[f].length > 0
+        ) {
+          msgToPost[f] = data[f]
+        }
+      })
+  
+      msgToPost.recps = data.recps || [sbot.id]
+      msgToPost.mentions = ssbMentions(msgToPost.text) || []
+      
+      msgToPost.mentions.forEach(m => {
+        msgToPost.recps.push(m.link)
+      })  
+      
+      if (msgToPost.contentWarning && msgToPost.contentWarning.length > 0) {
+        let moreMentions = ssbMentions(msgToPost.contentWarning)
+        msgToPost.mentions = msgToPost.mentions.concat(moreMentions)
+      }
+  
+      msgToPost.mentions = msgToPost.mentions.filter((n) => n) // prevent null elements...
+      
+      msgToPost.recps = msgToPost.recps.filter((n) => n) // prevent null elements...
+
+  
       if (sbot) {
         sbot.publish(msgToPost, function (err, msg) {
           if (err) {

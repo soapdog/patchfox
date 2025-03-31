@@ -35,5 +35,27 @@
 			    "BOUNTY": 5
 			}
         }
-    }
+    },
+    "build_systems": [
+        {
+            "name": "Make Dev Version",
+            "working_dir": "$project_path",
+            "shell_cmd": "npm run dev"
+        },
+        {
+            "name": "Make Full Dev Version",
+            "working_dir": "$project_path",
+            "shell_cmd": "npm run clean-dev"
+        },
+        {
+            "name": "Make Packages",
+            "working_dir": "$project_path",
+            "shell_cmd": "npm run dev:addon"
+        },
+        {
+            "name": "Make Release",
+            "working_dir": "$project_path",
+            "shell_cmd": "npm run release"
+        },
+      ]
 }
