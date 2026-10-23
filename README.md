@@ -69,7 +69,7 @@ Don't hesitate to reach out to me at:
 
 Do you want a decentralized internet too? Are you worried about the loss of net neutrality and realized that radical decentralization is the way to fight back? If you want to make a financial contribution to help me fund development of this and other dex focused software, I would love to receive contributions through these channels:
 
-* [Patchfox Open Collective](https://opencollective.com/patchfox)
+* [Buy me a coffee](https://ko-fi.com/andreshouldbewriting)
 
 
 # Artwork attribution
